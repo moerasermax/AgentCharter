@@ -31,12 +31,12 @@
 
 **Phase 順序**（依痛點優先）：
 
-| Phase | 工具 | 用途 | 優先 |
+| Phase | 工具 | 用途 | 狀態 |
 |---|---|---|---|
-| 1 | `charter-doctor.py` | 升版 dry-run + 健康檢查 | 🔴 最高（支援 versioning-migration §3.1 第 3 步）|
-| 2 | `charter-upgrade.py` | 執行升版（自動 schema 擴充 + BREAKING 確認）| 🔴 高（v0.6+ 第一次 BREAKING 升級時實證）|
-| 3 | `charter-init.py` | 初次接入（手動可行，但降低陌生團隊門檻）| 🟢 低 |
-| 4 | `charter-scan.py` | 既有專案智慧掃描（需 LLM judgment）| 🟢 留 v1.0 |
+| 1 | `charter-doctor.py` | 升版 dry-run + 健康檢查 | ✅ MVP 完成（commit `4e4725a` + bug fix `422f559`）|
+| 2 | `charter-upgrade.py` | 執行升版（自動 schema 擴充 + BREAKING 確認）| ⏳ 等 v0.6+ 第一次 BREAKING 升級時實證 |
+| 3 | `charter-init.py` | 初次接入（建 agent-commons + 套 preset + 寫 yaml）| ✅ MVP 完成（2026-04-27，第二專案採用驅動）|
+| 4 | `charter-scan.py` | 既有專案智慧掃描（需 LLM judgment）| ⏳ 留 v1.0 |
 
 **技術選型**：python + PyYAML + stdlib（避免 npm/brew 多通道發布；單一 cross-platform）
 

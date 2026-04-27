@@ -137,8 +137,22 @@ project-root/
 
 ### T1 接入
 
-手動建 `agent-commons/_config/{profile.yaml, mapping.yaml}`。
-（`/charter-init` 工具是 spec only，可參考但需自行落地。）
+**推薦**：用 `tools/charter-init.py` 一鍵建好 `agent-commons/` 結構：
+
+```bash
+# 在你專案的 working dir
+git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
+
+python ~/.agentcharter/tools/charter-init.py \
+  --preset standard \
+  --domain-axioms-path protocols/<YOUR_AXIOM>.md \
+  --domain-axioms-alias <SHORT_NAME>
+
+# 驗證
+python ~/.agentcharter/tools/charter-doctor.py
+```
+
+或手動建 `agent-commons/_config/{profile.yaml, mapping.yaml}`（依 §4 結構）。
 
 ### T2 AI 自我具象化（**核心，見 §7**）
 
