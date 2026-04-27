@@ -1,0 +1,22 @@
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local-only state
+*.local
+local/
+.env
+.env.local
+
+# Build artifacts (none expected for now)
+node_modules/
+dist/
+build/
