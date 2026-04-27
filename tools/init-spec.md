@@ -67,20 +67,36 @@
 3. 寫 .agentcharter/mapping.yaml
 ```
 
-### Phase 4：生成角色 init slash command
+### Phase 4：建立角色資料夾 + 預留 self-instantiation 位置
 
 對每個 `enabled.<role>: true` 的角色：
 
 ```
-1. 讀 templates/role-init.md.tpl
-2. 替換變數：
-   - <ROLE> = engineer / pm / ...
-   - <AI_VENDOR> = claude-code（從當前 AI 推斷，可由使用者覆寫）
-   - <PROJECT_DIR> = $CLAUDE_PROJECT_DIR
-   - <CHARTER_DIR> = AgentCharter clone 路徑（從環境變數或詢問）
-   - <DISCIPLINE_DOC> = mapping.protocols 內的紀律檔
-   - <DATE> = 當前日期
-3. 寫入 .claude/commands/<role>-init.md
+1. 建立 <common-memory-root>/roles/<role>/ 目錄結構：
+   - sessions/ / drafts/ / reflections/ / private/
+2. 寫入 _role.md（依 templates/agent-commons/_role.md.tpl）
+   - 「各 AI 具象化位置」表所有 AI 標為 ❌（未實裝）
+   - 切換歷史空白
+3. ⚠️ 不自動生成任何 AI 的 slash command 檔
+   - 框架不代生成（依 core/init-template.md §3.3 自我具象化原則）
+   - 各 AI 第一次被指派此角色時自行具象化
+```
+
+### Phase 4.5：通知使用者下一步
+
+init 完成後輸出：
+
+```
+✅ /charter-init 完成
+- agent-commons/ 目錄建立完成
+- 角色資料夾就位（_role.md 已生成，待 AI 自我具象化）
+- 領域公理：<狀態：已就位 / PENDING_AXIOM>
+
+下一步：
+1. 若領域公理未補 → 撰寫 <common-memory-root>/protocols/<axiom>.md
+2. 對每個要啟用的 AI 角色，跟該 AI 說「請以 <role> 身份接此專案」
+   → AI 會讀 charter 規範 → 自我具象化 slash command 到自己位置
+3. 跑 /charter-doctor 驗證
 ```
 
 ### Phase 5：跑 /charter-doctor

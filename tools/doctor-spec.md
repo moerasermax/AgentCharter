@@ -69,20 +69,22 @@
 | 路徑類型錯（指向檔但實為目錄）| E202 | 修正 mapping |
 | 無讀權限 | E203 | 檢查 OS 權限 |
 
-### 3.4 角色 init slash command
+### 3.4 角色 init slash command（自我具象化狀態）
 
 對 enabled 的每個角色：
 
 ```
-1. .claude/commands/<role>-init.md 存在？
-2. 內容是否含 init-template §2 五步驟骨架（用 grep 偵測）
-3. 引用的 charter 路徑是否仍指向有效目錄
+1. 讀 <common-memory-root>/roles/<role>/_role.md
+2. 比對「各 AI 具象化位置」表中標為 ✅ 的 AI，其對應檔案是否實際存在
+3. 內容是否滿足 core/init-template.md §2 八項最終狀態
 ```
 
 | 失敗 | 狀態碼 | 處置 |
 |---|---|---|
-| slash command 缺失 | W301 | 建議跑 `/charter-init` 重新生成 |
-| 骨架不完整 | W302 | 建議用 `templates/role-init.md.tpl` 重新生成 |
+| 全部 AI 都未自我具象化（全 ❌）| I301 | INFO：等使用者指派 AI 角色，AI 會自我具象化 |
+| `_role.md` 標 ✅ 但檔案不存在 | E302 | 表記錄與實際不符；可能 AI 簽名後未真正寫入 |
+| 自我具象化內容缺步驟 | W303 | 該實作為次品；建議重做自我具象化 |
+| 同角色多個 AI 已具象化 | I304 | INFO：跨 AI 接班鏈正常 |
 
 ### 3.5 領域公理
 

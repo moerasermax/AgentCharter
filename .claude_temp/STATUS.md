@@ -10,6 +10,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| v0.5.1 | (待 push) | AI Self-Instantiation 機制（框架不代生成 slash command，AI 自我具象化）|
 | v0.5.0 | `f306916` | Init Mandate 升格為職責規範（四職責 / 多 AI 具象化 / 替換保證）+ 配置目錄合併進 `agent-commons/_config/`（架構級）|
 | v0.4.2 | `4084e76` | agent-commons 完整 templates 6 份（capsule/handoff/IM/nextwork/domain-axioms/_role）+ §8 命名規則 |
 | v0.4.1 | `8539854` | Common Memory Root 架構級約定（預設名 `agent-commons/`，採用識別）|

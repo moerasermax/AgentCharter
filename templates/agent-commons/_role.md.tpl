@@ -18,14 +18,27 @@
 
 依 `core/init-template.md §3` 多 AI 具象化規範，本角色的 init slash command 在各 AI 廠商的對應位置：
 
-| AI | 具象化位置 | 是否實裝？ |
-|---|---|---|
-| Claude Code | `.claude/commands/<role>-init.md` | ✅ / ❌ |
-| Gemini CLI | `.gemini/commands/<role>-init.toml` | ✅ / ❌ |
-| Cursor | `.cursor/rules/<role>-init.mdc` | ✅ / ❌ |
-| 其他 / 無 slash 系統 | 通用 prompt 文件：`<common-memory-root>/roles/<role>/init-prompt.md` | ✅ / ❌ |
+| AI | 具象化位置 | 是否實裝？ | 自我具象化日期 |
+|---|---|---|---|
+| Claude Code | `.claude/commands/<role>-init.md` | ✅ / ❌ | <YYYY-MM-DD> |
+| Gemini CLI | `.gemini/commands/<role>-init.toml` | ✅ / ❌ | <YYYY-MM-DD> |
+| Cursor | `.cursor/rules/<role>-init.mdc` | ✅ / ❌ | <YYYY-MM-DD> |
+| 其他 / 無 slash 系統 | 通用 prompt 文件：`<common-memory-root>/roles/<role>/init-prompt.md` | ✅ / ❌ | <YYYY-MM-DD> |
 
-→ 任一 AI 接班時跑自己廠商的 init slash command；不存在則手動貼通用 prompt。
+→ AI 第一次扮演此角色時，**自我具象化**到自己廠商的位置（依 `core/init-template.md §3.3`）。框架不代生成。
+
+### 自我具象化機制
+
+當任何 AI 看到自己對應位置標為 ❌（未實裝）時，須執行：
+
+1. 讀 AgentCharter `core/init-template.md §3.3` 規範
+2. 讀本角色的 `_spec.md` + `<my-vendor>.md`（若存在）
+3. 套用 `templates/role-init.md.tpl` 為骨架
+4. 在自己 AI 系統的標準位置生成 slash command 檔
+5. 把上表自己一行的「是否實裝？」改為 ✅，填上日期
+6. 在切換歷史追加「自我具象化完成」紀錄
+
+**禁止**：要求使用者手動寫該 AI 的 slash command（違反「角色 ⊥ AI」公理）。
 
 ---
 
