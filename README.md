@@ -112,9 +112,17 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 
 ---
 
-## 採用 / 治理 / 貢獻 / 變更
+## 採用文件（依受眾分）
 
-- **`ADOPTION.md`** — **採用指南**（給即將採用的團隊與該團隊的 AI；自含 context，AI 讀完即可啟動 self-instantiation）
+| 檔案 | 受眾 | 用途 | 何時讀 |
+|---|---|---|---|
+| **本檔（`README.md`）** | 任何人 | 介紹 charter 是什麼 + 三公理 + 條款列表 | 第一次接觸 |
+| **`QUICKSTART.md`** | 人類採用方（**小白**） | 5 分鐘讀完，30 分鐘跑通第一個任務 | **接入時** |
+| **`TUTORIAL.md`** | 人類採用方（深入） | reference 工具書（章節獨立，可跳讀；含 troubleshooting） | 卡關 / 想深入 |
+| `ADOPTION.md` | 該團隊的 AI | AI 自含 context 採用指南（密集格式） | AI 接班時 |
+
+## 治理 / 貢獻 / 變更
+
 - `GOVERNANCE.md` — 誰可 merge、衝突如何處理、版本權威
 - `CONTRIBUTING.md` — 如何提交新角色 / 新失敗模式 / 新 AI 實作版
 - `CHANGELOG.md` — 版本紀錄
