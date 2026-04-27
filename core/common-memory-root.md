@@ -140,7 +140,48 @@ project/
 
 ---
 
-## 8. 「為什麼不允許名稱完全自由」
+## 8. 命名規則（v0.4.2 加入）
+
+### 8.1 檔名規則
+
+| 槽位 | 命名 | 範例 |
+|---|---|---|
+| `capsules/` | `<TASK_ID>_<SHORT_DESC>.md`，TASK_ID 由專案約定 | `TASK_S70_DASHBOARD_PNL_CORRECTION.md` |
+| `handoffs/` | `HANDOFF_<N>.md`，N 為連續遞增整數從 1 起 | `HANDOFF_23.md` |
+| `roles/<role>/sessions/<id>/` | id 為 session 識別 | `2026-04-27-s70-dashboard/` |
+| `roles/<role>/reflections/` | `<event-id>.md`，建議格式 `<task-id>-<role>-<f-mode>-x<count>` | `S70-pm-f1-x5.md` |
+| `protocols/<axiom-name>.md` | 領域公理檔，建議大寫識別 | `IRON.md` / `HIPAA.md` |
+| `institutional-memory/_root.md` | IM 主索引檔 | `_root.md` |
+| `state/output_mode` | output-mode-protocol 旗標檔 | `output_mode` |
+| `state/failure_modes.log` | failure-modes 累積紀錄 | `failure_modes.log` |
+| `roles/<role>/_role.md` | 角色識別檔（依 templates/agent-commons/_role.md.tpl）| `_role.md` |
+
+### 8.2 路徑明確性
+
+| 項 | 規定 |
+|---|---|
+| 領域公理位置 | 必在 `<common-memory-root>/protocols/` 下 |
+| `_role.md` 位置 | 在每個 `roles/<role>/` 根目錄（與 sessions/ / drafts/ 同層）|
+| `institutional-memory/` | 是**目錄**含多檔（每章節獨立 .md）+ 一個 `_root.md` 索引 |
+| `state/` | 是**目錄**，內含工具狀態檔 |
+| `nextwork.md` | 是**單檔**，位於 common-memory-root 根目錄 |
+
+### 8.3 templates 對應
+
+依 `templates/agent-commons/` 下的 `*.md.tpl` 範本初始化各槽位內容：
+
+| 槽位 | Template |
+|---|---|
+| 任務膠囊 | `templates/agent-commons/capsule.md.tpl` |
+| HANDOFF | `templates/agent-commons/handoff.md.tpl` |
+| Institutional Memory 章節 | `templates/agent-commons/institutional-memory-entry.md.tpl` |
+| NextWork | `templates/agent-commons/nextwork.md.tpl` |
+| 領域公理 | `templates/agent-commons/domain-axioms.md.tpl` |
+| 角色識別 | `templates/agent-commons/_role.md.tpl` |
+
+---
+
+## 9. 「為什麼不允許名稱完全自由」
 
 允許名稱覆寫是為了向後相容；但**不允許分散**是架構性硬約束。理由：
 

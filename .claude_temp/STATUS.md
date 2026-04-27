@@ -10,6 +10,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| v0.4.2 | (待 push) | agent-commons 完整 templates 6 份（capsule/handoff/IM/nextwork/domain-axioms/_role）+ §8 命名規則 |
 | v0.4.1 | `8539854` | Common Memory Root 架構級約定（預設名 `agent-commons/`，採用識別）|
 | v0.4.0 | `ff70165` | 工具化接入 Spec only — charter-config schema + scan/init/doctor specs + 3 profile presets |
 | v0.3.0 | `35fce4c` | violation-reflection condition + management-layout template |
