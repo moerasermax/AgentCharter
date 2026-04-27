@@ -31,9 +31,36 @@ charter 是規範集，clone 到本機任一位置即可（不需 npm install）
 
 ### Step 2：在你專案跑 init（1 分鐘）
 
-⚠️ **重要**：**用 python 工具，不要請 AI 用 `/charter-init` slash command**。
+**任選一種方式**：
 
-理由：`charter-init.py` 是 v0.5.7 權威實作。AI 自具象化的 `/charter-init` 從 `tools/init-spec.md` 解讀，**該 spec 在 v0.5.7 前曾過時**（路徑與「不代生成 slash command」原則未同步）。雖然 spec 已修正，但採用方那邊的 AI 若已具象化過舊版 slash command 會 cache 過時邏輯。**python 工具最安全**。
+#### 方式 A：Prompt AI 跑接入 + 自具象化 `/charter-init`（推薦，UX 最好）
+
+複製貼給你的 AI（Claude / Gemini / Cursor 等）：
+
+```
+我採用了 AgentCharter，charter 在 ~/.agentcharter/。
+
+請依 ~/.agentcharter/tools/init-spec.md 跑接入流程：
+- preset: standard
+- domain-axioms-path: protocols/<YOUR_AXIOM>.md
+- domain-axioms-alias: <SHORT_NAME>
+
+完成後請順便把這個流程具象化為 /charter-init slash command 到你
+廠商的標準位置（依 init-template.md §3.3 self-instantiation），
+未來我打 /charter-init <args> 直接重用。
+```
+
+AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md` 或 `.gemini/commands/charter-init.toml`（依 AI 廠商）。
+
+#### 方式 B：直接打 `/charter-init`（如果 AI 已具象化過）
+
+```
+/charter-init standard
+```
+
+僅適用 AI 已具象化過 charter-init slash command 的場景。
+
+#### 方式 C：python 工具（跨 AI 中立，CI 友好）
 
 ```bash
 cd ~/projects/<your-project>
@@ -43,6 +70,14 @@ python ~/.agentcharter/tools/charter-init.py \
   --domain-axioms-path protocols/<YOUR_AXIOM>.md \
   --domain-axioms-alias <SHORT_NAME>
 ```
+
+#### 何時選哪個
+
+| 場景 | 建議方式 |
+|---|---|
+| 第一次接入 + 想要重用 slash | A |
+| 已有 slash command 已具象化 | B |
+| 在 CI / 想要絕對一致 / AI 沒響應 | C |
 
 **參數速查**：
 

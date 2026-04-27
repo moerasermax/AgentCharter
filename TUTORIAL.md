@@ -108,7 +108,38 @@ git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
 - 多個專案共用同一份 clone 即可（不必每專案 clone 一份）
 - 路徑可改，但建議放統一位置便於管理
 
-### 3.2 Init 基本指令
+### 3.2 Init 三條路徑並列
+
+採用方任選一種：
+
+#### 路徑 A：Prompt AI 跑接入 + 自具象化 `/charter-init`（推薦）
+
+```
+我採用了 AgentCharter，charter 在 ~/.agentcharter/。
+
+請依 ~/.agentcharter/tools/init-spec.md 跑接入流程：
+- preset: standard
+- domain-axioms-path: protocols/<YOUR_AXIOM>.md
+- domain-axioms-alias: <SHORT_NAME>
+
+完成後請順便把這個流程具象化為 /charter-init slash command 到你
+廠商的標準位置（依 init-template.md §3.3 self-instantiation），
+未來我打 /charter-init <args> 直接重用。
+```
+
+→ AI 完成接入 + 把流程「**儀式化**」為 slash command（一次 prompt，未來重用）。對齊 charter A1「角色 ⊥ AI」精神 — 各 AI 在自己廠商位置具象化。
+
+#### 路徑 B：已具象化的 `/charter-init`
+
+如果你（或前任 AI）已具象化過 charter-init slash command：
+
+```
+/charter-init standard
+```
+
+注意：spec 在 v0.5.7 前曾過時（v0.5.0 配置合併 + v0.5.1 不代生成原則未同步），如果你的 AI 在 v0.5.7 前具象化過 slash command，可能 cache 舊邏輯（產出 `.agentcharter/` 舊路徑）。**重新具象化**即可：請 AI 「依 v0.5.7 對齊版的 init-spec.md 重新具象化 /charter-init」。
+
+#### 路徑 C：python 工具（跨 AI 中立 / CI 友好）
 
 ```bash
 cd ~/projects/<your-project>
@@ -119,14 +150,19 @@ python ~/.agentcharter/tools/charter-init.py \
   --domain-axioms-alias <SHORT_NAME>
 ```
 
-#### 為什麼用 python 工具而非 AI slash command
+`charter-init.py` 是 **v0.5.7 權威實作** — 不依賴 AI 解讀，跑完保證對齊最新 spec。
 
-`charter-init.py` 是 **v0.5.7 權威實作**（跨 AI 中立）。雖然 AI 也能依 `tools/init-spec.md` 自具象化 `/charter-init` slash command，但有兩個風險：
+#### 三路徑取捨
 
-1. **spec 過時風險**：本 spec 在 v0.5.7 前曾過時（v0.5.0 配置合併 + v0.5.1 不代生成原則未同步到 spec），AI 從過時 spec 解讀會產出錯誤結構（v0.5.7 user 第一次接入時撞到，已修）
-2. **cache 過時風險**：採用方的 AI 若已具象化過舊版 slash command，內含的舊邏輯不會自動更新
+| 場景 | 推薦 |
+|---|---|
+| 第一次接入 + 想要重用 slash command | A（prompt + 自具象化）|
+| 已具象化過 slash 且 AI 是 v0.5.7+ 才接觸 charter | B（直接打 slash）|
+| 已具象化過但是 v0.5.6 之前的 cache | A（重新具象化）或 C |
+| CI / 自動化 / 想要絕對一致 / AI 不響應 | C（python） |
+| 完全不確定 | A（最簡單）|
 
-→ **採用方第一次接入請走 python 工具**。AI 自具象化的 `/charter-init` 適合進階場景（如自己擴充流程），不適合首次接入。
+三路徑最終產出**等價的 agent-commons/ 結構**，差異在「採用方執行的物理動作」+「未來重用便利度」。
 
 ### 3.3 preset 選哪個
 
@@ -622,8 +658,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 | 坑 | 真相 |
 |---|---|
-| 「用 AI 的 `/charter-init` slash command 跑接入」 | 首次接入用 **python 工具**（`charter-init.py`，跨 AI 中立 + v0.5.7 權威實作）。AI 自具象化版有 spec 過時 / cache 過時風險（詳見 §3.2） |
-| 「框架代寫 slash command」 | 框架**不代寫**（v0.5.1 後）— AI 自我具象化 |
+| 「框架代寫 slash command」 | 框架**不代寫**（v0.5.1 後）— AI 自我具象化（`/charter-init` 也是 — 採用方第一次 prompt 觸發 AI 自建，未來重用，詳見 §3.2 路徑 A）|
 | 「PM 可以跳過抽驗自己結案」 | 違反 [audit-rights](./core/audit-rights.md)，必須 Engineer 核准才生效 |
 | 「Engineer 可以宣告膠囊結案」 | 違反 [role-separation](./core/role-separation.md)，PM 才有結案權 |
 | 「兩角色決策不合 = 一方違規」 | 不一定 — 走 [role-conflict-resolution](./core/role-conflict-resolution.md) 三級階梯，不是 escalation |
