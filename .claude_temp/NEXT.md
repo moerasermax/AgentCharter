@@ -107,6 +107,7 @@
 - AI 自我具象化的「能力評估盲區」（Codex walkthrough 浮現）— 是否該補一個 `core/ai-vendor-onboarding.md` 條款規範新 AI 加入時的能力評估流程
 - **多 AI 具象化拓撲分類**（OrderRecon walkthrough 浮現，2026-04-27）— 當前 `init-template §3` 預設「1 AI × N command」拓撲（Claude / Gemini / Cursor）；GPT 走「N Custom GPT × 1 instructions」拓撲，可能影響 `multi-role-tracking` 與 `cross-ai-handoff` 部分定義。**判斷：等第一拓撲 reference impl 跑通後再評估**，避免未實證即分裂條款 surface area
 - **framework 維護者的紀律對齊**（2026-04-27 dogfood signal #1）— framework 條款規範採用方，但對「framework 設計者 / 維護者」沒有強制力。實證：Claude 在第二採用案例討論時違反 `working-stack-discipline §1`（DRAFT 對話累積而非檔案外部化），使用者提醒才補做紀錄。**判斷：暫不條款化**，累積 ≥ 3 次同類觀察後再評估（避免 v0.x 階段 surface area 擴張）。**候選方向**：(a) 新 `core/maintainer-discipline.md` 條款；(b) 擴充 `working-stack-discipline §X` 涵蓋維護者場景；(c) 維持非條款化，靠 git commit/PR 自我審視 + 使用者抽驗機制；詳見 `.claude_temp/STATUS.md §D` 與 `.claude_temp/CHARTER-VIZ-ONBOARDING.md`
+- **framework spec 之間沒同步機制**（2026-04-27 dogfood signal #2，與 #1 同源）— 條款修訂時（v0.5.0 配置合併 / v0.5.1 不代生成）沒對應修 `tools/{init,scan,doctor}-spec.md`，導致 Gemini 從過時 spec 解讀 `/charter-init` 流程會產出錯誤結構（v0.5.7 user 在第二專案 Gemini CLI 執行時撞到）。**處置已完成**：本 commit 同步修 3 份 spec 對齊 v0.5.7。**候選方向**：(a) `charter-doctor.py` 加 self-check（檢測 charter repo 自身一致性 — spec 描述路徑 vs 條款定義路徑）；(b) charter 修訂流程加「同步檢查 spec」step（GOVERNANCE 或 CONTRIBUTING 補強）；(c) PR template 加 spec 同步 checklist。**判斷**：候選 (a) 工作量小 + 對應 doctor 既有功能（健康檢查），優先序最高；累積 #1 + #2 兩次「維護者紀律失效」觀察後，下次同類觀察可直接條款化（依 escalation §1 「累計 ≥3 次同類偏差升級至結構性失靈」哲學自我應用）
 
 ---
 

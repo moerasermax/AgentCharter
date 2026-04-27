@@ -1,7 +1,9 @@
 # /charter-doctor — 健康檢查設計
 
-> **狀態**：v0.4 Spec only（無實作）
+> **狀態**：v0.5.7（spec 對齊 + python 工具已落地）
 > **位階**：tools / 設計文檔。
+> **v0.5.7 對齊註記**：原 v0.4 spec 寫 `.agentcharter/` 路徑（v0.5.0 已合併到 `agent-commons/_config/`）+ 未含 v0.5.1 self-instantiation 狀態檢查。本檔已同步對齊。
+> **實作對應**：權威實作為 `tools/charter-doctor.py`（v0.5.7 + bug fix `422f559`），含 §3.1 結構檢查 + 升版 dry-run（`--target-version`）。
 
 ---
 
@@ -33,8 +35,8 @@
 
 | 檢查 | 狀態碼 | 失敗處置 |
 |---|---|---|
-| `.agentcharter/profile.yaml` 存在 | E001 | 建議跑 `/charter-init` |
-| `.agentcharter/mapping.yaml` 存在 | E002 | 建議跑 `/charter-init` |
+| `<common-memory-root>/_config/profile.yaml` 存在 | E001 | 建議跑 `/charter-init` |
+| `<common-memory-root>/_config/mapping.yaml` 存在 | E002 | 建議跑 `/charter-init` |
 | profile schema 版本相容 | E003 | 建議跑 `/charter-init --update` |
 | 必填欄位齊全（依 charter-config §3 / §4）| E004 | 列出缺項 |
 
@@ -128,7 +130,7 @@
 ## 1. 結構完整性
 
 ​```bash
-ls -la .agentcharter/
+ls -la <common-memory-root>/_config/
 ​```
 
 ​```text
@@ -206,7 +208,7 @@ INFO 當前無進行中事件。
 | 1 | 有 INFO 但無錯誤 |
 | 2 | 有警告 |
 | 3 | 有錯誤（必修）|
-| 4 | 致命錯誤（無 .agentcharter / domain_axioms 缺失）|
+| 4 | 致命錯誤（無 `<common-memory-root>/` 或 domain_axioms 缺失）|
 
 CI / pre-commit hook 可依退出碼 gate。
 
@@ -241,8 +243,12 @@ CI / pre-commit hook 可依退出碼 gate。
 
 ## 8. 實作節奏
 
-| 版本 | 內容 |
-|---|---|
-| v0.4 | Spec only — 本文檔 |
-| v0.5 | bash 原型（用 yq + ls + grep）|
-| v0.6 | Claude Code slash command 包裝 |
+| 版本 | 內容 | 狀態 |
+|---|---|---|
+| v0.4 | Spec only — 本文檔 | ✅ |
+| v0.5.0 | 配置目錄合併 `.agentcharter/` → `agent-commons/_config/`（spec 對齊延遲到 v0.5.7） | ✅ |
+| v0.5.1 | §3.4 自我具象化狀態檢查段加入 | ✅ |
+| v0.5.7 | `tools/charter-doctor.py` python 工具落地（健康檢查 + 升版 dry-run）| ✅ |
+| v0.6+ | 加 `--fix` 互動模式 / `--json` machine-readable 輸出 | ⏳ |
+
+**權威實作**：`tools/charter-doctor.py`（v0.5.7 + bug fix `422f559`）。AI 自具象化版的 `/charter-doctor` slash command 應對齊本檔流程。

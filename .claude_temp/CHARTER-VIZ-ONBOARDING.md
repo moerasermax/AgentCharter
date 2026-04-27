@@ -87,6 +87,7 @@ python ~/.agentcharter/tools/charter-doctor.py
 | # | 觀察 | 沉澱位置 | 處置 |
 |---|---|---|---|
 | 0 | **framework 設計者本人也會踩自己定義的坑**（2026-04-27）— Claude 在 onboarding 討論中說「signal 記在腦中」違反 `working-stack-discipline §1`；使用者提醒後才補做紀錄。揭露 framework 條款對「設計者 / 維護者」無強制力的盲區 | `STATUS.md §D` + `NEXT.md ⚪ 待對話`（候選 `core/maintainer-discipline.md` 或擴充 `working-stack-discipline §X`）| 暫不條款化；累積 ≥ 3 次同類觀察後再評估 |
+| 0.5 | **framework spec 之間沒同步機制**（2026-04-27，與 #0 同源）— Gemini 在第二專案跑 `/charter-init from-scan`，從 `tools/init-spec.md`（v0.4 寫，未同步 v0.5.0/v0.5.1）解讀會產出 `.agentcharter/` 舊路徑 + 自動生成 slash command（違反 v0.5.1）。三份 spec 都過時 | `STATUS.md §D` + `NEXT.md ⚪ 待對話`（候選 doctor self-check / GOVERNANCE 同步流程） | 本 commit 修 3 份 spec 對齊 v0.5.7；候選 doctor self-check 優先序最高 |
 
 ## 浮現的 dogfood signal（待接入過程實證）
 

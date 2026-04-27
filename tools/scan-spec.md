@@ -1,8 +1,9 @@
 # /charter-scan — 智慧掃描器設計
 
-> **狀態**：v0.4 Spec only（無實作）
+> **狀態**：v0.5.7 對齊（spec only，無實作；v1.0 後做）
 > **位階**：tools / 設計文檔。
 > **掃描智慧度**：A3（LLM 內容判讀）
+> **v0.5.7 對齊註記**：原 v0.4 spec 寫 `<common-memory-root>/_config/` 路徑（v0.5.0 已合併到 `agent-commons/_config/`）。本檔已同步對齊。實作優先序排在 `charter-init.py`（已落地）+ `charter-doctor.py`（已落地）+ `charter-upgrade.py`（v0.6+）之後。
 
 ---
 
@@ -21,14 +22,14 @@
 ### 輸入
 
 - 專案根目錄路徑（預設：`$CLAUDE_PROJECT_DIR` 或當前 cwd）
-- 可選：忽略清單（`.agentcharter/scan-ignore`，類似 .gitignore）
+- 可選：忽略清單（`<common-memory-root>/_config/scan-ignore`，類似 .gitignore）
 
 ### 輸出
 
 | 檔案 | 用途 |
 |---|---|
-| `<project>/.agentcharter/scan-report.md` | 人類可讀的探測結果 + 推論依據 |
-| `<project>/.agentcharter/mapping-draft.yaml` | 自動生成的 mapping.yaml 草稿 |
+| `<project>/<common-memory-root>/_config/scan-report.md` | 人類可讀的探測結果 + 推論依據 |
+| `<project>/<common-memory-root>/_config/mapping-draft.yaml` | 自動生成的 mapping.yaml 草稿 |
 
 `/charter-scan` **不直接寫入** `mapping.yaml` — 草稿須使用者 review 後由 `/charter-init` 升級。
 
@@ -187,14 +188,13 @@ domain_axioms:
 
 ## 7. 工具實作節奏
 
-v0.4 本檔僅定 **Spec**。實作分階段：
+| 版本 | 實作層級 | 狀態 |
+|---|---|---|
+| v0.4 | Spec only — 本文檔即交付物 | ✅ |
+| v0.5.7 | 路徑對齊 v0.5.0 配置合併（spec 內容更新；無實作）| ✅ |
+| v1.0+ | python 原型 + 整合 Anthropic / Gemini API 做 LLM 判讀 | ⏳ 留 v1.0 後（需 LLM judgment 工作量大）|
 
-| 版本 | 實作層級 |
-|---|---|
-| v0.4 | Spec only — 本文檔即交付物 |
-| v0.5 | bash / python 原型，整合 Anthropic / Gemini API 做 LLM 判讀 |
-| v0.6 | Claude Code slash command 包裝（讀 spec 並執行）|
-| v0.7+ | 跨 AI CLI（與 npm / pip 等同性質）|
+→ 當前外部採用方應走「**手動建 + python charter-init.py**」路徑，不依賴 scan。既有 protocols 的對映 → 跑完 init 後手動 `git mv` 進 `agent-commons/protocols/`（依 TUTORIAL §3.5）。
 
 ---
 
