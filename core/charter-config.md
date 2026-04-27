@@ -1,7 +1,9 @@
 # Charter Config（協議配置 schema）
 
-> **狀態**：v0.4 Spec
-> **位階**：core 通用條款。定義 `.agentcharter/` 目錄下兩份配置檔的 schema。
+> **狀態**：v0.5.0
+> **位階**：core 通用條款。定義 `<common-memory-root>/_config/` 下兩份配置檔的 schema。
+>
+> **v0.5.0 變更**：原 `.agentcharter/` 配置目錄已合併至 `<common-memory-root>/_config/`，達成「**單一採用識別目錄**」設計。
 
 ---
 
@@ -15,23 +17,43 @@
 
 ---
 
-## 2. 配置檔位置與生命週期
+## 2. 配置檔位置與生命週期（v0.5.0 起）
 
 | 檔案 | 位置 | 入 git？ |
 |---|---|---|
-| `mapping.yaml` | `<project>/.agentcharter/mapping.yaml` | ✅ |
-| `profile.yaml` | `<project>/.agentcharter/profile.yaml` | ✅ |
-| `scan-report.md` | `<project>/.agentcharter/scan-report.md` | 可選 |
-| `health-report.md` | `<project>/.agentcharter/health-report.md` | 可選 |
+| `mapping.yaml` | `<common-memory-root>/_config/mapping.yaml` | ✅ |
+| `profile.yaml` | `<common-memory-root>/_config/profile.yaml` | ✅ |
+| `scan-report.md` | `<common-memory-root>/_config/scan-report.md` | 可選 |
+| `health-report.md` | `<common-memory-root>/_config/health-report.md` | 可選 |
 
-`.agentcharter/` 是專案根目錄下的標準資料夾，類似 `.git/`、`.vscode/`。
+**典型專案路徑**：
+
+```
+project-root/
+└── agent-commons/                ← 採用識別（依 common-memory-root.md）
+    ├── _config/                  ← 配置層（v0.5 合併自原 .agentcharter/）
+    │   ├── profile.yaml
+    │   ├── mapping.yaml
+    │   └── ...
+    ├── capsules/
+    ├── handoffs/
+    └── ...
+```
+
+### 工具尋找根目錄的優先序
+
+任何 AI 工具進入專案後，依以下順序定位 common-memory-root：
+
+1. 看 `agent-commons/_config/profile.yaml` 是否存在 → 是 → root = `agent-commons/`
+2. 掃專案根，找符合 `<dir>/_config/profile.yaml` 的目錄 → 第一個命中即視為 root（適用既有專案覆寫名稱）
+3. 都無 → 報錯「無法定位共同記憶根目錄」
 
 ---
 
 ## 3. `mapping.yaml` Schema
 
 ```yaml
-version: "0.4.1"                         # mapping schema 版本
+version: "0.5.0"                         # mapping schema 版本
 
 # === Common Memory Root（v0.4.1 必填）===
 # 採用 AgentCharter 的專案的「共同記憶根目錄」。

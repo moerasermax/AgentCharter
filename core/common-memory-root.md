@@ -39,6 +39,11 @@
 ```
 <project>/
 └── agent-commons/                       ← Common Memory Root
+    ├── _config/                         ← 框架配置層（v0.5.0 合併自原 .agentcharter/）
+    │   ├── profile.yaml                 ← 條款啟用配置
+    │   ├── mapping.yaml                 ← 路徑對映（內部子槽位）
+    │   ├── scan-report.md               ← /charter-scan 結果（可選）
+    │   └── health-report.md             ← /charter-doctor 結果（可選）
     ├── capsules/                        ← 任務膠囊（依 audit-rights / completion-delivery 啟用）
     ├── handoffs/                        ← HANDOFF 鏈（依 handoff-chain 啟用）
     ├── protocols/                       ← 領域安全公理 + 紀律文件
@@ -47,6 +52,7 @@
     ├── state/                           ← 工具狀態檔（如 output_mode_file、failure_mode_log）
     └── roles/                           ← 角色私有區（依 role-separation 啟用）
         ├── engineer/
+        │   ├── _role.md                 ← 角色識別檔
         │   ├── sessions/<id>/
         │   ├── drafts/
         │   ├── reflections/
@@ -146,6 +152,7 @@ project/
 
 | 槽位 | 命名 | 範例 |
 |---|---|---|
+| `_config/` | 固定名 `_config`（v0.5.0 起合併自原 `.agentcharter/`）| `_config/profile.yaml` |
 | `capsules/` | `<TASK_ID>_<SHORT_DESC>.md`，TASK_ID 由專案約定 | `TASK_S70_DASHBOARD_PNL_CORRECTION.md` |
 | `handoffs/` | `HANDOFF_<N>.md`，N 為連續遞增整數從 1 起 | `HANDOFF_23.md` |
 | `roles/<role>/sessions/<id>/` | id 為 session 識別 | `2026-04-27-s70-dashboard/` |

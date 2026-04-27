@@ -10,7 +10,47 @@
 
 ---
 
-## [0.4.2] — 2026-04-27
+## [0.5.0] — 2026-04-27
+
+### Changed — Init Mandate 升格 + 配置目錄合併（架構級重構）
+
+#### A. `core/init-template.md` 升格為 Role Init Mandate（職責規範）
+
+從 v0.4 的「五步驟骨架」升格為**四大職責 + 必達狀態 + 多 AI 具象化規範**：
+
+- §0 概念位階：Init = 使用者分身 / 造物主 / 守門人
+- §1 四大職責：Summon（召喚）/ Calibrate（校準）/ Sign-in（簽名）/ Gatekeep（守門）
+- §2 必達最終狀態（八項，跨 AI 等效）
+- §3 各 AI 具象化規範（Claude Code / Gemini CLI / Cursor / 通用 prompt）
+- §4 跨 AI 兼容性要求 + 統一就緒回報格式
+- §5 替換性保證（無隱性綁定）
+- §6 五步驟骨架（保留 v0.4 內容為實作步驟）
+- §7 違反處置（跳過 init = F1）
+- §8 與其他 core 條款關係
+
+#### B. 配置目錄合併（架構級）
+
+原 `.agentcharter/` 配置目錄合併進 `<common-memory-root>/_config/`：
+
+- 達成「**單一採用識別目錄**」設計
+- `agent-commons/` 內部含完整配置 + 內容（清晰分層）
+- 工具尋找優先序：先 `agent-commons/_config/`，沒有則掃專案根找符合 `<dir>/_config/profile.yaml` 的目錄
+
+### Modified
+
+- `core/charter-config.md` schema 升 v0.5.0：配置位置變更 + 工具尋找優先序段
+- `core/common-memory-root.md` §3 必含子槽位加 `_config/`；§8 命名規則加 `_config/` 條目
+- `templates/agent-commons/_role.md.tpl` 大改：加多 AI init 位置表、切換歷史審計欄位、統一就緒回報格式
+- `examples/cryptobot/mapping.md` §0：對齊 v0.5.0 配置位置（CryptoBot 沿用 `management/`，配置在 `management/_config/`）
+
+### 動機
+
+使用者提兩個議題：
+
+1. **`.agentcharter/` 應併進 `agent-commons/`**：兩個 dot-folder 違反「單一採用識別」原則。合併後看到 `agent-commons/` ＝ 整套框架就位。
+2. **`.claude/commands/<role>-init.md` 不該只限 Claude**：Init 是「造物主級」職責，相當於使用者分身。框架應先定義抽象職責，讓各 AI 廠商自行具象化到自己的 slash command 系統，達成可替代化。
+
+兩件事都涉及架構級概念（採用識別 / 角色召喚），故 minor version 升 0.5.0。
 
 ### Added — agent-commons 完整 templates + 命名規則
 
