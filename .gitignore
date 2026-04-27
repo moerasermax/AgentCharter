@@ -5,6 +5,12 @@
 *.swo
 *~
 
+# Claude Code 本地設定（不入 git）
+# 但 .claude/commands/ 入 git — charter repo 級 maintainer slash commands
+.claude/*
+!.claude/commands/
+!.claude/commands/**
+
 # OS
 .DS_Store
 Thumbs.db
