@@ -6,7 +6,18 @@
 
 ## [Unreleased]
 
-（待議事項）
+### Patch — QUICKSTART：多 AI 並存接入提醒白話化
+
+對應使用者反饋（charter-viz onboarding，2026-04-27）：採用方初讀 QUICKSTART Step 4「複製以下 prompt 給你的 AI」會誤以為「單一 AI 接入即完成」，沒意識到 vendor-specific slash command 不通用（Claude `.claude/commands/` ≠ Gemini `.gemini/commands/`）必須**每個 AI 各自跑一次自我具象化**。
+
+#### 修改
+
+- `QUICKSTART.md §Step 4`：加 🔁 提醒框，明示「每個 AI 各自貼一次、不是選一個」；prompt 引言改為「複製對應 prompt 給每個你採用的 AI」
+- `QUICKSTART.md §Step 5`：doctor 提醒改為「給其中一位 AI 即可」（doctor 不是必跑、跑一次就好），避免讀者誤以為每個 AI 都要跑 doctor
+
+#### 範圍
+
+純文件 wording 修改，不影響條款啟用 / mapping schema / preset / vendor spec。對齊 `init-template §3.3` AI Self-Instantiation + A1「角色 ⊥ AI」公理的白話表達。
 
 ---
 

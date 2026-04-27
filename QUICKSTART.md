@@ -84,7 +84,11 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 
 ### Step 4：通知 AI 自我具象化（5 分鐘）
 
-依 [init-template §3.3](./core/init-template.md)，**框架不代生成 slash command**，由 AI 自己依 charter 規範具象化。複製以下 prompt 給你的 AI：
+依 [init-template §3.3](./core/init-template.md)，**框架不代生成 slash command**，由 AI 自己依 charter 規範具象化。
+
+> 🔁 **每個 AI 各自貼一次**：如果本專案有多 AI 並存（如 Claude × Engineer + Gemini × PM），下方 prompt 是並列示範，**不是「選一個貼」**。每個 AI 接的角色都要有自己的 vendor-specific init slash command（Claude 用 `.claude/commands/`、Gemini 用 `.gemini/commands/`，不通用）。第三個 AI 加入時照樣再貼一次對應 prompt。
+
+複製對應 prompt 給每個你採用的 AI：
 
 **對 Claude Code**：
 ```
@@ -107,7 +111,7 @@ vendor spec）+ core/init-template.md §3.3.2 自我具象化到
 
 ### Step 5：跑 doctor 驗證（1 分鐘）
 
-複製貼給 AI：
+複製貼給你想要有 `/charter-doctor` 的 AI（doctor 不是必跑、跑一次就好；想要日後重用 slash command 的 AI 可順便具象化，多 AI 並存時通常給 PM 或 Engineer 其中一位即可）：
 
 ```
 請依 ~/.agentcharter/tools/doctor-spec.md 對本專案的 agent-commons/
