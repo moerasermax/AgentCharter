@@ -10,7 +10,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| v0.4.1 | (待 push) | Common Memory Root 架構級約定（預設名 `agent-commons/`，採用識別）|
+| v0.4.1 | `8539854` | Common Memory Root 架構級約定（預設名 `agent-commons/`，採用識別）|
 | v0.4.0 | `ff70165` | 工具化接入 Spec only — charter-config schema + scan/init/doctor specs + 3 profile presets |
 | v0.3.0 | `35fce4c` | violation-reflection condition + management-layout template |
 | v0.2.0 | `9aa9521` | 結構性反捏造升為全模式預設強制 |
