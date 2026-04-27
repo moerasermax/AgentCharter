@@ -109,6 +109,7 @@
 - **多 AI 具象化拓撲分類**（OrderRecon walkthrough 浮現，2026-04-27）— 當前 `init-template §3` 預設「1 AI × N command」拓撲（Claude / Gemini / Cursor）；GPT 走「N Custom GPT × 1 instructions」拓撲，可能影響 `multi-role-tracking` 與 `cross-ai-handoff` 部分定義。**判斷：等第一拓撲 reference impl 跑通後再評估**，避免未實證即分裂條款 surface area
 - ~~framework 維護者的紀律對齊（dogfood signal #1）~~ ✅ **v0.5.8 條款化**（`core/maintainer-discipline.md`，使用者授權跳過 ≥3 次累積直接條款化）
 - ~~framework spec 之間沒同步機制（dogfood signal #2）~~ ✅ **v0.5.8 條款化**（同上條款 §1 + §2.2 涵蓋；§3.1 charter-doctor.py self-check 列為 v0.6+ 候選）
+- **user 全域 skill 路徑硬編碼**（2026-04-27 dogfood signal #3）— user 的 `~/.claude/commands/checkpoints.md` skill spec 寫死 `management/DRAFT_CONTEXT.md`（CryptoBot 結構），在 AgentCharter（dogfooding 取捨用 `.claude_temp/`）跑不通。**已被 maintainer-discipline §1 條款覆蓋**（工具應對齊 charter mapping 抽象），但實際工具層修法待做。**候選方向**：(a) 修 skill 讀 charter mapping.yaml.shared.draft_context；(b) 加 fallback：先找 `management/`、再找 `.claude_temp/` / `agent-commons/`；(c) skill 改為「讀使用者環境變數 $CHARTER_DRAFT_PATH」。**判斷**：當 user 在 charter repo 想用 /checkpoints 時再做（短期不影響採用方），優先序排在 charter-viz 接入完成後
 
 ---
 

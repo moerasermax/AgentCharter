@@ -194,8 +194,9 @@ NEXT.md §10「AgentCharter 自身 dogfooding」對應此議題。
 
 | Signal | 日期 | 事件 | 對應本條款段 |
 |---|---|---|---|
-| #1 | 2026-04-27 | Claude 違反 working-stack-discipline §1 | §1 條文後段 + §4 違反處置 |
+| #1 | 2026-04-27 | Claude 違反 working-stack-discipline §1（DRAFT 對話累積）| §1 條文後段 + §4 違反處置 |
 | #2 | 2026-04-27 | v0.5.0/v0.5.1 修條款時未同步 tools/*-spec.md | §1 條文前段 + §2.2 引用範圍 + §3 三層機制 |
+| #3 | 2026-04-27 | user 全域 skill `~/.claude/commands/checkpoints.md` 路徑硬編碼 `management/`，不對齊 charter mapping.yaml 抽象 | §1 條文（工具應對齊 charter 抽象）；具體工具修法在 NEXT.md 追蹤 |
 
 未來再撞到同類觀察時：
 
