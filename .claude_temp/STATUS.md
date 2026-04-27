@@ -206,8 +206,10 @@ project-root/
 
 ### 下一階段焦點（依 NEXT.md 高優先序）
 
-1. **`roles/pm/gemini-cli.md` 提交** — placeholder 等待 Gemini 端代理或 Gemini CLI 自我具象化時產出 vendor spec
-2. **v0.5+ Reference Impl** — 把 `tools/{scan,init,doctor}-spec.md` 變成可跑的工具（依 versioning-migration §3.2 的 `--target-version` dry-run 候選等）
+1. ~~`roles/pm/gemini-cli.md` 提交~~ ✅ **2026-04-27 完成**（Gemini Round 1 + Round 2 + Claude 校正）— PM × Gemini 是首份 vendor spec 雙層結構範本（概念層 / 實作層 / 跨 AI 對應），對齊 A1「角色 ⊥ AI」公理
+2. **v0.5+ Reference Impl** — Phase 1（charter-doctor.py）已完成；Phase 2（charter-upgrade.py）等 v0.6+ 第一次 BREAKING 升級時實證；Phase 3-4（init / scan）訊號驅動才做
+3. **第二個非 CryptoBot example**（A3「專案 ⊥ 框架」公理實證）— 等實際採用方出現
+4. **roles/engineer Gemini vendor spec / Claude PM vendor spec**（A1 公理進一步覆蓋）— 視需求
 
 ### 跨 session 接班指引
 
