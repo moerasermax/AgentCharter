@@ -10,6 +10,25 @@
 - 邀請 Gemini CLI 端提交 `roles/pm/gemini-cli.md`
 - CryptoBot 改為 *引用* 框架而非重複維護
 - 評估 IRON Pattern（Double Insurance、ACL）抽到框架的可行性
+- v0.2 評估把 `structural-anti-fabrication.md` 從「強化抽驗模式必強制」升為「全模式預設強制」
+
+---
+
+## [0.1.1] — 2026-04-27
+
+### Added
+
+- `core/structural-anti-fabrication.md` — 結構性反捏造條款。把驗證從「AI 自我誠實」搬到「文檔結構強制」：事實型宣告必須含 stdout 區塊，缺即視同未交付。
+
+### Modified
+
+- `README.md` core 條款列表加入新條目
+- `core/audit-rights.md` / `evidence-first.md` / `escalation-protocol.md` / `completion-delivery.md` / `failure-modes.md` 補交叉引用至新條款
+
+### 動機
+
+S70 事件診斷後使用者提出「AI 多一個自我 hook 檢驗是不是好事」討論。結論：自我 hook 仍受限於「遞迴信任陷阱」與「形式主義」。更有效的設計是把「驗證」從 AI 行為層搬到文檔結構層 — 沒有 stdout 區塊就連送都送不出，AI 想假宣告無處可放。
+
 
 ---
 

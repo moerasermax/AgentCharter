@@ -44,6 +44,7 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `failure-modes.md` | F1〜Fn 失敗模式分類（假宣告、捏造數據、規則記憶失效…）|
 | `escalation-protocol.md` | 連續失敗 → 強化抽驗 → 結構性失靈 → 使用者裁決 |
 | `evidence-first.md` | 隱性 Bug 嚴禁盲猜；參數嚴禁假設值 |
+| `structural-anti-fabrication.md` | 事實宣告必含 stdout 區塊；不靠 AI 自我誠實，靠文檔結構強制 |
 | `output-mode-protocol.md` | eco / verbose 雙段式輸出 + 自動升級條件 |
 | `completion-delivery.md` | 工程師完工須附「PM 驗收測試計畫」（Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表）|
 | `handoff-chain.md` | Session 交接鏈與必含項目 |

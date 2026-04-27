@@ -89,3 +89,4 @@
 | `audit-rights.md` | VCP 是抽驗的承載格式 |
 | `output-mode-protocol.md` | eco 禁砍清單與本規範重疊保護 |
 | `evidence-first.md` | 期望錨點 / 失敗解讀必須可重現 |
+| `structural-anti-fabrication.md` | VCP 期望錨點與本條的 stdout 區塊共用同一精神 |

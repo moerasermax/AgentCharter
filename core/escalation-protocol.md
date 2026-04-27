@@ -70,3 +70,4 @@
 | `audit-rights.md` | 升級的前提是抽驗權生效 |
 | `failure-modes.md` | 升級條件由 F-catalog 累計觸發 |
 | `role-separation.md` | 升級不得改變角色權限分配（除非使用者裁決選 B/C 明示）|
+| `structural-anti-fabrication.md` | 進入強化抽驗模式後，本條從建議升為強制 |

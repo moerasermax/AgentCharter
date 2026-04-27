@@ -56,7 +56,17 @@
 
 ---
 
-## 6. 與既有專案的對齊
+## 6. 與其他 core 條款的關係
+
+| 條款 | 關係 |
+|---|---|
+| `audit-rights.md` | F-mode 是抽驗時的優先掃描清單 |
+| `escalation-protocol.md` | F-mode 累計次數觸發升級條件 |
+| `structural-anti-fabrication.md` | F1（假宣告）的結構性反制 — 缺 stdout 區塊即視為 F1，無需內容判讀 |
+
+---
+
+## 7. 與既有專案的對齊
 
 CryptoBot `Dev_Protocol_DISCIPLINE.md §1.6` 為本 catalog v0.1 的種子來源。S70 事件累積 F1×5 + F3×3 + F5×1 是首次「結構性失靈」實戰紀錄。
 

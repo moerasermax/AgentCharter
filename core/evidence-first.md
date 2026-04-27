@@ -82,3 +82,4 @@
 | `audit-rights.md` | 抽驗的標的就是「證據鏈」 |
 | `failure-modes.md` | F3（捏造數據）即違反本原則 |
 | `completion-delivery.md` | 完工交付的 VCP 必含具體驗證指令 + 期望錨點 |
+| `structural-anti-fabrication.md` | 證據必須在文檔結構內顯式（stdout 區塊），非純文字描述 |
