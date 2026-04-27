@@ -76,32 +76,27 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 
 當前提供：
 - `roles/engineer/claude-code.md` — Claude Code 工程師實作（v0.1 reference impl）
-- `roles/pm/gemini-cli.md.placeholder` — 邀請 Gemini 提交 PM 經驗
+- `roles/pm/gemini-cli.md` — Gemini CLI PM 實作（v1.0，從 CryptoBot S70 事件沉澱，三層結構範本）
 
 ---
 
 ## 對任意專案的接入流程
 
-新專案要採用 AgentCharter（v0.4 引入工具化接入）：
+5 步流程（clone → init → 領域公理 → AI 自我具象化 → doctor 驗證）：
 
-### 自動接入（推薦，v0.4+）
+```bash
+git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
+cd ~/projects/<your-project>
+python ~/.agentcharter/tools/charter-init.py \
+  --preset standard \
+  --domain-axioms-path protocols/<YOUR_AXIOM>.md \
+  --domain-axioms-alias <SHORT_NAME>
+# 編 agent-commons/protocols/<YOUR_AXIOM>.md（init 已複製模板）
+# 通知雙 AI 自我具象化（依 init-template §3.3）
+python ~/.agentcharter/tools/charter-doctor.py
+```
 
-1. `git clone <agentcharter-repo>` 到本機任一位置
-2. 在你的專案根目錄跑 `/charter-scan`（智慧掃描，產 mapping-draft）
-3. 跑 `/charter-init <preset>`（套用 preset，生成 `<role>-init` slash command）
-4. 跑 `/charter-doctor` 健康檢查
-
-→ 完成後 `.agentcharter/` + `.claude/commands/<role>-init.md` 就緒，可直接開始用。
-
-詳見 `tools/{scan,init,doctor}-spec.md`。
-
-### 手動接入（傳統）
-
-1. 在專案內建 `protocols/` 或 `governance/` 目錄
-2. 寫 `domain-axioms.md` — 你的領域安全公理（金融專案的 IRON、醫療專案的 HIPAA 對應…）
-3. 引用 AgentCharter 的 `core/*` 為「通用層」
-4. 在 `examples/<your-project>/mapping.md` 補一份對照表
-5. 用 `templates/role-init.md.tpl` 生成 `/<role>-init` slash command
+詳細指引見 [QUICKSTART.md](./QUICKSTART.md)（5 分鐘小白入門）+ [TUTORIAL.md](./TUTORIAL.md)（reference 工具書）。
 
 ---
 
@@ -112,15 +107,6 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 詳見 `examples/cryptobot/mapping.md`。
 
 ---
-
-## 採用文件（依受眾分）
-
-| 檔案 | 受眾 | 用途 | 何時讀 |
-|---|---|---|---|
-| **本檔（`README.md`）** | 任何人 | 介紹 charter 是什麼 + 三公理 + 條款列表 | 第一次接觸 |
-| **`QUICKSTART.md`** | 人類採用方（**小白**） | 5 分鐘讀完，30 分鐘跑通第一個任務 | **接入時** |
-| **`TUTORIAL.md`** | 人類採用方（深入） | reference 工具書（章節獨立，可跳讀；含 troubleshooting） | 卡關 / 想深入 |
-| `ADOPTION.md` | 該團隊的 AI | AI 自含 context 採用指南（密集格式） | AI 接班時 |
 
 ## 治理 / 貢獻 / 變更
 
@@ -133,3 +119,14 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 ## License
 
 私有專案；公開化決定保留至 v1.0。
+
+---
+
+## 採用文件（依受眾分）
+
+| 檔案 | 受眾 | 用途 | 何時讀 |
+|---|---|---|---|
+| **本檔（`README.md`）** | 任何人 | 介紹 charter 是什麼 + 三公理 + 條款列表 | 第一次接觸 |
+| **[`QUICKSTART.md`](./QUICKSTART.md)** | 人類採用方（**小白**） | 5 分鐘讀完，30 分鐘跑通第一個任務 | **接入時** |
+| **[`TUTORIAL.md`](./TUTORIAL.md)** | 人類採用方（深入） | reference 工具書（章節獨立，可跳讀；含 troubleshooting） | 卡關 / 想深入 |
+| [`ADOPTION.md`](./ADOPTION.md) | 該團隊的 AI | AI 自含 context 採用指南（密集格式） | AI 接班時 |
