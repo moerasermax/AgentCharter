@@ -82,6 +82,12 @@ python ~/.agentcharter/tools/charter-doctor.py
 - **Claude → Engineer**：依 `~/.agentcharter/core/init-template.md §3.3.2` 6 步驟自我具象化到 `.claude/commands/engineer-init.md`，簽名 `agent-commons/roles/engineer/_role.md`
 - **Gemini → PM**：依 `~/.agentcharter/roles/pm/gemini-cli.md`（Gemini 親手寫的 vendor spec）+ `init-template §3.3.2` 自我具象化到 `.gemini/commands/pm-init.toml`，簽名 `agent-commons/roles/pm/_role.md`
 
+## 已浮現的 meta-dogfood 觀察（不等接入即生效）
+
+| # | 觀察 | 沉澱位置 | 處置 |
+|---|---|---|---|
+| 0 | **framework 設計者本人也會踩自己定義的坑**（2026-04-27）— Claude 在 onboarding 討論中說「signal 記在腦中」違反 `working-stack-discipline §1`；使用者提醒後才補做紀錄。揭露 framework 條款對「設計者 / 維護者」無強制力的盲區 | `STATUS.md §D` + `NEXT.md ⚪ 待對話`（候選 `core/maintainer-discipline.md` 或擴充 `working-stack-discipline §X`）| 暫不條款化；累積 ≥ 3 次同類觀察後再評估 |
+
 ## 浮現的 dogfood signal（待接入過程實證）
 
 | # | Signal | 觸發後動作 |
