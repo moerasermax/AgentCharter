@@ -111,8 +111,9 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 
 ---
 
-## 治理 / 貢獻 / 變更
+## 採用 / 治理 / 貢獻 / 變更
 
+- **`ADOPTION.md`** — **採用指南**（給即將採用的團隊與該團隊的 AI；自含 context，AI 讀完即可啟動 self-instantiation）
 - `GOVERNANCE.md` — 誰可 merge、衝突如何處理、版本權威
 - `CONTRIBUTING.md` — 如何提交新角色 / 新失敗模式 / 新 AI 實作版
 - `CHANGELOG.md` — 版本紀錄
