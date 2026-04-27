@@ -74,6 +74,8 @@
 
 - 本文件是**領域特定**的，AgentCharter 不規範內容
 - AgentCharter 提供「**Domain Safety Axiom Slot**」：你的條款放在這個槽位
-- AgentCharter 的 `core/*` 是**通用紀律**，與本文件互補（紀律衝突時以本文件為準）
+- AgentCharter 的 `core/*` 是**通用紀律**，與本文件互補（紀律衝突時以本文件為準，依 `core/domain-axiom-slot.md §2.1`）
 
 依 `mapping.yaml.domain_axioms.primary` 指向本檔位置；通常放在 `<common-memory-root>/protocols/` 下。
+
+→ **撰寫紀律的最低要求**（必含後果段、可驗證、有編號等）由 `core/domain-axiom-slot.md §3` 規範；本檔的「撰寫紀律」段是其建議實作。違反 → `/charter-doctor` 報錯（依 `domain-axiom-slot.md §6` 嚴重度分級）。

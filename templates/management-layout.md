@@ -77,11 +77,13 @@
 
 ### 3.1 1 個 AI 同時扮演 2 個以上角色
 
+→ **詳細規範見 `core/multi-role-tracking.md`（v0.5.4）**。本段為簡要指引；以下三項由該條款落實為強制規範與防呆機制：
+
 | 場景 | 處置 |
 |---|---|
-| 同 AI 兼 Engineer + Reviewer | 跑 `/engineer-init` 進入 `roles/engineer/` context；切換時跑 `/reviewer-init` 進入 `roles/reviewer/` |
+| 同 AI 兼 Engineer + Reviewer | 切換必走完整 init（離岸 / 上岸宣告 + 跑 `/<role>-init`，依 multi-role-tracking §3.1）|
 | 同 AI 在 A 專案當 X 角色、B 專案當 Y 角色 | 跨專案天然隔離（不同 working dir）|
-| 同 AI 同 session 動態切換角色 | **不建議**。每次切換須走 init 流程，避免角色混淆 |
+| 同 AI 同 session 動態切換角色 | **強制規範**：每次切換須走完整 init；結案宣告須標身份戳；**禁止自抽自驗**（multi-role-tracking §3.3）|
 
 ### 3.2 角色資料夾的識別
 

@@ -49,6 +49,10 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `audit-rights.md` | 抽驗權 — 結案宣告默認待抽驗，工程師抽驗權不得放棄 |
 | `failure-modes.md` | F1〜Fn 失敗模式分類（假宣告、捏造數據、規則記憶失效…）|
 | `escalation-protocol.md` | 連續失敗 → 強化抽驗 → 結構性失靈 → 使用者裁決 |
+| `role-conflict-resolution.md` | 角色決策分歧裁決協議（區隔 escalation：分歧無對錯，雙向 L0/L1/L2 階梯）|
+| `multi-role-tracking.md` | 1 AI 兼 ≥ 2 角色的審計規範（離岸/上岸宣告、身份戳、自抽自驗禁令）|
+| `domain-axiom-slot.md` | 領域公理槽位的位階 / 撰寫紀律 / 違反處置（與 core 衝突時領域公理優先）|
+| `versioning-migration.md` | SemVer 對 charter 的具體含義 + 升級遷移流程 + 多 AI 版本一致性 |
 | `evidence-first.md` | 隱性 Bug 嚴禁盲猜；參數嚴禁假設值 |
 | `structural-anti-fabrication.md` | 事實宣告必含 stdout 區塊；不靠 AI 自我誠實，靠文檔結構強制 |
 | `violation-reflection.md` | 違規退稿後須補交反省；反省價值在「未來 AI / 集體記憶」而非矯正當前 AI |
@@ -57,7 +61,8 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `output-mode-protocol.md` | eco / verbose 雙段式輸出 + 自動升級條件 |
 | `completion-delivery.md` | 工程師完工須附「PM 驗收測試計畫」（Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表）|
 | `handoff-chain.md` | Session 交接鏈與必含項目 |
-| `init-template.md` | 任何 `/<role>-init` slash command 該有的最小骨架 |
+| `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移職責 + 接班方接收職責 + 強化抽驗狀態傳遞 |
+| `init-template.md` | Role Init Mandate — 四大職責 + 多 AI 具象化 + AI 自我具象化機制 |
 
 ---
 

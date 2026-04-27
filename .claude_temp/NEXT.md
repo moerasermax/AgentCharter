@@ -7,17 +7,17 @@
 
 ## 🔴 高優先（影響 v1.0）
 
-### 1. 核心條款覆蓋率盤點（剩餘候選）
+### 1. 核心條款覆蓋率盤點 ✅ **全部完成**
 
-**狀態**：部分已做（common-memory-root、charter-config 已加），剩 5 候選未決議。
+5 候選全部完成（v0.5.2〜v0.5.6）：
 
-**候選清單**：
+- [x] ~~Cross-AI handoff 細則~~ — **v0.5.2 完成**（獨立 core/cross-ai-handoff.md）
+- [x] ~~Conflict resolution between roles~~ — **v0.5.3 完成**（獨立 core/role-conflict-resolution.md）
+- [x] ~~Multi-role tracking 條款化~~ — **v0.5.4 完成**（獨立 core/multi-role-tracking.md，management-layout §3.1 升格）
+- [x] ~~Domain Axiom Slot 撰寫規範~~ — **v0.5.5 完成**（獨立 core/domain-axiom-slot.md，從 template 提煉撰寫紀律到 core 層）
+- [x] ~~Versioning / Migration 規範~~ — **v0.5.6 完成**（獨立 core/versioning-migration.md，SemVer 對 charter 的具體含義 + 升級流程）
 
-- [ ] **Domain Axiom Slot 撰寫規範** — 雖已有 `templates/agent-commons/domain-axioms.md.tpl`，但缺 core 條款規範「該寫多嚴格、該分幾梯」
-- [ ] **Versioning / Migration 規範** — 條款升級時已採用專案怎麼遷？（init-spec.md `--update` 提到但簡略）
-- [ ] **Cross-AI handoff 細則** — 跨 AI 接班規範（handoff-chain.md §5 提到但簡略；v0.5.1 self-instantiation 補了部分）
-- [ ] **Conflict resolution between roles** — 兩角色決策衝突的裁決路徑（escalation-protocol 只處理失敗事件，不處理意見不合）
-- [ ] **Multi-role tracking 條款化** — 1 AI 多角色的審計規範（templates/management-layout.md 提到但未條款化）
+下一階段焦點轉向 §2 / §3（PM gemini-cli 提交、Reference Impl）。
 
 ### 2. `roles/pm/gemini-cli.md` 提交
 
@@ -107,6 +107,11 @@
 - ✅ Init Mandate 升格（v0.5.0）
 - ✅ 配置目錄合併（v0.5.0）
 - ✅ AI Self-Instantiation 機制（v0.5.1）
+- ✅ Cross-AI Handoff 條款（v0.5.2）— 獨立 core 條款，補完 v0.5.1 之後「退出—轉移—接班」全鏈；連動 handoff-chain §5 簡化、charter-config 啟用清單、init-template §8 引用、_role.md.tpl 切換歷史擴 5 欄、三 profile yaml、README、CHANGELOG
+- ✅ Role Conflict Resolution 條款（v0.5.3）— 獨立 core 條款，補完「決策分歧」軸（雙向、無對錯）；與 escalation-protocol 嚴格區隔；三級階梯 L0/L1/L2；連動 escalation §6 / role-separation §5 反向引用、charter-config 啟用清單與相依表、三 profile yaml、README、CHANGELOG
+- ✅ Multi-Role Tracking 條款（v0.5.4）— 獨立 core 條款，補完 1 AI 多角色防呆（離岸/上岸宣告 + 身份戳 + 自抽自驗禁令）；template `management-layout §3.1` 升格為強制規範；連動 role-separation §3.4 加段 + §5 反向引用、charter-config 啟用清單與相依表、三 profile yaml、README、CHANGELOG
+- ✅ Domain Axiom Slot 條款（v0.5.5）— 獨立 core 條款，把 template 的撰寫紀律提煉至 core 層；定義「領域公理 > core 條款」衝突優先序為架構級條文；/charter-doctor 違反處置嚴重度分級；連動 evidence-first §5 / role-conflict-resolution §2 §7 反向引用、template `domain-axioms.md.tpl` 加指向、charter-config 啟用清單與相依表、三 profile yaml（minimal 也啟用）、README、CHANGELOG
+- ✅ Versioning & Migration 條款（v0.5.6）— 獨立 core 條款，定義 SemVer 對 charter 的具體含義（PATCH/MINOR/MAJOR/架構級）、BREAKING 判定條件、已採用專案 7 步遷移流程、回退路徑、雙軌版號獨立演化、多 AI 版本一致性禁令；連動 handoff-chain §7 / init-template §8 反向引用、charter-config 啟用清單與相依表、三 profile yaml（minimal 也啟用）、README、CHANGELOG。**5 候選盤點完成**
 
 ---
 

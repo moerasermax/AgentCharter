@@ -10,6 +10,272 @@
 
 ---
 
+## [0.5.6] — 2026-04-27
+
+### Added — Versioning & Migration 條款（高優先候選 #2 — 完成最後一條）
+
+新建 `core/versioning-migration.md`，補完條款集對「自身版本演化」的紀律。**至此 5 候選全部完成**（v0.5.2〜v0.5.6）。
+
+#### 為何需要
+
+- `profile.yaml` 已有 `version` + `charter_version` 兩欄，但無「升級時怎麼遷」
+- `tools/init-spec.md §6` 提到 `/charter-init --update` 但只 5 步驟，缺判斷依據
+- `tools/doctor-spec.md §3.1` 引用「profile schema 版本相容」但無「相容」定義
+
+#### 條款內容（10 段）
+- §0 為何需要本條款
+- §1 條文（charter_version 必填 + 升級走流程 + 框架提供 migration guide）
+- §2 SemVer 對 AgentCharter 的具體含義（PATCH / MINOR / MAJOR / 架構級四類）+ §2.1 BREAKING 判定條件 + §2.2 PATCH 判定條件
+- §3 已採用專案的遷移流程（標準 7 步流程 + 工具支援 + 跨 MAJOR 跳升禁令）
+- §4 破壞性升級的告警（框架側 + 採用方側責任）
+- §5 回退路徑（升級失敗回退 / 升級後局部關閉 / 整版降回最後手段）
+- §6 `version` 與 `charter_version` 雙軌（獨立演化 + 相容性檢查）
+- §7 多 AI 環境的版本一致性
+- §8 違反處置（接 F1 / F4 / F5）
+- §9 與其他 core 條款的關係
+- §10 變更歷史 + v1.0 完整化規劃
+
+### Modified
+
+- `core/charter-config.md` — `enabled` 加 `versioning-migration`；條款相依表加（依賴 `charter-config` + `handoff-chain` + `init-template`）
+- `core/handoff-chain.md §7` — 加反向引用，標明升級事件須寫進 §2 第 3 項
+- `core/init-template.md §8` — 加反向引用，標明 §1.4 守門須驗證 charter version 一致性
+- `tools/profiles/{minimal,standard,strict}.yaml` — 全部啟用（minimal 也啟用，因任何專案都會遇到 charter 升版）；三者 `charter_version` 升至 0.5.6
+- `README.md` core 條款表加一行
+
+### 動機
+
+當前其他 5 條候選（cross-ai-handoff / role-conflict-resolution / multi-role-tracking / domain-axiom-slot 加上歷史的 common-memory-root 與 charter-config）已穩定，可開始做版本化規範。原本 NEXT.md 標明「等其他穩定後再做」，避免條款本身變動時頻繁修改 versioning 規範。
+
+關鍵設計決策：
+- **架構級類別 BREAKING-LITE**（§2）— v0.4.1 / v0.5.0 這類「技術上 minor 但實質影響大」的歷史變動需要中間級別；標 minor 但 CHANGELOG 顯著標明
+- **跨 MAJOR 禁止跳升**（§3.3）— 跳過中間 migration 等於放棄狀態一致性保證
+- **整版降回不是常態**（§5.3）— 先嘗試局部關閉條款 / 調參數，最後才整版降
+- **多 AI 同 session 禁不同 charter version**（§7）— 會破壞 cross-AI 兼容性
+- **v0.x → v1.0 之間的版本提升均不視為 BREAKING**（§10）— v0.x 階段條款仍在演化；v1.0 之後嚴格遵循 SemVer
+
+### 里程碑
+
+5 候選核心條款覆蓋率盤點**完成**：
+
+```
+v0.5.2 — Cross-AI Handoff
+v0.5.3 — Role Conflict Resolution
+v0.5.4 — Multi-Role Tracking
+v0.5.5 — Domain Axiom Slot
+v0.5.6 — Versioning & Migration ← 本版
+```
+
+下一階段焦點：roles/pm/gemini-cli.md（待 Gemini 端代理）+ v0.5+ Reference Impl（把 scan/init/doctor spec 變可跑工具）。
+
+---
+
+## [0.5.5] — 2026-04-27
+
+### Added — Domain Axiom Slot 條款（高優先候選 #1）
+
+新建 `core/domain-axiom-slot.md`，把原本只在 `templates/agent-commons/domain-axioms.md.tpl` 的撰寫紀律提煉至 core 層，並補完位階理論依據與違反處置嚴重度分級。
+
+#### 位階定位
+- **Template** = 採用方專案複製貼上的實作骨架
+- **本條款** = 框架對該槽位本身的規範（位置 / 強制要求 / 違反處置 / 與 core 關係）
+
+沒有 core 條款，工具（`/charter-doctor`）無法判斷「本專案的領域公理是否合規」，AI 跨 AI 接班時無共同基準確認領域公理是否到位。
+
+#### 條款內容（8 段）
+- §0 為何需要本條款（與 template 的差別）
+- §1 條文（位置必填 + 內容須符合最低要求 + 違反觸發 doctor 報錯）
+- §2 槽位位階（**領域公理 > core 條款**衝突優先序，及與 role-conflict-resolution §2「領域 vs 通用衝突」的對應）
+- §3 撰寫紀律最低要求：強制（位置存在、後果段必含、可驗證、有編號）/ 建議（分梯、修訂只增不刪、IM 引用、已落實段）
+- §4 與 charter-config / common-memory-root / template 的關係
+- §5 多領域公理的處理（v0.5+ secondary 陣列候選 schema）
+- §6 違反處置 — /charter-doctor 嚴重度分級（ERROR / WARN / INFO）
+- §7 與其他 core 條款關係
+- §8 變更歷史
+
+### Modified
+
+- `core/charter-config.md` — `enabled` 加 `domain-axiom-slot`；條款相依表加（依賴 `charter-config` + `common-memory-root` + `evidence-first`）
+- `core/evidence-first.md §5` — 加反向引用，標明領域公理「可驗證」要求與本原則同源
+- `core/role-conflict-resolution.md`：
+  - §2「領域 vs 通用衝突」改為引用 `domain-axiom-slot §2.1`（取代原本指向 template 的引用）
+  - §7 加反向引用
+- `templates/agent-commons/domain-axioms.md.tpl §與 AgentCharter 的關係` — 加指向 core 條款，標明撰寫紀律最低要求由 core §3 規範
+- `tools/profiles/{minimal,standard,strict}.yaml`：**全部啟用**（`minimal` 也啟用，因領域公理檔即使在 minimal 場景仍須合規 — minimal 條款啟用：6/14 → 7/15）；三者 `charter_version` 升至 0.5.5
+- `README.md` core 條款表加一行
+
+### 動機
+
+條款覆蓋率盤點時發現：`templates/agent-commons/domain-axioms.md.tpl` 已有實作骨架與撰寫紀律建議，但 core 層空白導致：
+
+1. `/charter-doctor` 工具無依據判斷專案領域公理是否合規
+2. 跨 AI 接班時無共同基準確認領域公理到位（init-template §1.2 校準步驟引用「讀領域公理」但無「該讀什麼」的規範）
+3. 「領域 vs 通用衝突」的優先序只散見於 template 與 role-conflict-resolution，缺中央定義
+
+關鍵設計決策：
+- **領域公理 > core 條款**（§2.1）— 通用紀律服從領域底線；違反領域公理 → 直接後果（資金 / 安全 / 合規），通用條款不該越界決定領域風險容忍度
+- **強制 vs 建議分級**（§3）— 違反強制 = ERROR，違反建議 = WARN；避免一刀切讓採用方覺得負擔過重
+- **violation 處置由 /charter-doctor 落實**（§6）— 而非由 AI 即時退稿；領域公理偏差不是「失敗事件」（單一事件 F1〜F5），而是專案級配置問題
+- **minimal preset 也啟用本條款**（區別於其他 v0.5 新條款）— 即使探索型專案，「有領域公理且合規」是採用 AgentCharter 的最低標籤；無公理 = 採用 evidence-first 預設一般紀律但仍須在 mapping 標明
+
+---
+
+## [0.5.4] — 2026-04-27
+
+### Added — Multi-Role Tracking 條款（高優先候選 #5）
+
+新建 `core/multi-role-tracking.md`，把原本 `templates/management-layout.md §3.1` 的「不建議動態切換角色」**建議**升格為 core **強制規範**，並補完三項防呆機制（離岸/上岸宣告、身份戳、自抽自驗禁令）。
+
+#### 為何需要
+
+`role-separation.md` 的對稱分離原則動機是「兩端互為事實檢核器」。1 AI 兼任 ≥ 2 角色時物理上只有一個推論主體，互鎖機制有兩種失效路徑：
+
+1. **隱式戴帽子** — AI 不走 init 即從 Engineer 心智切到 PM 心智；外部看不出切換時間點
+2. **自抽自驗** — AI 用 Reviewer 身份抽驗自己 Engineer 身份的產出；同一推論偏見無外部修正
+
+兩條失效路徑都會把多角色協作降級為「單方獨佔閉環」。
+
+#### 條款內容（9 段）
+- §0 適用範圍（同 AI ≥ 2 角色）+ 與 cross-ai-handoff 區隔
+- §1 條文（切換必走 init / 必標身份戳 / 禁自抽自驗）
+- §2 設計動機（兩種失效路徑分析）
+- §3 強制規範三項：
+  - §3.1 切換協議（離岸宣告 + 跑 init + 上岸宣告，三段不同訊息 / 不同時間戳）
+  - §3.2 結案宣告身份戳（frontmatter 三欄：身份戳 / 切換情境 / 前一身份）
+  - §3.3 自抽自驗禁令（同 session 禁、跨 session 警示、戴帽抽他人允許；例外走 escalation §4-B）
+- §4 切換歷史紀錄（_role.md 多角色情境的特殊條目辨識 + 兼任宣告欄位）
+- §5 防呆 + 反濫用（連續違反觸發強化抽驗）
+- §6 對應失敗模式（接 F1 / F4 / F5）
+- §7 與其他 core 條款關係
+- §8 與 management-layout §3.1 的關係（升格與簡化指向）
+- §9 變更歷史
+
+### Modified
+
+- `core/charter-config.md` — `enabled` 加 `multi-role-tracking`；條款相依表加（依賴 `role-separation` + `audit-rights` + `init-template` + `failure-modes`）
+- `core/role-separation.md`：
+  - §3 加 §3.4「1 AI 兼任 ≥ 2 角色」段，指向本條款
+  - §5 加反向引用
+- `templates/management-layout.md §3.1`：
+  - 升格為強制規範指向本條款
+  - 「不建議動態切換」→「強制規範：切換必走完整 init + 身份戳 + 禁自抽自驗」
+- `tools/profiles/{minimal,standard,strict}.yaml` — standard / strict 啟用；minimal 預設 `false`（單 AI 單角色）；三者 `charter_version` 升至 0.5.4
+- `README.md` core 條款表加一行
+
+### 動機
+
+`management-layout.md §3.1` 早期形式（v0.4.1）只是 template 建議「不建議動態切換」，無強制力與防呆。實證需求：CryptoBot 場景中 Claude 偶爾被使用者要求戴 PM 帽抽驗自己工作 — 結果即「同一偏見的形式抽驗」，無實際外部修正力。
+
+關鍵設計決策：
+- **三段對稱宣告**（離岸 + init + 上岸）— 物理上拉開時間，給推論一個「下班—上班」的儀式間隔
+- **自抽自驗有梯度**（同 session 禁、跨 session 警示、戴帽抽他人允許）— 不一刀切，但同 session 是物理上的同一推論狀態，最危險
+- **例外授權走 escalation §4-B**（單次例外、不形成慣例、留審計）— 與既有條款銜接而非另立通道
+- **連續違反觸發強化抽驗**（§5.1 反濫用）— 防止「不同身份」被當成逃避抽驗的捷徑
+- **升格 management-layout §3.1**（template 建議 → core 強制）— 避免雙處維護
+
+---
+
+## [0.5.3] — 2026-04-27
+
+### Added — Role Conflict Resolution 條款（高優先候選 #4）
+
+新建 `core/role-conflict-resolution.md`，補完 `escalation-protocol` 之外的「**決策分歧**」軸。失敗事件處理（單向、有對錯）與決策分歧處理（雙向、無對錯）至此正交完整。
+
+#### 與 escalation-protocol 的嚴格區隔（§0）
+- `escalation-protocol` — 失敗事件累積（F1〜F5），單向，宣告方有偏差須補強
+- **`role-conflict-resolution`** — 決策分歧（範圍 / 技術選型 / 紀律解讀 / 優先序 / 領域 vs 通用），雙向，兩角色對等 escalate
+- 誤分類後果：把分歧誤判為失敗事件 → 抽驗方單方退稿、累積進入強化抽驗 → 對方無辜進入升級狀態 → 協作信任崩解
+
+#### 條款內容（8 段）
+- §0 與 escalation-protocol 的區隔（先講清楚）
+- §1 條文（禁止單方逕行 + 三級裁決階梯）
+- §2 衝突類型分類（5 類：範圍 / 技術選型 / 紀律解讀 / 優先序 / 領域 vs 通用）
+- §3 三級裁決階梯：L0 對話（N ≤ 2 回合）→ L1 條款仲裁（明示對錯 / 轉 escalation / 升 L2）→ L2 使用者裁決（標準上報格式 + ABCD 選項）
+- §4 紀錄要求（capsule decision log / conflict-record / IM 判例三層）
+- §5 防呆（Pending 狀態紀律 + 時效性例外 + 反濫用）
+- §6 對應失敗模式（接 F1〜F5）
+- §7 與其他 core 條款關係
+- §8 變更歷史
+
+### Modified
+
+- `core/charter-config.md` — `enabled` 加 `role-conflict-resolution`；條款相依表加（依賴 `role-separation` + `escalation-protocol` + `evidence-first` + `audit-rights`）
+- `core/escalation-protocol.md §6` — 加反向引用，明示與本條款的嚴格區隔
+- `core/role-separation.md §5` — 加反向引用，標明衝突 pending 期間單方逕行 = 越界，依本條 §3.1 退稿
+- `tools/profiles/{minimal,standard,strict}.yaml` — standard / strict 啟用；minimal 預設 `false`（單 AI 無此情境）；三者 `charter_version` 升至 0.5.3
+- `README.md` core 條款表加一行
+
+### 動機
+
+CryptoBot 過往案例（PM 想擴 scope vs Engineer 守 capsule 邊界）暴露了 escalation-protocol 的覆蓋盲區：兩角色無人錯，但需裁決路徑。原協議只能把分歧硬塞進 escalation 處理，導致無辜方累積進入強化抽驗。
+
+獨立條款後關鍵設計：
+
+```
+失敗事件（單向、有對錯） → escalation-protocol
+決策分歧（雙向、無對錯） → role-conflict-resolution
+邊界爭議 → 預設為分歧，由 L1 仲裁判定是否升級為失敗事件
+```
+
+關鍵設計決策：
+- **三級階梯避免直跳使用者**（L0 對話 → L1 條款仲裁 → L2 使用者）— 使用者只在條款未明示時介入
+- **L0 限 N ≤ 2 回合**（防無限拖延）
+- **領域公理優先於 core 條款**（衝突時依 domain-axioms.md.tpl「衝突時以本文件為準」）
+- **Pending 紀律連動 role-separation §3.1**（衝突期間越界 = 退稿）
+- **時效性例外有四道閘**（避免熱修被濫用為跳過協議的捷徑）
+- **L2 級必入 IM 為判例**（給未來相似衝突一鍵套用）
+
+---
+
+## [0.5.2] — 2026-04-27
+
+### Added — Cross-AI Handoff 條款（高優先候選 #3）
+
+新建 `core/cross-ai-handoff.md`，補完 v0.5.1 self-instantiation 之後的「**退出方—轉移—接班方**」全鏈。原 `handoff-chain.md §5`（簡略 3 點）拆出獨立條款，避免 session 維度與廠商維度混雜。
+
+#### 位階分工
+- `handoff-chain.md` — Session 維度的工作交接（不分 AI）
+- `init-template.md §3.3` — 新 AI 進入時的**自我具象化**（接班方入口）
+- **`cross-ai-handoff.md`** — 廠商維度的**狀態轉移** + 接班方**能力差異**處置
+
+#### 條款內容（10 段）
+- §0 與相關條款的位階分工
+- §1 條文（退出方須轉移、接班方須接收，缺則跨 AI 接班未完成）
+- §2 觸發判定（強跨 AI / 弱跨 AI / 環境變更 / 1 AI 多角色）
+- §3 退出方轉移職責（HANDOFF 增量 5 項：能力快照、強化抽驗狀態、私有筆記轉移宣告、隱性決策清單、未結案膠囊清單）
+- §4 接班方接收職責（5 步流程 + 禁令）
+- §5 能力快照（Capability Snapshot）標準格式（工具能力 / Stateful 副作用 / 隱性能力假設 / fallback 路徑）
+- §6 `_role.md` 切換歷史標準格式（5 欄）
+- §7 強化抽驗狀態的跨 AI 傳遞（**不繼承解除權**，須重新累計）
+- §8 對應失敗模式（接 F1〜F5，不另立新 F-mode）
+- §9 與其他 core 條款的關係
+- §10 變更歷史
+
+### Modified
+
+- `core/handoff-chain.md §5` 簡化為指向 `cross-ai-handoff.md`，避免雙處維護
+- `core/charter-config.md` schema：`enabled` 清單加 `cross-ai-handoff`；條款相依表加一行（依賴 `handoff-chain` + `init-template` + `escalation-protocol` + `audit-rights`）
+- `core/init-template.md §8` 加一行：`cross-ai-handoff` 為跨 AI 轉移流程的接收端入口
+- `templates/agent-commons/_role.md.tpl` 切換歷史擴為 5 欄（加 `Self-instantiation?` + `能力差異要點`），同時服務 init-template §1.3 與 cross-ai-handoff §6
+- `tools/profiles/{minimal,standard,strict}.yaml`：standard / strict 啟用 `cross-ai-handoff: true`；minimal 預設 `false`（單 AI 不需）；三者 `charter_version` 升至 0.5.2
+- `README.md` core 條款表加 `cross-ai-handoff` 一行；`init-template` 描述同步更新為 v0.5.0 升格後內容
+
+### 動機
+
+v0.5.1 self-instantiation 解決了「**新 AI 進入**」（接班方自己讀 charter 自我具象化），但「**舊 AI 退出 + 狀態傳遞**」這半空白 — 私有筆記蒸發、強化抽驗狀態斷鏈、能力差異無顯式處置。
+
+跨 AI 是架構級維度（自帶能力差異風險），不該與 session 維度的 handoff 混為一談。獨立條款後位階清晰：
+
+```
+session 維度 = handoff-chain
+廠商維度 = cross-ai-handoff
+進入儀式 = init-template (§3.3 self-instantiation)
+```
+
+關鍵設計決策：**強化抽驗解除權不跨 AI 繼承**（§7）— 前任累積的「無偏差信用」可能在新環境失效，重新累計是防偽底線。
+
+---
+
 ## [0.5.1] — 2026-04-27
 
 ### Changed — AI Self-Instantiation 機制

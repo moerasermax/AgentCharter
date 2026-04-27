@@ -71,3 +71,4 @@
 | `failure-modes.md` | 升級條件由 F-catalog 累計觸發 |
 | `role-separation.md` | 升級不得改變角色權限分配（除非使用者裁決選 B/C 明示）|
 | `structural-anti-fabrication.md` | 進入強化抽驗模式後，本條從建議升為強制 |
+| `role-conflict-resolution.md` | **嚴格區隔**：本條處理「失敗事件累積」（單向、有對錯）；後者處理「決策分歧」（雙向、無對錯）。誤分類後果嚴重，詳見後者 §0 |

@@ -1,7 +1,7 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-04-27（台灣時間）
-> **當前版本**：v0.5.1
+> **當前版本**：v0.5.6
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔即為 session 斷點儲存（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
 
@@ -11,6 +11,11 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| v0.5.6 | _(待 commit)_ | Versioning & Migration 條款（SemVer 對 charter 的具體含義 + 升級流程 + 多 AI 版本一致性）— **5 候選盤點完成**|
+| v0.5.5 | _(待 commit)_ | Domain Axiom Slot 條款（領域公理槽位的位階 / 撰寫紀律 / 違反處置；領域公理 > core 衝突優先序）|
+| v0.5.4 | _(待 commit)_ | Multi-Role Tracking 條款（1 AI 兼 ≥ 2 角色的審計規範：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令）|
+| v0.5.3 | _(待 commit)_ | Role Conflict Resolution 條款（補完「決策分歧」軸，與 escalation-protocol 嚴格區隔；三級階梯 L0/L1/L2）|
+| v0.5.2 | _(待 commit)_ | Cross-AI Handoff 條款（補完 v0.5.1 之後「退出—轉移—接班」全鏈，獨立 core 條款）|
 | v0.5.1 | `0aa557b` | AI Self-Instantiation 機制（框架不代生成 slash command，AI 自我具象化）|
 | v0.5.0 | `f306916` | Init Mandate 升格為職責規範（四職責 / 多 AI 具象化 / 替換保證）+ 配置目錄合併進 `agent-commons/_config/`（架構級）|
 | v0.4.2 | `4084e76` | agent-commons 完整 templates 6 份（capsule/handoff/IM/nextwork/domain-axioms/_role）+ §8 命名規則 |
@@ -35,7 +40,7 @@
 
 ---
 
-## 13 條 core 條款清單
+## 18 條 core 條款清單
 
 | 條款 | 一句話 |
 |---|---|
@@ -44,11 +49,16 @@
 | `failure-modes.md` | F1〜F5（假宣告 / 假 hash / 捏造數據 / 編號偏差 / 規則記憶失效）|
 | `structural-anti-fabrication.md` | 缺 stdout 區塊即視同未交付（v0.2 全模式強制）|
 | `violation-reflection.md` | 違規退稿後須補交反省；價值在審計痕跡 / 集體記憶 |
-| `escalation-protocol.md` | 連續 ≥2 次升級強化抽驗、≥3 次觸發使用者裁決 |
+| `escalation-protocol.md` | 連續 ≥2 次升級強化抽驗、≥3 次觸發使用者裁決（處理失敗事件累積）|
+| **`role-conflict-resolution.md`** | **角色決策衝突（v0.5.3）**：三級階梯 L0/L1/L2，與 escalation 嚴格區隔（分歧雙向、無對錯）|
+| **`multi-role-tracking.md`** | **單 AI 多角色審計（v0.5.4）**：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令 |
+| **`domain-axiom-slot.md`** | **領域公理槽位（v0.5.5）**：位階（領域 > 核心）+ 撰寫紀律最低要求 + /charter-doctor 違反處置分級 |
+| **`versioning-migration.md`** | **版本演化（v0.5.6）**：SemVer 對 charter 的具體含義 + 已採用專案升級流程 + 多 AI 版本一致性 |
 | `evidence-first.md` | 隱性 bug 嚴禁盲猜；數字嚴禁心算 |
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表 |
-| `handoff-chain.md` | session 交接鏈必含項目 |
+| `handoff-chain.md` | session 交接鏈必含項目（廠商維度交接拆出至 cross-ai-handoff）|
+| **`cross-ai-handoff.md`** | **跨 AI 接班（v0.5.2）**：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
 | `init-template.md` | **Role Init Mandate（v0.5）**：四職責（召喚 / 校準 / 簽名 / 守門）+ 多 AI 具象化（v0.5.1 自我具象化）|
 | `charter-config.md` | mapping.yaml + profile.yaml schema（v0.5：配置在 `agent-commons/_config/`）|
 | `common-memory-root.md` | **架構級約定**：多 AI 共享資產位於單一根（預設 `agent-commons/`）（v0.4.1）|
@@ -122,12 +132,22 @@ project-root/
 | v0.4.1 | **架構級約定**：Common Memory Root（agent-commons/）為採用識別 |
 | v0.4.2 | 完整 templates 1:1 萃取 CryptoBot 模式（capsule / handoff / IM / nextwork / domain-axioms / _role）|
 | v0.5.0 | **Init Mandate** + 配置合併（單一採用識別目錄）|
-| v0.5.1 | **AI Self-Instantiation**：框架不代生成，AI 讀規範自己具象化 |
+| v0.5.1 | **AI Self-Instantiation**：框架不代生成，AI 讀規範自己具象化（接班方半邊）|
+| v0.5.2 | **Cross-AI Handoff** 條款：補完退出方半邊（轉移職責 + 能力快照 + 強化抽驗不繼承解除權）|
+| v0.5.3 | **Role Conflict Resolution** 條款：補完「決策分歧」軸，與 escalation-protocol 嚴格區隔；失敗事件 ⊥ 決策分歧至此正交完整 |
+| v0.5.4 | **Multi-Role Tracking** 條款：把 management-layout §3.1「不建議動態切換」**升格為強制規範**；補完三項防呆（離岸/上岸宣告、身份戳、自抽自驗禁令）|
+| v0.5.5 | **Domain Axiom Slot** 條款：把 template 的撰寫紀律提煉至 core 層；定義「領域公理 > core 條款」衝突優先序為架構級條文；/charter-doctor 違反處置分級 |
+| v0.5.6 | **Versioning & Migration** 條款：SemVer 對 AgentCharter 的具體語意（PATCH/MINOR/MAJOR/架構級）+ 已採用專案升級流程 + 多 AI 版本一致性；**5 候選盤點完成** |
 
-### B. 兩個架構級概念已釐清
+### B. 七個架構級概念已釐清
 
 1. **Common Memory Root**（v0.4.1）：多 AI 共享資產位於單一根；可覆寫名稱但禁止分散；典型路徑 `agent-commons/`
 2. **AI Self-Instantiation**（v0.5.1）：「角色 ⊥ AI」公理的執行機制；AI 自己讀 charter → 自己生成 slash command → 自己簽名
+3. **Cross-AI Handoff 全鏈**（v0.5.2）：跨 AI 場景拆三條互補條款 — `handoff-chain`（session 維度）/ `init-template §3.3`（接班方入口）/ **`cross-ai-handoff`（廠商維度狀態轉移）**
+4. **失敗 ⊥ 分歧 正交軸**（v0.5.3）：原本只有 escalation-protocol 處理「失敗事件累積」（單向、有對錯），v0.5.3 加 role-conflict-resolution 處理「決策分歧」（雙向、無對錯）；兩軸正交避免無辜方被誤升級
+5. **角色 ⊥ 載體 防呆**（v0.5.4）：role-separation 對稱分離原則在「同 AI 多角色」場景的具體保護機制；隱式戴帽子與自抽自驗兩條失效路徑由 multi-role-tracking 三項防呆封閉
+6. **領域 > 通用 優先序**（v0.5.5）：領域公理（資金 / 安全 / 合規）優先於 core 通用條款；A3「專案 ⊥ 框架」公理的具體執行條文 — 框架不知道領域差異，故服從領域底線
+7. **版本演化雙軌**（v0.5.6）：`version`（profile schema）⊥ `charter_version`（條款集），各自演化；多 AI 同 session 強制版本一致；BREAKING-LITE 中間級別處理 0.x 階段的架構級變動
 
 ### C. 模擬演練紀錄（討論完成，未寫入 examples）
 
@@ -148,7 +168,7 @@ project-root/
 
 詳見 `NEXT.md`。當前未做的最高優先：
 
-1. **核心條款覆蓋率盤點**（剩餘候選：Domain Axiom Slot 撰寫規範 / Versioning-Migration / Cross-AI handoff 細則 / Conflict resolution between roles / Multi-role tracking）
+1. **核心條款覆蓋率盤點 — 全部完成**（v0.5.2〜v0.5.6 完成 5 條）✅
 2. **roles/pm/gemini-cli.md** 提交（待 Gemini 端代理）
 3. **v0.5+ Reference Impl**（把三工具 spec 變成可跑的工具）
 

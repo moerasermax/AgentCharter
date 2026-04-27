@@ -42,13 +42,15 @@
 
 ---
 
-## 切換歷史（依 init-template §1.3 Sign-in）
+## 切換歷史（依 init-template §1.3 Sign-in + cross-ai-handoff §6）
 
-每次 init 觸發時必須在此表追加一行（不修改既有行）。
+每次 init 觸發時必須在此表追加一行（不修改既有行）。本表同時服務兩個條款：
+- 一般 init / 同 AI 接班 — `Self-instantiation?` 與 `能力差異要點` 欄填「-」即可
+- 跨 AI 接班 — 五欄全填，依 `core/cross-ai-handoff.md §6` 強制
 
-| 日期 | 扮演 AI | 觸發原因 | 就緒回報 hash（可選）|
-|---|---|---|---|
-| <YYYY-MM-DD HH:MM TZ> | <AI 名稱> | <初始化 / session 接班 / 角色切換 / 跨 AI 接班> | <hash> |
+| 日期 | 扮演 AI | 觸發原因 | Self-instantiation? | 能力差異要點 |
+|---|---|---|---|---|
+| <YYYY-MM-DD HH:MM TZ> | <AI 廠商 + model 等級> | <初始化 / session 接班 / 角色切換 / 跨 AI 接班> | <是 / 否 / -> | <對前一行的差異一句話；無顯著差異須明示> |
 
 ---
 

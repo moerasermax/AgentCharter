@@ -3,11 +3,11 @@
 # 適用：探索型專案、單人 + 1 AI、短期實驗。
 # 設計：只啟用最核心防線，配置從寬，搬遷成本最低。
 #
-# 條款啟用：6 / 11
+# 條款啟用：8 / 16
 # 預設參數：寬鬆
 
 version: "0.4.0"
-charter_version: "0.3.0"
+charter_version: "0.5.6"
 preset: minimal
 
 # === B1 粒度：條款啟用 ===
@@ -17,6 +17,8 @@ enabled:
   failure-modes: true                  # 必需 — F1〜F5 偵測
   structural-anti-fabrication: true    # v0.2 全模式強制，無法停用
   evidence-first: true                 # 必需 — 實證先行
+  domain-axiom-slot: true              # 必需 — 領域公理槽位規範（即使 minimal 也須有合規領域公理檔）
+  versioning-migration: true           # 必需 — 升級時的遷移流程；任何專案都會遇到 charter 升版
 
   # 以下可關（簡單專案不需要）
   violation-reflection: false          # 違規反省紀錄 — minimal 不要求
@@ -24,6 +26,9 @@ enabled:
   output-mode-protocol: false          # eco/verbose 切換 — 不需要
   completion-delivery: true            # 完工交付契約 — 仍建議啟用
   handoff-chain: true                  # HANDOFF 鏈 — 仍建議啟用
+  cross-ai-handoff: false              # 跨 AI 轉移 — 單 AI 探索不需要；改用多 AI 時再開
+  role-conflict-resolution: false      # 角色決策衝突 — 單 AI 無此情境；多角色協作時再開
+  multi-role-tracking: false           # 1 AI 多角色 — 預設單 AI 單角色；若兼任 ≥ 2 角色須改 true
   init-template: true                  # 角色 init 模板 — 仍建議啟用
 
 # === B3 粒度：條款參數（寬鬆）===

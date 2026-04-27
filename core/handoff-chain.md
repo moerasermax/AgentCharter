@@ -45,11 +45,12 @@
 
 ## 5. 跨 AI 交接的特別規範
 
-當下個 session 由不同 AI 接手（如 Claude → Cursor），HANDOFF 須額外含：
+當下個 session 由不同 AI 接手（如 Claude → Cursor），除本檔 §2 標準必含項目外，**HANDOFF 須額外完成 `cross-ai-handoff.md` 規定的轉移職責**：
 
-- 本 session 用過的工具能力（hook、shell、特定 MCP server）
-- 接班 AI 若無對應能力的 fallback 路徑
-- 任何不可重現的 stateful 副作用（如本機暫存檔、特定 process 保留）
+- 退出方：能力快照、強化抽驗狀態、私有筆記轉移宣告、隱性決策清單、未結案膠囊清單（依 cross-ai-handoff.md §3 / §5）
+- 接班方：跑自己廠商的 init（含必要時 self-instantiation）、能力差異盤點、狀態繼承、簽名（依 cross-ai-handoff.md §4 / §6）
+
+→ 詳細格式與失敗模式對應見 `cross-ai-handoff.md`。本檔僅保留指向，避免雙處維護。
 
 ---
 
@@ -70,3 +71,4 @@
 | `audit-rights.md` | HANDOFF 是跨 session 結案宣告，必抽驗 |
 | `completion-delivery.md` | 個別任務的 VCP 結果應在 HANDOFF 引述 |
 | `failure-modes.md` | 本 session 累積的失敗模式紀錄應寫入 |
+| `versioning-migration.md` | 升級事件須寫進 §2 第 3 項「協議版本迭代軌跡」；BREAKING 升級必含 |

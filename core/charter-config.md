@@ -124,6 +124,11 @@ enabled:
   output-mode-protocol: <bool>
   completion-delivery: <bool>
   handoff-chain: <bool>
+  cross-ai-handoff: <bool>
+  role-conflict-resolution: <bool>
+  multi-role-tracking: <bool>
+  domain-axiom-slot: <bool>
+  versioning-migration: <bool>
   init-template: <bool>
 
 # === B3 粒度：條款參數 ===
@@ -173,6 +178,11 @@ v0.4 暫不支援，需要時 PR 升級 schema。
 | `structural-anti-fabrication` | `audit-rights` |
 | `completion-delivery` | `evidence-first` |
 | `handoff-chain` | `audit-rights`, `common-memory-root` |
+| `cross-ai-handoff` | `handoff-chain`, `init-template`, `escalation-protocol`, `audit-rights` |
+| `role-conflict-resolution` | `role-separation`, `escalation-protocol`, `evidence-first`, `audit-rights` |
+| `multi-role-tracking` | `role-separation`, `audit-rights`, `init-template`, `failure-modes` |
+| `domain-axiom-slot` | `charter-config`, `common-memory-root`, `evidence-first` |
+| `versioning-migration` | `charter-config`, `handoff-chain`, `init-template` |
 | `role-separation` | `common-memory-root`（`roles/<role>/` 目錄須在此根下）|
 | **所有條款** | **`common-memory-root`**（v0.4.1 起為架構級前提）|
 
