@@ -1,0 +1,49 @@
+# AgentCharter Profile Preset — strict
+#
+# 適用：嚴格合規 / 多團隊 / 高風險領域（金融、醫療、軍工、生產系統）。
+# 設計：全條款啟用 + 最嚴格參數 + 禁用所有寬鬆條款。
+#
+# 條款啟用：11 / 11
+# 預設參數：嚴格上限
+
+version: "0.4.0"
+charter_version: "0.3.0"
+preset: strict
+
+# === B1 粒度：條款啟用 ===
+enabled:
+  role-separation: true
+  audit-rights: true
+  failure-modes: true
+  structural-anti-fabrication: true
+  violation-reflection: true
+  escalation-protocol: true
+  evidence-first: true
+  output-mode-protocol: true
+  completion-delivery: true
+  handoff-chain: true
+  init-template: true
+
+# === B3 粒度：條款參數（嚴格）===
+parameters:
+  escalation-protocol:
+    enhanced_audit_threshold: 1          # 1 次假宣告即升級至強化抽驗
+    structural_failure_threshold: 2      # 連 2 次升級至使用者裁決
+  audit-rights:
+    require_stdout_in_normal_mode: true
+    allow_trust_boundary_disclosure: false  # 嚴格：禁止信任邊界揭示，必須有 stdout 原文
+  violation-reflection:
+    block_next_task_until_filed: true
+    max_followup_replies: 1              # 退稿後僅 1 次補交機會
+  output-mode-protocol:
+    default_mode: verbose
+    auto_upgrade_keywords: ["請詳細", "展開", "為什麼", "完整紀錄"]
+  failure-modes:
+    enable_modes: [F1, F2, F3, F4, F5]
+
+# === Domain axioms 槽位 ===
+# strict 預設要求**必含**領域公理檔，不可空白
+# 範例（金融）：
+# domain_axioms:
+#   primary: protocols/IRON.md
+#   alias: IRON

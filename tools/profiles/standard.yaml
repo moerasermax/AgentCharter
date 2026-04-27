@@ -1,0 +1,48 @@
+# AgentCharter Profile Preset — standard
+#
+# 適用：一般雙 AI 協作專案（CryptoBot 級別）。
+# 設計：全核心條款啟用，參數中等嚴格，適合多數正式專案。
+#
+# 條款啟用：11 / 11（全啟用）
+# 預設參數：中等
+
+version: "0.4.0"
+charter_version: "0.3.0"
+preset: standard
+
+# === B1 粒度：條款啟用 ===
+enabled:
+  role-separation: true
+  audit-rights: true
+  failure-modes: true
+  structural-anti-fabrication: true
+  violation-reflection: true
+  escalation-protocol: true
+  evidence-first: true
+  output-mode-protocol: true
+  completion-delivery: true
+  handoff-chain: true
+  init-template: true
+
+# === B3 粒度：條款參數（中等）===
+parameters:
+  escalation-protocol:
+    enhanced_audit_threshold: 2          # 連 2 次同類偏差升級至強化抽驗
+    structural_failure_threshold: 3      # 連 3 次升級至使用者裁決
+  audit-rights:
+    require_stdout_in_normal_mode: true  # v0.2 全模式強制
+    allow_trust_boundary_disclosure: true
+  violation-reflection:
+    block_next_task_until_filed: true    # 違規未補反省 → 拒絕進入下個任務
+    max_followup_replies: 2              # 退稿後 2 次回覆內必須補交
+  output-mode-protocol:
+    default_mode: verbose
+    auto_upgrade_keywords: ["請詳細", "展開", "為什麼", "完整紀錄"]
+  failure-modes:
+    enable_modes: [F1, F2, F3, F4, F5]   # 全 F-mode 啟用
+
+# === Domain axioms 槽位（由 mapping.yaml 指向實際檔）===
+# 範例（CryptoBot）：
+# domain_axioms:
+#   primary: management/protocols/Dev_Protocol_IRON.md
+#   alias: IRON

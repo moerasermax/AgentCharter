@@ -1,0 +1,40 @@
+# AgentCharter Profile Preset — minimal
+#
+# 適用：探索型專案、單人 + 1 AI、短期實驗。
+# 設計：只啟用最核心防線，配置從寬，搬遷成本最低。
+#
+# 條款啟用：6 / 11
+# 預設參數：寬鬆
+
+version: "0.4.0"
+charter_version: "0.3.0"
+preset: minimal
+
+# === B1 粒度：條款啟用 ===
+enabled:
+  role-separation: true                # 必需 — 角色互鎖
+  audit-rights: true                   # 必需 — 抽驗權
+  failure-modes: true                  # 必需 — F1〜F5 偵測
+  structural-anti-fabrication: true    # v0.2 全模式強制，無法停用
+  evidence-first: true                 # 必需 — 實證先行
+
+  # 以下可關（簡單專案不需要）
+  violation-reflection: false          # 違規反省紀錄 — minimal 不要求
+  escalation-protocol: false           # 升級協議 — 簡單專案直接退稿即可
+  output-mode-protocol: false          # eco/verbose 切換 — 不需要
+  completion-delivery: true            # 完工交付契約 — 仍建議啟用
+  handoff-chain: true                  # HANDOFF 鏈 — 仍建議啟用
+  init-template: true                  # 角色 init 模板 — 仍建議啟用
+
+# === B3 粒度：條款參數（寬鬆）===
+parameters:
+  audit-rights:
+    require_stdout_in_normal_mode: true   # v0.2 後預設
+    allow_trust_boundary_disclosure: true  # 寬鬆：允許 stdout 替代
+  failure-modes:
+    enable_modes: [F1, F2, F3]           # 只啟用最常見的 F1/F2/F3
+
+# === Domain axioms 槽位（由 mapping.yaml 指向實際檔）===
+# 若無領域公理，可指向 minimal 範例：
+# domain_axioms:
+#   primary: <無，採用框架 evidence-first 預設紀律>

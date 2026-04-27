@@ -46,6 +46,7 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `evidence-first.md` | 隱性 Bug 嚴禁盲猜；參數嚴禁假設值 |
 | `structural-anti-fabrication.md` | 事實宣告必含 stdout 區塊；不靠 AI 自我誠實，靠文檔結構強制 |
 | `violation-reflection.md` | 違規退稿後須補交反省；反省價值在「未來 AI / 集體記憶」而非矯正當前 AI |
+| `charter-config.md` | mapping.yaml + profile.yaml schema；可插拔啟用條款，不需重組目錄 |
 | `output-mode-protocol.md` | eco / verbose 雙段式輸出 + 自動升級條件 |
 | `completion-delivery.md` | 工程師完工須附「PM 驗收測試計畫」（Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表）|
 | `handoff-chain.md` | Session 交接鏈與必含項目 |
@@ -67,7 +68,20 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 
 ## 對任意專案的接入流程
 
-新專案要採用 AgentCharter：
+新專案要採用 AgentCharter（v0.4 引入工具化接入）：
+
+### 自動接入（推薦，v0.4+）
+
+1. `git clone <agentcharter-repo>` 到本機任一位置
+2. 在你的專案根目錄跑 `/charter-scan`（智慧掃描，產 mapping-draft）
+3. 跑 `/charter-init <preset>`（套用 preset，生成 `<role>-init` slash command）
+4. 跑 `/charter-doctor` 健康檢查
+
+→ 完成後 `.agentcharter/` + `.claude/commands/<role>-init.md` 就緒，可直接開始用。
+
+詳見 `tools/{scan,init,doctor}-spec.md`。
+
+### 手動接入（傳統）
 
 1. 在專案內建 `protocols/` 或 `governance/` 目錄
 2. 寫 `domain-axioms.md` — 你的領域安全公理（金融專案的 IRON、醫療專案的 HIPAA 對應…）

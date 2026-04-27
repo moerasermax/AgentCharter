@@ -10,8 +10,37 @@
 - 邀請 Gemini CLI 端提交 `roles/pm/gemini-cli.md`
 - CryptoBot 改為 *引用* 框架而非重複維護
 - 評估 IRON Pattern（Double Insurance、ACL）抽到框架的可行性
-- **智慧掃描（init 時自動探測既有專案結構並建議遷移路徑）** — 待議（使用者提出，0.4+ 候選）
-- **可插拔優化模組**（讓任意專案可掛上 AgentCharter 而非重建）— 待議（使用者提出，0.4+ 候選）
+- **B2 子條款層級配置**（profile.yaml `sections.<§>` 開關）— v0.5+ 候選
+- **`/charter-{scan,init,doctor}` reference impl**（v0.4 為 spec only，實際工具留 v0.5+）
+
+---
+
+## [0.4.0] — 2026-04-27
+
+### Added — 工具化接入（Spec only）
+
+- `core/charter-config.md` — mapping.yaml + profile.yaml schema 定義；含相依表、解析優先序、違反處置
+- `tools/scan-spec.md` — `/charter-scan` 智慧掃描器設計（A3 LLM 內容判讀）
+- `tools/init-spec.md` — `/charter-init <preset>` 接入流程設計（5 phase + 失敗回滾）
+- `tools/doctor-spec.md` — `/charter-doctor` 健康檢查設計（含 status code 表）
+- `tools/profiles/minimal.yaml` — 探索型 / 單人 + 1 AI（6 條款啟用，寬鬆參數）
+- `tools/profiles/standard.yaml` — 一般雙 AI 協作（11 條款全啟用，中等參數）
+- `tools/profiles/strict.yaml` — 嚴格合規（11 條款全啟用 + 嚴格上限參數，禁信任邊界揭示）
+
+### Modified
+
+- `README.md` — 加 charter-config 條款列表 + 雙路徑接入流程（自動 vs 手動）
+
+### 設計取捨
+
+- **配置粒度**：v0.4 採 B1（條款層級）+ B3 少量參數；B2 子條款層級留 v0.5+
+- **掃描智慧度**：A3 LLM 內容判讀（用 LLM 自己讀檔判斷槽位）
+- **實作節奏**：v0.4 純 Spec，無實作程式碼；reference impl 留 v0.5+
+- **Spec → Impl 分離**：先把契約釘下，工具實作分階段。所有 spec 文檔含跨版本實作節奏表。
+
+### 動機
+
+S70 事件後使用者提兩個議題（智慧掃描、可插拔優化）。整合命題：讓 AgentCharter 從「規範文件集」進化為「**可被工具讀取與執行的協議**」。透過 mapping.yaml + profile.yaml 雙配置檔，既有專案不需重組目錄即可接入；條款可逐項啟用 / 停用，適配不同嚴格度需求。
 
 ---
 
