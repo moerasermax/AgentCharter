@@ -148,6 +148,7 @@ project-root/
 | CryptoBot S70 PM 連環假宣告（F1×5 + F3×3 + F5×1）| audit-rights / failure-modes / escalation-protocol / 使用者裁決選項 B |
 | S70 修法後 Dashboard PnL 顯示對齊真值 | role-separation / completion-delivery / 結構性反捏造 |
 | 使用者觀察 v0.1.1 引入後 Token 影響 | structural-anti-fabrication §7.1 估算合理 |
+| **YC_AIAgentCrew 接入完成（2026-04-28，第二個非 CryptoBot 採用案例）** | AI Self-Instantiation §3.3.2（雙 AI 雙角色具象化）+ v0.5.9 純規範框架首次外部驗證（無 python 工具仍可跑通）+ dogfood signal #4「具象化 ⊥ 驗證脫鉤」預測完全成立（PM Gemini schema 違規 → Engineer Claude 修補）+ multi-role-tracking + cross-ai-handoff + A3「專案 ⊥ 框架」公理首次跨領域實證 |
 
 ---
 
@@ -201,7 +202,7 @@ project-root/
 - **「framework 設計者也會踩自己定義的坑」**（2026-04-27 dogfood signal 浮現）：我（Claude）在第二採用案例討論時說「dogfood signal 記在腦中」— 直接違反自己寫的 `working-stack-discipline §1`「DRAFT 須是檔案而非對話累積」。使用者提醒後才補做紀錄到 `.claude_temp/CHARTER-VIZ-ONBOARDING.md`。**揭露的盲區**：framework 條款規範採用方，但對「framework 設計者 / 維護者本身」沒有強制力 — 設計者寫條款 ≠ 自動遵守條款；context 內持續工作會自然走「對話累積」路徑而忽略「DRAFT 外部化」紀律。**目前處置**：跨檔交叉引用留追蹤路徑（本檔 §D + NEXT 待對話 + ONBOARDING signal），不擴張條款。**判斷**：暫不條款化，累積 ≥ 3 次同類觀察後再評估是否需 `core/maintainer-discipline.md` 或擴充 `working-stack-discipline §X` 涵蓋維護者場景
 - **「framework spec 之間沒同步機制」**（2026-04-27 dogfood signal #2）：使用者在第二專案跑 Gemini `/charter-init from-scan` 時，Gemini 從 `tools/init-spec.md`（v0.4 寫，**未同步 v0.5.0 配置合併 + v0.5.1 不代生成原則**）解讀 → 會產出 `.agentcharter/` 舊路徑 + 自動生成 slash command（違反 v0.5.1）。三份 tools/*-spec.md（init / scan / doctor）都有同樣過時問題。**揭露的盲區**：條款修訂時（v0.5.0 / v0.5.1）沒對應修 spec（直到 v0.5.7 工具實作時才被 user 撞到）；charter-doctor.py 對 charter spec 自身一致性無檢查能力。**目前處置**：本 commit 同步修 3 份 spec 對齊 v0.5.7。**候選**：(a) 加 doctor 對 charter repo 自身的 self-check（檢測 spec 路徑與條款描述的不一致）；(b) charter 修訂流程加「同步檢查 spec」strep（GOVERNANCE 補強）；(c) PR template 加 spec 同步 checklist。#1 + #2 → v0.5.8 條款化為 `core/maintainer-discipline.md`
 - **「user 全域 skill 的路徑硬編碼」**（2026-04-27 dogfood signal #3）：user 跑 `/checkpoints save` 在 AgentCharter repo 失敗 — skill spec 寫死 `management/DRAFT_CONTEXT.md` 路徑（從 CryptoBot 抽取），但 AgentCharter 自己 dogfooding 取捨用 `.claude_temp/` 替代 `management/`。**揭露的盲區**：跨專案共享指令（user 全域 skill）若硬編碼路徑，會綁特定專案結構；對齊 charter A2 公理「AI ⊥ 角色」精神 — 工具也應該 ⊥ 專案結構。**對應 maintainer-discipline §1**：framework 維護者的工具（包括 user 自己的 global skill）應對齊 charter mapping.yaml 抽象，而非寫死路徑。**處置**：本 session 跳過 `/checkpoints`，繼續用 `.claude_temp/` 走完（選項 A）；中期建議修 `~/.claude/commands/checkpoints.md` 讀 charter mapping.yaml.shared.draft_context 而非寫死 `management/`（選項 B，記入 NEXT.md 待議）。**累積觀察**：#1 (Claude DRAFT 對話累積) + #2 (charter spec 不同步) + #3 (user skill 路徑寫死) → 三次都對應「framework 維護者 / 工具未對齊 framework 抽象」— maintainer-discipline 已條款化覆蓋此原則，但工具層落實（skill 修法 / doctor self-check）仍待做
-- **「具象化 ⊥ 驗證」結構性脫鉤**（2026-04-27 dogfood signal #4 候選）：採用方 YC_AIAgentCrew 接入時，PM Gemini 自我具象化寫 `management/_config/mapping.yaml` 違反 schema（缺 `common_memory_root` 必填、路徑未對齊「相對 root」規範），當下無人發現；Claude Engineer 進場讀 mapping 才被 init-spec / doctor 邏輯抓到，被迫進 Phase 3 重寫 mapping 修補 PM 違規。**揭露的盲區**：當前 charter onboarding 把「具象化（QUICKSTART Step 4）」與「驗證（QUICKSTART Step 5 跑 doctor）」拆為兩個獨立 user 動作；schema 違規延到下個 AI 進場才暴露，修補負擔被**轉嫁給接班 AI**；第一個 AI 的 self-instantiation 視為「成功」實際漏了 schema 驗證。**使用者提案**：「**具象化完畢就直接檢查才合理**」— self-instantiation 結尾應自帶 doctor schema 驗證，不通則具象化視為失敗、退稿。**對應現有條款 gap**：`init-template §3.3.2` 六步驟結尾為「回報使用者」，無「跑 doctor 驗 schema」；`failure-modes` / `audit-rights` 都不涵蓋「具象化階段自抽驗」軸。**目前處置**：跨檔追蹤（本檔 §D + NEXT 待對話新增條款修訂候選）。**判斷**：累積後續觀察看是否同類 schema 違規再現；候選 PATCH/MINOR 級條款修訂（影響 init-template §3.3.2 + QUICKSTART Step 4/5 + tools/doctor-spec.md）
+- **「具象化 ⊥ 驗證」結構性脫鉤**（2026-04-27 dogfood signal #4 候選）：採用方 YC_AIAgentCrew 接入時，PM Gemini 自我具象化寫 `management/_config/mapping.yaml` 違反 schema（缺 `common_memory_root` 必填、路徑未對齊「相對 root」規範），當下無人發現；Claude Engineer 進場讀 mapping 才被 init-spec / doctor 邏輯抓到，被迫進 Phase 3 重寫 mapping 修補 PM 違規。**揭露的盲區**：當前 charter onboarding 把「具象化（QUICKSTART Step 4）」與「驗證（QUICKSTART Step 5 跑 doctor）」拆為兩個獨立 user 動作；schema 違規延到下個 AI 進場才暴露，修補負擔被**轉嫁給接班 AI**；第一個 AI 的 self-instantiation 視為「成功」實際漏了 schema 驗證。**使用者提案**：「**具象化完畢就直接檢查才合理**」— self-instantiation 結尾應自帶 doctor schema 驗證，不通則具象化視為失敗、退稿。**對應現有條款 gap**：`init-template §3.3.2` 六步驟結尾為「回報使用者」，無「跑 doctor 驗 schema」；`failure-modes` / `audit-rights` 都不涵蓋「具象化階段自抽驗」軸。**目前處置**：跨檔追蹤（本檔 §D + NEXT 待對話新增條款修訂候選）。**判斷**：累積後續觀察看是否同類 schema 違規再現；候選 PATCH/MINOR 級條款修訂（影響 init-template §3.3.2 + QUICKSTART Step 4/5 + tools/doctor-spec.md）。**✅ 2026-04-28 已實證 by YC_AIAgentCrew 接入**：PM Gemini 寫 `management/_config/mapping.yaml` 違反 schema（缺 `common_memory_root` 必填）→ Engineer Claude 進場 Phase 3 重寫修補 — 完全照 #4 預測走，無偏差；「累積 ≥1 次同類觀察」修訂門檻**達標**，對應 NEXT.md 條款修訂候選已升至 🔴 §5 正式議程
 - **dogfooding 取捨**：v0.x 條款還在演化，硬上會卡死遞迴；用 .claude_temp/ 暫代，v1.0 後升格
 
 ---
@@ -211,6 +212,7 @@ project-root/
 ### 已完成里程碑
 
 ✅ 核心條款覆蓋率盤點 — 全部完成（v0.5.2〜v0.5.6 共 5 條，commit `bfef9b0`）
+✅ **YC_AIAgentCrew 接入完成（2026-04-28，第二個非 CryptoBot 採用案例）** — A3「專案 ⊥ 框架」公理首次跨領域實證 + v0.5.9 純規範框架外部 dogfood + dogfood signal #4 預測達標 + 雙 AI 雙角色 self-instantiation 全部跑通。對應 NEXT.md 🔴 §4 已完結。
 
 ### 下一階段焦點（依 NEXT.md 高優先序）
 

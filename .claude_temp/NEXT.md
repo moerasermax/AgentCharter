@@ -49,10 +49,34 @@ framework 永久維持「**純規範**」位階。
 
 **Drop**：原本列的選項 B（Claude Code slash command）— 違反「框架不代生成」精神，跨 AI 不通用，不採。
 
-### 4. 第二個非 CryptoBot 真實 example
+### 4. 第二個非 CryptoBot 真實 example ✅ **2026-04-28 完成**
 
-**狀態**：等使用者新專案出現
-**Blocker**：需有實際採用 framework 的非金融專案
+**狀態**：YC_AIAgentCrew 接入完成 — 第二個非 CryptoBot 採用案例。雙 AI 雙角色 self-instantiation 全部跑通（PM Gemini ✅、Engineer Claude ✅、charter-init 兩 vendor ✅），doctor 全綠 + 1 個合理 W201（lazy create）。同步驗證 v0.5.9 純規範框架（無 python 工具仍可跑通）+ dogfood signal #4「具象化 ⊥ 驗證結構性脫鉤」預測完全成立。詳見 STATUS §已對外實證。
+**A3 公理實證**：「專案 ⊥ 框架」公理由真實非金融專案實證 — YC_AIAgentCrew 不是 CryptoBot 系列，charter 條款抽象層次經得起跨領域考驗。
+
+---
+
+### 5. self-instantiation 結尾自帶 doctor schema 驗證 — **2026-04-28 從 ⚪ 升至 🔴**
+
+**升序原因**：dogfood signal #4「具象化 ⊥ 驗證結構性脫鉤」已實證 by YC_AIAgentCrew 接入（PM Gemini 寫 `mapping.yaml` 違反 schema → Engineer Claude 進場 Phase 3 重寫修補，完全照 #4 預測走）；「累積 ≥1 次同類觀察」修訂門檻達標。
+
+**核心**：`init-template §3.3.2` 六步驟結尾應自帶 doctor schema 驗證、不通退稿，避免「具象化 ⊥ 驗證脫鉤」造成修補轉嫁下個 AI。
+
+**五位置修訂範圍**：
+
+| # | 位置 | 修訂 |
+|---|---|---|
+| (a) | `core/init-template.md §3.3.2` | 六步驟結尾加第 7 步「跑 doctor 驗 mapping/profile/領域公理 schema 合規」+ 不通退稿；§6 init 五步驟對應段同步 |
+| (b) | `QUICKSTART.md Step 4` prompt 結尾 | 加「並順便依 ~/.agentcharter/tools/doctor-spec.md 跑 schema 驗證；不通請告訴我」 |
+| (c) | `QUICKSTART.md Step 5` | 從「必跑 doctor」改為「驗證 self-instantiation 已自動跑過 doctor 通過」 |
+| (d) | `tools/doctor-spec.md` | 新增「self-instantiation 結尾呼叫」段，明文這是**強制驗證點**而非可選工具 |
+| (e) | `core/failure-modes.md` | 評估是否加 F6（schema 違規未當下抓到、轉嫁下個 AI）|
+
+**級別評估**：MINOR；對應 v0.5.10 或 v0.6.0 候選。
+
+**Blocker**：無；可直接動工。建議搭配 `maintainer-discipline §2.2` 引用範圍 sweep + `/maintainer-selfcheck` skill 落地後**用該 skill 驗本次條款修訂的 cross-reference 完整性**（dogfood 閉環）。
+
+**先做**：等 user 開議題（依 maintainer-discipline 紀律不主動推進）。
 
 ---
 
@@ -118,7 +142,9 @@ framework 永久維持「**純規範**」位階。
 - **user 全域 skill 路徑硬編碼**（2026-04-27 dogfood signal #3）— user 的 `~/.claude/commands/checkpoints.md` skill spec 寫死 `management/DRAFT_CONTEXT.md`（CryptoBot 結構），在 AgentCharter（dogfooding 取捨用 `.claude_temp/`）跑不通。**已被 maintainer-discipline §1 條款覆蓋**（工具應對齊 charter mapping 抽象），但實際工具層修法待做。**候選方向**：(a) 修 skill 讀 charter mapping.yaml.shared.draft_context；(b) 加 fallback：先找 `management/`、再找 `.claude_temp/` / `agent-commons/`；(c) skill 改為「讀使用者環境變數 $CHARTER_DRAFT_PATH」。**判斷**：當 user 在 charter repo 想用 /checkpoints 時再做（短期不影響採用方），優先序排在 charter-viz 接入完成後
 - **`/maintainer-selfcheck` skill 落地**（2026-04-27 對話浮現，B+C 路徑）— 對應 `maintainer-discipline §3.1` 在 v0.5.9 後留下的 gap：原 `charter-doctor.py --self-check` 候選因 python 工具移除改為「AI 依 spec 自具象化跑」，但「誰具象化 / 何時跑」從未具體化。本提議以 fresh-context sub-agent + slash command 落地 — 條款修訂 commit 後 spawn agent，對 charter-config 相依表 / 反向引用 / preset × 3 / README / ADOPTION / CHANGELOG / template / tools spec 跑反向引用 sweep。**dogfood 閉環**：把 charter 自己 `multi-role-tracking` 的自抽自驗禁令首次套到 framework 維護流程（sub-agent 物理上不同 context = 他抽，非自抽）。spec DRAFT：`.claude_temp/MAINTAINER-SELFCHECK-DRAFT.md`（含 Input / 動作步驟 / Output 格式 / sub-agent prompt 骨架 / 與 /maintainer-load 對照 / trade-off）。**判斷**：等 user review DRAFT 後決定是否 Phase 1 落到 `.claude/commands/maintainer-selfcheck.md`；可選 Phase 2 建專用 `charter-auditor` subagent 固化 prompt
 - **角色擴展走「邀請制」原則 + `auditor` 角色誕生**（2026-04-27 對話浮現，從 `/maintainer-selfcheck` 擴展討論延伸）— **上位 pattern**：charter 接新 AI vendor 時，**禁止 charter 預先寫死 vendor 層模板**；只定義角色概念層（AI 中立），由被邀請 vendor 自寫 vendor 層，既有 vendor 校正 regression（仿 Gemini PM 接入歷程：Round 1 實證 + Round 2 三層重整 + Claude 校正升格）。「**慢慢強而有力**」= charter 透過真實接觸累積差異，不假裝知道 — 同源 `init-template §3.3` 「框架不代生成」原則，從接班方半邊延伸到 vendor 接入。**首個應用候選**：`auditor` 角色誕生 — 為 `/maintainer-selfcheck` 擴展跨 vendor 檢測員（當前 DRAFT 預設 Claude sub-agent，未來邀請 Gemini / Codex 等）；先決動作 = 先寫 `roles/auditor/_spec.md`（概念層、AI 中立），當前 PM / Engineer 已有概念層 spec、auditor 未誕生。**對應 charter mechanism gap**：`init-template §3.3`（接班方半邊）/ `cross-ai-handoff`（廠商輪替）/ `multi-role-tracking`（同 AI 多角色）皆已涵蓋，但「**新角色誕生 + 新 vendor 接入流程**」未涵蓋。**對應既有待議**：本段第一條「AI 自我具象化的能力評估盲區（Codex walkthrough 浮現）— `core/ai-vendor-onboarding.md`」是同源議題；本條把軸從「能力評估」擴展到「**邀請制原則** + 概念/vendor 雙層拆分」。**候選條款 / 動作**：(a) `core/ai-vendor-onboarding.md` 寫死「禁止 charter 預先寫 vendor 層」與接入四步驟；(b) 新角色誕生流程（或合併進前條）；(c) `/maintainer-selfcheck` DRAFT §6 加 Phase 4（v0.6+ 跨 vendor 擴展）；(d) 上一條 maintainer-selfcheck 末尾提的 `charter-auditor` subagent 命名可能因此調整。**判斷**：等 user 進一步 refine 後再決定條款拆分粒度與動作順序
-- **self-instantiation 結尾自帶 doctor schema 驗證**（2026-04-27 對話浮現，YC_AIAgentCrew onboarding 觸發 — 對應 STATUS §D dogfood signal #4 候選）— **觸發場景**：PM Gemini 自我具象化寫 `mapping.yaml` 違反 schema（缺 `common_memory_root` 必填），當下無人發現；Engineer Claude 進場才抓到並被迫修補。**揭露的 gap**：當前 `init-template §3.3.2` 六步驟結尾為「回報使用者」、`QUICKSTART` 把 doctor 拆為 Step 5 獨立 user 動作，導致 schema 違規延到下個 AI 進場才暴露、修補負擔轉嫁。**使用者提案**：「具象化完畢就直接檢查才合理」— self-instantiation 結尾應自帶 doctor schema check，不通則具象化視為失敗、退稿。**候選修訂**：(a) `init-template §3.3.2` 加第 7 步「跑 doctor 驗 mapping/profile/領域公理 schema 合規」+ 不通退稿（並調整 §6 init 五步驟對應段）；(b) `QUICKSTART Step 4` prompt 結尾加「並順便依 ~/.agentcharter/tools/doctor-spec.md 跑 schema 驗證、不通請告訴我」；(c) `QUICKSTART Step 5` 改為「驗證 self-instantiation 已自動跑過 doctor」（從必跑改為確認步驟，非另起 user 動作）；(d) `tools/doctor-spec.md` 新增「self-instantiation 結尾呼叫」段，明文這是**強制驗證點**而非可選工具；(e) 連動更新 `failure-modes.md` — 把「具象化 ⊥ 驗證脫鉤」考慮列為 F6 候選（schema 違規未當下抓到、轉嫁下個 AI）。**對應 charter mechanism gap**：當前 `failure-modes` / `audit-rights` / `evidence-first` 都不涵蓋「具象化階段自抽驗」軸；本提案為 init-template 補完最後一道結構性閘門。**級別評估**：屬 PATCH 或 MINOR 級條款修訂；影響面 init-template §3.3.2 + QUICKSTART Step 4/5 + tools/doctor-spec.md + 可能 failure-modes。**判斷**：累積 ≥1 次同類 dogfood 觀察（或 user refine 後）即可條款化；當前先記入待對話 + 觀察 YC_AIAgentCrew 後續 onboarding 是否再有同類 schema 違規
+- ~~**self-instantiation 結尾自帶 doctor schema 驗證**~~ ✅ **2026-04-28 升至 🔴 §5**（YC_AIAgentCrew onboarding 實證 #4 後條款化門檻達標；詳細修訂範圍見上方 🔴 §5 條目）
+- **`init-template §6` / `role-init.md.tpl` 步驟 3 HANDOFF 排序 wording 修訂**（2026-04-28 對話浮現，YC_AIAgentCrew Engineer self-instantiation 跑通後 Claude 觀察到）— **觸發**：Claude 在 YC 跑 engineer-init 時的步驟 3「載入最近 HANDOFF」用 `ls -1 HANDOFF_*.md \| sort -V \| tail -1` 會**誤抓 `HANDOFF_TEMPLATE.md`**（字母序在 `HANDOFF_<N>.md` 之後）。**揭露**：charter `templates/role-init.md.tpl` 或 `core/init-template.md §6` 步驟 3 wording 不夠精確 — 沒明文要求過濾數字編號 HANDOFF。**修正方向**：把該步驟的 shell command 範本改為 `ls -1 <history>/HANDOFF_*.md \| grep -E 'HANDOFF_[0-9]+\.md$' \| sort -V \| tail -1`（過濾掉 `HANDOFF_TEMPLATE.md` / `HANDOFF_DRAFT.md` 等非編號檔）。**級別評估**：PATCH；影響面待掃 — 可能在 `templates/role-init.md.tpl` 或 `core/init-template.md §6`，需 grep 定位。**修正紀律（重要）**：**不要在採用方專案直接修** — `.claude/commands/engineer-init.md` 是 self-instantiated 副本，source of truth 是 charter repo template/spec；採用方修了會跟 charter source 漂移。正確流程：回 charter repo 修 source → 採用方下次 self-instantiate 繼承（或手動 sync）。**對應 dogfood 軸**：「charter spec wording 精確度盲點」— 條款翻譯成具體 shell command 時容易踩坑（vs. dogfood signal #2「條款修訂後沒同步 spec」軸不同；本觀察是「spec 內 wording 邊界 case 不精確」獨立軸）。**判斷**：直接 PATCH 修法；可同步用 `/maintainer-selfcheck` skill 驗 cross-reference 完整性（dogfood 閉環）
+- **`validator` 角色誕生 + PM 漸進 deprecate 抽驗職責**（2026-04-28 對話浮現，YC_AIAgentCrew 場景觸發）— **觸發**：使用者想在 Gemini 上多切 validator 角色，把當前 PM 的抽驗職責**慢慢轉移**給 validator（避免自抽自驗 anti-pattern）。**對應 charter 動機**：直接呼應 `multi-role-tracking` 自抽自驗禁令精神 — PM 抽驗自己派的工件接近自抽自驗，validator 拆出來是 charter 預期方向。**位階**：採用方角色（不同於 auditor 的 maintainer-only 特殊位階）；應入採用方 enabled 清單。**Phase 1 — charter 層**：(a) 寫概念層 `roles/validator/_spec.md`（AI 中立、職責 / 工具能力 / 跟 PM/Engineer 邊界 / 失敗模式）；(b) 走邀請制邀請 Gemini 寫 vendor 層 `roles/validator/gemini-cli.md`（仿 Gemini PM 接入歷程：Round 1 實證 + Round 2 三層重整 + Claude 校正升格）；(c) 連動更新 `roles/pm/_spec.md` 加 deprecation note（「驗證職責正逐步轉移到 validator」）+ `charter-config` enabled 清單 + 三 preset yaml + README + ADOPTION（角色從 2 變 3）+ CHANGELOG。**Phase 2 — 採用方層**：YC 對 Gemini 貼 prompt「接 validator 角色，依 init-template §3.3.2 自具象化」→ `.gemini/commands/validator-init.toml` + 簽名 `management/roles/validator/_role.md`；之後派任務分工：規劃 `/pm-init`、抽驗 `/validator-init`。**multi-role-tracking 紀律**：Gemini 兼 PM + validator 仍是「同 AI 多角色」場景，要守離岸/上岸宣告 + 身份戳；validator 抽驗 PM 派的 capsule 不算自抽自驗（PM 派 → Engineer 執行 → validator 抽驗，三角合規）；**建議**：validator 在獨立 session 跑（fresh context）避免同 session 切換 bias。**漸進 deprecation 路徑**：v0.x 階段 PM 仍保留抽驗（不破壞既有 capsule）+ validator 並存可用；v1.0 階段 PM `_spec.md` 移除驗證職責、validator 接管全部抽驗。**跟 auditor 議題的關係**：auditor（maintainer-only）+ validator（採用方）是「**新角色誕生**」軸的兩個應用，可一起跑邀請制流程（auditor 由 Claude/Gemini 走、validator 由 Gemini 走），dogfood 訊號豐富。**級別評估**：MINOR；對應 v0.5.10 或 v0.6.0 候選。**判斷**：跟 auditor 邀請制議題綁定推進；先做概念層 spec、邀請制流程後續展開
 
 ---
 
