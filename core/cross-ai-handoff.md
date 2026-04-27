@@ -185,6 +185,7 @@
 | `escalation-protocol.md` | 強化抽驗狀態傳遞依本條款 §7；解除流程不變 |
 | `common-memory-root.md` | `_role.md` 切換歷史是跨 AI 集體記憶的物理 anchor |
 | `violation-reflection.md` | 退出方留下的反省紀錄不刪、不繼承責任，但接班方須讀過 |
+| `working-stack-discipline.md` | 跨 AI 接班前退出方應先 save（DRAFT → HANDOFF）；接班方走本條款 §4 接收，不重複物理中斷接班場景 |
 
 ---
 

@@ -10,6 +10,70 @@
 
 ---
 
+## [0.5.7] — 2026-04-27
+
+### Added — Working Stack Discipline 條款（補完「session 內物理中斷再續」結構性盲區）
+
+新建 `core/working-stack-discipline.md`，把 CryptoBot `~/.claude/commands/checkpoints.md` + `PM_Operational_Manual §1.3` 的暫存堆疊紀律抽象化至 framework 層。
+
+#### 為何需要
+
+charter v0.5.6 之前覆蓋兩種接班場景：
+- `handoff-chain` — session 末邏輯結案的重型交接
+- `cross-ai-handoff` — AI 廠商換手的載體切換
+
+但**第三種場景**長期空白：**session 內物理中斷再續**（同 AI / 同身份 / 同專案，但物理 context 重啟 — 額度滿、context window 清空、模型切換省 token、使用者中斷後續開）。
+
+charter 過去把 session 當「原子」處理，沒覆蓋「**同身份的物理中斷再續**」。三種接班場景至此正交完整。
+
+#### 條款內容（9 段）
+- §0 概念位階 — 三種接班場景的正交補完
+- §1 條文（DRAFT 累積 + save 觸發 + git commit 同步）
+- §2 DRAFT_CONTEXT 必含/不含 + 兩級存檔位階圖
+- §3 save 觸發條件（手動 + v0.6+ 自動候選）+ save 動作六步驟（不可拆）
+- §4 與 git commit 的綁定（核心紀律）+ 無 git fallback
+- §5 session 重啟接班（核心，與其他三種接班場景的辨識表）
+- §6 與其他 core 條款的關係
+- §7 違反處置（接 F1 / F4 / F5）
+- §8 與 CryptoBot 既有實作的對應（reference impl）— v1.0 後反向引用 dogfood 路徑
+- §9 變更歷史
+
+### Modified
+
+- `core/charter-config.md`：
+  - `enabled` 加 `working-stack-discipline`
+  - 條款相依表加（依賴 `handoff-chain` + `cross-ai-handoff` + `evidence-first` + `common-memory-root`）
+  - **mapping.yaml schema 擴充**：`shared.draft_context`（DRAFT_CONTEXT.md 位置，啟用本條款時必填）+ `shared.archive`（完工膠囊歸檔位置，建議填）
+- `core/handoff-chain.md §7` — 加反向引用，標明位階分工（HANDOFF 該長什麼 vs 該怎麼產生）
+- `core/cross-ai-handoff.md §9` — 加反向引用，標明跨 AI 接班前退出方應先 save
+- `core/init-template.md §1.4` — 守門步驟加「**讀最新 DRAFT_CONTEXT**」（若啟用本條款）；§8 加反向引用
+- `tools/profiles/{minimal,standard,strict}.yaml` — **全部啟用**（minimal 也啟用，因 DRAFT 暫存對單 AI 場景也有價值，特別是 context 重啟接班）；三者 `charter_version` 升至 0.5.7
+- `README.md` core 條款表加一行
+- `ADOPTION.md`：版本對齊更新；§3 D 組從 3 條變 4 條；§9 場景對照表加 2 個新場景（session 物理重啟 + DRAFT save 觸發）
+
+### 動機
+
+實證來源：
+- **CryptoBot 真實工作流**已驗證「DRAFT → HANDOFF 兩級存檔」+「save 必須同步 git commit」是有效紀律
+- **使用者親身實證**該流程「session 量太高時可暫時下線、回來無縫銜接」
+- **未來可視化規劃**需要中途素材有結構化形式可被人類 review、被多人開會討論
+
+關鍵設計決策：
+- **三種接班場景嚴格區隔**（§5.3 辨識表）— AI 廠商不變 / 身份不變 / 物理中斷 = 本條款；任一變動則走對應其他條款
+- **save 六步驟不可拆**（§3.3）— DRAFT → HANDOFF + 歸檔 + NextWork + git commit + 清空，任一失敗整體回滾
+- **git commit 強制綁定**（§4）— DRAFT/HANDOFF 與 git history 不偏離；無 git 環境降級為 warn，由 charter-doctor 提示
+- **session 重啟不寫新身份戳**（§5.2 第 4 步）— 與 multi-role-tracking 的「身份切換寫戳」嚴格區隔
+- **session 重啟不追加切換歷史**（§5.2 第 5 步）— 與 cross-ai-handoff §6 的「廠商換手記錄」嚴格區隔
+- **minimal preset 也啟用**（區別於其他 v0.5.x 新條款的 minimal 預設關）— DRAFT 暫存對單 AI 場景也有實際價值
+
+### 與 CryptoBot reference impl 的關係（§8）
+
+CryptoBot 的 `~/.claude/commands/checkpoints.md` 是本條款的實證 reference impl，但是 CryptoBot-specific（管理路徑寫死 `management/`、引用 CryptoBot 自己的 DISCIPLINE / PM_Operational_Manual）。本條款是其 framework 級抽象。
+
+預期路徑：v1.0 後 CryptoBot 的 checkpoints.md 改為**反向引用本條款**（dogfood signal）。當前階段（v0.x）兩處平行維護，本條款先建立 framework 規範。
+
+---
+
 ## [0.5.6] — 2026-04-27
 
 ### Added — Versioning & Migration 條款（高優先候選 #2 — 完成最後一條）

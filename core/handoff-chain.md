@@ -72,3 +72,4 @@
 | `completion-delivery.md` | 個別任務的 VCP 結果應在 HANDOFF 引述 |
 | `failure-modes.md` | 本 session 累積的失敗模式紀錄應寫入 |
 | `versioning-migration.md` | 升級事件須寫進 §2 第 3 項「協議版本迭代軌跡」；BREAKING 升級必含 |
+| `working-stack-discipline.md` | save 觸發時 DRAFT 摘要為 HANDOFF（依其 §3.3）；本條款規範 HANDOFF 必含項，前者規範產生流程 |

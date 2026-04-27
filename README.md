@@ -62,6 +62,7 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `completion-delivery.md` | 工程師完工須附「PM 驗收測試計畫」（Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表）|
 | `handoff-chain.md` | Session 交接鏈與必含項目 |
 | `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移職責 + 接班方接收職責 + 強化抽驗狀態傳遞 |
+| `working-stack-discipline.md` | DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
 | `init-template.md` | Role Init Mandate — 四大職責 + 多 AI 具象化 + AI 自我具象化機制 |
 
 ---

@@ -1,7 +1,7 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-04-27（台灣時間）
-> **當前版本**：v0.5.6
+> **當前版本**：v0.5.7
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔即為 session 斷點儲存（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
 
@@ -11,6 +11,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| v0.5.7 | _(待 commit)_ | Working Stack Discipline 條款（DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續；補完三種接班場景的正交盲區）|
 | v0.5.6 | `bfef9b0` | Versioning & Migration 條款（SemVer 對 charter 的具體含義 + 升級流程 + 多 AI 版本一致性）— **5 候選盤點完成**|
 | v0.5.5 | `bfef9b0` | Domain Axiom Slot 條款（領域公理槽位的位階 / 撰寫紀律 / 違反處置；領域公理 > core 衝突優先序）|
 | v0.5.4 | `bfef9b0` | Multi-Role Tracking 條款（1 AI 兼 ≥ 2 角色的審計規範：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令）|
@@ -40,7 +41,7 @@
 
 ---
 
-## 18 條 core 條款清單（按概念分組）
+## 19 條 core 條款清單（按概念分組）
 
 ### A. 角色與職權（4 條）
 
@@ -68,12 +69,13 @@
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表 |
 
-### D. 交接 / 跨 AI（3 條）
+### D. 交接 / 跨 AI（4 條）
 
 | 條款 | 一句話 |
 |---|---|
-| `handoff-chain.md` | session 交接鏈必含項目（廠商維度交接拆出至 cross-ai-handoff）|
+| `handoff-chain.md` | session 末交接鏈必含項目（結案級 / 重型）|
 | **`cross-ai-handoff.md`** | **跨 AI 接班（v0.5.2）**：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
+| **`working-stack-discipline.md`** | **暫存堆疊紀律（v0.5.7）**：DRAFT 累積 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
 | `init-template.md` | **Role Init Mandate（v0.5）**：四職責（召喚 / 校準 / 簽名 / 守門）+ 多 AI 具象化（v0.5.1 自我具象化）|
 
 ### E. 架構 / 配置 / 版本（4 條）
@@ -126,13 +128,13 @@ project-root/
 
 ## 三個 preset
 
-| Preset | 條款啟用（v0.5.6）| 適用 |
+| Preset | 條款啟用（v0.5.7）| 適用 |
 |---|---|---|
-| `minimal.yaml` | 8 / 16 條，寬鬆參數 | 探索型 / 單人 + 1 AI |
-| `standard.yaml` | 16 / 16 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
-| `strict.yaml` | 16 / 16 條，嚴格上限 | 嚴格合規 / 高風險領域 |
+| `minimal.yaml` | 9 / 17 條，寬鬆參數 | 探索型 / 單人 + 1 AI |
+| `standard.yaml` | 17 / 17 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
+| `strict.yaml` | 17 / 17 條，嚴格上限 | 嚴格合規 / 高風險領域 |
 
-> 註：18 條條款中，2 條為架構級前提（`common-memory-root` 與 `charter-config`），不設 enabled 開關 — 採用 AgentCharter 即視為自動啟用，故各 preset 的 enabled 計數 max 為 16。
+> 註：19 條條款中，2 條為架構級前提（`common-memory-root` 與 `charter-config`），不設 enabled 開關 — 採用 AgentCharter 即視為自動啟用，故各 preset 的 enabled 計數 max 為 17。
 
 ---
 
@@ -162,8 +164,9 @@ project-root/
 | v0.5.4 | **Multi-Role Tracking** 條款：把 management-layout §3.1「不建議動態切換」**升格為強制規範**；補完三項防呆（離岸/上岸宣告、身份戳、自抽自驗禁令）|
 | v0.5.5 | **Domain Axiom Slot** 條款：把 template 的撰寫紀律提煉至 core 層；定義「領域公理 > core 條款」衝突優先序為架構級條文；/charter-doctor 違反處置分級 |
 | v0.5.6 | **Versioning & Migration** 條款：SemVer 對 AgentCharter 的具體語意（PATCH/MINOR/MAJOR/架構級）+ 已採用專案升級流程 + 多 AI 版本一致性；**5 候選盤點完成** |
+| v0.5.7 | **Working Stack Discipline** 條款：補完「session 內物理中斷再續」結構性盲區；DRAFT 暫存堆疊 + save 同步 git commit；三種接班場景（結案 / 換 AI / 物理中斷）正交完整 |
 
-### B. 七個架構級概念已釐清
+### B. 八個架構級概念已釐清
 
 1. **Common Memory Root**（v0.4.1）：多 AI 共享資產位於單一根；可覆寫名稱但禁止分散；典型路徑 `agent-commons/`
 2. **AI Self-Instantiation**（v0.5.1）：「角色 ⊥ AI」公理的執行機制；AI 自己讀 charter → 自己生成 slash command → 自己簽名
@@ -172,6 +175,7 @@ project-root/
 5. **角色 ⊥ 載體 防呆**（v0.5.4）：role-separation 對稱分離原則在「同 AI 多角色」場景的具體保護機制；隱式戴帽子與自抽自驗兩條失效路徑由 multi-role-tracking 三項防呆封閉
 6. **領域 > 通用 優先序**（v0.5.5）：領域公理（資金 / 安全 / 合規）優先於 core 通用條款；A3「專案 ⊥ 框架」公理的具體執行條文 — 框架不知道領域差異，故服從領域底線
 7. **版本演化雙軌**（v0.5.6）：`version`（profile schema）⊥ `charter_version`（條款集），各自演化；多 AI 同 session 強制版本一致；BREAKING-LITE 中間級別處理 0.x 階段的架構級變動
+8. **三種接班場景正交完整**（v0.5.7）：session 末邏輯結案（handoff-chain）/ AI 廠商換手（cross-ai-handoff）/ session 內物理中斷再續（working-stack-discipline）— 三條款互斥互補；DRAFT-HANDOFF 兩級存檔 + save 同步 git commit 為核心紀律
 
 ### C. 模擬演練紀錄（討論完成，未寫入 examples）
 
@@ -189,6 +193,7 @@ project-root/
 - **「同 AI 多角色 = 自抽自驗風險」**：management-layout §3.1 早期只是「不建議動態切換」建議，無強制力；v0.5.4 升格為 core 強制規範並加三項物理性防呆
 - **「領域公理 vs core 衝突優先序之前散見而無中央定義」**：規範散落在 template、role-conflict-resolution；v0.5.5 把優先序定為架構級條文（domain-axiom-slot §2.1）
 - **「/charter-init --update 缺判斷依據」**：tools/init-spec §6 提到 --update 但只 5 步驟、無「升級時什麼算破壞」依據；v0.5.6 補完 SemVer 對 charter 的具體含義 + BREAKING 判定條件
+- **「session 內物理中斷再續」結構性盲區**：charter 過去把 session 當原子處理，但實際工作流會遇到 context 重啟、額度恢復、模型切換等場景；v0.5.7 從 CryptoBot `~/.claude/commands/checkpoints.md` 抽象化為 working-stack-discipline 條款，三種接班場景正交完整
 - **dogfooding 取捨**：v0.x 條款還在演化，硬上會卡死遞迴；用 .claude_temp/ 暫代，v1.0 後升格
 
 ---

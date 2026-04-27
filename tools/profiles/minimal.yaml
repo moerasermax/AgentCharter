@@ -3,11 +3,11 @@
 # 適用：探索型專案、單人 + 1 AI、短期實驗。
 # 設計：只啟用最核心防線，配置從寬，搬遷成本最低。
 #
-# 條款啟用：8 / 16
+# 條款啟用：9 / 17
 # 預設參數：寬鬆
 
 version: "0.4.0"
-charter_version: "0.5.6"
+charter_version: "0.5.7"
 preset: minimal
 
 # === B1 粒度：條款啟用 ===
@@ -19,6 +19,7 @@ enabled:
   evidence-first: true                 # 必需 — 實證先行
   domain-axiom-slot: true              # 必需 — 領域公理槽位規範（即使 minimal 也須有合規領域公理檔）
   versioning-migration: true           # 必需 — 升級時的遷移流程；任何專案都會遇到 charter 升版
+  working-stack-discipline: true       # 必需 — DRAFT 暫存堆疊 + session 重啟接班；對單 AI 場景也有價值（context 重啟）
 
   # 以下可關（簡單專案不需要）
   violation-reflection: false          # 違規反省紀錄 — minimal 不要求

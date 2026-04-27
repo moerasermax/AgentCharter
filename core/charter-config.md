@@ -71,6 +71,8 @@ shared:
   institutional_memory:                  # 知識沉澱（可多檔）
     - institutional-memory/_root.md
   nextwork: nextwork.md                  # 任務追蹤主檔（單檔）
+  draft_context: DRAFT_CONTEXT.md        # session 內暫存堆疊（依 working-stack-discipline）
+  archive: handoffs/archive/             # 完工膠囊歸檔目錄（save 觸發時移入）
 
 roles:
   <role-name>:                           # engineer / pm / reviewer / 等
@@ -100,6 +102,8 @@ state:
 | `shared.handoffs` | 條件 | 啟用 handoff-chain 時必填 |
 | `shared.protocols` | 條件 | 啟用 evidence-first / role-separation 時必填 |
 | `shared.institutional_memory` | 選填 | 沒有可省，但建議至少一份 |
+| `shared.draft_context` | 條件 | 啟用 working-stack-discipline 時必填；典型 `DRAFT_CONTEXT.md` |
+| `shared.archive` | 條件 | 啟用 working-stack-discipline 時建議填；save 觸發完工膠囊歸檔位置 |
 | `roles.<role>` | 條件 | 該角色被任意條款引用時必填 |
 | `domain_axioms.primary` | ✅ | 必填，沒有領域公理 = 採用 AgentCharter 預設一般紀律 |
 
@@ -129,6 +133,7 @@ enabled:
   multi-role-tracking: <bool>
   domain-axiom-slot: <bool>
   versioning-migration: <bool>
+  working-stack-discipline: <bool>
   init-template: <bool>
 
 # === B3 粒度：條款參數 ===
@@ -183,6 +188,7 @@ v0.4 暫不支援，需要時 PR 升級 schema。
 | `multi-role-tracking` | `role-separation`, `audit-rights`, `init-template`, `failure-modes` |
 | `domain-axiom-slot` | `charter-config`, `common-memory-root`, `evidence-first` |
 | `versioning-migration` | `charter-config`, `handoff-chain`, `init-template` |
+| `working-stack-discipline` | `handoff-chain`, `cross-ai-handoff`, `evidence-first`, `common-memory-root` |
 | `role-separation` | `common-memory-root`（`roles/<role>/` 目錄須在此根下）|
 | **所有條款** | **`common-memory-root`**（v0.4.1 起為架構級前提）|
 

@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.5.6`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.5.7`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -13,7 +13,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 把「PM / Engineer / Reviewer」這類職能**從 AI 廠商解綁**：任何 AI（Claude / Gemini / Codex / GPT / 你下個用的 LLM）都能扮演任何角色，協議跨 AI 一致。
 
-**框架本體 = 18 條 core 條款 + 6 份 templates**。不需要工具就能採用（手動建目錄 + AI 自律即可）。
+**框架本體 = 19 條 core 條款 + 6 份 templates**。不需要工具就能採用（手動建目錄 + AI 自律即可）。
 
 **採用識別**：專案根有 `agent-commons/` 目錄 = 用了本框架。
 
@@ -72,12 +72,13 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 期望錨點 / 失敗解讀表 |
 
-### D. 交接 / 跨 AI（3 條）
+### D. 交接 / 跨 AI（4 條）
 
 | 條款 | 一句話 |
 |---|---|
-| `handoff-chain.md` | session 交接鏈必含 7 項 |
-| `cross-ai-handoff.md` | 跨 AI 接班：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
+| `handoff-chain.md` | session 末交接鏈必含 7 項（結案級 / 重型）|
+| `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
+| `working-stack-discipline.md` | DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
 | `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化 |
 
 ### E. 架構 / 配置 / 版本（4 條，含 2 條架構級前提）
@@ -236,6 +237,8 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 | 兩角色決策分歧（無人錯）| role-conflict-resolution §3 | 走 L0 對話（≤ 2 回合）→ L1 條款仲裁 → L2 使用者裁決 |
 | AI 廠商換手（如 Gemini → Claude）| cross-ai-handoff | 退出方寫能力快照；接班方走 init + 能力差異盤點 |
 | 同 AI 兼任 ≥ 2 角色 | multi-role-tracking §3 | 切換必走離岸/上岸宣告 + 身份戳；禁同 session 自抽自驗 |
+| **session 內物理中斷再續**（context 重啟 / 額度恢復 / 模型切換）| **working-stack-discipline §5** | **同 AI 同身份；讀最新 HANDOFF + DRAFT_CONTEXT；不寫新身份戳、不追加切換歷史** |
+| **DRAFT 累積到一定程度需階段保存** | **working-stack-discipline §3** | **save 觸發：DRAFT → HANDOFF 摘要 + 歸檔 + git commit + 清空 DRAFT（六步不可拆）** |
 | 條款升級（charter v0.5.x → v0.6）| versioning-migration §3 | 讀 CHANGELOG → /charter-doctor dry-run → migration → 升 charter_version |
 | 領域公理與 core 衝突 | domain-axiom-slot §2.1 | **領域公理優先**（A3 公理具體執行） |
 
