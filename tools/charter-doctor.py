@@ -87,12 +87,31 @@ def cmp_semver(a: str, b: str) -> int:
     return (pa > pb) - (pa < pb)
 
 
-def is_cross_major_jump(current: str, target: str) -> bool:
-    """跳超過一個 MAJOR（如 0.x → 2.x）視為違反 versioning-migration §3.3。"""
+def check_major_jump(current: str, target: str) -> str | None:
+    """檢查跨 MAJOR 升級是否合規（versioning-migration §3.3）。
+
+    §3.3 規則：
+    - 同 MAJOR：允許
+    - 跨 1 個 MAJOR：允許，但 target 必須是 X.0.0
+      （要先升 X.0.0 走完 migration，再從 X.0.0 升到 X.y.z）
+    - 跨 ≥2 MAJOR：禁止
+
+    回傳錯誤訊息字串；通過則回 None。
+    """
     pc, pt = parse_semver(current), parse_semver(target)
     if pc is None or pt is None:
-        return False
-    return pt[0] - pc[0] > 1
+        return None
+    major_diff = pt[0] - pc[0]
+    if major_diff == 0:
+        return None
+    if major_diff >= 2:
+        return (f"跨 ≥2 MAJOR 跳升禁止（versioning-migration §3.3）— "
+                f"{current} → {target}；須逐 MAJOR 走 migration")
+    # major_diff == 1
+    if pt[1] != 0 or pt[2] != 0:
+        return (f"跨 MAJOR 升級必須先到 {pt[0]}.0.0 走 migration，"
+                f"再升至 {target}（versioning-migration §3.3）")
+    return None
 
 
 # ──────────────────────────────────────────────
@@ -197,13 +216,22 @@ def parse_changelog(path: Path, from_version: str, to_version: str) -> list[dict
 
 
 def detect_breaking_signals(sections: dict[str, list[str]]) -> list[str]:
-    """偵測 BREAKING / BREAKING-LITE — 只認 section 標題，不掃內文（避免
-    false-positive：CHANGELOG 內文常引用 BREAKING 概念但本版未實際破壞）。
+    """偵測 BREAKING / BREAKING-LITE — 只認 section 標題開頭，不掃內文。
 
-    CHANGELOG 風格約定：本版含 BREAKING 變更須在 ### 標題明示，如：
-      ### BREAKING
-      ### BREAKING — schema 不相容變更
-      ### BREAKING-LITE — 架構級小破壞
+    Trade-off（設計取捨，非 bug）:
+    - 優先消除 false-positive — CHANGELOG 內文常引用 BREAKING 概念
+      （如 versioning-migration v0.5.6 entry 在解釋 BREAKING 判定條件）
+      但本版未實際破壞；掃內文會誤報。
+    - 代價：若 changelog 作者把實際 BREAKING 變更藏在「### Modified」
+      或「### Fixed」這類非 BREAKING 標題下，工具會漏報。
+    - 緩解：對 charter 維護者強制 CHANGELOG 風格約定 — 本版含 BREAKING
+      須在 ### 標題明示，如：
+        ### BREAKING
+        ### BREAKING — schema 不相容變更
+        ### BREAKING-LITE — 架構級小破壞（依 versioning-migration §2 定義）
+
+    人類仍應親自讀 CHANGELOG（本工具報告中的「仍建議人工 review」提示），
+    工具 BREAKING signal = 0 不等於可以無腦升版。
     """
     signals: list[str] = []
     for sec_name in sections:
@@ -352,11 +380,9 @@ def upgrade_dry_run(current_ver: str, target_ver: str, report: Report) -> None:
         report.err(f"目標版本 {target_ver} 不大於當前 {current_ver}")
         return
 
-    if is_cross_major_jump(current_ver, target_ver):
-        report.err(
-            f"跨 MAJOR 跳升不允許（versioning-migration §3.3）— "
-            f"{current_ver} → {target_ver} 跳超過一個主版號"
-        )
+    major_err = check_major_jump(current_ver, target_ver)
+    if major_err:
+        report.err(major_err)
         return
 
     entries = parse_changelog(CHANGELOG_PATH, current_ver, target_ver)
