@@ -11,11 +11,11 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| v0.5.6 | _(待 commit)_ | Versioning & Migration 條款（SemVer 對 charter 的具體含義 + 升級流程 + 多 AI 版本一致性）— **5 候選盤點完成**|
-| v0.5.5 | _(待 commit)_ | Domain Axiom Slot 條款（領域公理槽位的位階 / 撰寫紀律 / 違反處置；領域公理 > core 衝突優先序）|
-| v0.5.4 | _(待 commit)_ | Multi-Role Tracking 條款（1 AI 兼 ≥ 2 角色的審計規範：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令）|
-| v0.5.3 | _(待 commit)_ | Role Conflict Resolution 條款（補完「決策分歧」軸，與 escalation-protocol 嚴格區隔；三級階梯 L0/L1/L2）|
-| v0.5.2 | _(待 commit)_ | Cross-AI Handoff 條款（補完 v0.5.1 之後「退出—轉移—接班」全鏈，獨立 core 條款）|
+| v0.5.6 | `bfef9b0` | Versioning & Migration 條款（SemVer 對 charter 的具體含義 + 升級流程 + 多 AI 版本一致性）— **5 候選盤點完成**|
+| v0.5.5 | `bfef9b0` | Domain Axiom Slot 條款（領域公理槽位的位階 / 撰寫紀律 / 違反處置；領域公理 > core 衝突優先序）|
+| v0.5.4 | `bfef9b0` | Multi-Role Tracking 條款（1 AI 兼 ≥ 2 角色的審計規範：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令）|
+| v0.5.3 | `bfef9b0` | Role Conflict Resolution 條款（補完「決策分歧」軸，與 escalation-protocol 嚴格區隔；三級階梯 L0/L1/L2）|
+| v0.5.2 | `bfef9b0` | Cross-AI Handoff 條款（補完 v0.5.1 之後「退出—轉移—接班」全鏈，獨立 core 條款）|
 | v0.5.1 | `0aa557b` | AI Self-Instantiation 機制（框架不代生成 slash command，AI 自我具象化）|
 | v0.5.0 | `f306916` | Init Mandate 升格為職責規範（四職責 / 多 AI 具象化 / 替換保證）+ 配置目錄合併進 `agent-commons/_config/`（架構級）|
 | v0.4.2 | `4084e76` | agent-commons 完整 templates 6 份（capsule/handoff/IM/nextwork/domain-axioms/_role）+ §8 命名規則 |
@@ -40,28 +40,50 @@
 
 ---
 
-## 18 條 core 條款清單
+## 18 條 core 條款清單（按概念分組）
+
+### A. 角色與職權（4 條）
 
 | 條款 | 一句話 |
 |---|---|
 | `role-separation.md` | 程式碼權與結案權對稱分離 |
 | `audit-rights.md` | 抽驗權不得放棄；結案宣告默認待抽驗 |
+| **`role-conflict-resolution.md`** | **角色決策衝突（v0.5.3）**：三級階梯 L0/L1/L2，與 escalation 嚴格區隔（分歧雙向、無對錯）|
+| **`multi-role-tracking.md`** | **單 AI 多角色審計（v0.5.4）**：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令 |
+
+### B. 失敗 / 違規 / 升級（4 條）
+
+| 條款 | 一句話 |
+|---|---|
 | `failure-modes.md` | F1〜F5（假宣告 / 假 hash / 捏造數據 / 編號偏差 / 規則記憶失效）|
 | `structural-anti-fabrication.md` | 缺 stdout 區塊即視同未交付（v0.2 全模式強制）|
 | `violation-reflection.md` | 違規退稿後須補交反省；價值在審計痕跡 / 集體記憶 |
 | `escalation-protocol.md` | 連續 ≥2 次升級強化抽驗、≥3 次觸發使用者裁決（處理失敗事件累積）|
-| **`role-conflict-resolution.md`** | **角色決策衝突（v0.5.3）**：三級階梯 L0/L1/L2，與 escalation 嚴格區隔（分歧雙向、無對錯）|
-| **`multi-role-tracking.md`** | **單 AI 多角色審計（v0.5.4）**：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令 |
-| **`domain-axiom-slot.md`** | **領域公理槽位（v0.5.5）**：位階（領域 > 核心）+ 撰寫紀律最低要求 + /charter-doctor 違反處置分級 |
-| **`versioning-migration.md`** | **版本演化（v0.5.6）**：SemVer 對 charter 的具體含義 + 已採用專案升級流程 + 多 AI 版本一致性 |
+
+### C. 證據與交付（3 條）
+
+| 條款 | 一句話 |
+|---|---|
 | `evidence-first.md` | 隱性 bug 嚴禁盲猜；數字嚴禁心算 |
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表 |
+
+### D. 交接 / 跨 AI（3 條）
+
+| 條款 | 一句話 |
+|---|---|
 | `handoff-chain.md` | session 交接鏈必含項目（廠商維度交接拆出至 cross-ai-handoff）|
 | **`cross-ai-handoff.md`** | **跨 AI 接班（v0.5.2）**：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
 | `init-template.md` | **Role Init Mandate（v0.5）**：四職責（召喚 / 校準 / 簽名 / 守門）+ 多 AI 具象化（v0.5.1 自我具象化）|
+
+### E. 架構 / 配置 / 版本（4 條）
+
+| 條款 | 一句話 |
+|---|---|
+| `common-memory-root.md` | **架構級約定（v0.4.1）**：多 AI 共享資產位於單一根（預設 `agent-commons/`）|
 | `charter-config.md` | mapping.yaml + profile.yaml schema（v0.5：配置在 `agent-commons/_config/`）|
-| `common-memory-root.md` | **架構級約定**：多 AI 共享資產位於單一根（預設 `agent-commons/`）（v0.4.1）|
+| **`domain-axiom-slot.md`** | **領域公理槽位（v0.5.5）**：位階（領域 > 核心）+ 撰寫紀律最低要求 + /charter-doctor 違反處置分級 |
+| **`versioning-migration.md`** | **版本演化（v0.5.6）**：SemVer 對 charter 的具體含義 + 已採用專案升級流程 + 多 AI 版本一致性 |
 
 ---
 
@@ -104,11 +126,13 @@ project-root/
 
 ## 三個 preset
 
-| Preset | 條款啟用 | 適用 |
+| Preset | 條款啟用（v0.5.6）| 適用 |
 |---|---|---|
-| `minimal.yaml` | 6 / 11 條，寬鬆參數 | 探索型 / 單人 + 1 AI |
-| `standard.yaml` | 11 / 11 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
-| `strict.yaml` | 11 / 11 條，嚴格上限 | 嚴格合規 / 高風險領域 |
+| `minimal.yaml` | 8 / 16 條，寬鬆參數 | 探索型 / 單人 + 1 AI |
+| `standard.yaml` | 16 / 16 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
+| `strict.yaml` | 16 / 16 條，嚴格上限 | 嚴格合規 / 高風險領域 |
+
+> 註：18 條條款中，2 條為架構級前提（`common-memory-root` 與 `charter-config`），不設 enabled 開關 — 採用 AgentCharter 即視為自動啟用，故各 preset 的 enabled 計數 max 為 16。
 
 ---
 
@@ -124,7 +148,7 @@ project-root/
 
 ## 本 session 重要設計決策（給跨 session 接班用）
 
-### A. v0.4 → v0.5.1 演化軸
+### A. v0.4 → v0.5.6 演化軸
 
 | 階段 | 設計突破 |
 |---|---|
@@ -160,17 +184,28 @@ project-root/
 
 - **「Gemini 不認識 /pm-init」**：原本是 v0.4 設計漏洞（init-spec Phase 4 只生成 Claude 端），v0.5.1 改為 AI 自我具象化解決
 - **「.agentcharter/ 與 agent-commons/ 兩個 dot-folder 違反單一識別」**：v0.5.0 合併解決
+- **「跨 AI 接班只有接班方半邊」**：v0.5.1 self-instantiation 補了「新 AI 進入」，但「舊 AI 退出 + 狀態傳遞 + 強化抽驗繼承」全空白；v0.5.2 cross-ai-handoff 補完
+- **「失敗事件 vs 決策分歧的混淆風險」**：原 escalation-protocol 包山包海，把意見不合也當失敗事件處理，導致無辜方被升級進強化抽驗；v0.5.3 拆出 role-conflict-resolution 嚴格區隔
+- **「同 AI 多角色 = 自抽自驗風險」**：management-layout §3.1 早期只是「不建議動態切換」建議，無強制力；v0.5.4 升格為 core 強制規範並加三項物理性防呆
+- **「領域公理 vs core 衝突優先序之前散見而無中央定義」**：規範散落在 template、role-conflict-resolution；v0.5.5 把優先序定為架構級條文（domain-axiom-slot §2.1）
+- **「/charter-init --update 缺判斷依據」**：tools/init-spec §6 提到 --update 但只 5 步驟、無「升級時什麼算破壞」依據；v0.5.6 補完 SemVer 對 charter 的具體含義 + BREAKING 判定條件
 - **dogfooding 取捨**：v0.x 條款還在演化，硬上會卡死遞迴；用 .claude_temp/ 暫代，v1.0 後升格
 
 ---
 
 ## 下次接班起點
 
-詳見 `NEXT.md`。當前未做的最高優先：
+### 已完成里程碑
 
-1. **核心條款覆蓋率盤點 — 全部完成**（v0.5.2〜v0.5.6 完成 5 條）✅
-2. **roles/pm/gemini-cli.md** 提交（待 Gemini 端代理）
-3. **v0.5+ Reference Impl**（把三工具 spec 變成可跑的工具）
+✅ 核心條款覆蓋率盤點 — 全部完成（v0.5.2〜v0.5.6 共 5 條，commit `bfef9b0`）
 
-跨 session 接班指引：
+### 下一階段焦點（依 NEXT.md 高優先序）
+
+1. **`roles/pm/gemini-cli.md` 提交** — placeholder 等待 Gemini 端代理或 Gemini CLI 自我具象化時產出 vendor spec
+2. **v0.5+ Reference Impl** — 把 `tools/{scan,init,doctor}-spec.md` 變成可跑的工具（依 versioning-migration §3.2 的 `--target-version` dry-run 候選等）
+
+### 跨 session 接班指引
+
 - Claude 第一輪 → 讀本檔 + NEXT.md → 對齊脈絡 → 等使用者下達議題
+- 若議題涉及條款修訂 → 同步檢查 charter-config.md 相依表 / 各 profile yaml / 反向引用 / CHANGELOG
+- 若議題涉及版本升級 → 走 `versioning-migration.md §3` 7 步流程
