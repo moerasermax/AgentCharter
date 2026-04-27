@@ -7,6 +7,27 @@
 ## [Unreleased]
 
 （待議事項）
+
+---
+
+## [0.4.1] — 2026-04-27
+
+### Added — 架構級約定（Common Memory Root）
+
+- `core/common-memory-root.md` — **架構級約定**：多 AI 共享資產必須位於單一根目錄（預設 `agent-commons/`）。採用識別（看到 `agent-commons/` ＝ 此專案採用 AgentCharter）。允許名稱覆寫但禁止分散。
+
+### Changed
+
+- `core/charter-config.md` — mapping.yaml schema 升 v0.4.1：加 `common_memory_root` 必填欄位；`shared.*` / `roles.*` / `domain_axioms.primary` / `state.*` 路徑改為相對於 common_memory_root；相依表加上「所有條款依賴 common-memory-root」
+- `templates/management-layout.md` — 預設根目錄從 `management/` 改為 `agent-commons/`；首段引用 common-memory-root.md 強調架構約束
+- `examples/cryptobot/mapping.md` — 加 §0：CryptoBot 沿用 `management/` 為向後相容覆寫範例
+- `README.md` — 加 A4 公理「架構級約定」+ core 條款列表
+
+### 動機
+
+使用者提兩件事：(1) 框架熱插拔（v0.4 已支援）；(2) AI 間運作流程基於 management 為共同記憶路徑。第二點原本只在 templates 提到，未條款化 → 補為 core 條款，升為架構級約束。
+
+預設名稱 `agent-commons/` 取自「agent + commons（共同地）」概念，唯一性高、與 `.agentcharter/` 配置目錄不衝突；既有專案（如 CryptoBot）可透過 mapping.yaml 覆寫沿用既有名稱。
 - 邀請 Gemini CLI 端提交 `roles/pm/gemini-cli.md`
 - CryptoBot 改為 *引用* 框架而非重複維護
 - 評估 IRON Pattern（Double Insurance、ACL）抽到框架的可行性

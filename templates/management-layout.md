@@ -1,7 +1,18 @@
-# Recommended Management Layout（推薦的 management/ 結構）
+# Recommended Common Memory Root Layout（推薦目錄結構）
 
-> **狀態**：v0.3 範例
-> **位階**：template / 建議。不強制，給各專案參照。框架不該侵入專案結構，但提供「最佳實踐」骨架。
+> **狀態**：v0.4.1（依 `core/common-memory-root.md` 升級）
+> **位階**：template / 建議。**結構強制**（依 common-memory-root §3 必含子槽位）；**名稱可覆寫**（預設 `agent-commons/`）。
+
+---
+
+## 0. 與 common-memory-root 條款的對應
+
+本 template 是 `core/common-memory-root.md` 的具體展開。**核心約束**：
+
+- 多 AI 共享資產必須位於**單一根目錄**之下
+- 預設根目錄名稱：**`agent-commons/`**
+- 既有專案可透過 `mapping.yaml.common_memory_root` 覆寫名稱（如 CryptoBot 沿用舊名 `management/`）
+- **禁止分散**到多個獨立根（違反 → 結構違規退稿）
 
 ---
 
@@ -9,7 +20,7 @@
 
 ```
 <project>/
-├── management/
+├── agent-commons/                         ← Common Memory Root（依 common-memory-root.md）
 │   ├── shared/                            ← 跨角色公共（任何角色可讀寫）
 │   │   ├── capsules/                      ← 任務膠囊（PM 主筆、Engineer 抽驗）
 │   │   ├── handoffs/                      ← HANDOFF_<N>.md 鏈
@@ -41,7 +52,7 @@
 
 ## 2. 各資料夾用途
 
-### 2.1 `management/shared/`
+### 2.1 `agent-commons/shared/`
 
 | 資料夾 | 用途 | 主筆 | 抽驗 |
 |---|---|---|---|
@@ -51,7 +62,7 @@
 | `institutional-memory/` | 跨事件知識 | 任意角色，五段格式（症狀→根因→診斷→修法→預防）| 雙向 |
 | `nextwork.md` | 任務追蹤 | PM | Engineer |
 
-### 2.2 `management/roles/<role>/`
+### 2.2 `agent-commons/roles/<role>/`
 
 | 子資料夾 | 用途 | 公開度 |
 |---|---|---|
@@ -92,10 +103,10 @@
 
 ```gitignore
 # 角色私有臨時區
-management/roles/*/private/
+agent-commons/roles/*/private/
 
 # Session 暫存（依專案決定是否入 git）
-# management/roles/*/sessions/*/tmp/
+# agent-commons/roles/*/sessions/*/tmp/
 ```
 
 ---
@@ -108,16 +119,16 @@ management/roles/*/private/
 
 | 階段 | 動作 |
 |---|---|
-| Phase 1 | 把 `management/` 內**已有**的 capsule / handoff / protocols 歸入 `shared/` 子目錄 |
+| Phase 1 | 把 `agent-commons/` 內**已有**的 capsule / handoff / protocols 歸入 `shared/` 子目錄 |
 | Phase 2 | 為主要角色建 `roles/<role>/` 骨架，新事件起進入新位置 |
 | Phase 3 | 舊內容保留原位（git history 仍可追溯），不強制搬遷 |
 
 ### 5.2 git 移動建議
 
 ```bash
-# 範例：把舊的 management/capsules/ 搬到 management/shared/capsules/
-git mv management/capsules management/shared/capsules
-git commit -m "chore: reorganize management/ to AgentCharter layout (Phase 1)"
+# 範例：把舊的 agent-commons/capsules/ 搬到 agent-commons/shared/capsules/
+git mv agent-commons/capsules agent-commons/shared/capsules
+git commit -m "chore: reorganize agent-commons/ to AgentCharter layout (Phase 1)"
 ```
 
 用 `git mv` 保留 history。

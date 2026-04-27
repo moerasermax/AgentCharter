@@ -1,15 +1,16 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-04-27（台灣時間）
-> **當前版本**：v0.4.0
+> **當前版本**：v0.4.1
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 
 ---
 
-## Version 軌跡（最新 5 commit）
+## Version 軌跡（最新 6 commit）
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| v0.4.1 | (待 push) | Common Memory Root 架構級約定（預設名 `agent-commons/`，採用識別）|
 | v0.4.0 | `ff70165` | 工具化接入 Spec only — charter-config schema + scan/init/doctor specs + 3 profile presets |
 | v0.3.0 | `35fce4c` | violation-reflection condition + management-layout template |
 | v0.2.0 | `9aa9521` | 結構性反捏造升為全模式預設強制 |
@@ -46,7 +47,7 @@ meta/        4 份（README / GOVERNANCE / CONTRIBUTING / CHANGELOG）+ .gitigno
 
 ---
 
-## 12 條 core 條款清單
+## 13 條 core 條款清單
 
 | 條款 | 一句話 |
 |---|---|
@@ -62,6 +63,7 @@ meta/        4 份（README / GOVERNANCE / CONTRIBUTING / CHANGELOG）+ .gitigno
 | `handoff-chain.md` | session 交接鏈必含項目 |
 | `init-template.md` | `/<role>-init` 五步驟骨架 |
 | `charter-config.md` | mapping.yaml + profile.yaml schema（v0.4）|
+| `common-memory-root.md` | **架構級約定** — 多 AI 共享資產位於單一根（預設 `agent-commons/`）（v0.4.1）|
 
 ---
 

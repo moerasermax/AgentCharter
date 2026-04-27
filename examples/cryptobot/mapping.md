@@ -5,6 +5,21 @@
 
 ---
 
+## 0. Common Memory Root 對應（v0.4.1 更新）
+
+CryptoBot 採用 framework 的 `core/common-memory-root.md` 條款，但**沿用既有名稱**（`management/`）而非預設 `agent-commons/`：
+
+```yaml
+# .agentcharter/mapping.yaml
+common_memory_root: management/
+```
+
+→ 內容仍位於單一根下，符合「不可分散」原則；僅根目錄名稱與框架預設不同。
+
+> 新採用框架的專案建議直接用 `agent-commons/`；CryptoBot 保留 `management/` 為向後相容範例。
+
+---
+
 ## 1. 專案性質
 
 CryptoBot 是 .NET 8 / C# 加密貨幣自動交易系統，雙 AI 協作：

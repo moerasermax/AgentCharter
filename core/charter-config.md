@@ -31,35 +31,41 @@
 ## 3. `mapping.yaml` Schema
 
 ```yaml
-version: "0.4.0"                         # mapping schema 版本
+version: "0.4.1"                         # mapping schema 版本
 
-# === 路徑對映：專案實際路徑 → 框架抽象槽位 ===
+# === Common Memory Root（v0.4.1 必填）===
+# 採用 AgentCharter 的專案的「共同記憶根目錄」。
+# 預設名稱：agent-commons/
+# 既有專案可覆寫成自己的名稱（如 CryptoBot 的 management/），但內容必須在單一根下。
+# 違反「不可分散」原則 → 結構違規退稿。詳見 core/common-memory-root.md。
+common_memory_root: agent-commons/       # 必填，相對於專案根的單一目錄
+
+# === 路徑對映：相對於 common_memory_root 的子路徑 ===
 # 不存在的槽位可省略；省略 = 該槽位在本專案不存在
 shared:
-  capsules: <path>                       # 任務膠囊目錄
-  handoffs: <path>                       # HANDOFF 鏈
-  protocols: <path>                      # 領域公理 + 紀律文件
+  capsules: capsules/                    # 任務膠囊目錄
+  handoffs: handoffs/                    # HANDOFF 鏈
+  protocols: protocols/                  # 領域公理 + 紀律文件
   institutional_memory:                  # 知識沉澱（可多檔）
-    - <path1>
-    - <path2>
-  nextwork: <path>                       # 任務追蹤主檔（單檔）
+    - institutional-memory/_root.md
+  nextwork: nextwork.md                  # 任務追蹤主檔（單檔）
 
 roles:
   <role-name>:                           # engineer / pm / reviewer / 等
-    sessions: <path>                     # 該角色的 session 工作筆記
-    drafts: <path>                       # 跨 session 草稿
-    reflections: <path>                  # 違規反省（依 violation-reflection.md）
-    private: <path>                      # 私有臨時筆記（建議 .gitignore）
+    sessions: roles/<role>/sessions/     # 該角色的 session 工作筆記
+    drafts: roles/<role>/drafts/         # 跨 session 草稿
+    reflections: roles/<role>/reflections/   # 違規反省
+    private: roles/<role>/private/       # 私有臨時筆記（建議 .gitignore）
 
-# === 領域公理指向 ===
+# === 領域公理指向（相對於 common_memory_root）===
 domain_axioms:
-  primary: <path>                        # 主要安全公理檔（如 IRON.md）
+  primary: protocols/<your-axiom>.md     # 主要安全公理檔（如 IRON.md）
   alias: <short-name>                    # 短名稱，便於文件引用
 
-# === 工具狀態檔 ===
+# === 工具狀態檔（相對於 common_memory_root）===
 state:
-  output_mode_file: <path>               # output-mode-protocol 的旗標檔
-  failure_mode_log: <path>               # failure-modes 累積紀錄
+  output_mode_file: state/output_mode    # output-mode-protocol 旗標檔
+  failure_mode_log: state/failure_modes.log  # failure-modes 累積紀錄
 ```
 
 ### Schema 細節
@@ -67,6 +73,7 @@ state:
 | 欄位 | 必填？ | 說明 |
 |---|---|---|
 | `version` | ✅ | 對齊本檔 schema 版本，不可省 |
+| **`common_memory_root`** | ✅ | **v0.4.1 必填**。預設 `agent-commons/`；可覆寫為其他單一目錄名（依 `core/common-memory-root.md`）。**禁止分散** |
 | `shared.capsules` | 條件 | 啟用 audit-rights / completion-delivery 時必填 |
 | `shared.handoffs` | 條件 | 啟用 handoff-chain 時必填 |
 | `shared.protocols` | 條件 | 啟用 evidence-first / role-separation 時必填 |
@@ -143,7 +150,9 @@ v0.4 暫不支援，需要時 PR 升級 schema。
 | `violation-reflection` | `audit-rights`, `failure-modes`, `structural-anti-fabrication` |
 | `structural-anti-fabrication` | `audit-rights` |
 | `completion-delivery` | `evidence-first` |
-| `handoff-chain` | `audit-rights` |
+| `handoff-chain` | `audit-rights`, `common-memory-root` |
+| `role-separation` | `common-memory-root`（`roles/<role>/` 目錄須在此根下）|
+| **所有條款** | **`common-memory-root`**（v0.4.1 起為架構級前提）|
 
 `/charter-doctor` 在啟動時檢查相依完整性，缺漏即 warn。
 

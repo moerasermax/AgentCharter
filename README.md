@@ -33,6 +33,12 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | **A2. AI ⊥ 角色** | 同一個 AI 可在不同專案扮演不同角色；身份無黏著 |
 | **A3. 專案 ⊥ 框架** | 框架不知道「金融 / 醫療 / SaaS」差異；領域特定條款（如 IRON 風控）放專案內，框架只提供「**領域安全公理槽位**」（Domain Safety Axiom Slots）|
 
+### A4 架構級約定（v0.4.1 加入）
+
+| 約定 | 含義 |
+|---|---|
+| **共同記憶根目錄** | 多 AI 共享資產必須位於**單一根**之下，預設叫 `agent-commons/`。看到此目錄 ＝ 此專案採用 AgentCharter。詳見 `core/common-memory-root.md` |
+
 ---
 
 ## 核心通用條款（`core/`）
@@ -47,6 +53,7 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `structural-anti-fabrication.md` | 事實宣告必含 stdout 區塊；不靠 AI 自我誠實，靠文檔結構強制 |
 | `violation-reflection.md` | 違規退稿後須補交反省；反省價值在「未來 AI / 集體記憶」而非矯正當前 AI |
 | `charter-config.md` | mapping.yaml + profile.yaml schema；可插拔啟用條款，不需重組目錄 |
+| `common-memory-root.md` | **架構級約定** — 多 AI 共享資產必須位於單一根（預設 `agent-commons/`）；採用識別 |
 | `output-mode-protocol.md` | eco / verbose 雙段式輸出 + 自動升級條件 |
 | `completion-delivery.md` | 工程師完工須附「PM 驗收測試計畫」（Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表）|
 | `handoff-chain.md` | Session 交接鏈與必含項目 |
