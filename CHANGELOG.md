@@ -10,7 +10,20 @@
 - 邀請 Gemini CLI 端提交 `roles/pm/gemini-cli.md`
 - CryptoBot 改為 *引用* 框架而非重複維護
 - 評估 IRON Pattern（Double Insurance、ACL）抽到框架的可行性
-- v0.2 評估把 `structural-anti-fabrication.md` 從「強化抽驗模式必強制」升為「全模式預設強制」
+
+---
+
+## [0.2.0] — 2026-04-27
+
+### Changed — 強度升級
+
+- `core/structural-anti-fabrication.md` 從「強化抽驗模式必強制」**升為「全模式預設強制」**：所有結案宣告無論模式皆須附 stdout 區塊，缺失即直接退稿不進入內容判讀
+- 新增 §7.1 Token 影響說明：短期 +1〜3%，長期顯著減少（避免假宣告事件爆炸性消耗）
+- 新增 §7.2 與 eco 模式的相容說明（stdout 屬事實型內容，不在 eco 可砍項）
+
+### 動機
+
+S70 事件後使用者複盤討論：自我 hook 受限於遞迴信任陷阱與形式主義，把驗證搬到結構層才有效。0.1.1 引入後評估 token 影響為「短增長減」，故直接升級為全模式強制，無 v0.2 觀察期。
 
 ---
 
