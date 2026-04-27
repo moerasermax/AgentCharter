@@ -25,14 +25,24 @@
 **Blocker**：需 Gemini 端代理人或 Gemini CLI 自己參與
 **內容**：依 `roles/pm/_spec.md` + Gemini 工具能力 + S70 事件根因分析
 
-### 3. v0.5+ Reference Impl
+### 3. v0.5+ Reference Impl — **版更工具優先**
 
-**狀態**：等核心條款穩定後啟動
-**動作**：把 `tools/{scan,init,doctor}-spec.md` 變成可跑的工具
-**選項**：
-- A. bash + python 原型
-- B. 直接寫成 Claude Code slash command（但會違反「框架不代生成」原則 — 需設計成「指引 AI 自我具象化」）
-- C. 跨 AI CLI（最大）
+**狀態**：v0.5.7 後啟動。**修正前一輪「工具中心偏見」**（2026-04-27）。
+
+**核心定位**：工具不是必要組件（framework 本體已完備），但**升版流程是反覆痛點，手動易錯**。所以工具的核心目的是支援 `versioning-migration §3` 的升版流程，不是初次接入。
+
+**Phase 順序**（依痛點優先）：
+
+| Phase | 工具 | 用途 | 優先 |
+|---|---|---|---|
+| 1 | `charter-doctor.py` | 升版 dry-run + 健康檢查 | 🔴 最高（支援 versioning-migration §3.1 第 3 步）|
+| 2 | `charter-upgrade.py` | 執行升版（自動 schema 擴充 + BREAKING 確認）| 🔴 高（v0.6+ 第一次 BREAKING 升級時實證）|
+| 3 | `charter-init.py` | 初次接入（手動可行，但降低陌生團隊門檻）| 🟢 低 |
+| 4 | `charter-scan.py` | 既有專案智慧掃描（需 LLM judgment）| 🟢 留 v1.0 |
+
+**技術選型**：python + PyYAML + stdlib（避免 npm/brew 多通道發布；單一 cross-platform）
+
+**Drop**：原本列的選項 B（Claude Code slash command）— 違反「框架不代生成」精神，跨 AI 不通用，不採。
 
 ### 4. 第二個非 CryptoBot 真實 example
 
