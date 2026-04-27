@@ -1,7 +1,7 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-04-27（台灣時間）
-> **當前版本**：v0.5.7
+> **當前版本**：v0.5.8
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔即為 session 斷點儲存（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
 
@@ -11,6 +11,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| v0.5.8 | _(待 commit)_ | Maintainer Discipline 條款（framework 維護者紀律 — 位階特殊：採用方無關、維護者強制；對應 v0.5.7 累積的兩次 dogfood signal #1+#2，使用者授權跳過 ≥3 次累積直接條款化）|
 | v0.5.7 | `5c6e76d` | Working Stack Discipline 條款（DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續；補完三種接班場景的正交盲區）|
 | v0.5.6 | `bfef9b0` | Versioning & Migration 條款（SemVer 對 charter 的具體含義 + 升級流程 + 多 AI 版本一致性）— **5 候選盤點完成**|
 | v0.5.5 | `bfef9b0` | Domain Axiom Slot 條款（領域公理槽位的位階 / 撰寫紀律 / 違反處置；領域公理 > core 衝突優先序）|
@@ -41,7 +42,7 @@
 
 ---
 
-## 19 條 core 條款清單（按概念分組）
+## 20 條 core 條款清單（按概念分組）
 
 ### A. 角色與職權（4 條）
 
@@ -86,6 +87,7 @@
 | `charter-config.md` | mapping.yaml + profile.yaml schema（v0.5：配置在 `agent-commons/_config/`）|
 | **`domain-axiom-slot.md`** | **領域公理槽位（v0.5.5）**：位階（領域 > 核心）+ 撰寫紀律最低要求 + /charter-doctor 違反處置分級 |
 | **`versioning-migration.md`** | **版本演化（v0.5.6）**：SemVer 對 charter 的具體含義 + 已採用專案升級流程 + 多 AI 版本一致性 |
+| **`maintainer-discipline.md`** | **framework 維護者紀律（v0.5.8）**：位階特殊（採用方無關、維護者強制）；spec sync check + DRAFT 紀律對 maintainer 也適用；三 preset 預設 `false` |
 
 ---
 
@@ -128,13 +130,13 @@ project-root/
 
 ## 三個 preset
 
-| Preset | 條款啟用（v0.5.7）| 適用 |
+| Preset | 條款啟用（v0.5.8）| 適用 |
 |---|---|---|
-| `minimal.yaml` | 9 / 17 條，寬鬆參數 | 探索型 / 單人 + 1 AI |
-| `standard.yaml` | 17 / 17 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
-| `strict.yaml` | 17 / 17 條，嚴格上限 | 嚴格合規 / 高風險領域 |
+| `minimal.yaml` | 9 / 18 條，寬鬆參數 | 探索型 / 單人 + 1 AI |
+| `standard.yaml` | 17 / 18 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
+| `strict.yaml` | 17 / 18 條，嚴格上限 | 嚴格合規 / 高風險領域 |
 
-> 註：19 條條款中，2 條為架構級前提（`common-memory-root` 與 `charter-config`），不設 enabled 開關 — 採用 AgentCharter 即視為自動啟用，故各 preset 的 enabled 計數 max 為 17。
+> 註：20 條條款中，2 條為架構級前提（`common-memory-root` 與 `charter-config`，不設 enabled 開關），1 條為 maintainer-only（`maintainer-discipline`，三 preset 預設關 — 採用方無關），故各 preset 的 enabled 計數 max 為 18，採用方場景常用 17。
 
 ---
 

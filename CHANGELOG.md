@@ -10,6 +10,68 @@
 
 ---
 
+## [0.5.8] — 2026-04-27
+
+### Added — Maintainer Discipline 條款（framework 維護者紀律）
+
+新建 `core/maintainer-discipline.md`。**位階特殊** — 對採用方無關（三 preset 預設 `false`），對 framework 維護者強制（自我約束 + 工具輔助）。
+
+#### 為何引入
+
+v0.5.7 期間累積兩次 dogfood signal：
+
+| # | 事件 | 違反 |
+|---|---|---|
+| 1 | Claude 在 onboarding 討論說「dogfood signal 記在腦中」 | working-stack-discipline §1（DRAFT 對話累積）|
+| 2 | v0.5.0/v0.5.1 修條款時未同步 tools/{init,scan,doctor}-spec.md | 無對應條款（之前無維護者紀律）|
+
+兩次同源：**framework 維護者沒走自己定義的紀律**。原計畫累積 ≥3 次再條款化（依 escalation §1 哲學自我應用），使用者直接授權跳過累積階段，本 commit 落地。
+
+#### 條款內容（8 段）
+- §0 概念定位（兩次實證 + framework 設計矛盾 + 位階特殊）
+- §1 條文（spec sync check + DRAFT 紀律對 maintainer 也適用）
+- §2 範圍（修改 / 引用的定義）
+- §3 三層執行機制：
+  - §3.1 工具層：`charter-doctor.py --self-check`（v0.6+ 候選，對 charter repo 自身做一致性檢查）
+  - §3.2 流程層：CONTRIBUTING.md 補 PR checklist
+  - §3.3 commit 層：commit message 含 sync 軌跡（已自然執行）
+- §4 違反處置（自我抽驗，無外部 audit AI）
+- §5 與 dogfooding 取捨的關係（v0.x 不採用 charter 但維護者紀律仍生效）
+- §6 與其他 core 條款關係
+- §7 對應 dogfood signal（記為條款化依據）
+- §8 變更歷史
+
+### Modified
+
+- `core/charter-config.md`：
+  - `enabled` 加 `maintainer-discipline`（預設 `false`，註明 maintainer-only）
+  - 條款相依表加：依賴 `working-stack-discipline` + `versioning-migration` + `structural-anti-fabrication` + `audit-rights`，標明位階特殊
+- `tools/profiles/{minimal,standard,strict}.yaml`：**全部預設 `false`**（採用方無關）；charter_version 升至 0.5.8
+- `README.md` core 條款表加一行
+- `ADOPTION.md`：版本對齊更新；條款數從 19 → 20（其中 1 條 maintainer-only）
+- `.claude_temp/STATUS.md / NEXT.md`：版本軌跡 + 已完成標記
+
+### 設計決策
+
+關鍵決策：
+- **預設 `false` 在三個 preset**（區別於其他 v0.5.x 新條款）— 因為對採用方無關。採用方修自己 charter copy 沒有「同步 spec」需求
+- **§3.1 self-check 列為 v0.6+ 候選**（不在 v0.5.8 落地）— 工作量需單獨評估，且當前手動 review 已自然執行
+- **§4 違反處置不適用 escalation-protocol**（無外部 audit 主體）— 維護者違反走自我抽驗 + dogfood signal 累積機制
+- **不破壞既有採用方**：本條款新增不影響任何已採用 charter v0.5.7 的專案（他們的 profile.yaml 不啟用本條款，無 schema 變更影響）
+
+依 versioning-migration §2 為 **MINOR**（新增條款 + 新增可選欄位）。
+
+### 對應 dogfood signal 的「自我打臉」迭代
+
+本條款本身的撰寫過程也走了 maintainer-discipline §1 的精神：
+
+- 寫條款 → 同步修 charter-config schema + 三 profile yaml + README + ADOPTION + CHANGELOG + STATUS + NEXT
+- commit message 列 sync 軌跡（依 §3.3）
+
+→ 這次 commit 是本條款 §3.3 的範例。
+
+---
+
 ## [0.5.7] — 2026-04-27
 
 ### Added — Working Stack Discipline 條款（補完「session 內物理中斷再續」結構性盲區）

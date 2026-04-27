@@ -3,11 +3,11 @@
 # 適用：一般雙 AI 協作專案（CryptoBot 級別）。
 # 設計：全核心條款啟用，參數中等嚴格，適合多數正式專案。
 #
-# 條款啟用：17 / 17（全啟用）
+# 條款啟用：17 / 18（全啟用 — maintainer-discipline 是 maintainer-only，採用方預設關）
 # 預設參數：中等
 
 version: "0.4.0"
-charter_version: "0.5.7"
+charter_version: "0.5.8"
 preset: standard
 
 # === B1 粒度：條款啟用 ===
@@ -28,6 +28,7 @@ enabled:
   domain-axiom-slot: true
   versioning-migration: true
   working-stack-discipline: true
+  maintainer-discipline: false       # 位階特殊 — 對採用方無關，僅 framework 維護者啟用
   init-template: true
 
 # === B3 粒度：條款參數（中等）===

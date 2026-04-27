@@ -134,6 +134,7 @@ enabled:
   domain-axiom-slot: <bool>
   versioning-migration: <bool>
   working-stack-discipline: <bool>
+  maintainer-discipline: <bool>      # 預設 false（採用方無關，framework 維護者用）
   init-template: <bool>
 
 # === B3 粒度：條款參數 ===
@@ -189,6 +190,7 @@ v0.4 暫不支援，需要時 PR 升級 schema。
 | `domain-axiom-slot` | `charter-config`, `common-memory-root`, `evidence-first` |
 | `versioning-migration` | `charter-config`, `handoff-chain`, `init-template` |
 | `working-stack-discipline` | `handoff-chain`, `cross-ai-handoff`, `evidence-first`, `common-memory-root` |
+| `maintainer-discipline` | `working-stack-discipline`, `versioning-migration`, `structural-anti-fabrication`, `audit-rights`（**位階特殊**：對採用方無關，僅 framework 維護者啟用）|
 | `role-separation` | `common-memory-root`（`roles/<role>/` 目錄須在此根下）|
 | **所有條款** | **`common-memory-root`**（v0.4.1 起為架構級前提）|
 
