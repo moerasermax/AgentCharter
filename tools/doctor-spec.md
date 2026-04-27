@@ -1,9 +1,9 @@
 # /charter-doctor — 健康檢查設計
 
-> **狀態**：v0.5.7（spec 對齊 + python 工具已落地）
+> **狀態**：v0.5.9（純 spec — 由 AI 自具象化執行）
 > **位階**：tools / 設計文檔。
-> **v0.5.7 對齊註記**：原 v0.4 spec 寫 `.agentcharter/` 路徑（v0.5.0 已合併到 `agent-commons/_config/`）+ 未含 v0.5.1 self-instantiation 狀態檢查。本檔已同步對齊。
-> **實作對應**：權威實作為 `tools/charter-doctor.py`（v0.5.7 + bug fix `422f559`），含 §3.1 結構檢查 + 升版 dry-run（`--target-version`）。
+> **v0.5.9 演化軌跡**：原 v0.4 spec 寫 `.agentcharter/` 路徑 → v0.5.0 合併到 `agent-commons/_config/` → v0.5.1 加 self-instantiation 狀態檢查 → v0.5.7 曾落地為 python 工具 → **v0.5.9 移除 python 工具回歸純 spec**（framework 不附實作工具）。
+> **實作模式**：採用方對 AI 下 prompt「依本 spec 跑健康檢查」或「依本 spec 自具象化 `/charter-doctor` slash command 給未來重用」，AI 完成檢查並輸出 stdout 報告。
 
 ---
 
@@ -245,10 +245,12 @@ CI / pre-commit hook 可依退出碼 gate。
 
 | 版本 | 內容 | 狀態 |
 |---|---|---|
-| v0.4 | Spec only — 本文檔 | ✅ |
-| v0.5.0 | 配置目錄合併 `.agentcharter/` → `agent-commons/_config/`（spec 對齊延遲到 v0.5.7） | ✅ |
+| v0.4 | Spec only — 本文檔初版 | ✅ |
+| v0.5.0 | 配置目錄合併（spec 對齊延遲到 v0.5.7） | ✅ |
 | v0.5.1 | §3.4 自我具象化狀態檢查段加入 | ✅ |
-| v0.5.7 | `tools/charter-doctor.py` python 工具落地（健康檢查 + 升版 dry-run）| ✅ |
-| v0.6+ | 加 `--fix` 互動模式 / `--json` machine-readable 輸出 | ⏳ |
+| v0.5.7 | 曾落地為 python 工具 | ⛔ 後於 v0.5.9 移除 |
+| **v0.5.9** | **回歸純 spec** — framework 不附實作工具 | ✅ |
 
-**權威實作**：`tools/charter-doctor.py`（v0.5.7 + bug fix `422f559`）。AI 自具象化版的 `/charter-doctor` slash command 應對齊本檔流程。
+**實作模式**：採用方對 AI prompt「依本 spec 跑健康檢查」+ 順便自具象化 `/charter-doctor` slash command（依 `core/init-template.md §3.3` self-instantiation 精神）。
+
+→ framework 維持「純規範」位階；工具實作由各 AI 自行管理（對齊「角色 ⊥ AI」+「framework 不代生成」原則）。

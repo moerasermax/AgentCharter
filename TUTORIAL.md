@@ -108,11 +108,9 @@ git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
 - 多個專案共用同一份 clone 即可（不必每專案 clone 一份）
 - 路徑可改，但建議放統一位置便於管理
 
-### 3.2 Init 三條路徑並列
+### 3.2 Init 兩種模式
 
-採用方任選一種：
-
-#### 路徑 A：Prompt AI 跑接入 + 自具象化 `/charter-init`（推薦）
+#### 模式 A：第一次接入（prompt + 自具象化）
 
 ```
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
@@ -129,40 +127,33 @@ git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
 
 → AI 完成接入 + 把流程「**儀式化**」為 slash command（一次 prompt，未來重用）。對齊 charter A1「角色 ⊥ AI」精神 — 各 AI 在自己廠商位置具象化。
 
-#### 路徑 B：已具象化的 `/charter-init`
-
-如果你（或前任 AI）已具象化過 charter-init slash command：
+#### 模式 B：之後重用 `/charter-init`
 
 ```
 /charter-init standard
 ```
 
-注意：spec 在 v0.5.7 前曾過時（v0.5.0 配置合併 + v0.5.1 不代生成原則未同步），如果你的 AI 在 v0.5.7 前具象化過 slash command，可能 cache 舊邏輯（產出 `.agentcharter/` 舊路徑）。**重新具象化**即可：請 AI 「依 v0.5.7 對齊版的 init-spec.md 重新具象化 /charter-init」。
+#### 為什麼 v0.5.9 後不附 python / npm 工具
 
-#### 路徑 C：python 工具（跨 AI 中立 / CI 友好）
+v0.5.7 期間曾落地 `tools/charter-init.py`，v0.5.9 移除。決策理由：
 
-```bash
-cd ~/projects/<your-project>
+- **framework 是規範框架**，不是工具實作。混雜兩者 → 違反清晰分層
+- 對齊 v0.5.1 「不代生成 slash command」的精神 — 框架不該越界決定工具實作通道
+- AI 自具象化的 slash command 是 charter 哲學的純粹路徑（A1「角色 ⊥ AI」+ A4「共同記憶根目錄」）
+- 採用方 UX 不變（prompt 一次 + 重用 slash）
 
-python ~/.agentcharter/tools/charter-init.py \
-  --preset standard \
-  --domain-axioms-path protocols/<YOUR_AXIOM>.md \
-  --domain-axioms-alias <SHORT_NAME>
+→ charter repo 永久維持「**純規範**」位階。所有工具動作（init / doctor / scan / upgrade）由 AI 依對應 spec 自具象化。
+
+#### 升版 dry-run 也走同模式
+
+升 charter 版本時 prompt：
+
+```
+我要升 charter 從 v<old> → v<new>。請依 ~/.agentcharter/tools/doctor-spec.md
+跑 target-version=<new> dry-run，列出本專案在新版下會踩到的問題。
 ```
 
-`charter-init.py` 是 **v0.5.7 權威實作** — 不依賴 AI 解讀，跑完保證對齊最新 spec。
-
-#### 三路徑取捨
-
-| 場景 | 推薦 |
-|---|---|
-| 第一次接入 + 想要重用 slash command | A（prompt + 自具象化）|
-| 已具象化過 slash 且 AI 是 v0.5.7+ 才接觸 charter | B（直接打 slash）|
-| 已具象化過但是 v0.5.6 之前的 cache | A（重新具象化）或 C |
-| CI / 自動化 / 想要絕對一致 / AI 不響應 | C（python） |
-| 完全不確定 | A（最簡單）|
-
-三路徑最終產出**等價的 agent-commons/ 結構**，差異在「採用方執行的物理動作」+「未來重用便利度」。
+詳見 [versioning-migration §3](./core/versioning-migration.md)。
 
 ### 3.3 preset 選哪個
 
@@ -182,51 +173,42 @@ python ~/.agentcharter/tools/charter-init.py \
 
 不確定 → `standard`。事後可單點調嚴：改 `agent-commons/_config/profile.yaml.parameters.<condition>.<key>`。
 
-### 3.4 Init 的所有 flag
+### 3.4 Init 的所有參數（依 init-spec.md）
 
-```bash
-python charter-init.py \
-  --preset {minimal|standard|strict}        # 必填
-  --domain-axioms-path <path>               # 必填，相對 common-root
-  --domain-axioms-alias <name>              # 必填，< 10 字元
-  --common-root <name>                      # 預設 agent-commons
-  --charter-version <version>               # 預設讀 charter 當前版本
-  --force                                   # 覆寫已存在的 common-root
-  --dry-run                                 # 預覽不執行
-```
+prompt 給 AI 時可指定（依 [tools/init-spec.md](./tools/init-spec.md)）：
+
+| 參數 | 用途 |
+|---|---|
+| `preset` | `minimal` / `standard` / `strict` — 必填 |
+| `domain-axioms-path` | 相對 common-root 的領域公理檔位置 — 必填 |
+| `domain-axioms-alias` | 短名稱（如 `IRON` / `RECON`）— 必填 |
+| `common-root` | 預設 `agent-commons`，可覆寫 |
+| `charter-version` | 預設讀 charter 當前版本 |
+| `force` | 覆寫已存在的 common-root |
+| `dry-run` | 預覽不執行 |
 
 ### 3.5 既有結構處理
 
 **情境 A：從零新建專案**
-直接跑 init，無特別處理。
+直接走 §3.2 模式 A，無特別處理。
 
 **情境 B：一般 repo（無 protocols/）**
-直接跑 init，agent-commons/ 不會干擾現有結構。
+直接走 §3.2 模式 A，agent-commons/ 不會干擾現有結構。
 
 **情境 C：已有 protocols/ 目錄**
 
-走「**新建 agent-commons + 手動對映**」路徑（避免 `--common-root protocols` 把 16 子目錄建在既有結構上污染）：
+走「**新建 agent-commons + 手動對映**」路徑（避免 `common-root=protocols` 把 16 子目錄建在既有結構上污染）：
 
-```bash
-python charter-init.py --preset standard ...
-git mv protocols/<your-files>.md agent-commons/protocols/
-```
+1. AI 跑 init（依 §3.2 模式 A）
+2. 採用方手動 `git mv protocols/<files>.md agent-commons/protocols/`
 
 **情境 D：覆寫既有名稱（如沿用 CryptoBot 的 management/）**
 
-```bash
-python charter-init.py --common-root management --preset standard ...
-```
-
-但需確認 `management/` 內既有結構不衝突（charter-init 對既有檔案保留不覆寫，但會在 `_config/` 寫入 yaml）。
+prompt 加 `common-root: management`。但需確認 `management/` 內既有結構不衝突（init 對既有檔案保留不覆寫，但會在 `_config/` 寫入 yaml）。
 
 ### 3.6 dry-run 預覽
 
-```bash
-python charter-init.py --preset standard ... --dry-run
-```
-
-列出所有將執行的 mkdir / write 動作，不實際寫入。建議**第一次**先 dry-run 看一遍。
+prompt 加「**dry-run 模式**」：AI 列出所有將執行的動作，不實際寫入。建議**第一次**先 dry-run 看一遍。
 
 ---
 
@@ -298,9 +280,7 @@ order_id 一旦寫入，禁止同 ID 二次寫入；upsert 須走顯式冪等中
 
 ### 4.6 寫完後驗證
 
-```bash
-python ~/.agentcharter/tools/charter-doctor.py
-```
+prompt 給 AI：「請依 ~/.agentcharter/tools/doctor-spec.md 跑健康檢查」。或打 `/charter-doctor`（若已具象化過）。
 
 期望：`✅ domain_axioms.primary 路徑存在`。
 
@@ -601,24 +581,28 @@ L2 使用者裁決 → 標準上報格式（雙方立場 + ABCD 選項）
 ```bash
 # 1. 先升 charter clone
 cd ~/.agentcharter && git pull
+```
 
-# 2. dry-run 看新版會踩什麼
-python ~/.agentcharter/tools/charter-doctor.py \
-  --target-version <new> --dry-run
+```
+# 2. prompt AI 跑 dry-run
+請依 ~/.agentcharter/tools/doctor-spec.md 跑 target-version=<new> dry-run，
+列出本專案在新版下會踩到的問題。
 
 # 3. 讀 CHANGELOG 對應段（特別看 ### BREAKING）
 
 # 4. 升 profile.yaml.charter_version
-# 編輯 agent-commons/_config/profile.yaml
+編輯 agent-commons/_config/profile.yaml
 
-# 5. 跑 doctor 確認
-python ~/.agentcharter/tools/charter-doctor.py
+# 5. prompt AI 確認
+請依 ~/.agentcharter/tools/doctor-spec.md 跑健康檢查，確認 ERROR/WARN 都通過。
 
 # 6. commit
 git commit -m "chore: bump charter_version <old> → <new>"
 ```
 
-**禁跨 MAJOR 跳升**（如 0.x → 2.x）— doctor 會擋（依 [§3.3](./core/versioning-migration.md)）。
+**禁跨 MAJOR 跳升**（如 0.x → 2.x）— doctor spec §3.3 會擋（依 [versioning-migration §3.3](./core/versioning-migration.md)）。
+
+**v0.5.9 後 charter 承諾向下兼容**（依 [versioning-migration §2.3](./core/versioning-migration.md)）：第一次 init 後得到的 `agent-commons/` 結構是穩定承諾，後續 charter 演進沿用既有結構，不要求採用方重建目錄。
 
 ---
 
@@ -628,7 +612,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 | 錯誤訊息 | 可能原因 | 修法 |
 |---|---|---|
-| `❌ Common Memory Root '<path>' 不存在` | 還沒跑 init / 路徑錯 | `python charter-init.py ...` |
+| `❌ Common Memory Root '<path>' 不存在` | 還沒跑 init / 路徑錯 | 走 §3.2 模式 A prompt AI 跑 init |
 | `❌ profile.yaml 缺 charter_version 欄位` | yaml 寫錯 | 對照 `tools/profiles/<preset>.yaml` |
 | `❌ mapping.yaml 缺 domain_axioms.primary` | mapping schema 不齊 | 補 `domain_axioms.primary: <path>` |
 | `❌ domain_axioms.primary 路徑不存在` | 公理檔還沒寫 | 編輯 `agent-commons/protocols/<axiom>.md` |
@@ -645,14 +629,15 @@ git commit -m "chore: bump charter_version <old> → <new>"
 | AI 拒絕自我具象化（要求使用者代寫）| 違反 [§3.3.5](./core/init-template.md) — 提醒 AI「self-instantiation 是強制流程」 |
 | Slash command 跑起來缺步驟 | 該實作為次品，要求 AI 重新具象化（依 §3.3.5）|
 
-### 11.3 Init / Doctor 工具錯誤
+### 11.3 AI 自具象化 init / doctor 失敗
 
 | 狀況 | 修法 |
 |---|---|
-| `❌ 需要 PyYAML` | `pip install pyyaml` |
-| `❌ <common-root> 已存在` | 加 `--force` 覆寫（既有 placeholder 檔保留），或選別的 `--common-root` |
-| Windows cp950 編碼錯 | 工具有自動處理（`sys.stdout.reconfigure utf-8`），若仍失敗請設 `chcp 65001` |
-| `❌ preset 模板不存在` | charter clone 路徑不對 — 確認 `--charter-version` 對應的 charter repo 完整 |
+| AI 找不到 charter 路徑 | prompt 加絕對路徑 `~/.agentcharter/` |
+| AI 解讀 spec 不準 | 引用具體 spec §段（如「依 init-spec.md §3 Phase 1〜3 跑」），減少自由度 |
+| `<common-root>` 已存在 | prompt 加 `force: true` / 「覆寫既有」；或請 AI 選別的 common-root 名 |
+| AI 產出結構不對齊 charter v0.5.9+ schema | 確認 charter clone 是最新（`cd ~/.agentcharter && git pull`），讓 AI 重讀 spec |
+| AI 不依 spec、自由發揮 | prompt 強調「**嚴格依 spec**，禁自由發揮 / 編造額外步驟」 |
 
 ### 11.4 容易踩的概念坑
 

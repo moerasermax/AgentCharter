@@ -88,19 +88,29 @@ framework 維護者**修改 charter repo 內** `core/` / `templates/` / `tools/*
 
 對應條款條文的**強制力**（自我約束 + 工具輔助，無外部強制）：
 
-### 3.1 工具層：`charter-doctor.py --self-check`（**v0.6+ 候選**）
+### 3.1 工具層：spec-driven self-check（**由 AI 自具象化執行**）
 
-擴充 `charter-doctor.py` 加 `--self-check` 旗標，對 charter repo 自身做一致性檢查：
+依 `core/init-template.md §3.3` self-instantiation 精神，charter 維護者可請 AI 依以下 prompt 自具象化 `/charter-self-check` slash command：
 
+```
+請依以下檢查項對 charter repo 自身做一致性檢查，並順便具象化為
+/charter-self-check slash command 給未來重用。
+
+檢查項：
 | 檢查項 | 偵測方式 |
 |---|---|
-| 條款引用一致性 | 解析 `core/*.md` 內 `core/<filename>.md` 引用，verify 該檔存在 |
-| spec 與 core 條款路徑對齊 | 解析 `tools/*-spec.md` 內 `<common-memory-root>/_config/` 引用是否還有殘留 `.agentcharter/` 舊路徑 |
-| profile yaml 啟用清單對齊 core 條款檔 | `tools/profiles/*.yaml.enabled` 的 keys 須等於 `core/*.md` 檔名（去 .md）|
-| `_spec.md §7` 對應 AI 表 vs `<vendor>.md` 檔案 | `roles/<role>/_spec.md` 表中標 ✅ 的 vendor，對應 `<vendor>.md` 須實際存在 |
-| CHANGELOG 條款修訂 vs 條款檔變更 | git log 找 core 條款的最新修改 commit，對照 CHANGELOG entry |
+| 條款引用一致性 | 解析 core/*.md 內 core/<filename>.md 引用，verify 該檔存在 |
+| spec 與 core 條款路徑對齊 | 解析 tools/*-spec.md 內路徑引用是否殘留 .agentcharter/ 舊路徑 |
+| profile yaml 啟用清單對齊 core 條款檔 | tools/profiles/*.yaml.enabled 的 keys 須等於 core/*.md 檔名（去 .md）|
+| _spec.md §7 對應 AI 表 vs <vendor>.md 檔案 | roles/<role>/_spec.md 表中標 ✅ 的 vendor，對應檔案須存在 |
+| CHANGELOG 條款修訂 vs 條款檔變更 | git log 找 core 條款最新修改 commit，對照 CHANGELOG entry |
 
-當前狀態：⏳ **未實作**。優先序見 NEXT.md §3 工具 phase 候選。
+完成後輸出 stdout 報告，並把流程具象化為 .claude/commands/charter-self-check.md。
+```
+
+當前狀態：⏳ **未自具象化**（charter repo 可隨時跑此 prompt 建出來）。本條款 §3.1 是「**規範**」，具體執行由維護者按需求觸發。
+
+對齊 v0.5.9 「framework 不附實作工具」原則 — 所有工具動作由 AI 自具象化，charter repo 不維護 python / npm 等實作通道。
 
 ### 3.2 流程層：CONTRIBUTING.md 補 PR checklist
 

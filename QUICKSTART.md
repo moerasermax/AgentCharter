@@ -31,11 +31,7 @@ charter 是規範集，clone 到本機任一位置即可（不需 npm install）
 
 ### Step 2：在你專案跑 init（1 分鐘）
 
-**任選一種方式**：
-
-#### 方式 A：Prompt AI 跑接入 + 自具象化 `/charter-init`（推薦，UX 最好）
-
-複製貼給你的 AI（Claude / Gemini / Cursor 等）：
+**第一次接入**：複製貼給你的 AI（Claude / Gemini / Cursor 等）：
 
 ```
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
@@ -52,32 +48,9 @@ charter 是規範集，clone 到本機任一位置即可（不需 npm install）
 
 AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md` 或 `.gemini/commands/charter-init.toml`（依 AI 廠商）。
 
-#### 方式 B：直接打 `/charter-init`（如果 AI 已具象化過）
+**之後重用**：直接打 `/charter-init standard`（前提：已具象化過）。
 
-```
-/charter-init standard
-```
-
-僅適用 AI 已具象化過 charter-init slash command 的場景。
-
-#### 方式 C：python 工具（跨 AI 中立，CI 友好）
-
-```bash
-cd ~/projects/<your-project>
-
-python ~/.agentcharter/tools/charter-init.py \
-  --preset standard \
-  --domain-axioms-path protocols/<YOUR_AXIOM>.md \
-  --domain-axioms-alias <SHORT_NAME>
-```
-
-#### 何時選哪個
-
-| 場景 | 建議方式 |
-|---|---|
-| 第一次接入 + 想要重用 slash | A |
-| 已有 slash command 已具象化 | B |
-| 在 CI / 想要絕對一致 / AI 沒響應 | C |
+> charter v0.5.9 後 framework 不附 python / npm 等實作工具 — 純規範框架，所有工具動作由 AI 自具象化（對齊「角色 ⊥ AI」+「framework 不代生成」原則）。
 
 **參數速查**：
 
@@ -134,13 +107,16 @@ vendor spec）+ core/init-template.md §3.3.2 自我具象化到
 
 ### Step 5：跑 doctor 驗證（1 分鐘）
 
-```bash
-python ~/.agentcharter/tools/charter-doctor.py
+複製貼給 AI：
+
+```
+請依 ~/.agentcharter/tools/doctor-spec.md 對本專案的 agent-commons/
+跑健康檢查，並順便具象化為 /charter-doctor slash command。
 ```
 
 **期望**：`📊 Summary: 0 errors / 0 warnings / 0 infos`
 
-有 warnings 看訊息決定是否修。詳見 [TUTORIAL §11](./TUTORIAL.md#11-troubleshooting)。
+之後重用打 `/charter-doctor`。詳見 [TUTORIAL §11](./TUTORIAL.md#11-troubleshooting)。
 
 ---
 

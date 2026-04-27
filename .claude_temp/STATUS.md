@@ -1,7 +1,7 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-04-27（台灣時間）
-> **當前版本**：v0.5.8
+> **當前版本**：v0.5.9
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔即為 session 斷點儲存（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
 
@@ -11,6 +11,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| v0.5.9 | _(待 commit)_ | **Removed python 工具** + Added agent-commons 結構穩定性承諾（versioning-migration §2.3）— 回歸純規範框架；採用方第一次 init 後 agent-commons 結構零變更承諾（v1.0 後永久）|
 | v0.5.8 | `5ed0cec` | Maintainer Discipline 條款（framework 維護者紀律 — 位階特殊：採用方無關、維護者強制；對應 v0.5.7 累積的兩次 dogfood signal #1+#2，使用者授權跳過 ≥3 次累積直接條款化）|
 | v0.5.7 | `5c6e76d` | Working Stack Discipline 條款（DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續；補完三種接班場景的正交盲區）|
 | v0.5.6 | `bfef9b0` | Versioning & Migration 條款（SemVer 對 charter 的具體含義 + 升級流程 + 多 AI 版本一致性）— **5 候選盤點完成**|
@@ -168,7 +169,7 @@ project-root/
 | v0.5.6 | **Versioning & Migration** 條款：SemVer 對 AgentCharter 的具體語意（PATCH/MINOR/MAJOR/架構級）+ 已採用專案升級流程 + 多 AI 版本一致性；**5 候選盤點完成** |
 | v0.5.7 | **Working Stack Discipline** 條款：補完「session 內物理中斷再續」結構性盲區；DRAFT 暫存堆疊 + save 同步 git commit；三種接班場景（結案 / 換 AI / 物理中斷）正交完整 |
 
-### B. 八個架構級概念已釐清
+### B. 九個架構級概念已釐清
 
 1. **Common Memory Root**（v0.4.1）：多 AI 共享資產位於單一根；可覆寫名稱但禁止分散；典型路徑 `agent-commons/`
 2. **AI Self-Instantiation**（v0.5.1）：「角色 ⊥ AI」公理的執行機制；AI 自己讀 charter → 自己生成 slash command → 自己簽名
@@ -178,6 +179,7 @@ project-root/
 6. **領域 > 通用 優先序**（v0.5.5）：領域公理（資金 / 安全 / 合規）優先於 core 通用條款；A3「專案 ⊥ 框架」公理的具體執行條文 — 框架不知道領域差異，故服從領域底線
 7. **版本演化雙軌**（v0.5.6）：`version`（profile schema）⊥ `charter_version`（條款集），各自演化；多 AI 同 session 強制版本一致；BREAKING-LITE 中間級別處理 0.x 階段的架構級變動
 8. **三種接班場景正交完整**（v0.5.7）：session 末邏輯結案（handoff-chain）/ AI 廠商換手（cross-ai-handoff）/ session 內物理中斷再續（working-stack-discipline）— 三條款互斥互補；DRAFT-HANDOFF 兩級存檔 + save 同步 git commit 為核心紀律
+9. **純規範框架 + agent-commons 結構穩定承諾**（v0.5.9）：framework 不附 python / npm 等實作工具（移除 charter-init.py / charter-doctor.py），所有工具動作由 AI 依 spec 自具象化；採用方第一次 init 後得到的 agent-commons/ 結構是穩定承諾（versioning-migration §2.3），v1.0 後永久不破壞既有採用方
 
 ### C. 模擬演練紀錄（討論完成，未寫入 examples）
 

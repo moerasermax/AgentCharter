@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.5.8`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.5.9`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -137,22 +137,27 @@ project-root/
 
 ### T1 接入
 
-**推薦**：用 `tools/charter-init.py` 一鍵建好 `agent-commons/` 結構：
+依 `tools/init-spec.md` 跑接入流程。AI 自具象化模式（v0.5.9 起 framework 不附實作工具）：
 
 ```bash
 # 在你專案的 working dir
 git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
-
-python ~/.agentcharter/tools/charter-init.py \
-  --preset standard \
-  --domain-axioms-path protocols/<YOUR_AXIOM>.md \
-  --domain-axioms-alias <SHORT_NAME>
-
-# 驗證
-python ~/.agentcharter/tools/charter-doctor.py
 ```
 
-或手動建 `agent-commons/_config/{profile.yaml, mapping.yaml}`（依 §4 結構）。
+```
+# Prompt 給 AI（Claude / Gemini / Cursor 等）
+我採用了 AgentCharter，charter 在 ~/.agentcharter/。
+
+請依 ~/.agentcharter/tools/init-spec.md 跑接入流程：
+- preset: standard
+- domain-axioms-path: protocols/<YOUR_AXIOM>.md
+- domain-axioms-alias: <SHORT_NAME>
+
+完成後請順便具象化為 /charter-init slash command 給未來重用（依
+init-template.md §3.3 self-instantiation）。
+```
+
+驗證：依 `tools/doctor-spec.md` prompt AI 跑健康檢查。
 
 ### T2 AI 自我具象化（**核心，見 §7**）
 

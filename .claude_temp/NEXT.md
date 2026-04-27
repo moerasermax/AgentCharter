@@ -31,13 +31,19 @@
 
 **Phase 順序**（依痛點優先）：
 
+**v0.5.9 重大轉向**：framework 不附 python / npm 等實作工具（移除 charter-init.py + charter-doctor.py）。所有工具動作由 AI 依對應 spec 自具象化（對齊 v0.5.1 「不代生成」+ A1「角色 ⊥ AI」原則）。
+
 | Phase | 工具 | 用途 | 狀態 |
 |---|---|---|---|
-| 1 | `charter-doctor.py` | 升版 dry-run + 健康檢查 | ✅ MVP 完成（commit `4e4725a` + bug fix `422f559`）|
-| 2 | `charter-upgrade.py` | 執行升版（自動 schema 擴充 + BREAKING 確認）| ⏳ 等 v0.6+ 第一次 BREAKING 升級時實證 |
-| 3 | `charter-init.py` | 初次接入（建 agent-commons + 套 preset + 寫 yaml）| ✅ MVP 完成（2026-04-27，第二專案採用驅動）|
-| **3.5** | **`charter-doctor.py --self-check`** | **檢測 charter repo 自身一致性（spec / 條款 / template / profile yaml）— 對應 maintainer-discipline §3.1** | ⏳ **v0.6+ 候選**（v0.5.8 條款化但工具未實作；下次同類 dogfood signal 觸發時優先做） |
-| 4 | `charter-scan.py` | 既有專案智慧掃描（需 LLM judgment）| ⏳ 留 v1.0 |
+| ~~1~~ | ~~charter-doctor.py~~ | ~~升版 dry-run + 健康檢查~~ | ⛔ **v0.5.9 移除**（純 spec-driven）|
+| ~~3~~ | ~~charter-init.py~~ | ~~初次接入~~ | ⛔ **v0.5.9 移除** |
+| ~~3.5~~ | ~~charter-doctor.py --self-check~~ | ~~self-check 候選~~ | ⛔ **v0.5.9 改為 AI 自具象化**（依 maintainer-discipline §3.1 修訂）|
+| ~~2~~ | ~~charter-upgrade.py~~ | ~~執行升版~~ | ⛔ 不做（升版由 AI 依 versioning-migration §3 流程跑）|
+| ~~4~~ | ~~charter-scan.py~~ | ~~既有專案智慧掃描~~ | ⛔ 不做（採用方手動 + AI prompt 即可）|
+
+→ Reference Impl 整段廢止。對應實作模式：採用方對 AI 下 prompt「依 ~/.agentcharter/tools/<X>-spec.md 跑 X」，AI 完成動作 + 順便具象化 slash command 給未來重用（依 init-template §3.3 self-instantiation）。
+
+framework 永久維持「**純規範**」位階。
 
 **技術選型**：python + PyYAML + stdlib（避免 npm/brew 多通道發布；單一 cross-platform）
 
@@ -128,6 +134,7 @@
 - ✅ Working Stack Discipline 條款（v0.5.7）— 獨立 core 條款，從 CryptoBot `~/.claude/commands/checkpoints.md` + `PM_Operational_Manual §1.3` 抽象化；補完「session 內物理中斷再續」結構性盲區（三種接班場景正交完整）；DRAFT 暫存堆疊 + save 六步驟（含 git commit 強制綁定）+ session 重啟接班協議；連動 charter-config 啟用清單 + 相依表 + mapping.yaml schema 擴 `shared.draft_context` / `shared.archive`、handoff-chain §7 / cross-ai-handoff §9 / init-template §1.4 §8 反向引用、三 profile yaml（minimal 也啟用 — 對單 AI 場景仍有 context 重啟接班價值）、README、ADOPTION（D 組 3→4 + 場景對照表加 2 條）、CHANGELOG
 - ✅ Maintainer Discipline 條款（v0.5.8）— 獨立 core 條款，**位階特殊**（對採用方無關、framework 維護者強制）；對應 v0.5.7 期間累積的兩次 dogfood signal（#1 framework 設計者違反 working-stack-discipline §1 + #2 framework spec 不同步），使用者授權跳過 ≥3 次累積直接條款化；三層執行機制（charter-doctor self-check 候選 / CONTRIBUTING PR checklist / commit message sync 軌跡）；連動 charter-config enabled 加 + 相依表加（位階特殊註明）、三 profile yaml 全部預設 `false`（採用方無關）、README、ADOPTION（19 → 20 條）、CHANGELOG
 - ✅ `/maintainer-load` slash command（2026-04-27）— charter repo 級維護者接班便利化工具（`.claude/commands/maintainer-load.md`）。一句指令完成「讀 .claude_temp/STATUS+NEXT+ONBOARDING → 八項就緒回報」全流程。對應 maintainer-discipline §1 跨 session 接班需求；不適用採用方（採用方走 init-template §3.3 self-instantiation）。連動 .gitignore 修正：`.claude/*` ignored、但 `.claude/commands/` 入 git；STATUS §跨 session 接班指引加「一句話接班」段
+- ✅ v0.5.9 重大轉向（2026-04-27）— **回歸純規範框架**：移除 tools/charter-init.py + tools/charter-doctor.py（使用者反饋「不乾淨我認為有汙染」）。framework 永久維持「純規範」位階；所有工具動作由 AI 依 spec 自具象化（對齊 v0.5.1「不代生成」+ A1「角色 ⊥ AI」原則）。同時新增 versioning-migration §2.3 「**agent-commons 結構穩定性承諾**」：採用方第一次 init 後得到的 agent-commons/ 結構是穩定承諾，v1.0 後永久不破壞既有採用方。連動 init-spec/doctor-spec/maintainer-discipline §3.1 / versioning-migration §3.1-3.2 / QUICKSTART/TUTORIAL/README/ADOPTION/CHANGELOG 全部對齊純 spec-driven 模式
 - ✅ tools/charter-doctor.py MVP（v0.5.7 + bug fix）— 升版 dry-run + 健康檢查 Phase 1 工具落地；Python + PyYAML，~390 行；對應 versioning-migration §3.1 第 3 步；含 §3.3 跨 MAJOR 邏輯 fix（必須先升 X.0.0 走 migration）+ BREAKING 偵測 trade-off 文檔化
 - ✅ roles/pm/gemini-cli.md vendor spec（2026-04-27）— 由 Gemini CLI PM 親自提交。Round 1 實證內容（11 條工具能力 / 5 條 PM 職責 / 3 條盲區 / S70 根因分析 / 模式協議 / 跨 AI 交接）+ Round 2 重整為三層結構（概念層 / Gemini 實作 / 跨 AI 對應，對應 A1「角色 ⊥ AI」公理 — vendor spec 作為跨 AI PM 範本）+ Claude 校正補回 5 處 regression（§1 兩處橋接校正、§2 補回 3.5 維護管理文件、§4 補回 (d) 對 charter 條款反饋、§6 補回 cross-ai-handoff §5 四區塊能力快照）；連動更新 `roles/pm/_spec.md §7` 對應 AI 表（Gemini 從 placeholder → ✅ v1.0）
 

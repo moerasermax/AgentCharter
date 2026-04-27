@@ -1,9 +1,15 @@
 # /charter-init — 接入流程設計
 
-> **狀態**：v0.5.7（對齊 v0.5.0 配置目錄合併 + v0.5.1 不代生成原則 + v0.5.7 python 工具實作）
+> **狀態**：v0.5.9（純 spec — 由 AI 自具象化執行，不附 python 工具）
 > **位階**：tools / 設計文檔。
-> **v0.5.7 對齊註記**：本檔自 v0.4 起經三次重大演化 — (a) v0.5.0 配置從 `.agentcharter/` 合併到 `agent-commons/_config/`；(b) v0.5.1「框架不代生成 slash command」原則生效（Phase 4 改寫）；(c) v0.5.7 `tools/charter-init.py` 落地為 python 工具（跨 AI 中立）。本檔已同步至 v0.5.7。
-> **實作對應**：本檔所定流程的權威實作為 `tools/charter-init.py`（python，跨 AI 中立）。AI 自具象化版的 `/charter-init` slash command 須對齊本檔流程。
+> **v0.5.9 演化軌跡**：
+> - v0.4 起初版（Spec only）
+> - v0.5.0 配置從 `.agentcharter/` 合併到 `agent-commons/_config/`
+> - v0.5.1「框架不代生成 slash command」原則生效（Phase 4 改寫 — 採用方第一次接入時 prompt AI，AI 自具象化）
+> - v0.5.7 曾落地為 python 工具（後於 v0.5.9 移除）
+> - **v0.5.9 回歸純 spec** — framework 是規範集，不應包含實作工具。AI 依本 spec 自具象化 `/charter-init` slash command 為主流路徑
+>
+> **實作模式**：採用方對 AI 下 prompt「依本 spec 跑接入流程」，AI 完成接入 + 自具象化為 slash command（依 `core/init-template.md §3.3`）。未來重用打 `/charter-init <args>` 即可。
 
 ---
 
@@ -105,7 +111,7 @@ init 完成後輸出：
 
 ### Phase 5：跑 /charter-doctor
 
-自動執行健康檢查（依 `tools/doctor-spec.md`）。`tools/charter-doctor.py` v0.5.7 實作直接 stdout 輸出（不寫 health-report 檔；採用方可 redirect `> health-report.md` 自行保存）。
+依 `tools/doctor-spec.md` 由 AI 自具象化跑健康檢查。輸出 stdout 報告，採用方可 redirect 保存。
 
 驗收項：
 
@@ -216,10 +222,12 @@ init 完成後輸出：
 
 | 版本 | 內容 | 狀態 |
 |---|---|---|
-| v0.4 | Spec only — 本文檔 | ✅ |
+| v0.4 | Spec only — 本文檔初版 | ✅ |
 | v0.5.0 | 配置目錄合併 `.agentcharter/` → `agent-commons/_config/` | ✅ |
 | v0.5.1 | Phase 4 改寫：不代生成 slash command | ✅ |
-| v0.5.7 | `tools/charter-init.py` python 工具落地（跨 AI 中立） | ✅ |
-| v0.6+ | 跨 AI CLI（npm / brew / pip 多通道發布） | ⏳ |
+| v0.5.7 | 曾落地為 python 工具 | ⛔ 後於 v0.5.9 移除 |
+| **v0.5.9** | **回歸純 spec** — framework 不附實作工具，AI 依本 spec 自具象化 | ✅ |
 
-**權威實作**：`tools/charter-init.py`（v0.5.7+）。AI 自具象化版的 `/charter-init` slash command 應對齊本檔流程（v0.5.7 對齊版）。
+**實作模式**：採用方第一次接入 → prompt AI（依 `core/init-template.md §3.3` self-instantiation）→ AI 完成接入並自建 `/charter-init` slash command 到自己廠商位置。未來重用打 `/charter-init <args>`。
+
+→ framework 不維護 python / npm / brew 等實作通道，避免「規範框架」與「工具實作」混雜（v0.5.9 設計決策）。

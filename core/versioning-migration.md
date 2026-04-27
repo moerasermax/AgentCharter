@@ -60,6 +60,47 @@ charter_version = MAJOR.MINOR.PATCH
 - 條款內**範例**修改（不改規範本身）
 - 模糊措辭澄清（澄清前後語意應等價）
 
+### 2.3 agent-commons 結構穩定性承諾（v0.5.9 引入）⭐
+
+**核心承諾**：採用方第一次 `init` 後得到的 `agent-commons/` 結構是**穩定承諾**。後續 charter 版本演進**沿用既有結構**，不要求採用方重建目錄。
+
+#### 2.3.1 永不破壞既有採用方的保證
+
+| 動作 | v0.5.9 後是否允許 |
+|---|---|
+| 新增 `_config/profile.yaml.enabled.<新條款>` 欄位（採用方可選 false 不啟用）| ✅ 允許 |
+| 新增 `mapping.yaml` 的 optional 欄位（採用方可不填）| ✅ 允許 |
+| 新增 `agent-commons/<新子目錄>/` | ✅ 允許（採用方無此目錄時 doctor 視為「未啟用該功能」）|
+| 移除 `mapping.yaml` 既有欄位 | ❌ 禁止 — 必須保留 + 加 `# DEPRECATED at v<X>` 註釋 |
+| 重命名 `mapping.yaml` 既有欄位 | ❌ 禁止 — 須保留舊名 alias，新名 + 舊名並存 |
+| 改變 `mapping.yaml` 既有欄位語意 | ❌ 禁止 — 等同 BREAKING；須走 MAJOR 升級且提供 migration script |
+| 改變 core 條款 `enabled` key 名稱（如 `audit-rights` → `auditing`）| ❌ 禁止 — 條款重命名須保留舊名 alias |
+| 移除 core 條款 | ⚠️ 視為 BREAKING（依 §2.1）；須走 MAJOR + migration |
+
+#### 2.3.2 對 charter 維護者的具體紀律
+
+修改 `core/charter-config.md §3` mapping schema 或 `tools/profiles/*.yaml.enabled` 清單時：
+
+- **新增**欄位 / 條款：MINOR（不 BREAKING）
+- **既有欄位**改名 / 移除 / 改語意：必須走 MAJOR + 提供 alias / migration / DEPRECATED 標籤之一
+
+→ 對應 `core/maintainer-discipline.md §1` 條文（維護者修改條款時須走 spec sync check + 向下兼容檢查）。
+
+#### 2.3.3 v1.0 後的長期承諾
+
+v1.0 公開化後，本承諾成為 charter 對採用方的**永久承諾**：
+
+- v1.x → v1.y 任一升級：採用方 `agent-commons/` 結構零變更
+- v1.x → v2.0：才允許結構改變，但須走完整 migration（依 §3.3 跨 MAJOR 流程）
+
+→ 動機：framework 的價值在「**規範跨時間穩定**」。若採用方每次升 minor 都要重建目錄，採用成本過高，違反 framework 設計初衷。
+
+#### 2.3.4 v0.x 階段的彈性
+
+v0.x 階段（當前）條款仍在演化，**容許破壞性變動**（如 v0.5.0 從 `.agentcharter/` 改為 `agent-commons/_config/`）。本承諾自 v0.5.9 引入，**從本版起**對所有後續變動生效。
+
+→ 已採用 v0.5.0 之後（agent-commons 結構穩定後）的專案，後續升版保證向下兼容。
+
 ---
 
 ## 3. 已採用專案的遷移流程
@@ -74,12 +115,14 @@ charter_version = MAJOR.MINOR.PATCH
 
 2. （MAJOR 才需要）讀 migrations/<from>-to-<to>.md（若 framework 提供）
 
-3. 跑 /charter-doctor --target-version=<new>（dry-run 模式）
+3. 由 AI 依 doctor-spec.md 跑 dry-run（採用方 prompt：「請依
+   ~/.agentcharter/tools/doctor-spec.md 對本專案跑 target-version=<new>
+   的 dry-run，列出升新版會踩到的問題」）
    └─ 列出本專案在新版下會踩到的問題
 
-4. 應用 migration（依 §3.2 工具支援）
+4. 應用 migration（依 §3.2 流程）
 
-5. 跑 /charter-doctor 確認 ERROR/WARN 都通過
+5. 由 AI 依 doctor-spec.md 重跑健康檢查確認 ERROR/WARN 都通過
 
 6. 升級 profile.yaml.charter_version = <new>
 
@@ -87,14 +130,14 @@ charter_version = MAJOR.MINOR.PATCH
    commit message 須引用 BREAKING 條款編號（若有）
 ```
 
-### 3.2 工具支援（v0.5+ 候選）
+### 3.2 流程支援（v0.5.9 後純 spec-driven）
 
-| 工具動作 | 描述 |
+| 動作 | 實現模式 |
 |---|---|
-| `/charter-init --update` | 已落實（init-spec §6）；本條款 §3.1 是其判斷依據 |
-| `/charter-doctor --target-version=<v>` | dry-run 模式，列出升新版會踩的問題（v0.5+ 候選）|
+| `/charter-init --update` | 由 AI 依 init-spec §6 自具象化；採用方 prompt 後重用 |
+| dry-run 健康檢查 | 由 AI 依 doctor-spec.md 自具象化；採用方 prompt「跑 target-version dry-run」|
 | `migrations/<from>-to-<to>.md` | BREAKING 升級時 framework 提供的人類可讀遷移指引 |
-| `migrations/<from>-to-<to>.script` | （可選）自動化遷移腳本，僅修改 mapping.yaml / profile.yaml，不動專案內容 |
+| 自動化遷移 | 由採用方 AI 依 migration 指引執行（不附 framework 端 script，對齊「framework 不附實作工具」v0.5.9 原則）|
 
 ### 3.3 跨 MAJOR 升級
 

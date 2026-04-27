@@ -10,6 +10,89 @@
 
 ---
 
+## [0.5.9] — 2026-04-27
+
+### Removed — `tools/charter-init.py` + `tools/charter-doctor.py`
+
+對應使用者反饋：「python 方案拿掉，不太想要這樣，不乾淨我認為有汙染」。
+
+#### 為什麼移除
+
+1. **framework 是規範框架，不是工具實作** — 混雜兩者違反清晰分層
+2. **對齊 v0.5.1「framework 不代生成 slash command」精神** — 框架不該越界決定工具實作通道
+3. **AI 自具象化是 charter 哲學的純粹路徑**（A1「角色 ⊥ AI」+ A4「共同記憶根目錄」）
+4. **採用方 UX 不變**：prompt 一次 + 重用 slash command
+
+charter 自此維持「**純規範**」位階。所有工具動作（init / doctor / scan / upgrade）由 AI 依對應 spec 自具象化。
+
+#### 採用方影響
+
+實際影響：**0**（沒有採用方在用 python 工具，當前唯一外部採用案例 charter-viz 還沒接入）。git history 保留可恢復。
+
+### Added — agent-commons 結構穩定性承諾（versioning-migration §2.3）⭐
+
+對應使用者反饋：「人家使用我們的框架，第一次先 init 之後，基本上它就有我們的管理資料夾了（agent-commons），所以我們就沿著這模式定版就好吧」。
+
+#### 核心承諾
+
+採用方第一次 init 後得到的 `agent-commons/` 結構是**穩定承諾**。後續 charter 版本演進**沿用既有結構**，不要求採用方重建目錄。
+
+#### 永不破壞既有採用方的保證
+
+| 動作 | v0.5.9 後是否允許 |
+|---|---|
+| 新增 enabled 條款 / mapping optional 欄位 / 新子目錄 | ✅ |
+| 移除既有 mapping 欄位 | ❌（保留 + DEPRECATED 標籤）|
+| 改變既有 mapping 欄位語意 | ❌（等同 BREAKING，須走 MAJOR）|
+| 條款重命名 | ❌（保留舊名 alias，新舊並存）|
+| 移除 core 條款 | ⚠️（視為 BREAKING）|
+
+#### v1.0 後成為永久承諾
+
+v1.x → v1.y 任一升級：採用方 `agent-commons/` 結構零變更。
+v1.x → v2.0 才允許結構改變，但須走完整 migration（依 §3.3）。
+
+→ 動機：framework 的價值在「**規範跨時間穩定**」。採用成本應只付一次。
+
+#### v0.x 階段彈性
+
+v0.x 階段（當前）條款仍在演化，**容許破壞性變動**（如 v0.5.0 從 `.agentcharter/` 改為 `agent-commons/_config/`）。本承諾自 v0.5.9 引入，**從本版起**對所有後續變動生效。
+
+### Modified
+
+- `tools/init-spec.md` — 移除「v0.5.7 python 工具落地」標註；§9 實作節奏標 v0.5.7 落地 ⛔ 後 v0.5.9 移除；改為純 spec-driven（AI 自具象化）
+- `tools/doctor-spec.md` — 同上
+- `core/maintainer-discipline.md §3.1` — 工具層 self-check 候選改寫為「依 spec AI 自具象化」（不再依賴 charter-doctor.py --self-check）
+- `core/versioning-migration.md`：
+  - **§2.3 新增** agent-commons 結構穩定性承諾（永不破壞 / v1.0 後永久 / v0.x 彈性三段）
+  - §3.1 標準流程：dry-run / 確認步驟改為「prompt AI 依 doctor-spec.md 跑」
+  - §3.2 工具支援：移除 `charter-doctor --target-version` 引用，改為純 spec-driven
+- `QUICKSTART.md §Step 2` — 從三路徑（A/B/C）改為兩模式（第一次 prompt + 自具象化 / 之後重用 slash）；移除 python 工具引用
+- `QUICKSTART.md §Step 5` — doctor 驗證改為 prompt AI 跑
+- `TUTORIAL.md §3.2` — 從三路徑改為兩模式 + 加「為什麼 v0.5.9 後不附 python / npm 工具」段
+- `TUTORIAL.md §3.4 §3.5 §3.6` — 移除 python flag / dry-run shell 範例，改為 prompt 描述
+- `TUTORIAL.md §4.6` — 公理寫完後驗證改為 prompt AI 跑
+- `TUTORIAL.md §8.5` — 升 charter 版本流程改為 spec-driven（移除 python 引用）
+- `TUTORIAL.md §11.1 §11.3 §11.4` — Troubleshooting 對照表移除 python 引用，改為 AI 自具象化失敗的修法
+- `README.md` — 接入流程段改寫為 5 步（含 prompt 範例 + 強調 framework 不附實作工具）
+- `ADOPTION.md` — 版本對齊 0.5.8 → 0.5.9；§T1 接入改為 prompt AI 模式
+
+### 設計決策
+
+關鍵決策：
+- **不算 BREAKING**（依 §2.1）— 沒有條款被移除 / 重命名 / 語意改變；採用方 charter_version 不需動。但標 Removed 提醒
+- **§2.3 從本版生效**（不溯及既往）— v0.x 階段過去的破壞性變動不在承諾範圍；從 v0.5.9 起所有變動需符合
+- **不刪 spec**（init-spec / doctor-spec / scan-spec 全保留）— spec 是 AI 自具象化的依據，是 framework 的核心資產
+- **maintainer-discipline §3.1 修正不是 BREAKING** — self-check 從「python 工具候選」改為「AI 自具象化」是實作模式變更，條款條文（要求一致性檢查）不變
+
+依 versioning-migration §2 為 **MINOR**（新增 §2.3 條款 + Removed 工具但不改 schema / 不破壞採用方）。
+
+### 對應 dogfood signal #2 的最終解
+
+dogfood signal #2「framework spec 之間沒同步機制」原計畫加 `charter-doctor.py --self-check` 候選工具（v0.6+）。本版直接改為「依 spec AI 自具象化」— **不擴張工具層 surface area，純靠 spec + AI**。對應 §1 條文「framework 維護者修改條款時須對齊全 charter」，不依賴特定工具實作。
+
+---
+
 ## [0.5.8] — 2026-04-27
 
 ### Added — Maintainer Discipline 條款（framework 維護者紀律）

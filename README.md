@@ -82,19 +82,32 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 
 ## 對任意專案的接入流程
 
-5 步流程（clone → init → 領域公理 → AI 自我具象化 → doctor 驗證）：
+5 步流程：
 
 ```bash
+# Step 1: clone charter
 git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
 cd ~/projects/<your-project>
-python ~/.agentcharter/tools/charter-init.py \
-  --preset standard \
-  --domain-axioms-path protocols/<YOUR_AXIOM>.md \
-  --domain-axioms-alias <SHORT_NAME>
-# 編 agent-commons/protocols/<YOUR_AXIOM>.md（init 已複製模板）
-# 通知雙 AI 自我具象化（依 init-template §3.3）
-python ~/.agentcharter/tools/charter-doctor.py
 ```
+
+```
+# Step 2: prompt AI 跑接入（AI 完成 + 自具象化 /charter-init）
+我採用了 AgentCharter，charter 在 ~/.agentcharter/。
+請依 ~/.agentcharter/tools/init-spec.md 跑接入流程：
+- preset: standard
+- domain-axioms-path: protocols/<YOUR_AXIOM>.md
+- domain-axioms-alias: <SHORT_NAME>
+完成後請順便具象化為 /charter-init slash command（依 init-template §3.3）。
+
+# Step 3: 編 agent-commons/protocols/<YOUR_AXIOM>.md（init 已複製模板）
+
+# Step 4: prompt 雙 AI 自我具象化角色 init（依 init-template §3.3）
+
+# Step 5: prompt AI 跑 doctor 驗證
+請依 ~/.agentcharter/tools/doctor-spec.md 跑健康檢查。
+```
+
+> v0.5.9 起 framework **不附 python / npm 等實作工具**（純規範框架）。所有工具動作由 AI 依對應 spec 自具象化（對齊 A1「角色 ⊥ AI」+「framework 不代生成」原則）。
 
 詳細指引見 [QUICKSTART.md](./QUICKSTART.md)（5 分鐘小白入門）+ [TUTORIAL.md](./TUTORIAL.md)（reference 工具書）。
 
