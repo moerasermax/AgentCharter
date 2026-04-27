@@ -216,3 +216,4 @@ project-root/
 - Claude 第一輪 → 讀本檔 + NEXT.md → 對齊脈絡 → 等使用者下達議題
 - 若議題涉及條款修訂 → 同步檢查 charter-config.md 相依表 / 各 profile yaml / 反向引用 / CHANGELOG
 - 若議題涉及版本升級 → 走 `versioning-migration.md §3` 7 步流程
+- **若議題涉及第二採用案例（charter 視覺化版本）** → 讀 `.claude_temp/CHARTER-VIZ-ONBOARDING.md` 對齊接入脈絡與 dogfood signal 觀察
