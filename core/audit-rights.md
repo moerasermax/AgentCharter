@@ -77,3 +77,4 @@
 | `escalation-protocol.md` | 連續抽驗失敗的升級 |
 | `evidence-first.md` | 抽驗指令須產出可重現證據 |
 | `structural-anti-fabrication.md` | 結構強化層 — 把「事後抽驗」前移到「結構檢查」，宣告須附 stdout 區塊才送得出 |
+| `violation-reflection.md` | 退稿後續流程 — 違規方須補交反省，作為集體記憶 |

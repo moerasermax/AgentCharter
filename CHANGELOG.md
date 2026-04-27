@@ -10,6 +10,30 @@
 - 邀請 Gemini CLI 端提交 `roles/pm/gemini-cli.md`
 - CryptoBot 改為 *引用* 框架而非重複維護
 - 評估 IRON Pattern（Double Insurance、ACL）抽到框架的可行性
+- **智慧掃描（init 時自動探測既有專案結構並建議遷移路徑）** — 待議（使用者提出，0.4+ 候選）
+- **可插拔優化模組**（讓任意專案可掛上 AgentCharter 而非重建）— 待議（使用者提出，0.4+ 候選）
+
+---
+
+## [0.3.0] — 2026-04-27
+
+### Added — 防線層 L2 + 結構建議
+
+- `core/violation-reflection.md` — 違規反省條款。承認 LLM 個體不可矯正，反省價值在「未來 AI / 集體記憶」而非矯正當前 AI；結構受 structural-anti-fabrication 強制，廢話本身亦為違規模式證據。
+- `templates/management-layout.md` — 推薦的 `management/` 結構範例。依角色分私有區（不依 AI 廠商）；含多重身份場景處置與 git 漸進遷移指引。
+
+### Modified
+
+- `README.md` core 條款列表 + 加入新條目
+- `core/audit-rights.md` / `failure-modes.md` 補交叉引用至 violation-reflection
+
+### 動機
+
+S70 事件後使用者複盤「自我反省 vs LLM 個體不可矯正」議題。結論：
+1. AI 個體不可矯正是事實，反省不能改變當前 AI 行為
+2. 但反省的真實價值在於審計痕跡 + 集體記憶 + 機器可掃描的違規統計
+3. 結構強制（v0.2 已加）+ 違規反省（v0.3）+ 升級協議（既有）構成多層防線
+4. 同時釐清「角色 vs AI 廠商」分軸 — 私有區依角色分，不依廠商分，支援 1 AI 多角色場景
 
 ---
 

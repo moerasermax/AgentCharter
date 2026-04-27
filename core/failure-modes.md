@@ -63,6 +63,7 @@
 | `audit-rights.md` | F-mode 是抽驗時的優先掃描清單 |
 | `escalation-protocol.md` | F-mode 累計次數觸發升級條件 |
 | `structural-anti-fabrication.md` | F1（假宣告）的結構性反制 — 缺 stdout 區塊即視為 F1，無需內容判讀 |
+| `violation-reflection.md` | F-mode 命中後的事後流程 — 違規方須補交反省紀錄 |
 
 ---
 
