@@ -31,6 +31,10 @@ charter 是規範集，clone 到本機任一位置即可（不需 npm install）
 
 ### Step 2：在你專案跑 init（1 分鐘）
 
+⚠️ **重要**：**用 python 工具，不要請 AI 用 `/charter-init` slash command**。
+
+理由：`charter-init.py` 是 v0.5.7 權威實作。AI 自具象化的 `/charter-init` 從 `tools/init-spec.md` 解讀，**該 spec 在 v0.5.7 前曾過時**（路徑與「不代生成 slash command」原則未同步）。雖然 spec 已修正，但採用方那邊的 AI 若已具象化過舊版 slash command 會 cache 過時邏輯。**python 工具最安全**。
+
 ```bash
 cd ~/projects/<your-project>
 

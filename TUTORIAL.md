@@ -119,6 +119,15 @@ python ~/.agentcharter/tools/charter-init.py \
   --domain-axioms-alias <SHORT_NAME>
 ```
 
+#### 為什麼用 python 工具而非 AI slash command
+
+`charter-init.py` 是 **v0.5.7 權威實作**（跨 AI 中立）。雖然 AI 也能依 `tools/init-spec.md` 自具象化 `/charter-init` slash command，但有兩個風險：
+
+1. **spec 過時風險**：本 spec 在 v0.5.7 前曾過時（v0.5.0 配置合併 + v0.5.1 不代生成原則未同步到 spec），AI 從過時 spec 解讀會產出錯誤結構（v0.5.7 user 第一次接入時撞到，已修）
+2. **cache 過時風險**：採用方的 AI 若已具象化過舊版 slash command，內含的舊邏輯不會自動更新
+
+→ **採用方第一次接入請走 python 工具**。AI 自具象化的 `/charter-init` 適合進階場景（如自己擴充流程），不適合首次接入。
+
 ### 3.3 preset 選哪個
 
 | preset | 條款啟用 | 適用 | 紀律強度 |
@@ -613,6 +622,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 | 坑 | 真相 |
 |---|---|
+| 「用 AI 的 `/charter-init` slash command 跑接入」 | 首次接入用 **python 工具**（`charter-init.py`，跨 AI 中立 + v0.5.7 權威實作）。AI 自具象化版有 spec 過時 / cache 過時風險（詳見 §3.2） |
 | 「框架代寫 slash command」 | 框架**不代寫**（v0.5.1 後）— AI 自我具象化 |
 | 「PM 可以跳過抽驗自己結案」 | 違反 [audit-rights](./core/audit-rights.md)，必須 Engineer 核准才生效 |
 | 「Engineer 可以宣告膠囊結案」 | 違反 [role-separation](./core/role-separation.md)，PM 才有結案權 |
