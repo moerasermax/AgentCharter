@@ -1,6 +1,6 @@
 # Structural Anti-Fabrication（結構性反捏造）
 
-> **狀態**：v0.2（自 0.2.0 起為**全模式預設強制**）
+> **狀態**：v0.3（自 v0.7.2 加 §5 三行反向引用；v0.2 為全模式預設強制；初版 v0.1）
 > **位階**：core 通用條款。
 
 ---
@@ -87,9 +87,12 @@
 |---|---|
 | `audit-rights.md` | 本條是 audit-rights 的**結構強化層**：把「事後抽驗」前移到「結構檢查」 |
 | `failure-modes.md` F1 | 結構違規即視為 F1，不需展開檢查就可退稿 |
+| **`failure-modes.md` F6 sub-pattern「surface-level vs structural-level」（v0.7.2 加）** | **理論同源**：F6（v0.7.0 加）= 「未驗證即宣告就緒」是 F1 的「**做了沒驗**」變體；本條對 F1 的硬反制（「缺 stdout 區塊即視同未交付」）邏輯延伸到 F6 的「**surface 書寫 vs structural 完整性**」軸。判別法相同：依據結構性物理證據判定、不依宣告方誠實 |
 | `escalation-protocol.md` | 進入「強化抽驗模式」後，本條從「建議」升級為「強制」 |
 | `evidence-first.md` | 本條是 evidence-first 的執行載體 — 證據必須在文檔結構內顯式 |
 | `completion-delivery.md` | 完工交付的 VCP 期望錨點與本條結構模板共用同一精神 |
+| **`tools/init-spec.md` Phase 5b 物理存在校驗（v0.7.2 加）** | **執行層延伸**：Phase 5b 抽驗集第 7 項「domain_axioms.primary 指向的檔案實際存在（不只 schema 寫了路徑）」 = 本條「stdout 區塊 vs 純文字描述」精神在 init 階段的執行載體。schema 寫路徑 ≈ 純文字宣告 / 檔案物理存在 ≈ stdout 區塊。雙重防禦：本條規範文檔結構、Phase 5b 規範 init 結果 |
+| **`core/domain-axiom-slot.md §3.3` 路徑 B「每條附推斷依據」紀律（v0.7.2 加）** | **領域公理層延伸**：路徑 B（AI 讀 codebase 代產草稿）規定每條鐵律附「我從哪推斷的」（檔案路徑 / grep 結果 / commit hash）= 本條「強制證據欄位」精神在 axiom draft 場景的應用。AI 寫的鐵律若缺推斷依據 → 視同 F1（structural-anti-fabrication 結構性反制） |
 
 ---
 
@@ -136,3 +139,23 @@ grep -E "已(建立|落實|完成|更新|校準)" capsules/*.md | \
 
 - 與 `output-mode-protocol.md` eco 模式相容：stdout 屬「事實型內容」，不在 eco 可砍項
 - 與 `audit-rights.md` 互補：本條前置防線（結構檢查），audit-rights 為後續抽驗 SOP
+
+---
+
+## 8. 變更歷史
+
+### v0.3（自 v0.7.2 起，patch only）
+
+**動作**：§5 「與既有條款的關係」表加三行反向引用：(1) `failure-modes.md F6` sub-pattern（理論同源 — 結構性反制邏輯延伸到 surface vs structural 軸）/ (2) `tools/init-spec.md Phase 5b` 物理存在校驗（執行層延伸 — schema 寫路徑 ≈ 純文字宣告 / 檔案物理存在 ≈ stdout 區塊）/ (3) `core/domain-axiom-slot.md §3.3` 路徑 B「每條附推斷依據」紀律（領域公理層延伸 — AI 寫鐵律若缺推斷依據 = F1 結構性反制）。
+
+**觸發**：dogfood signal #6 第三次同類觀察（2026-04-28，user 在 v0.7.1 release 後連續兩次 IDE 開 `core/structural-anti-fabrication.md` 即抓到 — v0.7.0 + v0.7.1 多次加段都跟本條同源、但都漏 §5 反向引用）。**user 親自行使「他抽」屬性**抓到 maintainer + auditor 都漏的 spec drift — 對應 v0.7.0 加 Phase 5b 採用方半邊「他抽」屬性的現場實證。
+
+**修訂類型**：PATCH — 純引用同步、不動本條職能。
+
+### v0.2（自 0.2.0 起為全模式預設強制）
+
+升為全模式預設強制；§7 加強度說明 + §7.1 token 影響。
+
+### v0.1
+
+初版。「結構性反捏造」基本概念 + §3 強制證據欄位 + §4 模板範例。

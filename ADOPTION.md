@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.7.1`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.7.2`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---

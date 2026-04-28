@@ -21,6 +21,8 @@
 
 ## 5 步流程
 
+> ⚠️ **v0.7.2 流程紀律**（dogfood signal #10 條款化）：v0.7.0 加 Phase 5b 物理存在校驗後，**Step 3「寫領域公理」必須在 Step 2「跑 init」之前完成** — init 跑時會驗 axiom 檔物理存在、否則 Phase 5b 第 7 項 fail。儘管下方編號是 Step 1〜5，**實際執行順序**是 **Step 1 → Step 3 → Step 2 → Step 4 → Step 5**。v0.8+ 計畫整理為線性編號。
+
 ### Step 1：Clone charter（30 秒）
 
 ```bash
@@ -31,9 +33,10 @@ charter 是規範集，clone 到本機任一位置即可（不需 npm install）
 
 ### Step 2：在你專案跑 init（1 分鐘）
 
-> ⚠️ **v0.7.0 升級警告**：本 step prompt 是 charter 範本，請**先把 `<YOUR_AXIOM>` / `<SHORT_NAME>` 兩個 placeholder 替換為你的具體值**再貼給 AI。對應 dogfood signal #5 第二次完整實證 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`）：placeholder 沒填、AI 自己編了一個（命中 `failure-modes F3` 捏造數據 / completionist 繞過 user）。
+> ⚠️ **前置條件（v0.7.2 加）**：跑本 step 前，**必須先完成 Step 3 寫好 axiom 檔（Status: USER-RATIFIED）**。否則 init 內 Phase 5b 物理存在校驗會 fail。
+> ⚠️ **v0.7.0 升級警告**：本 step prompt 是 charter 範本，請**先把 `<YOUR_AXIOM>` / `<SHORT_NAME>` 兩個 placeholder 替換為你 Step 3 寫好的具體檔名與短名**再貼給 AI。對應 dogfood signal #5 第二次完整實證 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`）：placeholder 沒填、AI 自己編了一個（命中 `failure-modes F3` 捏造數據 / completionist 繞過 user）。
 
-**第一次接入**：先想清楚自己的領域公理（10 秒），再複製貼給你的 AI：
+**第一次接入**（**先確認 Step 3 已完成**）：複製貼給你的 AI：
 
 ```
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
@@ -77,6 +80,7 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 
 ### Step 3：寫領域公理（10 分鐘 — 兩條路徑擇一）
 
+> ⚠️ **執行順序提醒（v0.7.2）**：本 Step **必須先於 Step 2 完成**（依檔頂「5 步流程」段警告）— init 內 Phase 5b 物理存在校驗會驗 axiom 檔。**寫好 + Status: USER-RATIFIED 才能回到 Step 2 跑 init**。
 > ⚠️ **v0.7.1 加雙路徑**：依 [`core/domain-axiom-slot §3.3`](./core/domain-axiom-slot.md)，user 初次寫領域公理可選兩條合法路徑。
 
 #### 路徑 A：user 主筆（既有 default）

@@ -6,7 +6,86 @@
 
 ## [Unreleased]
 
-（空 — v0.7.1 已釋出；下批次未開）
+（空 — v0.7.2 已釋出；下批次未開）
+
+---
+
+## [0.7.2] — 2026-04-28
+
+> **PATCH release** — dogfood signal #6 三次同類條款化（文檔層 sync checklist）+ signal #10 條款化（QUICKSTART 流程順序紀律）+ structural-anti-fabrication §5 補三行反向引用。**dogfood-driven hardening 第七循環**。
+>
+> **Triggered by**：v0.7.1 release 後、user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 行使**「他抽」屬性**抓到 maintainer + auditor 漏的 §5 反向引用同步。對應 v0.7.0 加 Phase 5b「採用方半邊他抽」精神在 charter 自身演化的現場實證。
+
+### 動機 — 為什麼有 v0.7.2
+
+v0.7.1 release 後 user 開 IDE 看 `core/structural-anti-fabrication.md` 兩次，問「你有更新文件嗎」— 觸發 maintainer 重新檢視，發現 v0.7.0 + v0.7.1 連續兩個 release 加段（F6 sub-pattern / Phase 5b / 路徑 B 推斷依據）都跟 structural-anti-fabrication 同源、但**全部漏 §5 反向引用同步**。
+
+加上 v0.6.1 + v0.7.0 後 session 已累積兩次同類觀察（auditor 抓到文檔層 sync 漏）→ user 第三次同類觀察讓 dogfood signal #6 達 ≥3 次同類門檻、觸發條款化加嚴。
+
+### Added — `core/maintainer-discipline.md §3.4` 文檔層 sync checklist ⭐
+
+**核心**：v0.6.1 / v0.7.0 / v0.7.1 連續三次踩同類坑 — 條款層改完整、文檔層改部分。本段把「文檔層 sync」**從 §2.2 引用範圍表的子項顯化為獨立 checklist**，避免 maintainer 在 release 流程下意識跳過。
+
+三層子段：
+- **§3.4.1 條款層連動 sync**：`§ 與其他 core 條款的關係` 表雙向引用 + 變更歷史對齊 + schema 跨檔一致
+- **§3.4.2 文檔層連動 sync（採用方視角）**：`charter_version` 跨檔同步 + 條款數同步 + 流程圖 / step 順序對齊 + 變更歷史段（採用方文檔）
+- **§3.4.3 內部追蹤層 sync（maintainer 視角）**：CHANGELOG + STATUS/NEXT signal entries
+
+違反處置 + 對應 §3.1 工具層的演化路徑（v0.8+ 把部分 checklist 上移到 doctor 自動偵測）。
+
+對應 dogfood signal #6 第三次同類條款化。
+
+### Changed — `core/structural-anti-fabrication.md §5`：補三行反向引用
+
+`§ 與既有條款的關係` 表加三行（v0.7.0 + v0.7.1 加段全部漏的反向引用）：
+- `failure-modes.md F6 sub-pattern`（**理論同源**：F6 是 F1 「做了沒驗」變體 / 本條對 F1 硬反制邏輯延伸）
+- `tools/init-spec.md Phase 5b 物理存在校驗`（**執行層延伸**：schema 寫路徑 ≈ 純文字宣告 / 檔案物理存在 ≈ stdout 區塊）
+- `core/domain-axiom-slot §3.3 路徑 B 推斷依據紀律`（**領域公理層延伸**：AI 寫鐵律若缺推斷依據 = F1）
+
+對應本 release 的「**自己抓自己未對齊**」 — user 直覺發現這個應該補的軌跡。
+
+### Changed — `QUICKSTART.md` 流程順序紀律（dogfood signal #10 條款化）
+
+**問題**：v0.7.0 加 Phase 5b 物理存在校驗後、QUICKSTART Step 2「跑 init」與 Step 3「寫公理」的順序在字面上失效（Step 2 跑 init 時還沒 Step 3 寫的 axiom 檔 → Phase 5b 第 7 項 fail）。
+
+**v0.7.2 處理**：
+- 檔頂「5 步流程」段加紀律警告 — **實際執行順序**是 **Step 1 → Step 3 → Step 2 → Step 4 → Step 5**（編號保留、順序明示）
+- Step 2「跑 init」段加前置條件警告（必須先完成 Step 3）
+- Step 3「寫公理」段加執行順序提醒（必須先於 Step 2 完成）
+- v0.8+ 計畫整理為線性編號（消除「編號 vs 執行順序」的不一致）
+
+### Changed — 連動更新
+
+- 三 preset yaml `charter_version: "0.7.1"` → `"0.7.2"`
+- ADOPTION.md / TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.7.2
+
+### Triggered — dogfood signals
+
+| Signal | 對應 | 本 release 處理 |
+|---|---|---|
+| **#6 三次同類達門檻** | 條款層 sync 與文檔層 sync 不對等 | ✅ `maintainer-discipline §3.4` 條款化 |
+| **#10 條款化** | QUICKSTART Step 2-3 順序與 Phase 5b 衝突 | ✅ 流程順序紀律 + 前置條件 |
+| **新 dogfood signal #13 候選**（本次抽驗發現）| user 直覺對 charter 行使「他抽」屬性的成功實例（IDE 開檔 → 抓到 maintainer + auditor 漏的 spec drift）| 留 NEXT.md 觀察、累積 use case 後評估是否在 `roles/validator/_spec.md` 加 §3.7「對 charter 自身演化行使他抽」段 |
+
+### 採用方影響
+
+- ✅ **完全向後相容**：純文檔層補丁 + 紀律強化、不動條款功能、不動 schema、不破壞既有採用方
+- ✅ 既有採用方升 v0.7.1 → v0.7.2：只改 profile.yaml `charter_version` 即可
+- 🟢 **對 maintainer 行為的影響**：本 release ship 後、未來 release 必走 §3.4 文檔層 sync checklist；對採用方無影響
+
+### dogfood-driven hardening 第七循環
+
+第一〜六循環 v0.5.10〜v0.7.1（見 v0.7.0 / v0.7.1 CHANGELOG）
+**第七循環 v0.7.2 = user 直覺以採用方身份對 charter 自身演化行使「他抽」屬性、抓到 maintainer + auditor 漏的 spec drift → 條款化 maintainer-discipline §3.4 文檔層 sync checklist**
+
+→ charter Phase 5b「採用方半邊他抽」精神反過來作用於 charter 自身演化 — 這是 charter dogfood-driven hardening 哲學最完整的迴路展現：
+- 條款設計（Phase 5b）→ user 學會這個設計 → user 以這個設計反過來他抽 charter 自己 → 抓到 maintainer 漏 → 條款化補上
+
+對應 v0.7.0 user 對話原話「成長中、想法碰撞」 — charter 跟 user 在對話過程互相塑造對方。
+
+### Git tag
+
+- `v0.7.2`（本 commit）
 
 ---
 

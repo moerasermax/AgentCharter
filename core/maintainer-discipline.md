@@ -1,6 +1,6 @@
 # Maintainer Discipline（框架維護者紀律）
 
-> **狀態**：v0.1（自 v0.5.8 引入）
+> **狀態**：v0.2（自 v0.7.2 加 §3.4 文檔層 sync checklist；v0.1 自 v0.5.8 引入）
 > **位階**：core 通用條款，但**位階特殊** — 對 framework 維護者生效，對採用方無關（採用方修自己的 charter copy 不適用本條款）
 > **依存**：`working-stack-discipline.md`（DRAFT 紀律也適用維護者）、`versioning-migration.md`（升版同步 spec 時機）、`structural-anti-fabrication.md`（commit message 須含證據）、`audit-rights.md`（PR review 是 maintainer 的 audit 機制）
 
@@ -151,6 +151,43 @@ feat(core): <X> 條款修訂
 
 當前狀態：✅ **已自然執行**（v0.5.x 系列 commit 已養成此習慣）。本條款只是顯性化此習慣。
 
+### 3.4 文檔層 sync checklist（v0.7.2 加，dogfood signal #6 三次同類條款化）
+
+> **動機**：v0.6.1 / v0.7.0 / v0.7.1 連續三次踩同類坑 — 條款層改完整、文檔層改部分（漏 numeric / version / 反向引用 / 兜底範圍）。本段把「文檔層 sync」**從 §2.2 引用範圍表的子項顯化為獨立 checklist**，避免 maintainer 在 release 流程下意識跳過。
+
+修條款 / spec / template 後，依序自驗以下 checklist（**附 git log + grep 證據**）：
+
+#### 3.4.1 條款層連動 sync
+
+- [ ] **`§ 與其他 core 條款的關係` 表雙向引用**：本次新增段（如 v0.7.0 Phase 5b、v0.7.1 §3.3 路徑 B）— 是否在所有同源條款（如 structural-anti-fabrication / failure-modes 等）的 §關係表加反向引用？grep 驗證
+- [ ] **變更歷史對齊**：所有動到的 condition / spec / role 是否都有 `§變更歷史` 加新版本 entry（patch 級也要寫）？
+- [ ] **schema 跨檔一致**：欄位名（如 frontmatter `status` / `mutability_default`）在 condition / template / prompt 範本三處用詞是否完全一致？
+
+#### 3.4.2 文檔層連動 sync（採用方視角）
+
+- [ ] **`charter_version` 跨檔同步**：`tools/profiles/*.yaml` 三檔 + `ADOPTION.md` line 5 + `TUTORIAL.md` line 6 + `.claude/commands/maintainer-load.md` 「當前狀態」段 — 全部更新到本 release 版號？
+- [ ] **條款數同步**：若新增 / 刪除條款 — `README.md` 條款目錄 + `ADOPTION.md §3` + `QUICKSTART.md` 「條款數速查」段 + `TUTORIAL.md §3.3` preset 表母數 — 全部對齊？
+- [ ] **流程圖 / step 順序對齊**：若改 phase / step（如 v0.7.0 加 Phase 5b、v0.7.2 重排 QUICKSTART Step 2-3）— `init-spec` / `doctor-spec` / `QUICKSTART` / `TUTORIAL` 流程圖是否更新？
+- [ ] **變更歷史段（採用方文檔）**：`ADOPTION.md §13` / `TUTORIAL.md` 變更歷史 — 是否加本 release 對應 entry（含採用方升版注意事項）？
+
+#### 3.4.3 內部追蹤層 sync（maintainer 視角）
+
+- [ ] **CHANGELOG.md** 本 release 段：含 Triggered by / Added / Changed / Triggered（dogfood signal）/ 採用方影響 / 第 N 循環說明
+- [ ] **`.claude_temp/STATUS.md` Version 軌跡**加新 entry + 演化軸表加 + 架構級概念加（如有）+ §D 跨議題盲點段加新 dogfood signal entry
+- [ ] **`.claude_temp/NEXT.md` ⚪ 待對話段**：本 release 已條款化的 signal **從待議移除**（劃線 + ✅ vN.M 完成）+ 已完成段加新 entry + 新候選 signal 加待議
+
+**違反處置**：
+
+| 違反 | 處置 |
+|---|---|
+| 修條款後漏文檔層 sync 任一項 | 累積為 dogfood signal #6 觀察；user / 採用方撞到時補 fix commit + commit message 標明「補 maintainer-discipline §3.4」|
+| 連續 ≥ 3 次同類違反同一子項 | 評估升級該子項至 §3.1 工具層自動偵測（如 doctor §3.7 加 schema 一致性 check）|
+| 文檔層 sync 漏導致採用方接入失敗 | 視同 F6 sub-pattern「surface vs structural」— 我（maintainer）以為「條款 ship 了」（surface）= 採用方體驗（structural）— 補 fix commit 並反省 |
+
+**對應 §3.1 工具層的演化路徑**：
+
+未來（v0.8+）若 §3.4 累積觀察成熟，可考慮把部分 checklist 子項上移到 §3.1 工具層由 auditor 自動偵測（如 charter_version 跨檔一致性 / 反向引用對稱性等）。當前 v0.7.2 階段為「人工 checklist + auditor 抽驗」雙保險。
+
 ---
 
 ## 4. 違反處置（自我抽驗）
@@ -209,6 +246,9 @@ NEXT.md §10「AgentCharter 自身 dogfooding」對應此議題。
 | #1 | 2026-04-27 | Claude 違反 working-stack-discipline §1（DRAFT 對話累積）| §1 條文後段 + §4 違反處置 |
 | #2 | 2026-04-27 | v0.5.0/v0.5.1 修條款時未同步 tools/*-spec.md | §1 條文前段 + §2.2 引用範圍 + §3 三層機制 |
 | #3 | 2026-04-27 | user 全域 skill `~/.claude/commands/checkpoints.md` 路徑硬編碼 `management/`，不對齊 charter mapping.yaml 抽象 | §1 條文（工具應對齊 charter 抽象）；具體工具修法在 NEXT.md 追蹤 |
+| **#6 第一次** | 2026-04-28（v0.6.1）| auditor 第一次實戰抓到 v0.6.0 release 文檔層漏 numeric / version | §3.4 文檔層 sync checklist（v0.7.2 條款化）|
+| **#6 第二次** | 2026-04-28（v0.6.1 後 session）| auditor 第二次實戰抓到 templates 範圍兜底含糊 | §3.4 文檔層 sync checklist（v0.7.2 條款化）|
+| **#6 第三次** | 2026-04-28（v0.7.1 後）| **user 直覺連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 漏的 §5 反向引用同步**（v0.7.0 + v0.7.1 加段全漏）| §3.4 文檔層 sync checklist（v0.7.2 條款化、達 ≥3 次同類門檻）|
 
 未來再撞到同類觀察時：
 
@@ -219,4 +259,16 @@ NEXT.md §10「AgentCharter 自身 dogfooding」對應此議題。
 
 ## 8. 變更歷史
 
-- **v0.1（自 v0.5.8 引入）** — 初版。對應 v0.5.7 期間累積的兩次 dogfood signal（framework 維護者違反自己條款）。**特殊位階**：對採用方無關（三 preset 預設 `false`），對 framework 維護者強制（自我約束 + 工具輔助）。
+### v0.2（自 v0.7.2 起）
+
+**動作**：§3 三層執行機制加 **§3.4「文檔層 sync checklist」**子項 — 拆 3 個子段（3.4.1 條款層連動 / 3.4.2 文檔層連動採用方視角 / 3.4.3 內部追蹤層）+ 違反處置表 + 對應 §3.1 工具層的演化路徑說明。§7 dogfood signal 表加 #6 三次同類條目（含 user 直覺第三次抓到的事件）。
+
+**觸發**：dogfood signal #6 「條款層 sync 與文檔層 sync 不對等」第三次同類觀察 — 2026-04-28 v0.7.1 release 後、user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 都漏的 §5 反向引用同步（v0.7.0 + v0.7.1 加段全部沒同步）。累積三次達 §4 違反處置「連續 ≥ 3 次同類違反 → 觸發本條款條款化加嚴」門檻。
+
+**user 直覺實證**：本條款 §3.4 條款化的觸發來自 user **以採用方身份對 charter 行使「他抽」屬性** — 對應 v0.7.0 加 Phase 5b「採用方半邊他抽」的精神在 charter 自身演化的現場實證。charter 設計剛好被 user 直覺驗證、形成完整迴路。
+
+**修訂類型**：MINOR（位階特殊：對採用方無關、僅 framework 維護者強制）— 加新段落、不破壞既有 §3.1〜§3.3 三層機制。連動條款不變（採用方 enabled 仍預設 `false`、相依鏈不變）。
+
+### v0.1（自 v0.5.8 引入）
+
+初版。對應 v0.5.7 期間累積的兩次 dogfood signal（framework 維護者違反自己條款）。**特殊位階**：對採用方無關（三 preset 預設 `false`），對 framework 維護者強制（自我約束 + 工具輔助）。

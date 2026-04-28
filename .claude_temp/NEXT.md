@@ -1,6 +1,6 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.7.1 release 收尾 — 領域公理雙路徑 + condition mutability frontmatter scaffold 後）
+> **更新時間**：2026-04-28（v0.7.2 release 收尾 — dogfood signal #6 三次同類條款化 + signal #10 條款化 + structural-anti-fabrication §5 補反向引用後）
 > **依循**：v1.0 公開化條件（GOVERNANCE §6）
 
 ---
@@ -108,9 +108,13 @@ framework 永久維持「**純規範**」位階。
 
 ## ⚪ 待對話的議題
 
-- **dogfood signal #6 候選 — 「條款層 sync 與文檔層 sync 不對等」**（v0.6.1 auditor 第一次實戰揭露 + v0.6.1 後 session 第二次同類觀察 — **v0.7.0 不處理、留下批次**）：v0.6.0 release commit 明示要 sync ADOPTION / TUTORIAL / README，但實際只動關鍵字而漏 numeric / version；v0.5.10 已撞過一次（19 → 20 條.md sync 漏）+ v0.6.0 又踩 + v0.6.1 後 templates 新檔範圍兜底含糊。**累積觀察 → 2 次同類** — 條款化門檻：再 1 次同類即觸發 `maintainer-discipline §2.2` 表精化評估（明列「採用方流程模板」 vs 「agent-commons 模板」兩類兜底規則）+ 新增 §3.4「文檔層 sync checklist」。**判斷**：v0.7.0 release 後跑 auditor 再驗證、若連 v0.7.0 也踩第三次 → 強制條款化
+- ~~**dogfood signal #6 — 「條款層 sync 與文檔層 sync 不對等」**~~ ✅ **v0.7.2 完成**（達 ≥3 次同類門檻、條款化）：v0.6.1 auditor 第一次實戰（漏 numeric/version）+ v0.6.1 後 session（templates 範圍兜底含糊）+ **v0.7.1 後 user 直覺抓到 structural-anti-fabrication §5 反向引用漏**（v0.7.0 + v0.7.1 加段全部漏）= 三次同類觀察。v0.7.2 條款化為 `core/maintainer-discipline §3.4` 文檔層 sync checklist 三子段（條款層連動 + 文檔層連動 + 內部追蹤層）+ 違反處置 + v0.8+ 升級到工具層 doctor 自動偵測的演化路徑
 - **新 dogfood signal #9 候選**（v0.7.0 auditor 抽驗時發現） — 「**release 收尾步驟（STATUS/NEXT 更新）放到 commit 之後 = 容易在 release 當下漏掉 signal 紀錄**」。本次 v0.7.0 auditor 抽驗第一次跑時就抓到 W001（STATUS / NEXT 缺 signal #7/#8 紀錄、雖然 P6 task 排程內），對應「signal 紀錄 vs 條款修訂的時間差」結構性問題。**判斷**：累積 ≥3 次同類再評估，候選方向：(a) `maintainer-discipline §2.2` 引用範圍表加「STATUS / NEXT signal sync」項；(b) release commit 前 checklist 加「STATUS §D + NEXT.md ⚪ 是否已對齊本 release 修訂的 signal」；(c) 把 P6 標準化到 release 流程的 P3 之後（即修完條款立刻寫 STATUS/NEXT、再走 auditor）
-- **dogfood signal #10 候選**（v0.7.0 release 半小時內 user 揭露）— 「**QUICKSTART Step 2-3 順序與 v0.7.0 Phase 5b 衝突**」：QUICKSTART Step 2 跑 init phase 1-5b（含 Phase 5b 物理存在校驗）→ 但 dbsdk.md 在 Step 3 才寫 → Phase 5b 第 7 項抓不到必 fail。**狀態**：v0.7.1 部分緩解（路徑 B 強制「校正前不啟動 init」即等同把 Step 3 隱性提前）；QUICKSTART Step 2-3 順序問題仍存（建議 v0.7.2 PATCH 把 Step 3 重新排序到 Step 2 之前）
+- ~~**dogfood signal #10 — QUICKSTART Step 2-3 順序與 v0.7.0 Phase 5b 衝突**~~ ✅ **v0.7.2 完成**（cross-reference 方案 — 條款化但保留編號）：QUICKSTART 檔頂「5 步流程」段加紀律警告（**實際執行順序：Step 1 → Step 3 → Step 2 → Step 4 → Step 5**）+ Step 2 加「前置條件 Step 3 必先完成」+ Step 3 加「先於 Step 2」執行順序提醒。**留 v0.8+** 整理為線性編號（消除「編號 vs 執行順序」的不一致）
+
+- **新 dogfood signal #13 候選 — user 對 charter 自身演化行使「他抽」屬性**（v0.7.2 觸發、抽驗時發現）：v0.7.1 release 後、user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 漏的 §5 反向引用同步 → 觸發 v0.7.2 條款化 signal #6 + signal #10。**設計學意義**：v0.7.0 加的 Phase 5b 採用方半邊「他抽」屬性 → user 學會 → user 反過來他抽 charter 自己。**判斷**：累積 use case 後評估是否在 `roles/validator/_spec.md` 加 §3.7「對 charter 自身演化行使他抽」段（採用方視角的 charter dogfood 貢獻路徑明示）；當前先觀察、不條款化
+
+- **新 dogfood signal #14 候選 — spec ↔ core 條款雙向引用對稱性**（v0.7.2 auditor 抽驗時發現）：v0.7.2 補了 `structural-anti-fabrication §5` 對 `init-spec Phase 5b` / `domain-axiom-slot §3.3` / `failure-modes F6` 的引用，但對端**沒回引 structural-anti-fabrication**（spec 沒「§ 與其他 core 條款的關係」表結構、core 條款有引用但格式不一致）。**判斷**：accumulating 觀察、屬「**spec 設計層**」議題；候選方向：(a) `tools/*-spec.md` 加 「§ 對應 core 條款的反向引用」格式段；(b) `core/*.md` 內提到 `tools/*-spec.md` 時 spec 端強制有對應反向 entry。**累積 ≥3 次同類後條款化**（當前累積 1 次）
 - **dogfood signal #11 候選 — condition mutability 三層分類**（v0.7.1 user 直接提議、frontmatter scaffold 已 ship、紀律本體留 v0.8.0）：user 公司接入痛點對話直接提議「IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE 三層」+「3-strike 刪除」+「user-initiated consolidation」。v0.7.1 ship 了 frontmatter scaffold（structural 預備）；**v0.8.0 待做**：(a) 新加 `core/condition-mutability.md` 條款（或擴 `domain-axiom-slot §4`）規範三層 mutability + 3-strike 刪除協議 + user-initiated consolidation 紀律 + AI 對 condition 的修訂權限分層；(b) `tools/doctor-spec.md §3.7` 加 mutability frontmatter 校驗。**判斷**：等公司接入 1-2 週、user 累積 1-2 次「想刪 / 想改 / 想統整」痛點 → 條款化
 - ~~**dogfood signal #12 候選 — 雙路徑（user 主筆 vs AI 代產）**~~ ✅ **v0.7.1 完成**：`core/domain-axiom-slot §3.3` 加雙路徑明文 + `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl` 新檔（路徑 B prompt）+ QUICKSTART Step 3 雙路徑說明 + frontmatter `Status: AI-DRAFTED`/`USER-RATIFIED` 二態紀律。**user 公司接入痛點對話直接提議 → 30 分鐘內 ship 條款化** — 對應 user 對話原話「成長中、想法碰撞」
 - AgentCharter 自身採用 framework 的邊界（dogfooding 何時、如何啟動）
@@ -133,6 +137,19 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.7.2 release（2026-04-28）— dogfood signal #6 三次同類條款化 + signal #10 條款化 + structural-anti-fabrication 補反向引用
+
+✅ **dogfood-driven hardening 第七循環 — Phase 5b 採用方他抽精神反向作用於 charter 自身演化**：user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` + 問「你有更新文件嗎」 → maintainer 重新檢視 → 發現 v0.7.0 + v0.7.1 加段全部漏 §5 反向引用 → signal #6 達 3 次同類門檻 → 條款化
+
+✅ **新增條款 / 段**：
+- `core/maintainer-discipline §3.4` 文檔層 sync checklist 三子段（3.4.1 條款層連動 / 3.4.2 文檔層連動採用方視角 / 3.4.3 內部追蹤層）+ 違反處置表
+- `core/structural-anti-fabrication §5` 補三行反向引用（F6 sub-pattern / Phase 5b 物理存在 / 路徑 B 推斷依據紀律）
+- `QUICKSTART.md` 流程順序紀律 cross-reference 方案（實際執行 1→3→2→4→5）
+
+✅ **連動更新**：三 preset yaml `0.7.1` → `"0.7.2"` + ADOPTION/TUTORIAL/maintainer-load 升版號 + CHANGELOG v0.7.2 段
+
+✅ **設計學意義（最完整迴路展現）**：condition 設計（Phase 5b）→ user 學會這個設計 → user 以這個設計反過來他抽 charter 自己 → 抓到 maintainer 漏 → 條款化補上 → charter 跟 user 在對話過程互相塑造對方
 
 ### v0.7.1 release（2026-04-28）— 領域公理雙路徑 + condition mutability frontmatter scaffold
 
