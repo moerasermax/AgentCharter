@@ -31,26 +31,39 @@ charter 是規範集，clone 到本機任一位置即可（不需 npm install）
 
 ### Step 2：在你專案跑 init（1 分鐘）
 
-**第一次接入**：複製貼給你的 AI（Claude / Gemini / Cursor 等）：
+> ⚠️ **v0.7.0 升級警告**：本 step prompt 是 charter 範本，請**先把 `<YOUR_AXIOM>` / `<SHORT_NAME>` 兩個 placeholder 替換為你的具體值**再貼給 AI。對應 dogfood signal #5 第二次完整實證 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`）：placeholder 沒填、AI 自己編了一個（命中 `failure-modes F3` 捏造數據 / completionist 繞過 user）。
+
+**第一次接入**：先想清楚自己的領域公理（10 秒），再複製貼給你的 AI：
 
 ```
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
 
-請依 ~/.agentcharter/tools/init-spec.md 跑接入流程：
+請依 ~/.agentcharter/tools/init-spec.md 跑接入流程 phase 1-5b：
 - preset: standard
-- domain-axioms-path: protocols/<YOUR_AXIOM>.md
-- domain-axioms-alias: <SHORT_NAME>
+- domain-axioms-path: protocols/<你已替換的具體檔名>.md
+- domain-axioms-alias: <你已替換的具體 alias>
 
 完成後請順便把這個流程具象化為 /charter-init slash command 到你
 廠商的標準位置（依 init-template.md §3.3 self-instantiation），
 未來我打 /charter-init <args> 直接重用。
+
+紀律提示（v0.7.0）：
+- self-instantiation step 6 簽名 _role.md Status 必為 PROVISIONAL（未經我 explicit 授權）
+- step 6 不得寫 Sign-in Log（等我 explicit 授權某 AI 接該角色才寫）
+- charter-init slash command 內引用 framework 路徑禁寫死 user home 絕對路徑
+  （推薦 $AGENTCHARTER_HOME / ~/.agentcharter / agent-commons/ 三層）
+- Phase 5b 觸發 fresh-context sub-agent（路徑 A）對 init 結果跑他抽驗
+  （依 tools/init-spec.md Phase 5b + roles/validator/_spec.md §3.6）
+- 結尾貼出 doctor stdout + Phase 5b 抽驗結果（不要只回報「成功」摘要）
 ```
 
-AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md` 或 `.gemini/commands/charter-init.toml`（依 AI 廠商）。
+AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md` 或 `.gemini/commands/charter-init.toml`（依 AI 廠商）+ Phase 5b 他抽驗報告。
 
 **之後重用**：直接打 `/charter-init standard`（前提：已具象化過）。
 
 > charter v0.5.9 後 framework 不附 python / npm 等實作工具 — 純規範框架，所有工具動作由 AI 自具象化（對齊「角色 ⊥ AI」+「framework 不代生成」原則）。
+>
+> v0.7.0 加 Phase 5b（採用方接入流程「他抽」屬性）對應 dogfood signal #7 候選條款化 — 封閉採用方接入流程「自抽自驗」結構性盲區，對稱於 v0.6.0 加 auditor 角色封閉 maintainer 半邊。
 
 **參數速查**：
 
@@ -88,30 +101,48 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 
 > 🔁 **每個 AI 各自貼一次**：如果本專案有多 AI 並存（如 Claude × Engineer + Gemini × PM），下方 prompt 是並列示範，**不是「選一個貼」**。每個 AI 接的角色都要有自己的 vendor-specific init slash command（Claude 用 `.claude/commands/`、Gemini 用 `.gemini/commands/`，不通用）。第三個 AI 加入時照樣再貼一次對應 prompt。
 
-複製對應 prompt 給每個你採用的 AI：
+#### 4.1 通用骨架（非典型組合自填）
 
-**對 Claude Code**：
+派任 prompt 通用骨架在 [`templates/role-invocation-prompt.md.tpl`](./templates/role-invocation-prompt.md.tpl) — 6 個 placeholder 替換完即可貼給任何 AI 接任何角色（含未來新增 vendor / 角色）。
+
+依 [v0.6.0 邀請制](./core/ai-vendor-onboarding.md) + A3「專案 ⊥ 框架」公理，**charter 不主動蒐集每個組合的具體 prompt** — 由採用方依骨架自填。下方 §4.2 兩段是典型雙 AI 配置的已實證填充對照。
+
+#### 4.2 已實證填充範例（典型雙 AI 配置）
+
+**對 Claude Code（Engineer）**：
 ```
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
 請接 Engineer 角色，依 ~/.agentcharter/core/init-template.md §3.3.2
 7 步驟自我具象化到 .claude/commands/engineer-init.md。
-特別注意 step 5（v0.5.10 加）— 簽名前必跑 doctor schema 驗證；
-不通請告訴我（不要強行簽名 _role.md）。
+特別注意：
+- step 5（v0.5.10 加）— 簽名前必跑 doctor schema 驗證；
+  不通請告訴我（不要強行簽名 _role.md）。
+- step 6（v0.7.0 加）— 簽名 _role.md Status 必為 PROVISIONAL，
+  不得寫 Sign-in Log（等我 explicit 授權後我會說「請以 Engineer 身份接此專案」
+  你才升 ACTIVE 並寫 Sign-in Log）。
+- slash command 引用 framework 路徑禁寫死 user home 絕對路徑。
 通過後簽名 agent-commons/roles/engineer/_role.md，
-回報「step 5 doctor schema 通過 0 errors」+ 「step 6 _role.md 簽名完成」。
+回報「step 5 doctor schema 通過 0 errors」+ 「step 6 _role.md PROVISIONAL 簽名完成」。
 ```
 
-**對 Gemini CLI**：
+**對 Gemini CLI（PM）**：
 ```
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
 請接 PM 角色，依 ~/.agentcharter/roles/pm/gemini-cli.md（Gemini 的
 vendor spec）+ core/init-template.md §3.3.2 自我具象化到
 .gemini/commands/pm-init.toml。
-特別注意 step 5（v0.5.10 加）— 簽名前必跑 doctor schema 驗證；
-不通請告訴我（不要強行簽名 _role.md）。
+特別注意：
+- step 5（v0.5.10 加）— 簽名前必跑 doctor schema 驗證；
+  不通請告訴我（不要強行簽名 _role.md）。
+- step 6（v0.7.0 加）— 簽名 _role.md Status 必為 PROVISIONAL，
+  不得寫 Sign-in Log（等我 explicit 授權後我會說「請以 PM 身份接此專案」
+  你才升 ACTIVE 並寫 Sign-in Log）。
+- slash command 引用 framework 路徑禁寫死 user home 絕對路徑。
 通過後簽名 agent-commons/roles/pm/_role.md，
-回報「step 5 doctor schema 通過 0 errors」+ 「step 6 _role.md 簽名完成」。
+回報「step 5 doctor schema 通過 0 errors」+ 「step 6 _role.md PROVISIONAL 簽名完成」。
 ```
+
+其他組合（PM × Claude / Validator × Gemini / Cursor × Engineer / auditor × 任一 vendor 等）依 §4.1 骨架自填。
 
 驗證：打 `/engineer-init` 或 `/pm-init`，AI 應輸出統一就緒回報格式（依 init-template §4）。
 

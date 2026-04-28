@@ -3,7 +3,7 @@
 > **給誰**：採用 AgentCharter 框架的團隊（人類採用方）
 > **性質**：reference / 工具書（章節獨立、可跳讀）
 > **不是**：線性教學書（如想線性走完 → [QUICKSTART.md](./QUICKSTART.md)）
-> **配對**：本檔對應 charter `v0.6.1`
+> **配對**：本檔對應 charter `v0.7.0`
 
 ## 目錄
 
@@ -667,6 +667,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 ## 變更歷史
 
+- **v1.3（2026-04-28，charter v0.7.0）** — 公司專案接入失敗大批次 sync：line 6 charter 對應版本 v0.6.1 → v0.7.0 + 連動 5 個 dogfood signal 條款化（init-spec Phase 5b 採用方半邊「他抽」載體 / multi-role-tracking §3.4.4 init 階段自激活紀律 / init-template §3.3.2 step 6 Status PROVISIONAL/ACTIVE 二態 / failure-modes F6 sub-pattern surface vs structural / doctor-spec §3.7 結構頂層 + namespace 校驗）+ 本變更歷史段。詳見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` 完整 audit。**升 v0.7.0 注意**：profile.yaml `parameters.failure-modes.enable_modes` 須含 F6（v0.7.0 強制必啟）；mapping.yaml 若含 `shared/<X>/` 中介層需 migration（移到頂層 + 改寫 mapping）。
 - **v1.2（2026-04-28，charter v0.6.1）** — 文檔層 sync 修補（v0.5.10 / v0.6.0 release 漏的 TUTORIAL 同步點，由 v0.6.1 auditor 第一次實戰抽驗抓到 — dogfood signal #6 候選）：line 6 charter 對應版本 v0.5.8 → v0.6.1 + §1.1 移除 Python 3.8+ / PyYAML 行（v0.5.9 純規範框架後遺漏）+ §3.3 preset 表母數 17 → 19 + 本變更歷史段。
 - **v1.1（2026-04-28，charter v0.6.0）** — 條款數 line 658 「20 個 .md」→「21 個 .md」（含 v0.6.0 新增 ai-vendor-onboarding）。
 - **v1.0（2026-04-27，charter v0.5.7）** — 初版。9 章工具書（前置 / 概念 / clone&init / 領域公理 / AI 具象化 / 任務生命週期 / 日常使用 / 進階場景 / troubleshooting）。

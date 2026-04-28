@@ -44,8 +44,10 @@ PM 派 → Engineer 執行 → Validator 抽驗 → 結案
 Validator 是**抽驗權的專職載體**。在多角色協作中（典型三角：PM + Engineer + Validator）：
 
 - 抽驗：Engineer 完工交付（含 VCP）/ PM 任務契約合規性（編號 / 路徑 / API 假設）/ 領域公理對齊
-- 執行：診斷指令重跑 / `ls -la` / `git log` / `grep` / runtime probe
+- **抽驗：採用方接入流程 init 結果**（v0.7.0 加 — `tools/init-spec.md Phase 5b` 對應載體）
+- 執行：診斷指令重跑 / `ls -la` / `git log` / `grep` / runtime probe / charter doctor 校驗
 - 對 PM 結案宣告 + Engineer 完工宣告**雙向**行使抽驗權
+- **對採用方接入流程 init 結果行使「他抽」屬性抽驗**（v0.7.0 加）
 
 ---
 
@@ -108,6 +110,50 @@ Validator 是**抽驗權的專職載體**。在多角色協作中（典型三角
 - 是否違反領域公理（資金 / 安全 / 合規鐵律）
 - 領域公理 vs core 條款衝突時，依 `domain-axiom-slot §2.1` 優先序
 - 違反領域公理 = 結構性失靈，立即退稿不留情面
+
+### 3.6 採用方接入流程 init 結果抽驗（v0.7.0 加）
+
+> **動機**：dogfood signal #7 候選條款化 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`）揭露採用方接入流程「自抽自驗」結構性盲區。v0.6.0 加 `roles/auditor/_spec.md` 封閉了 maintainer 半邊（fresh-context sub-agent 達成「他抽」），採用方半邊由本 §3.6 對稱封閉。
+>
+> **對應載體**：`tools/init-spec.md Phase 5b`（採用方接入流程的他抽驗段）。
+
+**觸發場景**：
+
+| 場景 | 觸發方式 |
+|---|---|
+| **A. 第一個 AI spawn fresh-context sub-agent** | init 流程結尾、AI 主動 spawn validator 一次性 sub-agent；fresh context 達成「他抽」屬性 |
+| **B. 邀請另一 vendor AI** | 不同 AI / 不同 session 跑「請依 charter v0.x.x 對 \<採用方專案\> 的 init 結果跑 validator 抽驗」 |
+| **C. user 親自抽驗** | user 親自跑 PowerShell / shell；驗 init 結果與規範對齊（不依賴 LLM 自我宣告）|
+
+**抽驗集**（依 `tools/init-spec.md Phase 5b`）：
+
+```
+1. agent-commons/ 結構頂層完整性
+2. agent-commons/shared/ 不應存在（namespace ≠ 檔案目錄）
+3. profile.yaml schema 必填欄位齊
+4. profile.yaml parameters.failure-modes.enable_modes 含 F6
+5. mapping.yaml common_memory_root + working_stack_discipline.shared.draft_context 必填齊
+6. mapping.yaml layout.<key>: <value> 不含 namespace 同名中介層
+7. domain_axioms.primary 指向的檔案實際存在（**物理存在校驗**，不只 schema 寫路徑）
+8. roles/<role>/_role.md Status 為 PROVISIONAL（除非 user 後續 explicit 授權升 ACTIVE）
+9. roles/<role>/_role.md Sign-in Log 為空（除非 user 後續 explicit 授權）
+10. <vendor>/commands/charter-init.<ext> 不寫死 user home 絕對路徑
+```
+
+**處置**：
+
+- 0 errors → init 合格、向 user 回報「Phase 5b 通過、init 真正就緒」
+- ≥ 1 errors → 第一個 AI 修補 + 重跑 Phase 5 + Phase 5b；不通過則 init 視為失敗、不可進工作階段
+
+**與 §3.1〜§3.5 的關係**：
+
+| 階段 | §3.6 init 抽驗 | §3.1〜§3.5 work-time 抽驗 |
+|---|---|---|
+| 觸發時機 | 採用方接入流程結尾（一次性） | 採用方 capsule 工作期間（每個 capsule） |
+| 對象 | init 產物（agent-commons/ + commands/） | PM capsule + Engineer VCP |
+| 「他抽」屬性 | 強制（spawn fresh context / 邀其他 vendor / user 親跑）| 標準（不同 AI 兼任不同角色已內建他抽）|
+
+**注意事項**：本職能對應 `tools/init-spec.md Phase 5b` 三條路徑（A/B/C），採用方擇一執行。**典型路徑 A**（fresh-context sub-agent）為當前最低摩擦選項；公司 production 接入推薦走 **A + C 雙保險**。
 
 ---
 
@@ -215,6 +261,24 @@ charter 不強制採用方升級到三角配置；既有 capsule 不破壞。
 ---
 
 ## 10. 變更歷史
+
+### v0.2（自 v0.7.0 起）
+
+**動作**：
+1. §1 職能定義加「init 結果抽驗」+「對採用方接入流程 init 結果行使『他抽』屬性抽驗」
+2. 新增 §3.6「採用方接入流程 init 結果抽驗」段 — 三條觸發路徑（A/B/C）+ 抽驗集 10 項 + 處置流程
+3. 與 `tools/init-spec.md Phase 5b` 雙向引用對應（共構 Phase 5b 載體）
+
+**觸發**：dogfood signal #7 候選條款化 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`）。揭露採用方接入流程「**單 AI、單 prompt、無中途介入**」是危險組合 — 跑 init-spec 5 phase + self-instantiation 七步驟 = 10+ 動作鏈，期間 doctor 自抽驗（Phase 5 / step 5）走的是同一條 LLM 自跑自驗鏈。v0.6.0 加 auditor 封閉 maintainer 半邊「自抽自驗」結構性盲區、**採用方半邊未封閉** → 由本 §3.6 對稱封閉。
+
+**修訂類型**：MINOR — 加新職能段；既有採用方延續工作期間抽驗職能不破壞、新增 init 階段抽驗是擴展。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `tools/init-spec.md` Phase 5b 加段（共構載體）
+- `tools/doctor-spec.md §3.7` 加結構頂層完整性 + namespace vs 檔案路徑校驗（v0.7.0 同步加）
+- `core/charter-config.md` mapping.yaml schema 段加 namespace 註明（v0.7.0 同步加）
+- `roles/auditor/_spec.md` 加反向引用（auditor / validator 對稱性說明 — maintainer 半邊 / 採用方半邊）
+- `ADOPTION.md` / `QUICKSTART.md` 第三步驟加 Phase 5b 提示
 
 ### v0.1（自 v0.6.0 引入）
 

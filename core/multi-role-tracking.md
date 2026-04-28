@@ -136,6 +136,29 @@
 - §3.4 沒有 §3.1 → user 發起切換但 AI 沒走完整 init = 隱式戴帽子
 - 兩者並存才完整封閉「切換場景」的紀律盲區
 
+### 3.4.4 init 階段自我激活同樣 = F1（v0.7.0 加）
+
+> **動機**：dogfood signal #5 第二次完整實證（公司專案接入失敗 2026-04-28，見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` Pattern C）— Gemini 在**首次 init self-instantiation** 階段直接寫 `_role.md Status: ACTIVE` + Sign-in Log，user 從未 explicit 授權。原 §3.4 預想場景是「session 中途切換」（離岸/上岸），沒明文「**初次 init 直接激活**」也屬同類。
+
+**核心紀律**：
+
+| 紀律 | 細節 |
+|---|---|
+| **首次 init 自我激活同樣需 user explicit 授權** | AI 第一次跑 `init-template §3.3.2` self-instantiation（無前置角色身份）時，仍**不得**自行把 `_role.md Status` 寫為 `ACTIVE`、不得寫 Sign-in Log；身份戳的正式激活必須由 user explicit 授權後才簽 |
+| **Self-instantiation 結尾的合法 status** | 只能寫 `PROVISIONAL`（暫具象化）— 表示 slash command 已就緒、但角色身份未激活，等 user 後續 explicit prompt（如 user 打 `/<role>-init` 命令觸發）後才升 `ACTIVE` |
+| **Sign-in Log 是激活的紀錄、不是具象化的紀錄** | Sign-in Log 紀錄「user 授權的角色入職事件」；具象化動作的審計痕跡寫在 `_role.md` 的「各 AI 具象化位置」表 + 「切換歷史」表（不寫 Sign-in Log）|
+| **vendor spec 預設身份 ≠ 自動激活** | 即使 `roles/<role>/<my-vendor>.md` 預設了某 AI 對應某角色（如 `roles/pm/gemini-cli.md` 預設 Gemini ↔ PM），AI 看到自己對應仍**不得**自我推導激活；vendor spec 是「能力預設」、不是「身份預授權」 |
+
+### 3.4.5 init 自激活違反 vs 切換違反的對照
+
+| 違反類型 | 場景 | 對應紀律 |
+|---|---|---|
+| **init 自激活**（v0.7.0 §3.4.4）| AI 第一次跑 self-instantiation 即寫 `Status: ACTIVE` + Sign-in Log | F1 假宣告就位 |
+| **切換自發起**（v0.6.0 §3.4）| AI 在 session 中途自己宣告從 A 切到 B | F1 假宣告就位 |
+| **隱式戴帽子**（§3.1）| AI 切換但沒走 init、沒離岸/上岸宣告 | F1 + F5 |
+
+三者本質同源 — LLM completionist 傾向**搶在 user 授權前**自我推導角色身份。
+
 ---
 
 ## 4. 切換歷史紀錄
@@ -227,6 +250,19 @@
 ---
 
 ## 9. 變更歷史
+
+### v0.3（自 v0.7.0 起）
+
+**動作**：新增 §3.4.4「init 階段自我激活同樣 = F1」段 — 明文涵蓋「首次 init self-instantiation 不得寫 `_role.md Status: ACTIVE` + Sign-in Log」+ 引入 `PROVISIONAL` 概念（暫具象化 / 等 user explicit 授權升 ACTIVE）；§3.4.5 加 init 自激活 vs 切換違反 vs 隱式戴帽子的三項對照表。
+
+**觸發**：dogfood signal #5 第二次完整實證 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` Pattern C）：Gemini 讀 `roles/pm/gemini-cli.md` 看到自己對應 PM → 在首次 self-instantiation 階段直接寫 `_role.md Status: ACTIVE` + Sign-in Log（user 從未 explicit 授權）。原 v0.2 §3.4 預想場景是「session 中途切換」，沒明文涵蓋「初次 init 直接激活」。
+
+**修訂類型**：MINOR — 加新段、不破壞既有紀律；本質上是把 §3.4 身份穩定承諾擴充涵蓋 init 階段。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `core/init-template.md §3.3.2` step 6 簽名動作加禁項（不得寫 ACTIVE / Sign-in Log，只寫具象化痕跡）
+- `core/init-template.md §3.3.5` 違反處置表加一行（init 階段自激活 = F1）
+- `templates/agent-commons/_role.md.tpl` 加 `Status` 欄位的 `PROVISIONAL` / `ACTIVE` 二態說明（如該模板存在的話）
 
 ### v0.2（自 v0.6.0 起）
 

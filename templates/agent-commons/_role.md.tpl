@@ -9,8 +9,20 @@
 
 - **Spec**：引用 AgentCharter `roles/<ROLE_NAME>/_spec.md`（職能定義）
 - **AI 實作版**：引用 AgentCharter `roles/<ROLE_NAME>/<AI_VENDOR>.md`（具體執行細節）
+- **Status**：`PROVISIONAL` / `ACTIVE`（v0.7.0 加；二態說明見下）
 - **當前扮演 AI**（最近 session）：<AI 名稱 / 廠商>
 - **當值期間**：<起始 session> ~ <最近 session>
+
+### Status 二態（v0.7.0 加）
+
+依 `core/multi-role-tracking.md §3.4.4` + `core/init-template.md §3.3.2 step 6`：
+
+| 狀態 | 含義 | 觸發 |
+|---|---|---|
+| **`PROVISIONAL`** | 暫具象化 — slash command 已就緒、但角色身份**未經 user explicit 授權激活** | self-instantiation step 6 簽名後預設值；只能寫具象化痕跡（「各 AI 具象化位置」表 + 切換歷史「自我具象化完成」），**不寫 Sign-in Log** |
+| **`ACTIVE`** | 已激活 — user explicit 授權某 AI 接該角色（如 user 打 `/<role>-init` + 明示「請以 <role> 身份接此專案」）| 升 ACTIVE 時才寫 Sign-in Log（角色入職紀錄）|
+
+**禁止**：AI 自我發起把 Status 從 PROVISIONAL 升 ACTIVE（違反 multi-role-tracking §3.4.4 = F1）。
 
 ---
 

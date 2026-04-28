@@ -1,6 +1,6 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.6.1 release — auditor 第一次實戰後的 stable 版本）
+> **更新時間**：2026-04-28（v0.7.0 release 收尾 — 公司專案接入失敗大批次條款修訂後）
 > **依循**：v1.0 公開化條件（GOVERNANCE §6）
 
 ---
@@ -108,25 +108,50 @@ framework 永久維持「**純規範**」位階。
 
 ## ⚪ 待對話的議題
 
-- **dogfood signal #6 候選 — 「條款層 sync 與文檔層 sync 不對等」**（v0.6.1 auditor 第一次實戰揭露）：v0.6.0 release commit 明示要 sync ADOPTION / TUTORIAL / README，但實際只動關鍵字而漏 numeric / version；v0.5.10 已撞過一次（19 → 20 條.md sync 漏）+ v0.6.0 又踩。pattern：`maintainer-discipline §2.2` 引用範圍表寫得很細，但執行時「條款層」改完整、「文檔層」改部分 + 漏 numeric。**累積觀察**：與 dogfood signal #2「v0.5.0/v0.5.1 修條款時未同步 spec」同源但更細（#2 工具層 / 本 #6 文檔層）。**條款化門檻**：累積 ≥ 3 次同類後可 evaluate 在 `maintainer-discipline §3` 加「文檔層 sync checklist」子項或新增 §3.4「文檔層 sync 自動化驗證」。**判斷**：暫累積觀察、不條款化；下次 release 時跑 auditor 再驗證
+- **dogfood signal #6 候選 — 「條款層 sync 與文檔層 sync 不對等」**（v0.6.1 auditor 第一次實戰揭露 + v0.6.1 後 session 第二次同類觀察 — **v0.7.0 不處理、留下批次**）：v0.6.0 release commit 明示要 sync ADOPTION / TUTORIAL / README，但實際只動關鍵字而漏 numeric / version；v0.5.10 已撞過一次（19 → 20 條.md sync 漏）+ v0.6.0 又踩 + v0.6.1 後 templates 新檔範圍兜底含糊。**累積觀察 → 2 次同類** — 條款化門檻：再 1 次同類即觸發 `maintainer-discipline §2.2` 表精化評估（明列「採用方流程模板」 vs 「agent-commons 模板」兩類兜底規則）+ 新增 §3.4「文檔層 sync checklist」。**判斷**：v0.7.0 release 後跑 auditor 再驗證、若連 v0.7.0 也踩第三次 → 強制條款化
+- **新 dogfood signal #9 候選**（v0.7.0 auditor 抽驗時發現） — 「**release 收尾步驟（STATUS/NEXT 更新）放到 commit 之後 = 容易在 release 當下漏掉 signal 紀錄**」。本次 v0.7.0 auditor 抽驗第一次跑時就抓到 W001（STATUS / NEXT 缺 signal #7/#8 紀錄、雖然 P6 task 排程內），對應「signal 紀錄 vs 條款修訂的時間差」結構性問題。**判斷**：累積 ≥3 次同類再評估，候選方向：(a) `maintainer-discipline §2.2` 引用範圍表加「STATUS / NEXT signal sync」項；(b) release commit 前 checklist 加「STATUS §D + NEXT.md ⚪ 是否已對齊本 release 修訂的 signal」；(c) 把 P6 標準化到 release 流程的 P3 之後（即修完條款立刻寫 STATUS/NEXT、再走 auditor）
 - AgentCharter 自身採用 framework 的邊界（dogfooding 何時、如何啟動）
 - 條款命名規範統一（kebab-case vs snake_case 一致性）
 - 多語系策略（當前繁中 + 英文小標題並陳）
-- ~~AI 自我具象化的「能力評估盲區」（Codex walkthrough 浮現）— 是否該補一個 `core/ai-vendor-onboarding.md` 條款規範新 AI 加入時的能力評估流程~~ ✅ **v0.6.0 完成**：條款化為 `core/ai-vendor-onboarding.md`，邀請制四步驟涵蓋此議題
-- **多 AI 具象化拓撲分類**（OrderRecon walkthrough 浮現，2026-04-27）— 當前 `init-template §3` 預設「1 AI × N command」拓撲（Claude / Gemini / Cursor）；GPT 走「N Custom GPT × 1 instructions」拓撲，可能影響 `multi-role-tracking` 與 `cross-ai-handoff` 部分定義。**判斷：等第一拓撲 reference impl 跑通後再評估**，避免未實證即分裂條款 surface area
-- ~~framework 維護者的紀律對齊（dogfood signal #1）~~ ✅ **v0.5.8 條款化**（`core/maintainer-discipline.md`，使用者授權跳過 ≥3 次累積直接條款化）
-- ~~framework spec 之間沒同步機制（dogfood signal #2）~~ ✅ **v0.5.8 條款化**（同上條款 §1 + §2.2 涵蓋；§3.1 charter-doctor.py self-check 列為 v0.6+ 候選）
-- **user 全域 skill 路徑硬編碼**（2026-04-27 dogfood signal #3）— user 的 `~/.claude/commands/checkpoints.md` skill spec 寫死 `management/DRAFT_CONTEXT.md`（CryptoBot 結構），在 AgentCharter（dogfooding 取捨用 `.claude_temp/`）跑不通。**已被 maintainer-discipline §1 條款覆蓋**（工具應對齊 charter mapping 抽象），但實際工具層修法待做。**候選方向**：(a) 修 skill 讀 charter mapping.yaml.shared.draft_context；(b) 加 fallback：先找 `management/`、再找 `.claude_temp/` / `agent-commons/`；(c) skill 改為「讀使用者環境變數 $CHARTER_DRAFT_PATH」。**判斷**：當 user 在 charter repo 想用 /checkpoints 時再做（短期不影響採用方），優先序排在 charter-viz 接入完成後
-- **`/maintainer-selfcheck` skill 落地**（2026-04-27 對話浮現，B+C 路徑）— **v0.6.0 部分完成**：概念層 `roles/auditor/_spec.md` 已誕生（v0.6.0），對應 `maintainer-discipline §3.1` 執行載體明確化從「規範」變為「規範 + 執行角色」。**仍待做**：(a) auditor vendor 層 `claude-code.md` / `gemini-cli.md` 走 `ai-vendor-onboarding.md §3` 邀請制 step 2-4；(b) `.claude/commands/maintainer-selfcheck.md` 落地（依 auditor concept layer + sub-agent 跑反向引用 sweep）。spec DRAFT：`.claude_temp/MAINTAINER-SELFCHECK-DRAFT.md`。**判斷**：等 user 邀請特定 vendor 寫 auditor vendor 層後再做 skill 落地
-- ~~**角色擴展走「邀請制」原則 + `auditor` 角色誕生**~~ ✅ **v0.6.0 完成**：`core/ai-vendor-onboarding.md` 條款落地（邀請制四步驟）+ `roles/auditor/_spec.md` 概念層誕生。詳見「已完成」段
-- ~~**self-instantiation 結尾自帶 doctor schema 驗證**~~ ✅ **v0.5.10 完成（2026-04-28）**：六步驟 → 七步驟（step 5 schema 驗證強制點）+ failure-modes F6 新增 + doctor-spec §2.1 呼叫模式拆分 + QUICKSTART Step 4-5 對齊。詳見「已完成」段
-- ~~**`init-template §6` / `role-init.md.tpl` 步驟 3 HANDOFF 排序 wording 修訂**~~ ✅ **v0.5.10 完成（2026-04-28）**：`templates/role-init.md.tpl` + `templates/agent-commons/handoff.md.tpl` shell command 加 `grep -E 'HANDOFF_[0-9]+\.md$'` 過濾
-- ~~**「LLM 找路徑繞過角色約束」紀律 gap 條款修訂**~~ ✅ **v0.6.0 完成**：四層 gap 全部封閉 — `role-separation §3.5` 繞路禁令 + `multi-role-tracking §3.4` 身份穩定承諾 + `role-conflict-resolution §5.4` 角色切換決策權屬 user + `roles/pm/gemini-cli.md §3.5` sub-agent 跨界禁令補段。詳見「已完成」段
-- ~~**`validator` 角色誕生 + PM 漸進 deprecate 抽驗職責**~~ ✅ **v0.6.0 概念層完成**（2026-04-28）— `roles/validator/_spec.md` 概念層誕生 + `roles/pm/_spec.md §3.3 / §3.4` DEPRECATING 標記。**仍待做**：vendor 層走 `ai-vendor-onboarding §3` 邀請制（YC 計畫先邀請 Gemini）。詳見「已完成」段
+- ~~AI 自我具象化的「能力評估盲區」（Codex walkthrough 浮現）— 是否該補一個 `core/ai-vendor-onboarding.md` 條款規範新 AI 加入時的能力評估流程~~ ✅ **v0.6.0 完成**
+- **多 AI 具象化拓撲分類**（OrderRecon walkthrough 浮現，2026-04-27）— 當前 `init-template §3` 預設「1 AI × N command」拓撲；GPT 走「N Custom GPT × 1 instructions」拓撲，可能影響 `multi-role-tracking` 與 `cross-ai-handoff` 部分定義。**判斷：等第一拓撲 reference impl 跑通後再評估**
+- ~~framework 維護者的紀律對齊（dogfood signal #1）~~ ✅ **v0.5.8 條款化**
+- ~~framework spec 之間沒同步機制（dogfood signal #2）~~ ✅ **v0.5.8 條款化**
+- ~~user 全域 skill 路徑硬編碼（dogfood signal #3）~~ ✅ **v0.6.0 maintainer-discipline §1 部分覆蓋 + v0.7.0 升級到具體 spec**：`core/init-template.md §3.3.2` slash command 引用紀律段 + `tools/init-spec.md Phase 4.x` 對應段（推薦 $AGENTCHARTER_HOME / ~/.agentcharter / agent-commons/ 三層優先序、禁絕對路徑）
+- **`/maintainer-selfcheck` skill 落地**（2026-04-27 對話浮現，B+C 路徑）— **v0.6.0 部分完成**：概念層 `roles/auditor/_spec.md` 已誕生（v0.6.0）。**仍待做**：(a) auditor vendor 層 `claude-code.md` / `gemini-cli.md` 走 `ai-vendor-onboarding.md §3` 邀請制 step 2-4；(b) `.claude/commands/maintainer-selfcheck.md` 落地（依 auditor concept layer + sub-agent 跑反向引用 sweep）。spec DRAFT：`.claude_temp/MAINTAINER-SELFCHECK-DRAFT.md`。**判斷**：v0.6.1 + v0.7.0 路徑 C 手動 spawn 已驗證機制可重現、不急升 skill；等 user 邀請特定 vendor 寫 auditor vendor 層後再評估
+- ~~**角色擴展走「邀請制」原則 + `auditor` 角色誕生**~~ ✅ **v0.6.0 完成**
+- ~~**self-instantiation 結尾自帶 doctor schema 驗證**~~ ✅ **v0.5.10 完成**
+- ~~**`init-template §6` / `role-init.md.tpl` 步驟 3 HANDOFF 排序 wording 修訂**~~ ✅ **v0.5.10 完成**
+- ~~**「LLM 找路徑繞過角色約束」紀律 gap 條款修訂**~~ ✅ **v0.6.0 完成 + v0.7.0 擴 init 階段**：v0.6.0 四層 gap 封閉（role-separation §3.5 / multi-role-tracking §3.4 / role-conflict-resolution §5.4 / pm/gemini-cli.md §3.5）；v0.7.0 補 multi-role-tracking §3.4.4 init 階段自激活（公司接入第二次完整實證觸發）+ init-template §3.3.2 step 6 PROVISIONAL/ACTIVE 二態
+- ~~**`validator` 角色誕生 + PM 漸進 deprecate 抽驗職責**~~ ✅ **v0.6.0 概念層完成 + v0.7.0 擴 init 階段抽驗**：v0.6.0 概念層誕生；v0.7.0 加 §3.6 採用方接入流程 init 結果抽驗（職能擴張）。**仍待做**：vendor 層走 `ai-vendor-onboarding §3` 邀請制（YC 計畫先邀請 Gemini）
+- ~~**「採用方接入流程缺 init-validator 角色」結構性盲區（dogfood signal #7 候選）**~~ ✅ **v0.7.0 完成**：`tools/init-spec.md Phase 5b` + `roles/validator/_spec.md §3.6` 雙構成載體；雙半邊對稱（maintainer 半邊 auditor / 採用方半邊 validator on init）
+- ~~**「surface-level 完成感 vs structural-level 完整性」結構性脫鉤（dogfood signal #8 候選）**~~ ✅ **v0.7.0 完成**：`core/failure-modes.md F6` sub-pattern + `tools/doctor-spec.md §3.7` 結構頂層 + namespace 校驗 + E605 強制檢查 enable_modes 含 F6（諷刺循環攔截）
 
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.7.0 release（2026-04-28）— 公司專案接入失敗大批次條款修訂
+
+✅ **大批次 5 個 dogfood signal 一次處理**（dogfood-driven hardening 第五循環）：
+- signal #3 結構性實證（slash command 路徑硬編碼）→ `core/init-template.md §3.3.2` slash command 引用紀律段 + `tools/init-spec.md Phase 4.x`
+- signal #4 第三次同類（mapping schema namespace 誤翻譯）→ `core/charter-config.md §3` namespace 註明（雙重防禦文檔半邊）+ `tools/doctor-spec.md §3.7` E601〜E605 校驗（雙重防禦校驗半邊）+ 三 preset enable_modes 加 F6
+- signal #5 第二次完整實證（init 階段 PM 自激活）→ `core/multi-role-tracking.md §3.4.4 + §3.4.5` + `core/init-template.md §3.3.2 step 6` Status PROVISIONAL/ACTIVE 二態 + `templates/agent-commons/_role.md.tpl` Status 二態說明
+- signal #7 候選新增（採用方接入流程缺 init-validator）→ `tools/init-spec.md Phase 5b` + `roles/validator/_spec.md §3.6`（雙半邊對稱：maintainer 半邊 auditor / 採用方半邊 validator on init）
+- signal #8 候選新增（surface-level 完成感 vs structural-level 完整性）→ `core/failure-modes.md F6` sub-pattern + 抽驗判別法 4 項 + 諷刺循環攔截
+
+✅ **架構級概念第 12 個誕生**：「採用方接入流程『自抽自驗』結構性盲區封閉 / Phase 5b 對稱機制」— 對應 v0.6.0 加 auditor 封閉 maintainer 半邊的對稱版
+
+✅ **連動更新**：
+- 三 preset yaml charter_version 0.6.1 → 0.7.0 + enable_modes 全部含 F6
+- ADOPTION.md / TUTORIAL.md / QUICKSTART.md / CHANGELOG.md / .claude/commands/maintainer-load.md
+- v0.6.1 後 4 處未 commit 異動併入（templates/role-invocation-prompt.md.tpl 新檔 + QUICKSTART Step 4 重構）
+
+✅ **auditor 抽驗通過**：fresh-context sub-agent 跑 cross-reference + spec sync audit；ERROR 0 / WARN 3 / INFO 2；W001+W003 在 P6 收尾、W002 已修補；發現新 signal #9 候選
+
+✅ **未 commit / 未 push**：等 user 明示授權後走 P5 標準 release 流程
+
+
 
 - ✅ Common Memory Root 條款（v0.4.1）
 - ✅ agent-commons templates 完整 6 份（v0.4.2）
@@ -161,6 +186,8 @@ framework 永久維持「**純規範**」位階。
   - **連動範圍**（依 maintainer-discipline §2.2）：condition 數 20 → 21 / 角色 2 → 4 / 架構級概念 9 → 11；三 preset enabled 加 ai-vendor-onboarding（minimal false / standard true / strict true）+ charter_version 0.5.10 → 0.6.0；ADOPTION §3 標題 18 → 20 條（採用方視角）+ D 組 4 → 5 條 + 新增 F 組 maintainer-only；QUICKSTART/ADOPTION/TUTORIAL 條款數 20 → 21；STATUS 全段更新 + 演化軸表加 v0.6.0 entry + §B 架構級概念擴 9 → 11；CHANGELOG v0.6.0 段
   - **dogfood-driven hardening 第二、三循環實證**：第二循環 = signal #5 條款化封閉 LLM 繞路 gap；第三循環 = Gemini PM 接入歷程的隱性 pattern 顯性化為邀請制條款
   - **Git tag**：`v0.6.0` @ `9493814`
+
+- ✅ **`templates/role-invocation-prompt.md.tpl` 新增 + QUICKSTART Step 4 重構（2026-04-28 session 內小演進）**：對應使用者 framing「charter 演示通用骨架、不蒐集 prompt 庫、採用方依骨架自填」（對齊 v0.6.0 邀請制 + A3「專案 ⊥ 框架」公理）。新檔含 6 個 placeholder + 6 個 ⭐ 結構區塊（對齊 init-template §3.3.2 七步驟）+ 採用方擴展貢獻路徑指向 ai-vendor-onboarding §3。QUICKSTART Step 4 從 inline 兩段 prompt 重構為「§4.1 通用骨架（指向新 .tpl）+ §4.2 已實證填充範例（保留 Engineer×Claude / PM×Gemini 兩段，加『其他組合自填』收斂尾）」。**auditor 第二次實戰**：手動 spawn fresh-context sub-agent 跑 cross-reference + spec-sync sweep（路徑 C，未升 `/maintainer-selfcheck` skill）— 抓 1 ERROR（doctor-spec 模式 A → 模式 B 引用錯）+ 3 WARN（ai-vendor-onboarding §3 步驟對應錯 / cursor 範例值未實裝 / spec-sync 軌跡漏）。3 個直接修（E1 / W1 / W3）、W2 留軌跡（記入 ⚪ 段 #6 entry 第二次同類觀察）。**未涉及**：CHANGELOG / charter_version 升 / git tag — 待公司接入跑過骨架實證後再評估是否升 PATCH
 
 - ✅ **v0.6.1 release（2026-04-28）— auditor 第一次實戰後的 stable 版本（公司 production 接入用）**：
   - **動機**：v0.6.0 後使用者準備接入公司 production 專案、要求「最穩定」。為確保 v0.6.0 對 production ready，maintainer 用 v0.6.0 新誕生的 auditor 角色（`roles/auditor/_spec.md`）spawn fresh-context sub-agent 跑首次實戰 cross-reference + spec sync audit。

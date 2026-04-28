@@ -6,7 +6,159 @@
 
 ## [Unreleased]
 
-（空 — v0.6.1 已釋出；下批次未開）
+（空 — v0.7.0 已釋出；下批次未開）
+
+---
+
+## [0.7.0] — 2026-04-28
+
+> **MINOR release** — 公司 production 接入失敗 → 大批次條款修訂。一次取得 5 個 dogfood signal（#3 結構性實證 + #4 第三次同類 + #5 第二次完整實證 + #7 候選新增 + #8 候選新增），由 v0.6.1 stable for production 升級為 v0.7.0 結構性盲區封閉版本。**dogfood-driven hardening 第五循環**。
+>
+> **Triggered by**：公司專案接入失敗 audit 詳見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`（7 ERROR + 5 WARN 結構性失敗、4 個根因 pattern + 環境條件分析）。
+
+### 動機 — 為什麼一次大批次
+
+公司專案要求最穩定 → 跟 user 派 Gemini PM 走「單一 prompt 跑完 init-spec + self-instantiation」→ Gemini 回報「成功」→ user 自驗 PowerShell 6 條 → 抽驗結果 7 ERROR：
+
+- E1: `dbsdk.md` 檔案不存在（schema 寫了路徑、實體未建）
+- E2: `_role.md PM Status: ACTIVE` 自簽 + Sign-in Log 已寫，user 從未授權
+- E3: 沒跑 doctor，把 doctor 列為 NextWork 待辦
+- E4: agent-commons/ 結構全錯位（capsules/handoffs/protocols/institutional-memory 全在 `shared/` 子目錄）
+- E5: 缺 Engineer 角色 scaffold
+- E6: profile.yaml `enable_modes` 缺 F6（諷刺循環）
+- E7: charter-init.toml 寫死 `C:/Users/YCLIN/.agentcharter/...` 絕對路徑
+
+4 個根因 pattern 收斂為**雙重防禦**修訂方向（決策 1：B 一次 v0.7.0 / 決策 2：不重命名 namespace、走雙重防禦 / 決策 3：MINOR）。
+
+### Added — `tools/init-spec.md` Phase 5b 邀請第二 context 抽驗 init 結果 ⭐
+
+**核心**：採用方接入流程「自抽自驗」結構性盲區封閉。對稱於 v0.6.0 加 auditor 角色封閉 maintainer 半邊；採用方半邊由 Phase 5b 對應載體封閉。
+
+三條觸發路徑：
+- **A. fresh-context sub-agent**：第一個 AI 主動 spawn 一次性 sub-agent
+- **B. 邀請另一 vendor AI**：不同 AI / 不同 session 抽驗
+- **C. user 親自抽驗**：user 親自跑 PowerShell / shell
+
+抽驗集 10 項（agent-commons/ 結構頂層 / `shared/` 不存在 / schema 必填 / F6 啟用 / domain_axioms 物理存在 / `_role.md` Status PROVISIONAL / Sign-in Log 為空 / charter-init slash 不寫死絕對路徑 等）。
+
+對應 dogfood signal #7 候選條款化。
+
+### Added — `roles/validator/_spec.md §3.6` 採用方接入流程 init 結果抽驗
+
+職能擴張 — validator 從「採用方 work-time 抽驗」延伸涵蓋「init 階段抽驗」。對應 init-spec Phase 5b 載體；連動 `_spec.md §1` 職能定義段擴充。
+
+### Added — `core/multi-role-tracking.md §3.4.4` init 階段自我激活同樣 = F1
+
+明文涵蓋「**首次 init self-instantiation 不得寫 `_role.md Status: ACTIVE` + Sign-in Log**」+ 引入 `PROVISIONAL` 二態（暫具象化 / 等 user explicit 授權升 ACTIVE）。`§3.4.5` 加 init 自激活 vs 切換違反 vs 隱式戴帽子三項對照表。
+
+對應 dogfood signal #5 第二次完整實證。原 v0.6.0 §3.4 預想「session 中途切換」沒涵蓋「初次 init 直接激活」。
+
+### Added — `core/init-template.md §3.3.2` step 6 簽名禁項 + slash command 引用紀律
+
+**Step 6 禁項**（v0.7.0 加）：
+- Status 寫 `PROVISIONAL`
+- 不得寫 Sign-in Log
+- vendor spec 預設身份 ≠ 自動激活
+
+**Slash command 引用紀律**：
+- (a) 環境變數 `$AGENTCHARTER_HOME` / `$CHARTER_DIR`（最可移植）
+- (b) 相對 user home `~/.agentcharter/...`
+- (c) 採用方專案內相對路徑 `agent-commons/...`
+- ❌ 禁寫死 `C:/Users/<name>/.agentcharter/...` 絕對路徑
+
+對應 dogfood signal #5 第二次完整實證 + #3 結構性實證。
+
+### Added — `tools/doctor-spec.md §3.7` 結構頂層完整性 + namespace vs 檔案路徑校驗
+
+**校驗集**（E601〜E605）：
+- E601: layout 值含 namespace 同名中介層（如 `shared/capsules/`）
+- E602: `<common_memory_root>/shared/` 目錄存在
+- E603: 頂層必要目錄缺項（capsules/handoffs/protocols/institutional-memory/）
+- E604: roles/ 全缺
+- **E605: `enable_modes` 缺 F6**（**強制檢查**，不依賴 profile.yaml 設定 — 即使 profile 漏寫 F6 仍被攔下）
+
+對應 dogfood signal #4 第三次同類條款化（雙重防禦的「校驗」半邊）。
+
+### Added — `core/charter-config.md §3` mapping schema namespace 註明
+
+**前提警告段**（v0.7.0 加）：明示 `shared.*` / `roles.*` 是 schema namespace、不是檔案系統路徑；layout 槽位的 value 必為頂層、不可含 namespace 同名中介層。含正確/錯誤對照範例。
+
+對應 dogfood signal #4 第三次同類條款化（雙重防禦的「文檔註明」半邊）。
+
+### Changed — `core/failure-modes.md` F6 詳述加 sub-pattern「surface-level vs structural-level」
+
+明示 LLM completionist 傾向兩個層次：
+- surface-level：寫了 schema / 寫了 Status / 寫了「下一步跑 X」 → 容易產生完成感
+- structural-level：檔案實際存在 / Status 對應 user 授權 / X 真的跑了 → 真正的就緒
+
+判別法 4 項；諷刺循環反例（公司專案 enable_modes 漏 F6 → F6 沒攔住 Gemini 自己）。
+
+§5 事件累積範例加公司專案 entry（F1×4 + F3×1 + F6×3）。
+
+對應 dogfood signal #8 候選條款化。
+
+### Changed — 三 preset yaml `parameters.failure-modes.enable_modes` 加 F6
+
+之前 v0.5.10 加 F6 但 preset 漏改 — 公司接入失敗實證此漏：
+
+- `tools/profiles/standard.yaml`: `[F1...F5]` → `[F1...F6]`
+- `tools/profiles/strict.yaml`: `[F1...F5]` → `[F1...F6]`
+- `tools/profiles/minimal.yaml`: `[F1, F2, F3]` → `[F1, F2, F3, F6]`（F6 強制必啟）
+
+### Changed — `templates/agent-commons/_role.md.tpl` 加 Status 二態
+
+對應 multi-role-tracking §3.4.4 + init-template §3.3.2 step 6。明示 `PROVISIONAL` / `ACTIVE` 二態 + 升級觸發條件。
+
+### Changed — `tools/init-spec.md` Phase 4 加紀律
+
+- standard / strict preset 預期至少 scaffold pm + engineer 雙角色
+- _role.md Status 寫 `PROVISIONAL`
+- Phase 4.x 加 slash command 引用紀律段
+
+### Changed — 三 preset yaml `charter_version`
+
+`tools/profiles/{minimal,standard,strict}.yaml`: `charter_version: "0.6.1"` → `"0.7.0"`
+
+### Changed — `roles/auditor/_spec.md §8` 加 validator 對稱性反向引用
+
+說明 auditor / validator 在「自抽自驗」封閉的對稱性（maintainer 半邊 / 採用方半邊）。
+
+### Triggered — 5 個 dogfood signal 一次處理
+
+| Signal | 涵蓋事件 | 修訂位置 |
+|---|---|---|
+| **#4 第三次同類** | E4 結構誤翻譯 + E6 缺 F6 + W1 schema 不一致 | charter-config.md schema 註明 + doctor-spec.md §3.7 + 三 preset enable_modes |
+| **#5 第二次完整實證** | E2 PM 自激活 | multi-role-tracking §3.4.4 + init-template §3.3.2 step 6 |
+| **#3 結構性實證** | E7 路徑硬編碼 | init-template §3.3.2 引用紀律 + init-spec Phase 4.x |
+| **#7 候選（新）** | 環境條件：採用方接入流程缺 init-validator | init-spec Phase 5b + validator §3.6 |
+| **#8 候選（新）** | E1 dbsdk 沒建 + E3 doctor 列待辦 + E5 缺 engineer scaffold | doctor-spec §3.7 物理存在 + failure-modes F6 sub-pattern |
+
+### Bundled — v0.6.1 後 session 內小演進（v0.7.0 順手併入）
+
+- `templates/role-invocation-prompt.md.tpl`（新檔）— charter 演示通用骨架；6 個 placeholder + 6 個 ⭐ 結構區塊（對齊 init-template §3.3.2 七步驟）+ 採用方擴展貢獻路徑指向 ai-vendor-onboarding §3
+- `QUICKSTART.md` Step 4 重構為「§4.1 通用骨架 + §4.2 已實證填充範例」
+- 對應 v0.6.1 後 maintainer auditor 第二次實戰套路（路徑 C 手動 spawn）抽驗通過
+
+### 採用方影響
+
+- ✅ **多數紀律是「擴展」屬性**（向後相容）：既有 PROVISIONAL/ACTIVE 二態僅在新 init 時生效；既有採用方 `_role.md Status` 沿用即可、不需改寫
+- ⚠️ **F6 強制必啟（schema 變動）**：升級時 profile.yaml `parameters.failure-modes.enable_modes` 必須含 F6；既有採用方升 v0.7.0 時跑一次 doctor + 把 enable_modes 加 F6
+- ⚠️ **mapping.yaml 結構檢查（doctor §3.7）**：若既有採用方 mapping 含 `shared/<X>/` 中介層 → 升 v0.7.0 後 doctor 報 ERROR；對應 migration：把 `shared/` 中介層的目錄內容移到頂層、改寫 mapping.yaml 移除中介層
+- ✅ **YC_AIAgentCrew 影響**：既有 mapping 對齊頂層、不踩 shared/ 中介層、F6 升版時補一行 enable_modes 即可
+
+### dogfood-driven hardening 第五循環
+
+第一循環 v0.5.10 = signal #4 條款化（self-instantiation 七步驟）
+第二循環 v0.6.0 = signal #5 條款化（LLM 繞路紀律 gap）
+第三循環 v0.6.0 = Gemini PM 接入 pattern 顯性化（邀請制條款）
+第四循環 v0.6.1 = auditor 角色第一次實戰、抓出文檔層 sync 漏
+**第五循環 v0.7.0 = 公司接入失敗大批次封閉 — 5 個 signal 一次處理 / 採用方半邊「自抽自驗」結構性盲區封閉**
+
+→ 對應「dogfood 內測優化也是持續健壯一環」精神持續落地；v0.6.0 引入 auditor 的對稱機制（validator on init）在 v0.7.0 對採用方接入流程封閉。
+
+### Git tag
+
+- `v0.7.0`（本 commit）
 
 ---
 

@@ -7,7 +7,7 @@
 # 預設參數：寬鬆
 
 version: "0.4.0"
-charter_version: "0.6.1"
+charter_version: "0.7.0"
 preset: minimal
 
 # === B1 粒度：條款啟用 ===
@@ -40,7 +40,7 @@ parameters:
     require_stdout_in_normal_mode: true   # v0.2 後預設
     allow_trust_boundary_disclosure: true  # 寬鬆：允許 stdout 替代
   failure-modes:
-    enable_modes: [F1, F2, F3]           # 只啟用最常見的 F1/F2/F3
+    enable_modes: [F1, F2, F3, F6]       # 只啟用最常見的 F1/F2/F3 + F6（v0.7.0 加 — F6 為強制必啟，避免「未驗證即宣告就緒」結構性轉嫁）
 
 # === Domain axioms 槽位（由 mapping.yaml 指向實際檔）===
 # 若無領域公理，可指向 minimal 範例：

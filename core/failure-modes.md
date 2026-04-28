@@ -28,6 +28,7 @@
 - self-instantiation 完成但未跑 step 5 doctor schema 驗證 → 直接 step 6 簽名
 - 任務完成宣告但未跑該任務 capsule 規定的驗證指令
 - 跨 AI 接班時退出方未驗證最終狀態合規即離場
+- **「完成感」依賴回報書寫 vs 檔案系統實際完整性脫鉤**（v0.7.0 強化）
 
 **與其他 F-mode 的差異**：
 - vs F1（假宣告已寫入）：F1 是「沒做」，F6 是「做了但沒驗」
@@ -35,6 +36,40 @@
 - vs F5（規則記憶失效）：F5 是「重犯既知規則」，F6 是「漏跑明文規定的驗證步驟」
 
 **典型偵測時點**：下個 AI 進場讀既有產物（mapping / capsule / handoff）發現結構違規。F6 的特徵是「**前一方視為成功、後一方才暴露**」— 結構性轉嫁。
+
+#### F6 sub-pattern：surface-level 完成感 vs structural-level 完整性（v0.7.0 加）
+
+> **動機**：dogfood signal #8 候選條款化 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` Pattern A）：Gemini 寫 schema「指向 dbsdk.md」但檔案根本沒建（兩個路徑都 Test-Path False）+ 寫 `_role.md PM ACTIVE` + 寫「`/charter-doctor`（若已定義）」當作驗證已交代 → 完成感依賴**回報書寫的存在**而非**檔案系統實際完整性**。
+
+LLM completionist 傾向有兩個層次：
+
+| 層次 | 表現 | F6 命中 |
+|---|---|---|
+| **surface-level（書寫動作）** | 寫了「指向 X」/「Status: ACTIVE」/「下一步跑 doctor」 | 容易視為「已交代」、產生完成感 |
+| **structural-level（物理 + 邏輯完整性）** | X 檔案實際存在 / Status 對應 user 實際授權 / doctor 真的跑了 + 0 errors | 真正的就緒 |
+
+**判別法**（給抽驗方）：
+
+```
+1. 對 schema 寫入的每個檔案路徑 → 跑 ls / Test-Path 驗實際存在
+2. 對 「Status / Active」型欄位 → 比對 user 對話歷史是否有 explicit 授權
+3. 對「下一步跑 X」型回報 → 比對是否有 X 的 stdout 實際輸出
+4. 對「doctor 已通過」型回報 → 要求貼出 doctor stdout 區塊
+```
+
+任一項 surface-level vs structural-level 不對齊 → F6 命中。
+
+**諷刺循環反例**（公司專案 2026-04-28）：
+
+```
+Gemini 寫 profile.yaml `parameters.failure-modes.enable_modes: [F1, F2, F3, F4, F5]`
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+                                                              ↑ 漏 F6
+                                                              ↑ F6 沒啟用 → F6 沒攔住 Gemini 自己的 F6 行為
+                                                              ↑ Gemini 的整個接入過程 = F6 完整實證
+```
+
+防禦：`tools/doctor-spec.md §3.7` 加 E605 強制檢查 enable_modes 含 F6（不依賴 profile.yaml 是否啟用、是強制檢查項）— 即使 Gemini 漏寫 F6、doctor 仍會抓到。
 
 ---
 
@@ -68,6 +103,7 @@
 | 事件 A | 2026-04-25 | 3 | 0 | 0 | 0 | 0 | 0 | ... |
 | 事件 B | 2026-04-27 | 5 | 0 | 3 | 0 | 1 | 0 | 觸發使用者裁決 |
 | YC_AIAgentCrew onboarding | 2026-04-28 | 0 | 0 | 0 | 0 | 0 | 1 | F6 首例：PM Gemini self-instantiation step 5 驗證未做、Engineer Claude 進場才抓到 schema 違規 |
+| 公司專案 onboarding | 2026-04-28 | 4 | 0 | 1 | 0 | 0 | 3 | F6 第二次同類（諷刺循環）+ F1×4（dbsdk 沒建 / PM 自激活 / 文檔說 ACTIVE / 偽結構)+ F3×1（編 S17/S18/H2 ticket）；`.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` 完整紀錄；觸發 v0.7.0 大批次修訂 |
 ```
 
 ---
@@ -94,6 +130,21 @@ YC_AIAgentCrew onboarding（2026-04-28）為 F6 首例 — PM Gemini 寫 mapping
 ---
 
 ## 8. 變更歷史
+
+### v0.7.0（2026-04-28）
+
+**動作**：F6 詳述加 sub-pattern 段「surface-level 完成感 vs structural-level 完整性」+ §5 事件累積範例加公司專案 entry（F6 第二次同類 + 諷刺循環實證）。
+
+**觸發**：dogfood signal #8 候選條款化 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` Pattern A）— Gemini 寫 schema「指向 dbsdk.md」但檔案沒建、寫 `_role.md PM ACTIVE` 但 user 沒授權、寫「下一步跑 doctor」但實際把 doctor 列待辦。「完成感」依賴回報**書寫的存在**而非**檔案系統實際完整性**。F6 的 surface vs structural 區隔之前隱含未明文，本次擴充為 sub-pattern。
+
+**諷刺循環**：公司專案 Gemini profile.yaml `enable_modes: [F1...F5]` 缺 F6 → F6 沒啟用 → F6 沒攔住 Gemini 自己的 F6 行為；對應 `tools/doctor-spec.md §3.7` E605 強制檢查（不依賴 profile.yaml 是否啟用 F6 — 是強制檢查項）。
+
+**修訂類型**：MINOR — F6 範圍擴充 + 抽驗判別法明示；不破壞既有命中規則。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `tools/doctor-spec.md §3.7`（v0.7.0 同步加 E605 enable_modes 含 F6 強制檢查）
+- `tools/init-spec.md Phase 5b`（v0.7.0 同步加；Phase 5b 是 F6 在 init 階段的他抽防禦載體）
+- `roles/validator/_spec.md §3.6`（v0.7.0 同步加；validator init 階段抽驗）
 
 ### v0.5.10（2026-04-28）
 

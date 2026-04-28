@@ -7,7 +7,7 @@
 # 預設參數：中等
 
 version: "0.4.0"
-charter_version: "0.6.1"
+charter_version: "0.7.0"
 preset: standard
 
 # === B1 粒度：條款啟用 ===
@@ -47,7 +47,7 @@ parameters:
     default_mode: verbose
     auto_upgrade_keywords: ["請詳細", "展開", "為什麼", "完整紀錄"]
   failure-modes:
-    enable_modes: [F1, F2, F3, F4, F5]   # 全 F-mode 啟用
+    enable_modes: [F1, F2, F3, F4, F5, F6]   # 全 F-mode 啟用（v0.7.0 加 F6 — 之前 v0.5.10 加 F6 但 preset 漏改、公司接入失敗實證）
 
 # === Domain axioms 槽位（由 mapping.yaml 指向實際檔）===
 # 範例（CryptoBot）：

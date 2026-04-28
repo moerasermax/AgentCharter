@@ -44,6 +44,10 @@
   §3.3 路徑對映（mapping 指向的路徑實際存在）
   §3.5 領域公理（公理檔存在 + 結構非空）
 
+必驗（v0.7.0 加，dogfood signal #4 第三次同類條款化）：
+  §3.7 結構頂層完整性 + namespace vs 檔案路徑校驗
+  （E601/E602/E603/E604/E605 全部跑；尤其 E605 不依賴 profile.yaml 的 enable_modes 設定）
+
 可選：
   §3.2 條款相依、§3.4 角色 init 狀態、§3.6 失敗模式累積（self-instantiation 階段太早，可跳過）
 ```
@@ -135,6 +139,42 @@
 |---|---|---|
 | 當前處於強化抽驗模式 | I501 | INFO，提醒下個 session 接班 AI |
 | 結構性失靈未解 | W502 | 警告，提醒使用者裁決尚未結 |
+
+### 3.7 結構頂層完整性 + namespace vs 檔案路徑校驗（v0.7.0 加）
+
+對應 dogfood signal #4 第三次同類（公司專案接入失敗 2026-04-28，見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` Pattern B）— charter mapping schema 的 `shared.*` namespace 容易被 LLM 誤翻譯為檔案系統目錄。
+
+**校驗集**（v0.7.0 必跑、為模式 B minimal 集合的擴充）：
+
+```
+1. 對 mapping.yaml 內 layout.<key>: <value> 的每對：
+   檢查 value 字串是否以 namespace 同名的中介層開頭（如 shared/<...>）
+   命中 → ERROR
+
+2. 校驗 <common_memory_root>/ 下的實際結構：
+   不應存在 <common_memory_root>/shared/ 目錄
+   命中 → ERROR
+
+3. standard / strict preset 下的頂層必要目錄都存在：
+   capsules/ / handoffs/ / protocols/ / institutional-memory/
+   缺項 → ERROR
+
+4. standard / strict preset 下，roles/ 子目錄至少含 pm 和 engineer 之一：
+   全缺 → ERROR；只缺一個（且 profile 顯示對應 role 啟用）→ WARN
+
+5. profile.yaml `parameters.failure-modes.enable_modes` 含 F6（v0.5.10 加）：
+   缺 F6 → ERROR
+```
+
+| 失敗 | 狀態碼 | 處置 |
+|---|---|---|
+| layout 值含 namespace 同名中介層（如 `shared/capsules/`）| **E601** | 致命；移除中介層、對齊頂層路徑 |
+| `<common_memory_root>/shared/` 目錄存在 | **E602** | 致命；mkdir 出來的錯目錄要清掉、把內容移到頂層 |
+| 頂層必要目錄缺項 | **E603** | 列出缺項；對應 init-spec phase 1-3 結構建立漏 |
+| roles/ 全缺 | **E604** | 致命；standard/strict preset 至少一個角色 scaffold |
+| `enable_modes` 缺 F6 | **E605** | ERROR；補上 F6（dogfood signal #4 條款化要求）|
+
+**諷刺循環攔截**：E605（F6 沒啟用）本身是 F6 行為的高發誘因（沒啟用 → 沒攔住未驗證即宣告就緒）。doctor 模式 B 強制檢查 §3.7 → 即使 profile.yaml 漏寫 F6、doctor 仍會抓到（因為這條 check 不依賴 enable_modes，是強制執行）。
 
 ---
 
@@ -276,6 +316,7 @@ CI / pre-commit hook 可依退出碼 gate。
 | v0.5.7 | 曾落地為 python 工具 | ⛔ 後於 v0.5.9 移除 |
 | v0.5.9 | 回歸純 spec — framework 不附實作工具 | ✅ |
 | **v0.5.10** | **§2.1 呼叫模式拆分**（A 人工 / B self-instantiation 結尾強制驗證點）；§7 反向引用加 `init-template §3.3.2 step 5` + `failure-modes F6`。**觸發**：dogfood signal #4 於 YC_AIAgentCrew 接入（2026-04-28）實證；驗證從「使用者另一動作」內化到「self-instantiation 流程內必跑」 | ✅ |
+| **v0.7.0** | **§3.7 加結構頂層完整性 + namespace vs 檔案路徑校驗**（E601/E602/E603/E604/E605）；§2.1 模式 B minimal 必驗集擴充含 §3.7。**觸發**：dogfood signal #4 第三次同類（公司專案接入失敗 2026-04-28）— `shared.*` namespace 被 Gemini 誤翻譯為檔案系統目錄，整個 agent-commons/ 結構錯位 + F6 漏啟用 + dbsdk.md 完全沒建。對應 charter-config.md mapping schema 段加註明的雙重防禦 | ✅ |
 
 **實作模式**：採用方對 AI prompt「依本 spec 跑健康檢查」+ 順便自具象化 `/charter-doctor` slash command（依 `core/init-template.md §3.3` self-instantiation 精神）。
 
