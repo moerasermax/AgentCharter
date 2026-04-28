@@ -1,7 +1,7 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.7.3 release 收尾 — 完整 spec drift sweep + 設計哲學北極星顯化 + v0.7.0 BREAKING-LITE 追溯後）
-> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學 — 兩無痛定義 + 三服務原則 + 對未來修訂的紀律三題對齊）
+> **更新時間**：2026-04-28（v0.7.4 release 收尾 — vendor 端 schema 規範條款化、dogfood signal #16 條款化後）
+> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）
 
 ---
 
@@ -114,6 +114,8 @@ framework 永久維持「**純規範**」位階。
 
 - **新 dogfood signal #13 候選 — user 對 charter 自身演化行使「他抽」屬性**（v0.7.2 觸發、抽驗時發現）：v0.7.1 release 後、user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 漏的 §5 反向引用同步 → 觸發 v0.7.2 條款化 signal #6 + signal #10。**設計學意義**：v0.7.0 加的 Phase 5b 採用方半邊「他抽」屬性 → user 學會 → user 反過來他抽 charter 自己。**判斷**：累積 use case 後評估是否在 `roles/validator/_spec.md` 加 §3.7「對 charter 自身演化行使他抽」段（採用方視角的 charter dogfood 貢獻路徑明示）；當前先觀察、不條款化
 
+- **新 dogfood signal #17 候選 — 條款互引時 maintainer 留占位符 §X / §3.X 未替換為實際章節編號**（v0.7.4 auditor 抓到）：v0.7.4 ship 時 5 處 `§X` / `§3.X` 占位（gemini-cli §3.6 + §7 v1.2 entry / claude-code §4.1）— 應為實際章節（§3.8 / §4.1）；對應 F4 編號偏差。**累積**：v0.7.3 完整文檔層 sweep 抓的 10 ERROR 多數同類「主體內容沒對齊條款最新狀態」+ v0.7.4 又踩 1 次 = 第二次同類觀察。**判斷**：累積 ≥3 次同類後可條款化「**maintainer 寫條款互引時禁占位、必填實際章節**」（如新加 `maintainer-discipline §3.4.4` 子項）；當前先觀察、不條款化
+
 - **新 dogfood signal #14 候選 — spec ↔ core 條款雙向引用對稱性**（v0.7.2 auditor 抽驗時發現）：v0.7.2 補了 `structural-anti-fabrication §5` 對 `init-spec Phase 5b` / `domain-axiom-slot §3.3` / `failure-modes F6` 的引用，但對端**沒回引 structural-anti-fabrication**（spec 沒「§ 與其他 core 條款的關係」表結構、core 條款有引用但格式不一致）。**判斷**：accumulating 觀察、屬「**spec 設計層**」議題；候選方向：(a) `tools/*-spec.md` 加 「§ 對應 core 條款的反向引用」格式段；(b) `core/*.md` 內提到 `tools/*-spec.md` 時 spec 端強制有對應反向 entry。**累積 ≥3 次同類後條款化**（當前累積 1 次）
 - **dogfood signal #11 候選 — condition mutability 三層分類**（v0.7.1 user 直接提議、frontmatter scaffold 已 ship、紀律本體留 v0.8.0）：user 公司接入痛點對話直接提議「IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE 三層」+「3-strike 刪除」+「user-initiated consolidation」。v0.7.1 ship 了 frontmatter scaffold（structural 預備）；**v0.8.0 待做**：(a) 新加 `core/condition-mutability.md` 條款（或擴 `domain-axiom-slot §4`）規範三層 mutability + 3-strike 刪除協議 + user-initiated consolidation 紀律 + AI 對 condition 的修訂權限分層；(b) `tools/doctor-spec.md §3.7` 加 mutability frontmatter 校驗。**判斷**：等公司接入 1-2 週、user 累積 1-2 次「想刪 / 想改 / 想統整」痛點 → 條款化
 - ~~**dogfood signal #12 候選 — 雙路徑（user 主筆 vs AI 代產）**~~ ✅ **v0.7.1 完成**：`core/domain-axiom-slot §3.3` 加雙路徑明文 + `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl` 新檔（路徑 B prompt）+ QUICKSTART Step 3 雙路徑說明 + frontmatter `Status: AI-DRAFTED`/`USER-RATIFIED` 二態紀律。**user 公司接入痛點對話直接提議 → 30 分鐘內 ship 條款化** — 對應 user 對話原話「成長中、想法碰撞」
@@ -137,6 +139,21 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.7.4 release（2026-04-28）— vendor 端 slash command schema 規範條款化（dogfood signal #16）
+
+✅ **dogfood-driven hardening 第九循環 — vendor schema 規範條款化**：YC_AIAgentCrew（v0.5.9 接入）2026-04-28 user 重啟 Gemini CLI v0.39.1 時、3 個自具象化 toml 全部被 vendor 端 schema validator 抓出格式錯（nested table）跳過載入 → 觸發條款化
+
+✅ **新增條款 / 段（純擴增、向下兼容）**：
+- `roles/pm/gemini-cli.md §3.6` Gemini CLI 端 toml schema 規範（強制扁平結構 + 正確 vs 錯誤對照範例 + 5 項 self-instantiation checklist + schema 來源 + 跨 AI 對應表）
+- `roles/engineer/claude-code.md §4.1` Claude Code 端 .md schema 規範（純 markdown + 可選 frontmatter + 4 項 self-instantiation checklist + 違反處置）
+- `tools/doctor-spec.md §3.8` vendor 端 slash command schema 校驗（spec 層、實作 defer v0.8+；E801/W802 不在 v0.7.4 啟用）+ §3.8.1 v0.7.4 → v0.8+ 漸進啟用路徑說明
+
+✅ **嚴守向下兼容**：純擴增 / 既有採用方升 v0.7.3 → v0.7.4 零動作 migration（只改 profile.yaml `charter_version`）/ doctor 不跑新 check / 對 YC_AIAgentCrew toml 失效有立即 reference
+
+✅ **節奏修正**：user 提「為什麼 0.7.3 → 0.8 我不太理解」 → maintainer 反省 v0.8.0 大 release 違反「頻繁小擴增、每個 release 純向下兼容」精神（規範密度導向殘留）→ charter 改走「**頻繁小擴增 PATCH** + **大方向新加條款用 MINOR**」雙軌節奏
+
+✅ **連動更新**：三 preset yaml `0.7.3` → `"0.7.4"` + ADOPTION/TUTORIAL/maintainer-load 升版號
 
 ### v0.7.3 release（2026-04-28）— 完整文檔層 sync sweep + 設計哲學北極星顯化 + v0.7.0 BREAKING-LITE 追溯
 

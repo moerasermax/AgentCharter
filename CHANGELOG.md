@@ -6,7 +6,99 @@
 
 ## [Unreleased]
 
-（空 — v0.7.3 已釋出；下批次 v0.8.0 北極星 release）
+（空 — v0.7.4 已釋出；下批次 v0.7.5 BOOTSTRAP / v0.7.6 prompt 簡化 / v0.7.7 BREAKING-LITE checklist / v0.8.0 lifecycle 完整化）
+
+---
+
+## [0.7.4] — 2026-04-28
+
+> **PATCH release** — vendor 端 slash command schema 規範條款化（dogfood signal #16）。**嚴守向下兼容**：純擴增 / 既有採用方零動作 migration / doctor 不跑新 check（實作 defer v0.8+）。**dogfood-driven hardening 第九循環**。
+>
+> **Triggered by**：YC_AIAgentCrew（v0.5.9 接入）2026-04-28 user 重啟 Gemini CLI v0.39.1 時、3 個自具象化 toml（charter-init / engineer-init / pm-init）全部被 vendor 端 schema validator 抓出格式錯（nested table）跳過載入。原因：v0.5.9 接入時 Gemini PM 自具象化「自編 schema」、charter v0.5.9 〜 v0.7.3 此層 schema 規範完全空白。
+>
+> 對應 v0.7.0 加的 F6 sub-pattern「surface-level vs structural-level」精神在 vendor schema 層的實證 — toml 檔書寫存在（surface）≠ vendor 載入有效（structural）。
+
+### 動機 — 為什麼 v0.7.4 而非 v0.8.0 大批次
+
+User 提出：「**為什麼 0.7.3 → 0.8 我不太理解**」+ 強調「**絕對務必要切記、要向下兼容**」。
+
+→ maintainer 反省：原規劃 v0.8.0 大 release 違反「**頻繁小擴增、每個 release 純向下兼容**」精神（同源 v0.7.0 規範密度導向殘留）。改用一連串 PATCH（v0.7.4 / v0.7.5 / v0.7.6 / v0.7.7）漸進兌現北極星紀律、v0.8.0 只在真正新增條款時才用。
+
+對齊北極星「**由淺入深 + 培養魚塭**」精神 — 每個 PATCH 都讓未來採用方更舒適、每個 PATCH 純擴增、每個 PATCH 零破壞。
+
+### Added — vendor 端 schema 規範條款化（dogfood signal #16）
+
+#### `roles/pm/gemini-cli.md §3.6` Gemini CLI 端 toml schema 規範 ⭐
+- **強制紀律：扁平結構（Flat TOML）** — 必填欄位 root level + 禁 nested table + 禁 `name` 欄位 + 檔名 = 指令名
+- 正確 vs 錯誤對照範例（含 YC_AIAgentCrew v0.5.9 接入時 Gemini 自編 nested 結構錯誤的真實範例）
+- Self-instantiation 5 項 checklist（給未來 Gemini 自具象化用）
+- Schema 來源 + 跨 AI 對應 schema 規範表
+
+#### `roles/engineer/claude-code.md §4.1` Claude Code 端 .md schema 規範
+- 強制紀律：純 markdown + 可選 frontmatter；檔名 = 指令名
+- Frontmatter 範例（推薦但可選 — Claude Code fail-soft 性格）
+- Self-instantiation 4 項 checklist
+- Schema 來源（charter repo `.claude/commands/maintainer-load.md` 為現實 reference）+ 違反處置（Claude Code 寬鬆、仍走 init-template §7 違反處置）
+
+#### `tools/doctor-spec.md §3.8` vendor schema check（spec 層、實作 defer v0.8+）
+- 校驗集 4 項（檔名一致性 / 必填欄位齊 / 禁用結構不出現 / init-template §2 八項最終狀態）
+- 狀態碼 E801（vendor schema 違反）+ W802（schema 規範未顯化）— v0.7.4 不啟用、v0.8+ 啟用
+- §3.8.1 v0.7.4 → v0.8+ 漸進啟用路徑說明（嚴守向下兼容紀律）
+
+### Changed — 連動更新
+
+- 三 preset yaml `charter_version: "0.7.3"` → `"0.7.4"`
+- ADOPTION.md / TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.7.4
+- `roles/pm/gemini-cli.md §7 變更歷史` v1.2 entry
+- `roles/engineer/claude-code.md §8 變更歷史` v1.1 entry
+- `tools/doctor-spec.md §8 實作節奏` v0.7.4 entry
+
+### 嚴守向下兼容紀律（user 強調的核心）
+
+| 紀律 | v0.7.4 對齊狀態 |
+|---|---|
+| 純擴增 | ✅ 加新段（`<vendor>.md` schema 規範 + doctor §3.8 spec）；不動既有條款本體 |
+| 不動 schema | ✅ profile.yaml / mapping.yaml schema 不變 |
+| 不動 enabled / F-mode | ✅ 三 preset enabled 清單 / enable_modes 不變 |
+| 既有採用方零動作 migration | ✅ 升 v0.7.3 → v0.7.4 只改 profile.yaml `charter_version` |
+| doctor 不跑新 check | ✅ §3.8 spec 層加、實作 defer v0.8+；既有採用方升版 doctor 不會跑出新 ERROR/WARN |
+| 對 YC_AIAgentCrew toml 失效有立即 reference | ✅ §3.6 範例可直接給 Gemini 修補 |
+
+### 對 YC_AIAgentCrew 修補的 reference
+
+採用方端立即可用：用 `roles/pm/gemini-cli.md §3.6` 範例（扁平結構）為依據、把 nested toml 改成扁平：
+
+```toml
+# 修改前（nested、被 Gemini CLI v0.39.1 拒絕）
+name = "pm-init"
+[command]
+description = "PM 初始化"
+[command.instruction]
+prompt = "..."
+
+# 修改後（扁平、Gemini CLI v0.39.1 可載入）
+description = "PM 初始化"
+prompt = "..."
+```
+
+charter 端不代修；user 自行讓 Gemini 修補即可。
+
+### Triggered — dogfood signals
+
+| Signal | 對應 | 本 release 處理 |
+|---|---|---|
+| **#16 條款化（新）** | vendor 端 schema 規範未在 charter 條款層 — AI 自具象化時自編 schema、vendor 端升級才暴露 | ✅ `roles/pm/gemini-cli.md §3.6` + `roles/engineer/claude-code.md §4.1` + `doctor-spec.md §3.8` 三段同步落地 |
+
+### dogfood-driven hardening 第九循環
+
+第一〜八循環 v0.5.10〜v0.7.3
+**第九循環 v0.7.4 = vendor 端 schema 規範條款化** — 對應 v0.7.0 加 F6 sub-pattern「surface vs structural」精神在 vendor schema 層的實證閉環
+
+→ user 提的「**為什麼 0.7.3 → 0.8 我不太理解**」修正 maintainer 規範密度導向殘留 → charter 從此走「**頻繁小擴增 PATCH** + **大方向新加條款用 MINOR**」雙軌節奏。
+
+### Git tag
+
+- `v0.7.4`（本 commit）
 
 ---
 

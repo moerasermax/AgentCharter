@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.7.3`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.7.4`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -146,7 +146,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.7.3"`（或當前最新版）。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.7.4"`（或當前最新版）。
 
 ### T1 接入
 
@@ -333,7 +333,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 採用方在 Day 7 結束前應能對所有問題回答 ✅：
 
 - [ ] `agent-commons/` 目錄結構齊全（依 §4）+ **agent-commons/shared/ 不存在**（v0.7.0 doctor §3.7 E602 — namespace ≠ 檔案路徑）
-- [ ] `_config/profile.yaml` 含 `charter_version: "0.7.3"`（或當前最新版）+ 選定 preset
+- [ ] `_config/profile.yaml` 含 `charter_version: "0.7.4"`（或當前最新版）+ 選定 preset
 - [ ] `_config/profile.yaml` 內 `parameters.failure-modes.enable_modes` **含 F6**（v0.5.10 加 / v0.7.0 強制必啟、doctor §3.7 E605）
 - [ ] `_config/mapping.yaml` 含 `common_memory_root` + `domain_axioms.primary` + `working_stack_discipline.shared.draft_context`
 - [ ] `_config/mapping.yaml` 內 `layout.<key>` 不含 `shared/` / `roles/` 等 namespace 同名中介層（v0.7.0 doctor §3.7 E601 — namespace ≠ 檔案路徑）
