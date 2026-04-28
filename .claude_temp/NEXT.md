@@ -1,7 +1,7 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.7.4 release 收尾 — vendor 端 schema 規範條款化、dogfood signal #16 條款化後）
-> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）
+> **更新時間**：2026-04-28（v0.7.5 release 收尾 — 跨多版本升級指引 + YC walkthrough 後）
+> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）
 
 ---
 
@@ -139,6 +139,20 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.7.5 release（2026-04-28）— 跨多版本升級指引 + 第一個回鍋開發者無痛實證 walkthrough
+
+✅ **dogfood-driven hardening 第十循環 — 北極星「回鍋開發者無痛」第一個實證 ship**：對應 v0.7.3 顯化的 README §設計哲學從「規範密度導向」轉向「服務體感導向」的具體兌現。user 在 v0.7.4 ship 後直接要求「**文件上記得補充如何更新、以 YC_AIAgentCrew 為例該如何從 v0.5.9 → v0.7.4**」觸發
+
+✅ **新增（純擴增、向下兼容）**：
+- 新檔 `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md`（charter 第一個跨版本升版實證 walkthrough）— 6 段（升版前狀態 / 跨 8 release 演化軸 / 7 步升版流程 / 升版後 self-check / 設計學意義 / 變更歷史）
+- `core/versioning-migration §3.4` 跨多版本升級子段 — 5 子段（適用範圍 / 允許性 / 流程擴充 / 實證 walkthrough 表 / 「停用一段時間後重新採用」場景具體指引）
+
+✅ **連動更新**：三 preset yaml `0.7.4` → `"0.7.5"` + ADOPTION/TUTORIAL/maintainer-load 升版號 + ADOPTION line 149/336 charter_version 範例值同步 + maintainer-load.md 加 v0.7.5 議程說明
+
+✅ **嚴守向下兼容**：純擴增 / 既有採用方升 v0.7.4 → v0.7.5 零動作 migration（只改 profile.yaml `charter_version`）
+
+✅ **user「0 ERROR + 0 WARN」深度 sweep 紀律**：v0.7.5 ship 前跑深度 5 面向 sweep（跨檔引用 / 跨 release 邏輯一致性 / numeric 同步 / 北極星三題對齊 / dogfood signal 累積盤點）— 修補所有 ERROR/WARN 直到 0/0 才 commit
 
 ### v0.7.4 release（2026-04-28）— vendor 端 slash command schema 規範條款化（dogfood signal #16）
 

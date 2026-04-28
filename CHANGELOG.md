@@ -6,7 +6,86 @@
 
 ## [Unreleased]
 
-（空 — v0.7.4 已釋出；下批次 v0.7.5 BOOTSTRAP / v0.7.6 prompt 簡化 / v0.7.7 BREAKING-LITE checklist / v0.8.0 lifecycle 完整化）
+（空 — v0.7.5 已釋出；下批次 v0.7.6 BOOTSTRAP / v0.7.7 prompt 簡化 / v0.7.8 BREAKING-LITE checklist / v0.8.0 lifecycle 完整化）
+
+---
+
+## [0.7.5] — 2026-04-28
+
+> **PATCH release** — 跨多版本升級指引 + 第一個回鍋開發者無痛實證 walkthrough（YC_AIAgentCrew v0.5.9 → v0.7.4）。**嚴守向下兼容**：純擴增 / 既有採用方零動作 migration。**dogfood-driven hardening 第十循環**。
+>
+> **Triggered by**：user 在 v0.7.4 ship 後直接要求「**文件上記得補充如何更新、以 YC_AIAgentCrew 為例該如何從 v0.5.9 → v0.7.4**」 — 對應 v0.7.3 顯化的 README §設計哲學「**回鍋開發者無痛**」北極星紀律的第一個實證 ship。
+
+### Added — 跨多版本升級實證 walkthrough ⭐
+
+#### `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md`（新檔）
+
+charter 第一個跨版本升版實證 walkthrough — YC_AIAgentCrew 從 v0.5.9 接入跨 8 個 release 升到 v0.7.4 的完整指引：
+
+- §1 升版前狀態（v0.5.9 接入時 baseline — 結構 / profile.yaml / vendor toml）
+- §2 跨 8 個 release 的演化軸（user 認知地圖、各 release 對採用方影響速查表 + YC 必做動作摘要）
+- §3 升版 7 步驟（依 versioning-migration §3.1 / §3.4 — 每步具體 prompt + YC 對應動作）
+- §4 升版後 self-check 清單（對齊 ADOPTION §12）
+- §5 對「回鍋開發者無痛」北極星紀律的設計學意義
+
+YC 三個必做動作（具體實證 v0.7.0 BREAKING-LITE 點 + v0.7.4 vendor schema 修補）：
+1. profile.yaml `enable_modes` 加 F6（v0.7.0 強制必啟）
+2. profile.yaml `enabled.ai-vendor-onboarding: true`（v0.6.0 邀請制）
+3. 三個 vendor toml 改扁平結構（v0.7.4 §3.6 規範）
+
+### Added — `core/versioning-migration.md §3.4` 跨多版本升級子段
+
+對應 v0.7.3 README §設計哲學「**回鍋開發者無痛**」北極星紀律的條款層落地：
+
+- §3.4.1 適用範圍（同主版號跨多 MINOR / 跨 MAJOR 仍走 §3.3）
+- §3.4.2 跨多版本升級允許性（v0.x 階段同主版號內允許跳多版）
+- §3.4.3 跨多版本升級流程（§3.1 7 步擴充 — 一次跑 target-version=最新版、不必逐版升）
+- §3.4.4 對北極星紀律的實證 walkthrough 表（含 YC walkthrough）
+- §3.4.5 「停用一段時間後重新採用」場景具體指引（5 步流程）
+
+→ charter 對採用方的承諾：**你停了一年回來、結構承諾仍然 hold；只是條款 / vendor schema / 紀律有累積、走 migration 升上來**。
+
+### Changed — 連動更新
+
+- 三 preset yaml `charter_version: "0.7.4"` → `"0.7.5"`
+- ADOPTION.md / TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.7.5
+- ADOPTION.md line 149 + 336 charter_version 範例值同步
+- `.claude/commands/maintainer-load.md` 加 v0.7.5 議程說明（YC walkthrough + §3.4 跨多版本升級子段）+ 後續 v0.7.x PATCH 議程順序更新（v0.7.6 BOOTSTRAP / v0.7.7 prompt 簡化 / v0.7.8 BREAKING-LITE checklist）
+- `core/versioning-migration.md §10 變更歷史` v0.2 entry
+
+### 嚴守向下兼容紀律（user v0.7.4 強調的核心）
+
+| 紀律 | v0.7.5 對齊狀態 |
+|---|---|
+| 純擴增 | ✅ 加新 walkthrough 檔 + 加 §3.4 子段；既有 §3.1〜§3.3 不動 |
+| 不動 schema | ✅ profile.yaml / mapping.yaml schema 不變 |
+| 不動 enabled / F-mode | ✅ 三 preset enabled / enable_modes 不變 |
+| 既有採用方零動作 migration | ✅ 升 v0.7.4 → v0.7.5 只改 profile.yaml `charter_version` |
+| doctor 不跑新 check | ✅ 純文檔 / spec 擴增 |
+
+### Triggered — dogfood signal
+
+| Signal | 對應 | 本 release 處理 |
+|---|---|---|
+| **回鍋開發者無痛實證**（v0.7.3 北極星顯化、v0.7.5 第一個 walkthrough）| YC_AIAgentCrew 跨 8 release v0.5.9 → v0.7.4 | ✅ examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md ship |
+
+### dogfood-driven hardening 第十循環
+
+第一〜九循環 v0.5.10 〜 v0.7.4
+**第十循環 v0.7.5 = 北極星「回鍋開發者無痛」第一個實證 walkthrough ship** — user 在 v0.7.4 ship 後直接要求；對應 v0.7.3 顯化的設計哲學從「規範密度導向」轉向「服務體感導向」的具體兌現。
+
+→ charter 從「**規範**」演化到「**規範 + 升版實證 walkthrough**」雙層 — 不只條款層紀律、還有採用方視角的「**怎麼用**」具體指引。
+
+### 採用方影響
+
+- ✅ 完全向後相容、零動作 migration
+- ✅ 既有採用方升 v0.7.4 → v0.7.5：只改 profile.yaml `charter_version`
+- 🟢 **回鍋開發者立即受益**：停用 charter 後想回來的採用方有 YC walkthrough 可參照；跨多版本升級流程明確
+- 🟢 **YC_AIAgentCrew 立即受益**：toml 失效有 charter 級修補指引（依 §3.6 + walkthrough §3 Step 4.2）
+
+### Git tag
+
+- `v0.7.5`（本 commit）
 
 ---
 

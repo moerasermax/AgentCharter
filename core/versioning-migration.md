@@ -150,6 +150,68 @@ v0.x 階段（當前）條款仍在演化，**容許破壞性變動**（如 v0.5
 
 理由：每次 MAJOR migration 規範「上一版 → 本版」，跳升等於跳過中間 migration，無法保證最終狀態一致。
 
+### 3.4 跨多版本升級（v0.7.5 加，回鍋開發者無痛場景）
+
+> **動機**：對應 README §設計哲學 「**回鍋開發者無痛**」北極星紀律 — 採用方停用 charter 一段時間後回來、charter 已經升了多個 MINOR / PATCH，需具體升版指引。本段規範**同主版號內跨多 MINOR 累積升級**的流程。
+
+#### 3.4.1 適用範圍
+
+| 場景 | 適用本 §3.4？ |
+|---|---|
+| 採用方在 v0.5.9、要升 v0.7.4（跨 8 個 release）| ✅ |
+| 採用方在 v0.7.2、要升 v0.7.4（跨 2 個 release）| ✅（流程同、規模較小）|
+| 採用方在 v0.5.x、要升 v1.0.0（跨 MAJOR）| ❌ 走 §3.3 |
+| 採用方在 v0.7.4、要升 v0.7.5（單一 PATCH）| ⚪ 標準流程 §3.1 即可 |
+
+#### 3.4.2 跨多版本升級允許性
+
+對齊 §2.3 agent-commons 結構穩定性承諾：
+
+| 跨度 | 是否允許 |
+|---|---|
+| 同主版號（如 v0.5.x → v0.7.x）| ✅ 允許跳多版（不必逐版執行）|
+| 跨主版號（如 v0.x → v1.x）| ❌ 必走 §3.3（先升至下一個 MAJOR、走 migration、再升 minor）|
+
+理由：v0.x 階段 charter 條款累積、agent-commons 結構承諾自 v0.5.9 起 hold；同主版號內所有 MINOR 都向下兼容（含 BREAKING-LITE 但有明示 migration）。
+
+#### 3.4.3 跨多版本升級流程（依 §3.1 7 步擴充）
+
+| Step | 動作 | 跨多版本特殊處置 |
+|---|---|---|
+| 1. 讀 CHANGELOG | 對應版本段 | **讀整個範圍**（如 v0.5.10 〜 v0.7.4 共 8 段）；特別關注 BREAKING-LITE 標籤 |
+| 2. 讀 migration 指引 | （MAJOR 才需）| v0.x 同主版號**不需要** migration script；但須讀對應 walkthrough（如 `examples/upgrades/`）|
+| 3. doctor dry-run | target-version=最新 | 一次跑 target-version=最新版（不必逐版跑）|
+| 4. 應用 migration | 修補 | 累積所有 BREAKING-LITE 點的 migration（一次做完）|
+| 5. 重跑 doctor | 確認 0 ERROR | 同上 |
+| 6. 升 charter_version | 直接跳到最新 | 不必逐版跳（v0.5.9 → v0.7.4 一次升）|
+| 7. commit | message 含跨度說明 | 引用對應 walkthrough（如 `examples/upgrades/<case>.md`）|
+
+#### 3.4.4 對 charter 「回鍋開發者無痛」北極星紀律的實證
+
+每個跨多版本升級實證 walkthrough 應放在 `examples/upgrades/<case>.md`，作為**未來採用方的對照範本**。
+
+當前已有實證：
+
+| Walkthrough | 升級跨度 | 觸發 |
+|---|---|---|
+| [`examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md`](../examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md) | v0.5.9 → v0.7.4（跨 8 release，含 v0.7.0 BREAKING-LITE）| 2026-04-28 user 直接要求；YC 真實 use case |
+
+未來新增升版實證 walkthrough 應加入本表。
+
+#### 3.4.5 「停用一段時間後重新採用」場景的具體指引
+
+> 對應 README §設計哲學「**回鍋開發者無痛**」第二個子場景 —「**停用一段時間後重新採用**」。
+
+採用方流程：
+
+1. **讀 `agent-commons/_config/profile.yaml.charter_version`** 確認你停在哪版
+2. **讀 charter `CHANGELOG.md`** 從停的版本到當前最新
+3. **對照 `examples/upgrades/<closest-case>.md`** 找最接近的升版實證
+4. **跑 doctor dry-run** 抓本專案的具體 migration 點
+5. **走 §3.1 7 步流程**（跨多版本擴充版見 §3.4.3）
+
+→ charter 對採用方的承諾：**你停了一年回來、結構承諾仍然 hold；只是條款 / vendor schema / 紀律有累積、走 migration 升上來**。
+
 ---
 
 ## 4. 破壞性升級的告警
@@ -290,7 +352,21 @@ charter_version: "0.5.5"   # 採用的 charter 版本
 
 ## 10. 變更歷史
 
-- **v0.1（自 v0.5.6 引入）** — 初版。定義 SemVer 對 AgentCharter 的具體語意（PATCH / MINOR / MAJOR / 架構級）、BREAKING 判定條件、已採用專案遷移流程、回退路徑、雙軌版號獨立演化、多 AI 版本一致性。
+### v0.2（自 v0.7.5 起）
+
+**動作**：新增 §3.4「跨多版本升級（回鍋開發者無痛場景）」段 — 5 子段：(1) 適用範圍 (2) 跨多版本升級允許性 (3) 跨多版本升級流程（§3.1 7 步擴充版）(4) 對北極星紀律的實證 walkthrough 表 (5) 「停用一段時間後重新採用」場景的具體指引。
+
+**觸發**：對應 v0.7.3 顯化的 README §設計哲學「**回鍋開發者無痛**」北極星紀律。user 在 v0.7.4 ship 後直接要求「文件上記得補充如何更新、以 YC_AIAgentCrew 為例該如何從 v0.5.9 → v0.7.4」— 觸發升版指引完整化 + 第一個 cross-version walkthrough（`examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md`）。
+
+**修訂類型**：PATCH — 純擴增 / 既有採用方升 v0.7.4 → v0.7.5 零動作 migration。本段純規範跨多 MINOR 升級流程、不動既有 §3.1〜§3.3 標準流程。
+
+**連動範圍**：
+- 新檔 `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md`（升版實證 walkthrough）
+- `CHANGELOG.md` v0.7.5 段（Triggered by user 直接要求）
+
+### v0.1（自 v0.5.6 引入）
+
+初版。定義 SemVer 對 AgentCharter 的具體語意（PATCH / MINOR / MAJOR / 架構級）、BREAKING 判定條件、已採用專案遷移流程、回退路徑、雙軌版號獨立演化、多 AI 版本一致性。
 
 ### 規劃中（v1.0 完整化）
 

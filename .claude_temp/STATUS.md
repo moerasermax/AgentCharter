@@ -1,11 +1,11 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-04-28（台灣時間，post-v0.7.4 release 收尾 snapshot）
-> **當前版本**：v0.7.4（vendor 端 slash command schema 規範條款化 — dogfood signal #16 條款化、**嚴守向下兼容** / 純擴增 / 既有採用方零動作 migration、**dogfood-driven hardening 第九循環**）
-> **Working tree 狀態**：v0.7.4 修訂完成、待 commit + tag + push
+> **更新時間**：2026-04-28（台灣時間，post-v0.7.5 release 收尾 snapshot）
+> **當前版本**：v0.7.5（跨多版本升級指引 + 第一個回鍋開發者無痛實證 walkthrough — `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` 新檔 + `core/versioning-migration §3.4` 跨多版本升級子段、**嚴守向下兼容**、**dogfood-driven hardening 第十循環**）
+> **Working tree 狀態**：v0.7.5 修訂完成、深度 sweep 中（user 要求 0 ERROR + 0 WARN）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
-> **最後 checkpoint**：本檔為 v0.7.4 release 前 snapshot
-> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` (待打)
+> **最後 checkpoint**：本檔為 v0.7.5 release 前 snapshot（含深度 sweep）
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打 + 深度 sweep 後)
 
 ---
 
@@ -13,7 +13,8 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| **v0.7.4** | （待 commit）| **PATCH** — vendor 端 slash command schema 規範條款化（dogfood signal #16）：`roles/pm/gemini-cli.md §3.6` 加 toml 扁平結構強制 + `roles/engineer/claude-code.md §4.1` 加 .md schema 規範 + `tools/doctor-spec.md §3.8` 加 vendor schema check（spec 層、實作 defer v0.8+）。**嚴守向下兼容** — 純擴增 / 既有採用方零動作 / doctor 不跑新 check。**dogfood-driven hardening 第九循環** — 觸發於 YC_AIAgentCrew Gemini CLI v0.39.1 載入 toml 失敗（v0.5.9 接入時 Gemini 自編 nested schema、charter 此層空白）；同時 user 提「為什麼 0.7.3 → 0.8」修正 maintainer 規範密度導向殘留、charter 改走「**頻繁小擴增 PATCH** + **大方向新加條款用 MINOR**」雙軌節奏 |
+| **v0.7.5** | （待 commit + 深度 sweep）| **PATCH** — 跨多版本升級指引 + 第一個回鍋開發者無痛實證 walkthrough：`examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` 新檔（含跨 8 release 演化軸 + 7 步具體升版流程 + YC 三個必做動作 + 升版後 self-check + 設計學意義）+ `core/versioning-migration §3.4` 跨多版本升級子段（5 子段、含「停用一段時間後重新採用」場景具體指引）。**嚴守向下兼容**。**dogfood-driven hardening 第十循環** — 對應 v0.7.3 北極星紀律「回鍋開發者無痛」第一個實證 ship；觸發於 user 在 v0.7.4 ship 後直接要求「文件上記得補充如何更新、以 YC_AIAgentCrew 為例該如何從 v0.5.9 → v0.7.4」 |
+| **v0.7.4** | `130638b` | **PATCH** — vendor 端 slash command schema 規範條款化（dogfood signal #16）：`roles/pm/gemini-cli.md §3.6` 加 toml 扁平結構強制 + `roles/engineer/claude-code.md §4.1` 加 .md schema 規範 + `tools/doctor-spec.md §3.8` 加 vendor schema check（spec 層、實作 defer v0.8+）。**嚴守向下兼容** — 純擴增 / 既有採用方零動作 / doctor 不跑新 check。**dogfood-driven hardening 第九循環** — 觸發於 YC_AIAgentCrew Gemini CLI v0.39.1 載入 toml 失敗（v0.5.9 接入時 Gemini 自編 nested schema、charter 此層空白）；同時 user 提「為什麼 0.7.3 → 0.8」修正 maintainer 規範密度導向殘留、charter 改走「**頻繁小擴增 PATCH** + **大方向新加條款用 MINOR**」雙軌節奏 |
 | **v0.7.3** | `0468570` | **PATCH** — 完整文檔層 sync sweep（auditor 抓 10 ERROR + 3 WARN 全修：ADOPTION 7 處 / TUTORIAL 4 處 / README 3 處 / charter-config §5 1 處）+ **README 設計哲學（北極星）段**顯化 user 兩個無痛定義（回鍋開發者 / 小白）+ 三條服務原則（解決重複溝通 / charter 引導採用方 / 培養魚塭）+ 對未來修訂的紀律 + v0.7.0 mislabel BREAKING-LITE 追溯說明（dogfood signal #15 候選）。**dogfood-driven hardening 第八循環** — user 設計哲學 framing 觸發完整 sweep + 北極星顯化 |
 | **v0.7.2** | `054e6c7` | **PATCH** — dogfood signal #6 三次同類條款化（`maintainer-discipline §3.4` 文檔層 sync checklist 三子段）+ signal #10 條款化（QUICKSTART 流程順序紀律：實際執行 1 → 3 → 2 → 4 → 5）+ `structural-anti-fabrication §5` 補三行反向引用（v0.7.0 + v0.7.1 加段全部漏的）。**user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 漏的 spec drift** = user 以採用方身份對 charter 行使「他抽」屬性的現場實證。**dogfood-driven hardening 第七循環** — Phase 5b 採用方半邊他抽精神**反過來作用於 charter 自身演化**（最完整迴路展現）|
 | **v0.7.1** | `c26b5b4` | **PATCH** — 領域公理雙路徑明文 + condition mutability frontmatter scaffold。對應 user 公司接入痛點對話 2026-04-28 直接提議 2 個設計（dogfood signal #11 condition mutability 三層 / signal #12 雙路徑），30 分鐘內 ship。修 `core/domain-axiom-slot §3.3` + `templates/agent-commons/domain-axioms.md.tpl` frontmatter + 新檔 `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（路徑 B prompt）+ QUICKSTART Step 3 雙路徑 + 三 preset 升 0.7.1 + 文檔升版號。**condition mutability 紀律本體（3-strike / consolidation 機制）留 v0.8.0**。**dogfood-driven hardening 第六循環**（user 直接 framing 的最快 ship 案例）|
