@@ -1,7 +1,7 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.7.2 release 收尾 — dogfood signal #6 三次同類條款化 + signal #10 條款化 + structural-anti-fabrication §5 補反向引用後）
-> **依循**：v1.0 公開化條件（GOVERNANCE §6）
+> **更新時間**：2026-04-28（v0.7.3 release 收尾 — 完整 spec drift sweep + 設計哲學北極星顯化 + v0.7.0 BREAKING-LITE 追溯後）
+> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學 — 兩無痛定義 + 三服務原則 + 對未來修訂的紀律三題對齊）
 
 ---
 
@@ -137,6 +137,24 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.7.3 release（2026-04-28）— 完整文檔層 sync sweep + 設計哲學北極星顯化 + v0.7.0 BREAKING-LITE 追溯
+
+✅ **dogfood-driven hardening 第八循環 — 設計哲學北極星顯化**：v0.7.2 release 後 user 提兩個關鍵 framing →（1）「**框架價值來自服務 / 解決重複溝通 / 由淺入深 / charter 引導採納方**」+（2）「**培養魚塭、不討魚 — 真正開發不應侷限眼前舒服、而是放眼未來舒適**」+ 「**有衝突就代表沒有向下兼容**」 → 觸發 charter 從「規範密度導向」轉向「服務體感導向」
+
+✅ **README 加設計哲學（北極星）段**：兩無痛定義（回鍋開發者 / 小白）+ 三服務原則（解決重複溝通 / charter 引導採用方 / 培養魚塭）+ 對未來修訂的紀律（每次修訂對照三題：對回鍋開發者體驗加減分？對小白接入門檻降低升高？解決新的重複溝通還是新增採用方要記的東西？）。**所有未來條款 / spec / templates 修訂須對照此北極星檢驗**
+
+✅ **完整文檔層 sync sweep**（auditor 抓 10 ERROR + 3 WARN 全修）：
+- ADOPTION.md 7 處（charter_version + F1〜F6 + init-template step 6 + 雙路徑 + 7 步驟 + self-check + §13 補 v1.4/v1.5）
+- TUTORIAL.md 4 處（§3 cross-reference + §5.2 7 步驟 + §8.3 F1〜F6 + §11.1 doctor E601〜E605）
+- README.md 3 處（F1〜F6 + init-template step 6 + 角色目錄 v0.7.0 升級）
+- core/charter-config.md §5 條款相依表加 init-template → multi-role-tracking + audit-rights
+
+✅ **v0.7.0 BREAKING-LITE 追溯說明**：v0.7.0 release notes 標題 mislabel 為 MINOR、實際含兩個既有採用方 migration 點（F6 強制必啟 + mapping shared/ 中介層 migration）→ 應為 BREAKING-LITE。本 release CHANGELOG 加追溯校正、git history 不改、留 reference。**這個 mislabel 本身對齊 v0.7.0 加的 F6 sub-pattern「surface vs structural」精神在 release labelling 的諷刺實證**
+
+✅ **連動更新**：三 preset yaml `0.7.2` → `"0.7.3"` + ADOPTION/TUTORIAL/maintainer-load 升版號 + CHANGELOG v0.7.3 段
+
+✅ **新加 dogfood signal #15 候選**：「`versioning-migration` 對 v0.x 階段 BREAKING-LITE 判定不嚴謹」— 留 v0.8.0 條款化（加 BREAKING-LITE 判定 checklist）
 
 ### v0.7.2 release（2026-04-28）— dogfood signal #6 三次同類條款化 + signal #10 條款化 + structural-anti-fabrication 補反向引用
 

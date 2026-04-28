@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.7.2`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.7.3`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -61,7 +61,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 | 條款 | 一句話 |
 |---|---|
-| `failure-modes.md` | F1〜F5（假宣告 / 假 hash / 捏造數據 / 編號偏差 / 規則記憶失效）|
+| `failure-modes.md` | F1〜F6（假宣告 / 假 hash / 捏造數據 / 編號偏差 / 規則記憶失效 / **未驗證即宣告就緒**含 surface-level vs structural-level sub-pattern v0.7.0）|
 | `structural-anti-fabrication.md` | 缺 stdout 區塊即視同未交付 |
 | `violation-reflection.md` | 違規退稿後須補交反省 |
 | `escalation-protocol.md` | 連續 ≥2 次升級強化抽驗、≥3 次觸發使用者裁決 |
@@ -81,7 +81,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `handoff-chain.md` | session 末交接鏈必含 7 項（結案級 / 重型）|
 | `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
 | `working-stack-discipline.md` | DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
-| `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化（v0.5.10：六步驟 → 七步驟，加 step 5 schema 驗證）|
+| `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化（v0.5.10：六步驟 → 七步驟，加 step 5 schema 驗證；**v0.7.0**：step 6 簽名 Status 必為 `PROVISIONAL`/`ACTIVE` 二態 + slash command 引用紀律禁絕對路徑）|
 | `ai-vendor-onboarding.md` | **新 vendor / 新角色接入「邀請制」四步驟**（v0.6.0）：禁 charter 預先寫死 vendor 層，由真實接觸累積差異 |
 
 ### E. 架構 / 配置 / 版本（4 條，含 2 條架構級前提）
@@ -146,7 +146,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.6.1"`（或當前最新版）。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.7.3"`（或當前最新版）。
 
 ### T1 接入
 
@@ -176,10 +176,16 @@ init-template.md §3.3 self-instantiation）。
 
 每個被指派角色的 AI 各自走 init-template §3.3 流程。
 
-### T3 領域公理
+### T3 領域公理（v0.7.1 雙路徑）
 
 依 [templates/agent-commons/domain-axioms.md.tpl](./templates/agent-commons/domain-axioms.md.tpl) 寫專案的「血鐵律」。
 規範依據：[domain-axiom-slot.md §3](./core/domain-axiom-slot.md)。
+
+**v0.7.1 加：兩條合法路徑（依 [`domain-axiom-slot §3.3`](./core/domain-axiom-slot.md)）**：
+- **路徑 A（既有 default）**：user 主筆每條鐵律 → `Status: USER-RATIFIED` + `created_by: user`
+- **路徑 B（新加）**：user 邀請 AI 讀既有 codebase 推斷紀律 → 寫 draft（`Status: AI-DRAFTED`）→ user 親自校 → 升 `USER-RATIFIED`。對應 prompt 範本：[`templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`](./templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl)
+
+**順序紀律（v0.7.2 加）**：T3 必先於 T1 init 完成（init 內 Phase 5b 物理存在校驗會驗 axiom 檔；不在則 fail）。實際採用流程：T0 → T3 → T1 → T2 → T4...
 
 ### T4 第一個任務膠囊
 
@@ -203,7 +209,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 > **如果你是即將被指派角色的 AI，本段是你最該看的部分。**
 
-依 [init-template.md §3.3.2](./core/init-template.md) 的 6 步驟流程：
+依 [init-template.md §3.3.2](./core/init-template.md) 的 **7 步驟流程**（v0.5.10 從 6 → 7 步、v0.7.0 加 step 6 PROVISIONAL/ACTIVE 紀律）：
 
 ```
 1. 讀 charter（路徑由使用者提供或環境變數 $CHARTER_DIR）：
@@ -229,14 +235,26 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
    - 內部執行五步驟（init-template §6）達 §2 等效最終狀態
    - 加入該 AI 廠商特有的工具呼叫
 
-5. 簽名：
+5. 驗證 schema 合規（v0.5.10 加，強制驗證點）：
+   - 依 ~/.agentcharter/tools/doctor-spec.md 跑 schema 驗證
+   - 必驗：profile.yaml schema / mapping.yaml 必填欄位 / 領域公理檔存在
+   - 不通則回到 step 2-3 修補；step 6 簽名禁止（具象化視為失敗）
+   - 跳過 step 5 = F6 假宣告（未驗證即宣告就緒）
+
+6. 簽名（v0.7.0 加紀律：限「具象化痕跡」、禁寫「激活痕跡」）：
    - 更新 <common-memory-root>/roles/<role>/_role.md 的「各 AI 具象化位置」表
    - 自己廠商的「是否實裝？」改為 ✅
-   - 切換歷史追加一行（依 _role.md.tpl + cross-ai-handoff §6 五欄格式）
+   - 切換歷史追加「自我具象化完成（doctor schema 通過）」
+   - **Status 欄位寫 `PROVISIONAL`**（暫具象化、未經 user explicit 授權激活）
+   - **不得寫 Sign-in Log**（Sign-in Log 是激活的紀錄、user explicit 授權後才寫）
+   - vendor spec 預設身份（如 `roles/pm/gemini-cli.md`）= 能力預設、不是自動激活授權
+   - 對應 `core/multi-role-tracking.md §3.4.4` init 階段自我激活同樣 = F1
+   - **slash command 引用紀律**：禁寫死絕對路徑（如 `C:/Users/<name>/.agentcharter/`）；推薦三層優先序：(a) 環境變數 `$AGENTCHARTER_HOME` (b) 相對 user home `~/.agentcharter/...` (c) 採用方專案內相對路徑
 
-6. 回報使用者：
+7. 回報使用者：
    - 「我已建好 <role>-init，位於 <具象化位置>」
-   - 「打 /<role>-init 即可使用」
+   - 「step 5 doctor schema 驗證已通過（0 errors）」
+   - 「Status: PROVISIONAL — 等你下達 `/<role>-init` 命令並 explicit 授權我接該角色後，才會升 ACTIVE 並寫 Sign-in Log」
    - 邀請使用者立刻跑一次驗證
 ```
 
@@ -314,14 +332,17 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 採用方在 Day 7 結束前應能對所有問題回答 ✅：
 
-- [ ] `agent-commons/` 目錄結構齊全（依 §4）
-- [ ] `_config/profile.yaml` 含 `charter_version: "0.6.1"`（或當前最新版）+ 選定 preset
-- [ ] `_config/mapping.yaml` 含 `common_memory_root` + `domain_axioms.primary`
-- [ ] `protocols/<axiom>.md` 已寫且符合 [domain-axiom-slot §3.1](./core/domain-axiom-slot.md) 強制要求（每條有後果段、可驗證、有編號）
-- [ ] 每個被指派角色的 AI 已自我具象化（`_role.md` 切換歷史首版到位）
+- [ ] `agent-commons/` 目錄結構齊全（依 §4）+ **agent-commons/shared/ 不存在**（v0.7.0 doctor §3.7 E602 — namespace ≠ 檔案路徑）
+- [ ] `_config/profile.yaml` 含 `charter_version: "0.7.3"`（或當前最新版）+ 選定 preset
+- [ ] `_config/profile.yaml` 內 `parameters.failure-modes.enable_modes` **含 F6**（v0.5.10 加 / v0.7.0 強制必啟、doctor §3.7 E605）
+- [ ] `_config/mapping.yaml` 含 `common_memory_root` + `domain_axioms.primary` + `working_stack_discipline.shared.draft_context`
+- [ ] `_config/mapping.yaml` 內 `layout.<key>` 不含 `shared/` / `roles/` 等 namespace 同名中介層（v0.7.0 doctor §3.7 E601 — namespace ≠ 檔案路徑）
+- [ ] `protocols/<axiom>.md` 已寫且符合 [domain-axiom-slot §3.1](./core/domain-axiom-slot.md) 強制要求（每條有後果段、可驗證、有編號）；**Status 為 USER-RATIFIED**（v0.7.1：路徑 A user 主筆 / 路徑 B AI 代產 + user 校升）
+- [ ] 每個被指派角色的 AI 已自我具象化（`_role.md` 切換歷史首版到位）；**`_role.md` Status 為 PROVISIONAL/ACTIVE 正確態**（v0.7.0：未經 user explicit 授權前須為 PROVISIONAL、Sign-in Log 為空）
+- [ ] **跑過 init Phase 5b 他抽驗**（v0.7.0：fresh-context sub-agent / 邀其他 vendor / user 親跑 PowerShell 三條路徑擇一）— 抽驗集 10 項全綠
 - [ ] 至少 1 個 capsule 跑完整生命週期（PM 寫 → Engineer 抽驗 → 接收 → 完工 VCP → PM 抽驗 → 結案）
 - [ ] 第一份 HANDOFF 寫成（依 [handoff-chain §2](./core/handoff-chain.md) 7 項齊全）
-- [ ] AI 與 PO 都能引用至少 5 條 core 條款 + 1 條領域公理 + 1 個 F-mode
+- [ ] AI 與 PO 都能引用至少 5 條 core 條款 + 1 條領域公理 + 1 個 F-mode（**含 F6**）
 
 → 全綠 = 採用完成；任一未綠 = 找對應條款回頭補。
 
@@ -329,6 +350,8 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 ## 13. 變更歷史
 
+- **v1.5（2026-04-28，charter v0.7.3）** — 主體內容對齊 v0.7.x 系列（auditor 完整 sweep 抓 10 ERROR + 3 WARN）：§3 B 組 failure-modes F1〜F5 → F1〜F6（含 surface vs structural sub-pattern）+ §3 D 組 init-template 一句話加 v0.7.0 step 6 PROVISIONAL/ACTIVE + slash 引用紀律 + §6 T0 charter_version v0.6.1 → v0.7.3 + §6 T3 加 v0.7.1 雙路徑 + v0.7.2 順序紀律提醒 + §7 self-instantiation 6 → 7 步 + step 6 PROVISIONAL/ACTIVE 紀律 + step 5 doctor 強制驗證點 + §12 採用就緒 self-check 加 5 條 v0.7.x 必查項（含 F6 啟用 / shared/ 不存在 / Phase 5b 他抽驗 / Status PROVISIONAL/ACTIVE）。**重要追溯**：v0.7.0 應分類為 BREAKING-LITE（含兩個既有採用方 migration 點：F6 強制必啟 + mapping 移除 shared/ 中介層）而非 MINOR — 詳見 CHANGELOG v0.7.0 entry。
+- **v1.4（2026-04-28，charter v0.7.1 + v0.7.2 補記）** — 補 v0.7.1 / v0.7.2 兩個 release 對應 ADOPTION 變更歷史 entry：v0.7.1 雙路徑（user 主筆 vs AI 代產 + user 校）+ frontmatter scaffold（Status / mutability_default / created_by / created_at）；v0.7.2 流程順序 cross-reference（實際執行 1 → 3 → 2 → 4 → 5）+ structural-anti-fabrication §5 補三行反向引用 + maintainer-discipline §3.4 文檔層 sync checklist。
 - **v1.3（2026-04-28，charter v0.7.0）** — 公司專案接入失敗大批次 sync（5 個 dogfood signal 一次條款化）：line 5 charter_version v0.6.1 → v0.7.0 + 連動條款新增段引用（init-spec Phase 5b 採用方半邊「他抽」載體 / multi-role-tracking §3.4.4 init 階段自激活紀律 / init-template §3.3.2 step 6 Status PROVISIONAL/ACTIVE 二態 / failure-modes F6 sub-pattern surface vs structural / doctor-spec §3.7 結構頂層 + namespace 校驗）+ 本變更歷史段。詳見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` 完整 audit 紀錄。**採用方升 v0.7.0 注意事項**：(a) profile.yaml `parameters.failure-modes.enable_modes` 須含 F6（v0.5.10 加但 preset 漏改、v0.7.0 強制必啟）；(b) 既有 mapping.yaml 若含 `shared/<X>/` 中介層 → doctor §3.7 報 ERROR、要把目錄內容移到頂層 + 改寫 mapping。
 - **v1.2（2026-04-28，charter v0.6.1）** — 文檔層 sync 修補（v0.6.0 release 漏的 ADOPTION 同步點，由 v0.6.1 auditor 第一次實戰抽驗抓到 — dogfood signal #6 候選）：line 5 charter_version 對齊 + §5 preset 表母數 16 → 19 + §6 T0 + §12 採用就緒檢查 charter_version 對齊 + 本變更歷史段。
 - **v1.1（2026-04-28，charter v0.6.0）** — 條款數 20 → 21、§3 加 D 組第 5 條 ai-vendor-onboarding + 新增 F 組 maintainer-only 分區、line 286 條款數同步。

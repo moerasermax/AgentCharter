@@ -1,11 +1,11 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-04-28（台灣時間，post-v0.7.2 release 收尾 snapshot）
-> **當前版本**：v0.7.2（dogfood signal #6 三次同類條款化 + signal #10 流程順序紀律 + structural-anti-fabrication §5 補三行反向引用 — user 直覺以採用方身份對 charter 行使「他抽」屬性、抓到 maintainer + auditor 漏的 spec drift 觸發、**dogfood-driven hardening 第七循環**）
-> **Working tree 狀態**：v0.7.2 修訂完成、待 auditor 抽驗 + commit + tag + push
+> **更新時間**：2026-04-28（台灣時間，post-v0.7.3 release 收尾 snapshot）
+> **當前版本**：v0.7.3（完整文檔層 sync sweep + **設計哲學北極星顯化** + v0.7.0 BREAKING-LITE 追溯說明 — user 提出兩個關鍵 framing 觸發、**dogfood-driven hardening 第八循環**）
+> **Working tree 狀態**：v0.7.3 修訂完成、待 commit + tag + push
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
-> **最後 checkpoint**：本檔為 v0.7.2 release 前 snapshot
-> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` (待打)
+> **最後 checkpoint**：本檔為 v0.7.3 release 前 snapshot
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` (待打)
 
 ---
 
@@ -13,7 +13,8 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| **v0.7.2** | （待 commit）| **PATCH** — dogfood signal #6 三次同類條款化（`maintainer-discipline §3.4` 文檔層 sync checklist 三子段）+ signal #10 條款化（QUICKSTART 流程順序紀律：實際執行 1 → 3 → 2 → 4 → 5）+ `structural-anti-fabrication §5` 補三行反向引用（v0.7.0 + v0.7.1 加段全部漏的）。**user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 漏的 spec drift** = user 以採用方身份對 charter 行使「他抽」屬性的現場實證。**dogfood-driven hardening 第七循環** — Phase 5b 採用方半邊他抽精神**反過來作用於 charter 自身演化**（最完整迴路展現）|
+| **v0.7.3** | （待 commit）| **PATCH** — 完整文檔層 sync sweep（auditor 抓 10 ERROR + 3 WARN 全修：ADOPTION 7 處 / TUTORIAL 4 處 / README 3 處 / charter-config §5 1 處）+ **README 設計哲學（北極星）段**顯化 user 兩個無痛定義（回鍋開發者 / 小白）+ 三條服務原則（解決重複溝通 / charter 引導採用方 / 培養魚塭）+ 對未來修訂的紀律 + v0.7.0 mislabel BREAKING-LITE 追溯說明（dogfood signal #15 候選）。**dogfood-driven hardening 第八循環** — user 設計哲學 framing 觸發完整 sweep + 北極星顯化 |
+| **v0.7.2** | `054e6c7` | **PATCH** — dogfood signal #6 三次同類條款化（`maintainer-discipline §3.4` 文檔層 sync checklist 三子段）+ signal #10 條款化（QUICKSTART 流程順序紀律：實際執行 1 → 3 → 2 → 4 → 5）+ `structural-anti-fabrication §5` 補三行反向引用（v0.7.0 + v0.7.1 加段全部漏的）。**user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 漏的 spec drift** = user 以採用方身份對 charter 行使「他抽」屬性的現場實證。**dogfood-driven hardening 第七循環** — Phase 5b 採用方半邊他抽精神**反過來作用於 charter 自身演化**（最完整迴路展現）|
 | **v0.7.1** | `c26b5b4` | **PATCH** — 領域公理雙路徑明文 + condition mutability frontmatter scaffold。對應 user 公司接入痛點對話 2026-04-28 直接提議 2 個設計（dogfood signal #11 condition mutability 三層 / signal #12 雙路徑），30 分鐘內 ship。修 `core/domain-axiom-slot §3.3` + `templates/agent-commons/domain-axioms.md.tpl` frontmatter + 新檔 `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（路徑 B prompt）+ QUICKSTART Step 3 雙路徑 + 三 preset 升 0.7.1 + 文檔升版號。**condition mutability 紀律本體（3-strike / consolidation 機制）留 v0.8.0**。**dogfood-driven hardening 第六循環**（user 直接 framing 的最快 ship 案例）|
 | **v0.7.0** | `bcbf964` | **MINOR** — 公司專案接入失敗大批次條款修訂。一次取得 5 個 dogfood signal（#3 結構性實證 + #4 第三次同類 + #5 第二次完整實證 + #7 候選新增 + #8 候選新增）。**dogfood-driven hardening 第五循環** — 採用方半邊「自抽自驗」結構性盲區封閉（init-spec Phase 5b + validator §3.6）對稱於 v0.6.0 的 maintainer 半邊（auditor）。連動 5 條款 + 3 spec + 三 preset yaml + _role.md.tpl + 4 文檔（CHANGELOG/ADOPTION/TUTORIAL/QUICKSTART/maintainer-load）+ 1 個新檔（templates/role-invocation-prompt.md.tpl）併入 |
 | **v0.6.1** | `72caaee` | **PATCH** — 文檔層 sync 修補（v0.6.0 release 漏的 ADOPTION/TUTORIAL/README/maintainer-load/charter-config schema 範例同步點）。**auditor 第一次實戰** spawn fresh-context sub-agent 跑 cross-reference + spec sync audit（dogfood-driven hardening 第四循環）抓到 3 ERROR + 4 WARN，本 release 修 3 ERROR + 2 WARN。揭露**dogfood signal #6 候選**「條款層 sync 與文檔層 sync 不對等」。**v0.6.1 是公司 production 接入用的 stable 版本（雖然第一次接入仍失敗、觸發 v0.7.0）** |
@@ -184,6 +185,7 @@ project-root/
 | **v0.7.0** | **dogfood-driven hardening 第五循環 — 公司接入失敗大批次封閉**：v0.6.1 後 user 派 Gemini PM 跑「單一 prompt 跑完 init-spec + self-instantiation」，回報「成功」但實際 7 ERROR + 5 WARN 結構性失敗（dbsdk.md 沒建 / PM 自激活 / agent-commons 結構錯位 / F6 漏啟用 / charter-init.toml 寫死絕對路徑等）。一次取得 5 個 dogfood signal（#3 結構性實證 + #4 第三次同類 + #5 第二次完整實證 + #7 候選新增 + #8 候選新增）→ 大批次條款修訂。**核心設計突破**：採用方半邊「自抽自驗」結構性盲區封閉（Phase 5b + validator §3.6）對稱於 v0.6.0 的 maintainer 半邊（auditor）→ 架構級概念第 12 個誕生。auditor 抽驗本 release：ERROR 0 / WARN 3（W001+W003 在 P6 收尾、W002 已修補）/ INFO 2 — 通過 |
 | **v0.7.1** | **dogfood-driven hardening 第六循環 — user 直接 framing 最快 ship 案例**：v0.7.0 release 半小時內、user 公司接入卡在「dbsdk.md 不知怎麼寫」痛點對話、user 直接提議 2 個設計（condition mutability 三層 / 雙路徑 user-vs-AI 代產），30 分鐘內 ship v0.7.1 PATCH。本 release 顯化「user 對 AI 在採用方專案內的協作維度」（與 ai-vendor-onboarding 規範的 framework 對 vendor 維度正交）。**condition mutability 紀律本體（3-strike / consolidation 機制）留 v0.8.0**。對應 user 對話原話「成長中、想法碰撞」 — charter 自身演化最佳體現 |
 | **v0.7.2** | **dogfood-driven hardening 第七循環 — user 對 charter 自身行使「他抽」屬性最完整迴路**：v0.7.1 release 後、user 兩次 IDE 開 `core/structural-anti-fabrication.md` + 問「你有更新文件嗎」→ maintainer 重新檢視 → 發現 v0.7.0 + v0.7.1 加段全部漏 §5 反向引用 → dogfood signal #6 達 3 次同類門檻 → 條款化 `maintainer-discipline §3.4` 文檔層 sync checklist。**核心設計學意義**：v0.7.0 加 Phase 5b 採用方半邊「他抽」屬性 → user 學會這個設計 → user 反過來以這個設計他抽 charter 自己 → 抓到 maintainer 漏 → 條款化補上。charter 跟 user 在對話過程互相塑造對方 — Phase 5b 精神反向作用 |
+| **v0.7.3** | **dogfood-driven hardening 第八循環 — 設計哲學北極星顯化 + 完整 spec drift sweep**：v0.7.2 release 後 user 提兩個關鍵 framing —「**框架價值來自服務 / 解決重複溝通 / 由淺入深 / charter 引導採納方**」+「**有衝突就代表沒有向下兼容**」+「**培養魚塭、不討魚**」→ 觸發 (1) 完整 spec drift sweep（auditor 10 ERROR + 3 WARN 全修）+ (2) README 加設計哲學北極星段（兩無痛定義 + 三服務原則 + 對未來修訂的紀律）+ (3) v0.7.0 mislabel MINOR 應為 BREAKING-LITE 追溯說明（signal #15 候選）。**設計層意義**：charter 從「**規範密度導向**」（v0.7.0/v0.7.1/v0.7.2 累積紀律）轉向「**服務體感導向**」（v0.7.3 顯化北極星、v0.8.0 BOOTSTRAP + lifecycle 完整化兌現） |
 
 ### B. 十二個架構級概念已釐清
 

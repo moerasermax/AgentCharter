@@ -65,10 +65,12 @@ charter maintainer 接班完成，待下達議題。
 
 `maintainer-discipline.md §3` 規定三層執行機制（工具層 / 流程層 / commit 層）。本指令是「**接班便利化**」的延伸 — 不在 §3 列出的三層內，而是對應 §1 條文「DRAFT 須是檔案」紀律的反向（**接班讀檔**對應**累積寫檔**）。
 
-當前狀態（v0.7.2）：
+當前狀態（v0.7.3）：
 - 寫檔：自然執行（每次重要工作更新 `.claude_temp/` + commit）
 - 讀檔：本指令落實
 - 抽驗執行載體：`roles/auditor/_spec.md`（v0.6.0 概念層誕生）— 跑 spec sync check 走 fresh-context sub-agent 達成「他抽」屬性
 - 採用方半邊對稱（v0.7.0 加）：`tools/init-spec.md Phase 5b` + `roles/validator/_spec.md §3.6`（採用方接入流程 init 結果抽驗）
 - 領域公理雙路徑（v0.7.1 加）：`core/domain-axiom-slot §3.3` + `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（路徑 B AI 代產草稿）；condition mutability 完整紀律留 v0.8.0
-- 文檔層 sync checklist（v0.7.2 加，dogfood signal #6 三次同類條款化）：`core/maintainer-discipline §3.4`（user 直覺抓到 maintainer + auditor 漏的 spec drift、條款化 — 採用方半邊「他抽」屬性對 charter 自身演化的現場實證）
+- 文檔層 sync checklist（v0.7.2 加，dogfood signal #6 三次同類條款化）：`core/maintainer-discipline §3.4`
+- **設計哲學（北極星）顯化**（v0.7.3 加）：README 加「設計哲學」段顯化 user 兩個無痛定義（回鍋開發者 / 小白）+ 三條服務原則（解決重複溝通 / charter 引導採用方 / 培養魚塭）+ 對未來修訂的紀律。所有未來修訂須對照「**讓未來採用方更舒適 vs 現在這個夠用**」三題對齊
+- **v0.8.0 北極星議程**：BOOTSTRAP.md 入口檔（user 唯一要記）+ `core/adoption-lifecycle.md` 條款（全新 / 升版 / 棄用 / 重新採用 四路徑）+ prompt 簡化（紀律 push 到 charter spec 端）

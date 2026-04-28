@@ -6,7 +6,115 @@
 
 ## [Unreleased]
 
-（空 — v0.7.2 已釋出；下批次未開）
+（空 — v0.7.3 已釋出；下批次 v0.8.0 北極星 release）
+
+---
+
+## [0.7.3] — 2026-04-28
+
+> **PATCH release** — 完整文檔層 sync sweep（auditor 抓 10 ERROR + 3 WARN 全修）+ **README 設計哲學（北極星）顯化** + v0.7.0 BREAKING-LITE 追溯說明。**dogfood-driven hardening 第八循環**。
+>
+> **Triggered by**：v0.7.2 release 後 user 重新提出兩個關鍵 framing：
+> 1. 「框架價值來自於服務、解決重複溝通、由淺入深」設計哲學
+> 2. 「向下兼容設計、有衝突就代表沒有向下兼容」紀律
+>
+> 觸發完整 spec drift sweep + 設計哲學顯化 + v0.7.0 mislabel 反省。
+
+### Added — README 設計哲學（北極星）段 ⭐
+
+對應 user 兩個關鍵 framing：
+
+**兩種「無痛」定義**：
+- **回鍋開發者無痛**（lifecycle）：全新接入 / 升版 / 棄用 / 停用後重新採用 — 隨時支援、無摩擦銜接
+- **小白無痛**（onboarding）：由淺入深、越用越愛；不該記 prompt — charter 主動引導、user 最少做 1 個動作
+
+**三條服務原則**：
+1. 解決重複溝通（跨 AI 接班 / 跨 session 重啟 / 跨角色交付 / 採用方對 AI 反覆糾正）
+2. 由 charter 引導採用方（不是 user 找 prompt 模板貼給 AI、而是 user 把入口檔給 AI、AI 主動引導 user）
+3. 培養魚塭、不討魚（拒絕為了眼前舒服犧牲未來舒適）
+
+**對未來修訂的紀律**：每次修訂對照三題 — 對回鍋開發者體驗加分還是減分？對小白接入門檻降低還是升高？解決新的重複溝通還是新增採用方要記的東西？任一答「減分 / 升高 / 新增負擔」 → 修訂須降級 / 改寫 / 重新設計。
+
+→ 所有未來條款 / spec / templates 修訂須對照此北極星檢驗。
+
+### Changed — 完整文檔層 sync sweep（auditor 抓的 10 ERROR + 3 WARN 全修）
+
+對應 dogfood signal #6 第四次同類觀察（諷刺循環：v0.7.2 才剛 condition 化 §3.4 文檔層 sync checklist、本身又踩）。
+
+#### ADOPTION.md（7 處）
+- §3 B 組 `failure-modes.md` 一句話：F1〜F5 → **F1〜F6**（含 surface vs structural sub-pattern）
+- §3 D 組 `init-template.md` 一句話：加 v0.7.0 step 6 PROVISIONAL/ACTIVE + slash command 引用紀律
+- §6 T0：charter_version 範例值 `0.6.1` → `0.7.3`
+- §6 T3：加 v0.7.1 雙路徑（A user 主筆 / B AI 代產 + user 校）+ v0.7.2 順序紀律提醒
+- §7：6 步驟 → **7 步驟** + step 5 doctor 強制驗證點 + step 6 PROVISIONAL/ACTIVE 紀律 + slash command 引用紀律
+- §12：採用就緒 self-check 加 5 條 v0.7.x 必查項（F6 啟用 / shared/ 不存在 / Status PROVISIONAL/ACTIVE / Phase 5b 跑過 / agent-commons/ 結構頂層）
+- §13：補 v1.4 / v1.5 變更歷史 entry
+
+#### TUTORIAL.md（4 處）
+- §3 加跨 step 順序紀律警告（cross-reference QUICKSTART v0.7.2 警告）
+- §5.2：6 步驟 → **7 步驟** + step 5 + step 6 PROVISIONAL/ACTIVE 紀律 + slash command 引用紀律
+- §8.3：F1〜F5 → **F1〜F6**（加 F6 entry）
+- §11.1 doctor 錯誤對照表：加 E601〜E605（namespace 校驗 + F6 強制 + 諷刺循環攔截）
+
+#### README.md（3 處）
+- 條款表 `failure-modes.md` 一句話：「F1〜Fn」→ **F1〜F6**（含 v0.7.0 surface vs structural sub-pattern）
+- 條款表 `init-template.md` 一句話：加 v0.7.0 step 6 PROVISIONAL/ACTIVE + slash command 引用紀律
+- 角色目錄：validator 加 v0.7.0 §3.6 init 階段抽驗 / auditor 加 v0.7.0 §8 對稱性反向引用
+
+#### core/charter-config.md §5（W001）
+- 條款相依表加 `init-template`（v0.7.0 後相依擴增）→ `multi-role-tracking` + `audit-rights`
+
+#### 連動更新
+- 三 preset yaml `charter_version: "0.7.2"` → `"0.7.3"`
+- ADOPTION.md / TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.7.3
+
+### Triggered — v0.7.0 BREAKING-LITE 追溯說明
+
+> **誠實反省**：v0.7.0 release notes 標題寫「**MINOR release**」，但內含兩個既有採用方 migration 點：
+> - profile.yaml `enable_modes` 須加 F6（v0.5.10 加 F6 但 preset 漏改）
+> - mapping.yaml 若含 `shared/` 中介層需 migration（doctor §3.7 E601/E602）
+>
+> 依 `versioning-migration` 對 v0.x 階段判定，**v0.7.0 應分類為 BREAKING-LITE**（採用方升版需動作對齊）而非 MINOR（純擴展）。
+>
+> **這個 mislabel 本身就是 dogfood signal #15 候選**：「`versioning-migration` 對 v0.x 階段 BREAKING-LITE 判定不嚴謹」。maintainer 會把「擴展但需 migration」誤標 MINOR。對應 v0.7.0 加的 F6 sub-pattern「surface-level vs structural-level」精神在 release labelling 的諷刺實證 — release notes 標題（surface）跟採用方影響段（structural）脫鉤。
+
+git history 不改、本說明作為**追溯校正**留 reference。v0.8.0 計畫擴 `versioning-migration §X` 加 BREAKING-LITE 判定 checklist（避免再 mislabel）。
+
+### Triggered — dogfood signals
+
+| Signal | 對應 | 本 release 處理 | v0.8.0 留 |
+|---|---|---|---|
+| **#6 第四次同類觀察** | 文檔層 sync 諷刺循環（v0.7.2 才剛 condition 化、v0.7.2 release 自身又踩）| ✅ 完整 sweep + 全 ERROR/WARN 修補 | 升級到工具層 doctor 自動偵測 |
+| **新 sub-pattern**：人類 vs AI 受眾差異化 sync gap | QUICKSTART（人類面）已對齊、ADOPTION（AI 面）未對齊；maintainer 改了「自己會打開的 user-facing 檔」、漏「AI 自含 context 檔」| ✅ ADOPTION 主體完整對齊 | 留觀察、累積後加 §3.4 細分「人類 vs AI 受眾兩條獨立 sweep 路徑」|
+| **新 sub-pattern**：step 數變更但下游文檔未全文 grep | init-template §3.3.2 從 6 → 7 步、ADOPTION §7 / TUTORIAL §5.2 仍寫 6 步 | ✅ 全部對齊 7 步 | maintainer-discipline §3.4 加「step 數變更 = trigger 全文 grep『N 步驟』」|
+| **新 dogfood signal #15 候選** | v0.7.0 mislabel MINOR 應為 BREAKING-LITE | 追溯說明（不改 git history）| `versioning-migration §X` 加 BREAKING-LITE 判定 checklist |
+
+### 採用方影響
+
+- ✅ **完全向後相容、零動作 migration**：純文檔層對齊 + 紀律強化、不動 schema / enabled / F-mode / 條款本體
+- ✅ 既有採用方升 v0.7.2 → v0.7.3：只改 profile.yaml `charter_version`
+- 🟢 **設計哲學顯化**對採用方體感**加分**：所有未來修訂對照「無痛使用」三題、不會再有「為了完整性犧牲體感」的修訂
+
+### dogfood-driven hardening 第八循環
+
+第一〜七循環 v0.5.10〜v0.7.2（見前述 CHANGELOG）
+**第八循環 v0.7.3 = user 重新提出設計北極星 framing → maintainer 完整 spec drift sweep + 設計哲學顯化 + v0.7.0 mislabel 追溯反省**
+
+→ user 對話原話：「**培養魚塭、不討魚 — 真正的開發不應該侷限於眼前的舒服、而是要放眼望去未來的舒適**」 — 寫進 charter 北極星紀律。
+
+### v0.8.0 北極星議程（已記入 NEXT.md ⚪）
+
+| 動作 | 對應 |
+|---|---|
+| `BOOTSTRAP.md` 入口檔（採用方唯一要記的東西）| 小白無痛 |
+| `core/adoption-lifecycle.md` 條款（全新 / 升版 / 棄用 / 重新採用 四路徑）| 回鍋開發者無痛 |
+| QUICKSTART/ADOPTION prompt 簡化（紀律 push 到 charter spec 端）| 不讓 user 記 prompt |
+| `versioning-migration §X` 加 BREAKING-LITE 判定 checklist | 避免 v0.7.0 mislabel 重演 |
+| condition mutability 紀律本體（v0.7.1 frontmatter scaffold 後續）| signal #11 完整條款化 |
+
+### Git tag
+
+- `v0.7.3`（本 commit）
 
 ---
 
