@@ -3,7 +3,7 @@
 > **給誰**：採用 AgentCharter 框架的團隊（人類採用方）
 > **性質**：reference / 工具書（章節獨立、可跳讀）
 > **不是**：線性教學書（如想線性走完 → [QUICKSTART.md](./QUICKSTART.md)）
-> **配對**：本檔對應 charter `v0.5.8`
+> **配對**：本檔對應 charter `v0.6.1`
 
 ## 目錄
 
@@ -26,9 +26,9 @@
 | 工具 | 為什麼 | 如何裝 |
 |---|---|---|
 | git | clone charter | 任何版本 |
-| Python 3.8+ | 跑 init / doctor | 任何 OS |
-| PyYAML | yaml 解析 | `pip install pyyaml` |
 | AI 工具 | 至少一個（Claude Code / Gemini CLI / Cursor）| 各家官方下載 |
+
+> charter v0.5.9 後是純規範框架，**不需要 Python / npm / 任何 runtime**。所有工具動作由 AI 依 spec 自具象化執行。
 
 ### 1.2 文件位階速查
 
@@ -159,9 +159,9 @@ v0.5.7 期間曾落地 `tools/charter-init.py`，v0.5.9 移除。決策理由：
 
 | preset | 條款啟用 | 適用 | 紀律強度 |
 |---|---|---|---|
-| `minimal` | 9 / 17 | 探索期 / 單人 + 1 AI | 寬鬆（escalation 不啟用） |
-| **`standard`** | **17 / 17** | **一般雙 AI 協作（CryptoBot 級）** | **中等**（escalation@2 / structural@3） |
-| `strict` | 17 / 17 | 嚴格合規 / 高風險（金融 / 醫療） | 嚴格（escalation@1 / structural@2） |
+| `minimal` | 9 / 19 | 探索期 / 單人 + 1 AI | 寬鬆（escalation 不啟用、ai-vendor-onboarding 預設關） |
+| **`standard`** | **18 / 19** | **一般雙 AI 協作（CryptoBot 級）** | **中等**（escalation@2 / structural@3） |
+| `strict` | 18 / 19 | 嚴格合規 / 高風險（金融 / 醫療） | 嚴格（escalation@1 / structural@2） |
 
 **判斷樹**：
 
@@ -667,4 +667,6 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 ## 變更歷史
 
-- **v1.0（2026-04-27）** — 初版。對應 charter v0.5.7。9 章工具書（前置 / 概念 / clone&init / 領域公理 / AI 具象化 / 任務生命週期 / 日常使用 / 進階場景 / troubleshooting）。
+- **v1.2（2026-04-28，charter v0.6.1）** — 文檔層 sync 修補（v0.5.10 / v0.6.0 release 漏的 TUTORIAL 同步點，由 v0.6.1 auditor 第一次實戰抽驗抓到 — dogfood signal #6 候選）：line 6 charter 對應版本 v0.5.8 → v0.6.1 + §1.1 移除 Python 3.8+ / PyYAML 行（v0.5.9 純規範框架後遺漏）+ §3.3 preset 表母數 17 → 19 + 本變更歷史段。
+- **v1.1（2026-04-28，charter v0.6.0）** — 條款數 line 658 「20 個 .md」→「21 個 .md」（含 v0.6.0 新增 ai-vendor-onboarding）。
+- **v1.0（2026-04-27，charter v0.5.7）** — 初版。9 章工具書（前置 / 概念 / clone&init / 領域公理 / AI 具象化 / 任務生命週期 / 日常使用 / 進階場景 / troubleshooting）。

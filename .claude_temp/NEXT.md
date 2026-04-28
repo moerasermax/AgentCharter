@@ -1,6 +1,6 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.6.0 release — 大工程批次第二階段完成）
+> **更新時間**：2026-04-28（v0.6.1 release — auditor 第一次實戰後的 stable 版本）
 > **依循**：v1.0 公開化條件（GOVERNANCE §6）
 
 ---
@@ -108,6 +108,7 @@ framework 永久維持「**純規範**」位階。
 
 ## ⚪ 待對話的議題
 
+- **dogfood signal #6 候選 — 「條款層 sync 與文檔層 sync 不對等」**（v0.6.1 auditor 第一次實戰揭露）：v0.6.0 release commit 明示要 sync ADOPTION / TUTORIAL / README，但實際只動關鍵字而漏 numeric / version；v0.5.10 已撞過一次（19 → 20 條.md sync 漏）+ v0.6.0 又踩。pattern：`maintainer-discipline §2.2` 引用範圍表寫得很細，但執行時「條款層」改完整、「文檔層」改部分 + 漏 numeric。**累積觀察**：與 dogfood signal #2「v0.5.0/v0.5.1 修條款時未同步 spec」同源但更細（#2 工具層 / 本 #6 文檔層）。**條款化門檻**：累積 ≥ 3 次同類後可 evaluate 在 `maintainer-discipline §3` 加「文檔層 sync checklist」子項或新增 §3.4「文檔層 sync 自動化驗證」。**判斷**：暫累積觀察、不條款化；下次 release 時跑 auditor 再驗證
 - AgentCharter 自身採用 framework 的邊界（dogfooding 何時、如何啟動）
 - 條款命名規範統一（kebab-case vs snake_case 一致性）
 - 多語系策略（當前繁中 + 英文小標題並陳）
@@ -159,7 +160,19 @@ framework 永久維持「**純規範**」位階。
   - **Changed**：`core/maintainer-discipline.md §3.1` 改為「由 auditor 角色執行」（v0.5.9 後留下的執行載體明確化）；`core/charter-config.md §3 enabled` + §5 相依表加 ai-vendor-onboarding entry
   - **連動範圍**（依 maintainer-discipline §2.2）：condition 數 20 → 21 / 角色 2 → 4 / 架構級概念 9 → 11；三 preset enabled 加 ai-vendor-onboarding（minimal false / standard true / strict true）+ charter_version 0.5.10 → 0.6.0；ADOPTION §3 標題 18 → 20 條（採用方視角）+ D 組 4 → 5 條 + 新增 F 組 maintainer-only；QUICKSTART/ADOPTION/TUTORIAL 條款數 20 → 21；STATUS 全段更新 + 演化軸表加 v0.6.0 entry + §B 架構級概念擴 9 → 11；CHANGELOG v0.6.0 段
   - **dogfood-driven hardening 第二、三循環實證**：第二循環 = signal #5 條款化封閉 LLM 繞路 gap；第三循環 = Gemini PM 接入歷程的隱性 pattern 顯性化為邀請制條款
-  - **Git tag**：`v0.6.0`（release commit 待打）
+  - **Git tag**：`v0.6.0` @ `9493814`
+
+- ✅ **v0.6.1 release（2026-04-28）— auditor 第一次實戰後的 stable 版本（公司 production 接入用）**：
+  - **動機**：v0.6.0 後使用者準備接入公司 production 專案、要求「最穩定」。為確保 v0.6.0 對 production ready，maintainer 用 v0.6.0 新誕生的 auditor 角色（`roles/auditor/_spec.md`）spawn fresh-context sub-agent 跑首次實戰 cross-reference + spec sync audit。
+  - **Audit 結果**：5 項通過（綠燈：條款引用一致 / preset 對齊 / 三段新紀律內部一致 / ai-vendor-onboarding vs init-template 互補 / `_spec.md §7` 對應表）+ 3 項 ERROR + 4 項 WARN
+  - **修 3 項 ERROR**：(1) `ADOPTION.md` 多處 v0.5.x 殘留 + 條款數內部矛盾（line 5 / 47 / 145 / 314 + §5 preset 表母數 16 → 19 + §13 變更歷史）/ (2) `TUTORIAL.md` Python runtime 殘留（v0.5.9 純規範化漏）+ 對應版本 v0.5.8 → v0.6.1 + preset 計數 17 → 19 + 變更歷史 / (3) `README.md` 角色目錄拆「採用方角色」vs「Maintainer-only 角色」分區（解決採用方誤以為要啟用 auditor 的風險）
+  - **修 2 項 WARN**：(1) `.claude/commands/maintainer-load.md:68` 當前狀態 v0.5.8 → v0.6.1 + 加 auditor 執行載體說明 / (2) `core/charter-config.md §4` schema 範例 charter_version 0.3.0 → 0.6.1 加註「範例值」
+  - **同步**：三 preset yaml `charter_version` 0.6.0 → 0.6.1
+  - **不修 2 項 WARN**：CHANGELOG / ADOPTION 「採用方視角」語意游移（已部分對齊，殘餘留 v0.7+）+ `audit-rights.md` 沒同步引用 validator deprecation path（屬設計層，留 v1.0 PM `_spec.md` 真正移除 §3.3 / §3.4 時一併處理）
+  - **新 dogfood signal #6 候選**：「條款層 sync 與文檔層 sync 不對等」（已記入 ⚪ 待對話），auditor 抽驗本身揭露的結構性盲區
+  - **dogfood-driven hardening 第四循環**：第一循環 v0.5.10 (signal #4) / 第二循環 v0.6.0 (signal #5) / 第三循環 v0.6.0 (邀請制 pattern) / **第四循環 v0.6.1 (auditor 角色第一次實戰)** — auditor 抓到 maintainer 自己漏的東西，封閉「自抽自驗」結構性盲區
+  - **採用方影響**：完全向後相容、純文檔修補；既有採用方升版只需改 profile.yaml `charter_version: "0.6.0"` → `"0.6.1"`
+  - **Git tag**：`v0.6.1`（release commit 待打）
 
 ---
 

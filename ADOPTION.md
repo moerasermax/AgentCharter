@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.5.9`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.6.1`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -44,7 +44,9 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 ---
 
-## 3. 20 條 core 條款（採用方視角，按概念分組）
+## 3. 21 條 core 條款（按概念分組）
+
+> **採用方視角**：A 組〜E 組共 20 條對應 `profile.yaml.enabled` 開關（含 2 條架構級前提無開關 + 18 條由 enabled 控制）；F 組 1 條為 **maintainer-only**（採用方無關，三 preset 預設 `false`）。下方分組依此排序。
 
 ### A. 角色與職權（4 條）
 
@@ -130,9 +132,11 @@ project-root/
 
 | Preset | enabled 條款數 | 適用 |
 |---|---|---|
-| `minimal.yaml` | 8 / 16 | 探索型 / 單人 + 1 AI / 短期實驗 |
-| `standard.yaml` | 16 / 16（中等參數） | 一般雙 AI 協作 |
-| `strict.yaml` | 16 / 16（嚴格上限） | 嚴格合規 / 高風險領域（金融 / 醫療 / 軍工） |
+| `minimal.yaml` | 9 / 19 | 探索型 / 單人 + 1 AI / 短期實驗（ai-vendor-onboarding 預設關）|
+| `standard.yaml` | 18 / 19（中等參數） | 一般雙 AI 協作 |
+| `strict.yaml` | 18 / 19（嚴格上限） | 嚴格合規 / 高風險領域（金融 / 醫療 / 軍工） |
+
+> 註：母數 19 = 21 條 core 條款 - 2 條架構級前提（不設 enabled 開關）。1 條 maintainer-only（`maintainer-discipline`）三 preset 皆預設 `false` — 採用方無關。
 
 詳見 [tools/profiles/](./tools/profiles/)。
 
@@ -142,7 +146,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.5.6"`。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.6.1"`（或當前最新版）。
 
 ### T1 接入
 
@@ -311,7 +315,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 採用方在 Day 7 結束前應能對所有問題回答 ✅：
 
 - [ ] `agent-commons/` 目錄結構齊全（依 §4）
-- [ ] `_config/profile.yaml` 含 `charter_version: "0.5.6"` + 選定 preset
+- [ ] `_config/profile.yaml` 含 `charter_version: "0.6.1"`（或當前最新版）+ 選定 preset
 - [ ] `_config/mapping.yaml` 含 `common_memory_root` + `domain_axioms.primary`
 - [ ] `protocols/<axiom>.md` 已寫且符合 [domain-axiom-slot §3.1](./core/domain-axiom-slot.md) 強制要求（每條有後果段、可驗證、有編號）
 - [ ] 每個被指派角色的 AI 已自我具象化（`_role.md` 切換歷史首版到位）
@@ -325,4 +329,6 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 ## 13. 變更歷史
 
-- **v1（2026-04-27）** — 初版。對應 charter v0.5.6。為「給接班 AI 快速理解並啟用」而寫，自含 context、引用具體條款 §段、提供採用就緒 self-check。
+- **v1.2（2026-04-28，charter v0.6.1）** — 文檔層 sync 修補（v0.6.0 release 漏的 ADOPTION 同步點，由 v0.6.1 auditor 第一次實戰抽驗抓到 — dogfood signal #6 候選）：line 5 charter_version 對齊 + §5 preset 表母數 16 → 19 + §6 T0 + §12 採用就緒檢查 charter_version 對齊 + 本變更歷史段。
+- **v1.1（2026-04-28，charter v0.6.0）** — 條款數 20 → 21、§3 加 D 組第 5 條 ai-vendor-onboarding + 新增 F 組 maintainer-only 分區、line 286 條款數同步。
+- **v1（2026-04-27，charter v0.5.6）** — 初版。為「給接班 AI 快速理解並啟用」而寫，自含 context、引用具體條款 §段、提供採用就緒 self-check。

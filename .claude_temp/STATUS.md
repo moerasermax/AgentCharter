@@ -1,10 +1,10 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-04-28（台灣時間）
-> **當前版本**：v0.6.0（大工程批次第二階段完成 — 架構擴張 + LLM 行為紀律 gap）
+> **當前版本**：v0.6.1（auditor 第一次實戰後的文檔層 sync 修補 — production-ready stable 版本）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔即為 session 斷點儲存（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
-> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` (即將打)
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` (即將打)
 
 ---
 
@@ -12,7 +12,8 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| **v0.6.0** | （待 commit）| **大工程批次第二階段**：架構擴張 + LLM 行為紀律 gap — 新增 `core/ai-vendor-onboarding.md` 邀請制條款（架構級概念第 10 個）+ 新增 `roles/auditor/_spec.md` maintainer-only 角色概念層 + 新增 `roles/validator/_spec.md` 採用方角色概念層 + PM 漸進 deprecate 抽驗職責（v0.x 並存 / v1.0 接管）+ dogfood signal #5 條款化（role-separation §3.5 繞路禁令 / multi-role-tracking §3.4 身份穩定承諾 / role-conflict-resolution §5.4 角色切換決策權屬 user / pm/gemini-cli §3.5 sub-agent 跨界禁令補段，架構級概念第 11 個）。條款 20 → 21、角色 2 → 4 |
+| **v0.6.1** | （待 commit）| **PATCH** — 文檔層 sync 修補（v0.6.0 release 漏的 ADOPTION/TUTORIAL/README/maintainer-load/charter-config schema 範例同步點）。**auditor 第一次實戰** spawn fresh-context sub-agent 跑 cross-reference + spec sync audit（dogfood-driven hardening 第四循環）抓到 3 ERROR + 4 WARN，本 release 修 3 ERROR + 2 WARN。揭露**dogfood signal #6 候選**「條款層 sync 與文檔層 sync 不對等」。**v0.6.1 是公司 production 接入用的 stable 版本** |
+| v0.6.0 | `9493814` | **大工程批次第二階段**：架構擴張 + LLM 行為紀律 gap — 新增 `core/ai-vendor-onboarding.md` 邀請制條款（架構級概念第 10 個）+ 新增 `roles/auditor/_spec.md` maintainer-only 角色概念層 + 新增 `roles/validator/_spec.md` 採用方角色概念層 + PM 漸進 deprecate 抽驗職責（v0.x 並存 / v1.0 接管）+ dogfood signal #5 條款化（role-separation §3.5 繞路禁令 / multi-role-tracking §3.4 身份穩定承諾 / role-conflict-resolution §5.4 角色切換決策權屬 user / pm/gemini-cli §3.5 sub-agent 跨界禁令補段，架構級概念第 11 個）。條款 20 → 21、角色 2 → 4 |
 | v0.5.10 | `6dd3eda` | **大工程批次第一階段**：MINOR self-instantiation 結尾自帶 doctor schema 驗證（六步驟 → 七步驟 + F6 新增）+ PATCH HANDOFF 排序 wording + PATCH spec-sync 修補（v0.5.8/v0.5.9 release 漏：preset charter_version 跳升 + 19→20 條 .md + 移除 Python 前置）+ 併入 [Unreleased] QUICKSTART 多 AI 提醒。對應 dogfood signal #4 YC_AIAgentCrew 實證 |
 | v0.5.9 | `a24c15c` | **Removed python 工具** + Added agent-commons 結構穩定性承諾（versioning-migration §2.3）— 回歸純規範框架；採用方第一次 init 後 agent-commons 結構零變更承諾（v1.0 後永久）|
 | v0.5.8 | `5ed0cec` | Maintainer Discipline 條款（framework 維護者紀律 — 位階特殊：採用方無關、維護者強制；對應 v0.5.7 累積的兩次 dogfood signal #1+#2，使用者授權跳過 ≥3 次累積直接條款化）|
@@ -174,7 +175,8 @@ project-root/
 | v0.5.6 | **Versioning & Migration** 條款：SemVer 對 AgentCharter 的具體語意（PATCH/MINOR/MAJOR/架構級）+ 已採用專案升級流程 + 多 AI 版本一致性；**5 候選盤點完成** |
 | v0.5.7 | **Working Stack Discipline** 條款：補完「session 內物理中斷再續」結構性盲區；DRAFT 暫存堆疊 + save 同步 git commit；三種接班場景（結案 / 換 AI / 物理中斷）正交完整 |
 | v0.5.10 | **dogfood-driven hardening 首次循環**：dogfood signal #4 累積 ≥1 次同類觀察 → 條款修訂門檻達標 → 自身改進 self-instantiation 七步驟 + F6 新增。對應使用者提的「dogfood 內測優化也是持續健壯一環」精神首次落地 |
-| **v0.6.0** | **架構擴張 + dogfood-driven hardening 第二、三循環**：邀請制原則條款化（隱性 pattern 顯性化 — Gemini PM 接入歷程的形式化）+ 兩個新角色誕生（auditor maintainer-only / validator 採用方）+ dogfood signal #5 條款化（LLM 找路徑繞過角色約束三層 gap 封閉）。架構級概念 9 → **11**（新增「角色擴展邀請制 / vendor 不代寫」+「角色身份穩定 / 繞路禁令」）|
+| v0.6.0 | **架構擴張 + dogfood-driven hardening 第二、三循環**：邀請制原則條款化（隱性 pattern 顯性化 — Gemini PM 接入歷程的形式化）+ 兩個新角色誕生（auditor maintainer-only / validator 採用方）+ dogfood signal #5 條款化（LLM 找路徑繞過角色約束三層 gap 封閉）。架構級概念 9 → **11**（新增「角色擴展邀請制 / vendor 不代寫」+「角色身份穩定 / 繞路禁令」）|
+| **v0.6.1** | **dogfood-driven hardening 第四循環 — auditor 第一次實戰**：spawn fresh-context sub-agent 對 charter v0.6.0 自身跑 cross-reference + spec sync audit，抓到 3 ERROR + 4 WARN（揭露 v0.6.0 文檔層 sync 不徹底）。本 release 修 3 ERROR + 2 WARN，揭露 dogfood signal #6 候選「條款層 sync 與文檔層 sync 不對等」。**v0.6.0 引入 auditor 的設計價值在 v0.6.1 release 即實證** — auditor 抓到 maintainer 自己漏的東西，封閉「自抽自驗」結構性盲區 |
 
 ### B. 十一個架構級概念已釐清
 

@@ -112,8 +112,8 @@ state:
 ## 4. `profile.yaml` Schema
 
 ```yaml
-version: "0.4.0"                         # profile schema 版本
-charter_version: "0.3.0"                 # 採用的 AgentCharter 版本
+version: "0.4.0"                         # profile schema 版本（範例值；當前 schema 是 0.4.0）
+charter_version: "0.6.1"                 # 採用的 AgentCharter 版本（範例值；填當前最新版）
 preset: <preset-name>                    # minimal | standard | strict | custom
 
 # === B1 粒度：條款啟用 ===

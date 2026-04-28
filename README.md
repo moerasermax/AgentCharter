@@ -76,9 +76,15 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 - `<ai-vendor>.md` — 該 AI 在扮演此角色時的執行細節（如 Claude 用 hook，Gemini 用主動讀檔）
 
 當前提供：
+
+**採用方角色**（採用方視具體場景啟用）：
+
 - `roles/engineer/_spec.md` + `roles/engineer/claude-code.md` — Engineer 概念層 + Claude Code 工程師實作（v0.1 reference impl）
 - `roles/pm/_spec.md` + `roles/pm/gemini-cli.md` — PM 概念層（v0.6.0 加 §3.3/§3.4 漸進 deprecate 抽驗）+ Gemini CLI PM 實作（v1.1，含 §3.5 sub-agent 跨界禁令）
 - `roles/validator/_spec.md` — **新採用方角色（v0.6.0 概念層）** — 抽驗權專職載體；漸進接管 PM 抽驗職責；vendor 層待邀請制流程
+
+**Maintainer-only 角色**（採用方無關，charter repo 自身維護用）：
+
 - `roles/auditor/_spec.md` — **新 maintainer-only 角色（v0.6.0 概念層）** — charter repo 自身一致性抽驗；對應 `maintainer-discipline §3.1` 執行載體；vendor 層待邀請制流程
 
 ---
