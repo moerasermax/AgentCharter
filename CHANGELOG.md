@@ -6,18 +6,60 @@
 
 ## [Unreleased]
 
-### Patch — QUICKSTART：多 AI 並存接入提醒白話化
+（空 — 前 [Unreleased] 內容已併入 v0.5.10）
 
-對應使用者反饋（charter-viz onboarding，2026-04-27）：採用方初讀 QUICKSTART Step 4「複製以下 prompt 給你的 AI」會誤以為「單一 AI 接入即完成」，沒意識到 vendor-specific slash command 不通用（Claude `.claude/commands/` ≠ Gemini `.gemini/commands/`）必須**每個 AI 各自跑一次自我具象化**。
+---
 
-#### 修改
+## [0.5.10] — 2026-04-28
 
-- `QUICKSTART.md §Step 4`：加 🔁 提醒框，明示「每個 AI 各自貼一次、不是選一個」；prompt 引言改為「複製對應 prompt 給每個你採用的 AI」
-- `QUICKSTART.md §Step 5`：doctor 提醒改為「給其中一位 AI 即可」（doctor 不是必跑、跑一次就好），避免讀者誤以為每個 AI 都要跑 doctor
+> 大工程批次第一階段（暖身 + spec-sync 修補）。對應 `.claude_temp/v0.5.9-BASELINE.md §10` v0.5.10 預期變動清單實證。下個版本 v0.6.0 預計含：邀請制原則 + auditor 角色誕生 / validator 角色誕生 + PM 漸進 deprecate 抽驗 / LLM 找路徑繞過角色約束紀律 gap。
 
-#### 範圍
+### MINOR — self-instantiation 結尾自帶 doctor schema 驗證強制點 ⭐
 
-純文件 wording 修改，不影響條款啟用 / mapping schema / preset / vendor spec。對齊 `init-template §3.3` AI Self-Instantiation + A1「角色 ⊥ AI」公理的白話表達。
+**動機**：dogfood signal #4「具象化 ⊥ 驗證脫鉤」於 YC_AIAgentCrew 接入（2026-04-28）實證 — PM Gemini 寫 `agent-commons/_config/mapping.yaml` 違反 schema 當下無人發現、Engineer Claude 進場才被迫進 Phase 3 重寫修補；驗證負擔被結構性地轉嫁給下個 AI。
+
+**設計**：把驗證從「使用者另一個動作」（QUICKSTART Step 5）內化到「self-instantiation 流程內必跑」。模式 B 強制驗證點不通則 step 6 簽名禁止，跳過視為 `failure-modes F6`。
+
+**範圍**（依 `maintainer-discipline §2.2` 連動修）：
+
+- `core/init-template.md §3.3.2` 六步驟 → **七步驟**（renumber：原 step 5「簽名」→ 6、原 step 6「回報」→ 7、新增 step 5「schema 驗證強制點」）
+- `core/init-template.md §3.3.5` 違反處置加一行（跳過 step 5 直接簽名 = F6）
+- `core/init-template.md §9` 變更歷史加 v0.5.10 entry（含 dogfood signal 觸發 / 修訂類型 / 連動範圍三段式）
+- `core/failure-modes.md` **加 F6「未驗證即宣告就緒（轉嫁驗證負擔）」** + F6 詳述段 + §5 事件累積範例表加 F6 欄 + §7 加 F6 首例觸發紀錄（YC_AIAgentCrew 2026-04-28）+ §8 變更歷史
+- `tools/doctor-spec.md §2.1` 拆分**呼叫模式 A**（人工健康檢查 — 軟、全檢）/ **模式 B**（self-instantiation 結尾強制驗證點 — 硬、minimal 檢查集）+ §7 反向引用加 `init-template §3.3.2 step 5` / `failure-modes F6` + §8 實作節奏加 v0.5.10
+- `QUICKSTART.md Step 4` 兩個 vendor prompt（Claude / Gemini）加 step 5 schema 驗證指示 + 加註明 v0.5.10 動機（避免轉嫁驗證負擔）
+- `QUICKSTART.md Step 5` 從「doctor 不必跑」改為「人工二次確認 + 具象化 `/charter-doctor`」+ 加 F6 偵測說明（若 Step 5 有 errors → Step 4 某 AI 跳過 step 5 強制驗證點）
+
+### PATCH — HANDOFF 排序 wording 修訂
+
+**動機**：YC_AIAgentCrew Engineer self-instantiation 步驟 3「載入最近 HANDOFF」用 `ls -1 HANDOFF_*.md | sort -V | tail -1` 會誤抓 `HANDOFF_TEMPLATE.md`（字母序在 `HANDOFF_<N>.md` 之後）。
+
+**範圍**：
+- `templates/role-init.md.tpl` shell command 加 `grep -E 'HANDOFF_[0-9]+\.md$'` 過濾 + 註解
+- `templates/agent-commons/handoff.md.tpl §序號規則` shell command 同步 + 加說明
+
+### PATCH — spec-sync 修補（v0.5.8 / v0.5.9 release 漏）
+
+**動機**：BASELINE §3 抓到的 spec-sync 漏 — v0.5.8/v0.5.9 release 沒同步更新部分文件。屬輕微違反 `maintainer-discipline §2.2`，本批次順手修。
+
+**範圍**：
+- `tools/profiles/{minimal,standard,strict}.yaml` `charter_version: "0.5.8"` → `"0.5.10"`（直接跳 v0.5.9）
+- `QUICKSTART.md / ADOPTION.md / TUTORIAL.md` 「core/ 19 個 .md」→ 「20 個 .md」（v0.5.8 加 maintainer-discipline 後沒同步）
+- `QUICKSTART.md §前置` 移除「Python 3.8+ / PyYAML」+ 加註明「charter v0.5.9 後純規範框架不需 runtime」（v0.5.9 純規範化後遺漏）
+
+### PATCH — QUICKSTART：多 AI 並存接入提醒白話化（從 v0.5.9 後 [Unreleased] 併入）
+
+對應使用者反饋（charter-viz onboarding，2026-04-27）：採用方初讀 QUICKSTART Step 4「複製以下 prompt 給你的 AI」會誤以為「單一 AI 接入即完成」，沒意識到 vendor-specific slash command 不通用必須**每個 AI 各自跑一次自我具象化**。
+
+**範圍**：
+- `QUICKSTART.md §Step 4`：加 🔁 提醒框（已於 705488a commit）
+- `QUICKSTART.md §Step 5`：doctor 提醒改為「給其中一位 AI 即可」（已於 705488a commit；v0.5.10 後再進一步改為「人工二次確認」軸，見上）
+
+### 採用方影響
+
+- ✅ **行為向後相容**：既有採用方下次 self-instantiation 時補跑 step 5（既有簽名不溯及）
+- ⚠️ **既有採用方升版需修自己的 self-instantiated slash command**（如 `.claude/commands/<role>-init.md`）以加 step 5 — 屬 self-instantiation 機制設計：每次 charter 條款修訂後採用方須各自重做 self-instantiation 才繼承新版（依 `init-template §3.3` 精神）
+- 📋 **YC_AIAgentCrew 為第一個升版測試案例**（v0.5.9 → v0.5.10）— 可實證 `versioning-migration §3` 7 步流程
 
 ---
 

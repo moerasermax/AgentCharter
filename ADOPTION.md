@@ -283,7 +283,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 |---|---|
 | **人類採用方的 5 分鐘入門** | **[QUICKSTART.md](./QUICKSTART.md)** |
 | **人類採用方的 reference 工具書** | **[TUTORIAL.md](./TUTORIAL.md)** |
-| 條款全文 | [core/](./core/)（19 個 .md）|
+| 條款全文 | [core/](./core/)（20 個 .md）|
 | 工具（charter-init / charter-doctor）| [tools/](./tools/) |
 | 模板（capsule / handoff / IM / nextwork / domain-axioms / _role）| [templates/agent-commons/](./templates/agent-commons/) |
 | 角色職能定義 | [roles/<role>/_spec.md](./roles/) |

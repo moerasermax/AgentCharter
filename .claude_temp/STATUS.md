@@ -1,9 +1,10 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-04-27（台灣時間）
-> **當前版本**：v0.5.9
+> **更新時間**：2026-04-28（台灣時間）
+> **當前版本**：v0.5.10（大工程批次第一階段完成）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔即為 session 斷點儲存（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` (即將打)
 
 ---
 
@@ -11,6 +12,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| **v0.5.10** | （待 commit）| **大工程批次第一階段**：MINOR self-instantiation 結尾自帶 doctor schema 驗證（六步驟 → 七步驟 + F6 新增）+ PATCH HANDOFF 排序 wording + PATCH spec-sync 修補（v0.5.8/v0.5.9 release 漏：preset charter_version 跳升 + 19→20 條 .md + 移除 Python 前置）+ 併入 [Unreleased] QUICKSTART 多 AI 提醒。對應 dogfood signal #4 YC_AIAgentCrew 實證 |
 | v0.5.9 | `a24c15c` | **Removed python 工具** + Added agent-commons 結構穩定性承諾（versioning-migration §2.3）— 回歸純規範框架；採用方第一次 init 後 agent-commons 結構零變更承諾（v1.0 後永久）|
 | v0.5.8 | `5ed0cec` | Maintainer Discipline 條款（framework 維護者紀律 — 位階特殊：採用方無關、維護者強制；對應 v0.5.7 累積的兩次 dogfood signal #1+#2，使用者授權跳過 ≥3 次累積直接條款化）|
 | v0.5.7 | `5c6e76d` | Working Stack Discipline 條款（DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續；補完三種接班場景的正交盲區）|
@@ -169,6 +171,7 @@ project-root/
 | v0.5.5 | **Domain Axiom Slot** 條款：把 template 的撰寫紀律提煉至 core 層；定義「領域公理 > core 條款」衝突優先序為架構級條文；/charter-doctor 違反處置分級 |
 | v0.5.6 | **Versioning & Migration** 條款：SemVer 對 AgentCharter 的具體語意（PATCH/MINOR/MAJOR/架構級）+ 已採用專案升級流程 + 多 AI 版本一致性；**5 候選盤點完成** |
 | v0.5.7 | **Working Stack Discipline** 條款：補完「session 內物理中斷再續」結構性盲區；DRAFT 暫存堆疊 + save 同步 git commit；三種接班場景（結案 / 換 AI / 物理中斷）正交完整 |
+| **v0.5.10** | **dogfood-driven hardening 首次循環**：dogfood signal #4 累積 ≥1 次同類觀察 → 條款修訂門檻達標 → 自身改進 self-instantiation 七步驟 + F6 新增。對應使用者提的「dogfood 內測優化也是持續健壯一環」精神首次落地 |
 
 ### B. 九個架構級概念已釐清
 

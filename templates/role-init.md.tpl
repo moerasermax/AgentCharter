@@ -102,7 +102,8 @@ cat <PROJECT_DIR>/state/output_mode 2>/dev/null || echo "verbose (預設)"
 
 echo
 echo "=== 最近 HANDOFF ==="
-ls -1 <PROJECT_DIR>/handoffs/HANDOFF_*.md 2>/dev/null | sort -V | tail -1
+# 過濾掉 HANDOFF_TEMPLATE.md / HANDOFF_DRAFT.md 等非編號檔，僅取 HANDOFF_<N>.md
+ls -1 <PROJECT_DIR>/handoffs/HANDOFF_*.md 2>/dev/null | grep -E 'HANDOFF_[0-9]+\.md$' | sort -V | tail -1
 
 echo
 echo "=== 最新任務膠囊 ==="

@@ -27,6 +27,29 @@
 /charter-doctor --json      # 輸出 machine-readable 格式
 ```
 
+### 2.1 呼叫模式
+
+| 模式 | 觸發者 | 用途 | 失敗處置 |
+|---|---|---|---|
+| **A. 人工健康檢查** | 採用方使用者 | 任意時點驗證接入狀態 / 升版前 dry-run | 列 errors / warnings；使用者決定是否修 |
+| **B. self-instantiation 結尾強制驗證點**（v0.5.10 加）| 自我具象化中的 AI | `core/init-template.md §3.3.2 step 5` 強制呼叫；AI 寫完 mapping/profile/領域公理後**必跑一次** | **0 errors 才允許 step 6 簽名**；非 0 則 step 5 失敗、回 step 2-3 修補；違反視為 `failure-modes.md F6`（未驗證即宣告就緒） |
+
+> 模式 B 的設計動機：對應 dogfood signal #4「具象化 ⊥ 驗證脫鉤」（YC_AIAgentCrew 2026-04-28 實證 — PM Gemini 寫 mapping schema 違規當下無人發現，Engineer Claude 進場才被迫重寫修補）。把驗證從「使用者另一個動作」（QUICKSTART Step 5）內化到「self-instantiation 流程內必跑」，避免轉嫁驗證負擔給下個 AI。
+
+模式 B 的 minimal 檢查集（不需跑全部 §3 檢查）：
+
+```
+必驗（v0.5.10）：
+  §3.1 結構完整性（profile.yaml / mapping.yaml schema 必填欄位）
+  §3.3 路徑對映（mapping 指向的路徑實際存在）
+  §3.5 領域公理（公理檔存在 + 結構非空）
+
+可選：
+  §3.2 條款相依、§3.4 角色 init 狀態、§3.6 失敗模式累積（self-instantiation 階段太早，可跳過）
+```
+
+模式 A / B 共用同一套檢查實作；差別僅在**強制性**（A 軟、B 硬）+ **檢查集**（A 全、B minimal）。
+
 ---
 
 ## 3. 檢查項
@@ -238,6 +261,8 @@ CI / pre-commit hook 可依退出碼 gate。
 | `core/structural-anti-fabrication.md` | health-report 含 stdout 區塊 |
 | `tools/init-spec.md` | init Phase 5 自動跑一次 doctor |
 | `core/escalation-protocol.md` | 偵測強化抽驗模式狀態 |
+| **`core/init-template.md §3.3.2 step 5`**（v0.5.10）| **self-instantiation 結尾強制呼叫點**（呼叫模式 B，本檔 §2.1）；不通則 self-instantiation 視為失敗 |
+| **`core/failure-modes.md F6`**（v0.5.10）| 跳過模式 B 直接簽名 = F6（未驗證即宣告就緒、轉嫁驗證負擔）|
 
 ---
 
@@ -249,7 +274,8 @@ CI / pre-commit hook 可依退出碼 gate。
 | v0.5.0 | 配置目錄合併（spec 對齊延遲到 v0.5.7） | ✅ |
 | v0.5.1 | §3.4 自我具象化狀態檢查段加入 | ✅ |
 | v0.5.7 | 曾落地為 python 工具 | ⛔ 後於 v0.5.9 移除 |
-| **v0.5.9** | **回歸純 spec** — framework 不附實作工具 | ✅ |
+| v0.5.9 | 回歸純 spec — framework 不附實作工具 | ✅ |
+| **v0.5.10** | **§2.1 呼叫模式拆分**（A 人工 / B self-instantiation 結尾強制驗證點）；§7 反向引用加 `init-template §3.3.2 step 5` + `failure-modes F6`。**觸發**：dogfood signal #4 於 YC_AIAgentCrew 接入（2026-04-28）實證；驗證從「使用者另一動作」內化到「self-instantiation 流程內必跑」 | ✅ |
 
 **實作模式**：採用方對 AI prompt「依本 spec 跑健康檢查」+ 順便自具象化 `/charter-doctor` slash command（依 `core/init-template.md §3.3` self-instantiation 精神）。
 

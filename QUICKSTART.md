@@ -12,10 +12,10 @@
 你需要：
 
 - [ ] git（任何版本）
-- [ ] Python 3.8+
-- [ ] PyYAML：`pip install pyyaml`
 - [ ] 至少一個 AI 工具（Claude Code / Gemini CLI / Cursor）
 - [ ] 你的專案 git working dir
+
+> charter v0.5.9 後是純規範框架 — 不需 Python / npm / 任何 runtime。所有工具動作由 AI 依 spec 自具象化執行。
 
 ---
 
@@ -94,8 +94,11 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 ```
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
 請接 Engineer 角色，依 ~/.agentcharter/core/init-template.md §3.3.2
-6 步驟自我具象化到 .claude/commands/engineer-init.md，並簽名
-agent-commons/roles/engineer/_role.md。完成後請我打 /engineer-init 驗證。
+7 步驟自我具象化到 .claude/commands/engineer-init.md。
+特別注意 step 5（v0.5.10 加）— 簽名前必跑 doctor schema 驗證；
+不通請告訴我（不要強行簽名 _role.md）。
+通過後簽名 agent-commons/roles/engineer/_role.md，
+回報「step 5 doctor schema 通過 0 errors」+ 「step 6 _role.md 簽名完成」。
 ```
 
 **對 Gemini CLI**：
@@ -103,22 +106,32 @@ agent-commons/roles/engineer/_role.md。完成後請我打 /engineer-init 驗證
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
 請接 PM 角色，依 ~/.agentcharter/roles/pm/gemini-cli.md（Gemini 的
 vendor spec）+ core/init-template.md §3.3.2 自我具象化到
-.gemini/commands/pm-init.toml，並簽名 agent-commons/roles/pm/_role.md。
-完成後請我打 /pm-init 驗證。
+.gemini/commands/pm-init.toml。
+特別注意 step 5（v0.5.10 加）— 簽名前必跑 doctor schema 驗證；
+不通請告訴我（不要強行簽名 _role.md）。
+通過後簽名 agent-commons/roles/pm/_role.md，
+回報「step 5 doctor schema 通過 0 errors」+ 「step 6 _role.md 簽名完成」。
 ```
 
 驗證：打 `/engineer-init` 或 `/pm-init`，AI 應輸出統一就緒回報格式（依 init-template §4）。
 
-### Step 5：跑 doctor 驗證（1 分鐘）
+> v0.5.10 加 step 5 schema 驗證強制點 — 動機：避免具象化階段未抓到的 schema 違規（如 mapping.yaml 缺 `common_memory_root` 必填）轉嫁給下個 AI 修補。對應 `failure-modes.md F6`。
 
-複製貼給你想要有 `/charter-doctor` 的 AI（doctor 不是必跑、跑一次就好；想要日後重用 slash command 的 AI 可順便具象化，多 AI 並存時通常給 PM 或 Engineer 其中一位即可）：
+### Step 5：人工二次確認 + 具象化 `/charter-doctor`（1 分鐘）
+
+> v0.5.10 起，Step 4 self-instantiation 結尾**已自動跑過 doctor schema 驗證**（強制點，依 `init-template §3.3.2 step 5`）。本步驟為人工二次確認 + 把 doctor 具象化為日後重用的 slash command。
+
+複製貼給你想要有 `/charter-doctor` 的 AI（多 AI 並存時通常給 PM 或 Engineer 其中一位即可）：
 
 ```
-請依 ~/.agentcharter/tools/doctor-spec.md 對本專案的 agent-commons/
-跑健康檢查，並順便具象化為 /charter-doctor slash command。
+請依 ~/.agentcharter/tools/doctor-spec.md §2.1 模式 A（人工健康檢查）
+對本專案的 agent-commons/ 跑一次完整檢查，並順便具象化為 /charter-doctor
+slash command 給未來重用。
 ```
 
 **期望**：`📊 Summary: 0 errors / 0 warnings / 0 infos`
+
+> **若 Step 5 卻有 errors**：表示 Step 4 中某個 AI 跳過了 self-instantiation step 5 強制驗證點 = 命中 `failure-modes F6`（未驗證即宣告就緒）。請要求該 AI 重做 self-instantiation。
 
 之後重用打 `/charter-doctor`。詳見 [TUTORIAL §11](./TUTORIAL.md#11-troubleshooting)。
 
@@ -156,7 +169,7 @@ PM 對 AI 下指令：
 | 想理解每步**為什麼**這樣做 | [TUTORIAL.md](./TUTORIAL.md) |
 | doctor 報錯不知道意思 | [TUTORIAL §11 troubleshooting](./TUTORIAL.md#11-troubleshooting) |
 | AI 不會自我具象化 | [TUTORIAL §5 AI onboarding](./TUTORIAL.md#5-ai-自我具象化) |
-| 想查某條款全文 | [core/](./core/) 19 個 .md |
+| 想查某條款全文 | [core/](./core/) 20 個 .md |
 | 想看真實採用案例 | [examples/cryptobot/mapping.md](./examples/cryptobot/mapping.md) |
 | AI 自己讀的版本 | [ADOPTION.md](./ADOPTION.md)（給 AI 看，密集格式） |
 | 概念總覽 | [README.md](./README.md) |

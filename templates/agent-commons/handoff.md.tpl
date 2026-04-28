@@ -149,4 +149,4 @@ Co-Authored-By: <co-author>
 | `<milestone-or-event-tag>` | 短語 tag，便於 grep |
 | `<Domain Axiom>` | 引用 domain-axioms.md 條款 |
 
-序號規則：`HANDOFF_<N>.md` 中 N 為連續遞增整數，從 1 開始。可用 `ls -1 handoffs/HANDOFF_*.md | sort -V | tail -1` 取最新。
+序號規則：`HANDOFF_<N>.md` 中 N 為連續遞增整數，從 1 開始。取最新可用 `ls -1 handoffs/HANDOFF_*.md | grep -E 'HANDOFF_[0-9]+\.md$' | sort -V | tail -1`（過濾 `HANDOFF_TEMPLATE.md` / `HANDOFF_DRAFT.md` 等非編號檔）。
