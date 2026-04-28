@@ -1,6 +1,6 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.7.0 release 收尾 — 公司專案接入失敗大批次條款修訂後）
+> **更新時間**：2026-04-28（v0.7.1 release 收尾 — 領域公理雙路徑 + condition mutability frontmatter scaffold 後）
 > **依循**：v1.0 公開化條件（GOVERNANCE §6）
 
 ---
@@ -110,6 +110,9 @@ framework 永久維持「**純規範**」位階。
 
 - **dogfood signal #6 候選 — 「條款層 sync 與文檔層 sync 不對等」**（v0.6.1 auditor 第一次實戰揭露 + v0.6.1 後 session 第二次同類觀察 — **v0.7.0 不處理、留下批次**）：v0.6.0 release commit 明示要 sync ADOPTION / TUTORIAL / README，但實際只動關鍵字而漏 numeric / version；v0.5.10 已撞過一次（19 → 20 條.md sync 漏）+ v0.6.0 又踩 + v0.6.1 後 templates 新檔範圍兜底含糊。**累積觀察 → 2 次同類** — 條款化門檻：再 1 次同類即觸發 `maintainer-discipline §2.2` 表精化評估（明列「採用方流程模板」 vs 「agent-commons 模板」兩類兜底規則）+ 新增 §3.4「文檔層 sync checklist」。**判斷**：v0.7.0 release 後跑 auditor 再驗證、若連 v0.7.0 也踩第三次 → 強制條款化
 - **新 dogfood signal #9 候選**（v0.7.0 auditor 抽驗時發現） — 「**release 收尾步驟（STATUS/NEXT 更新）放到 commit 之後 = 容易在 release 當下漏掉 signal 紀錄**」。本次 v0.7.0 auditor 抽驗第一次跑時就抓到 W001（STATUS / NEXT 缺 signal #7/#8 紀錄、雖然 P6 task 排程內），對應「signal 紀錄 vs 條款修訂的時間差」結構性問題。**判斷**：累積 ≥3 次同類再評估，候選方向：(a) `maintainer-discipline §2.2` 引用範圍表加「STATUS / NEXT signal sync」項；(b) release commit 前 checklist 加「STATUS §D + NEXT.md ⚪ 是否已對齊本 release 修訂的 signal」；(c) 把 P6 標準化到 release 流程的 P3 之後（即修完條款立刻寫 STATUS/NEXT、再走 auditor）
+- **dogfood signal #10 候選**（v0.7.0 release 半小時內 user 揭露）— 「**QUICKSTART Step 2-3 順序與 v0.7.0 Phase 5b 衝突**」：QUICKSTART Step 2 跑 init phase 1-5b（含 Phase 5b 物理存在校驗）→ 但 dbsdk.md 在 Step 3 才寫 → Phase 5b 第 7 項抓不到必 fail。**狀態**：v0.7.1 部分緩解（路徑 B 強制「校正前不啟動 init」即等同把 Step 3 隱性提前）；QUICKSTART Step 2-3 順序問題仍存（建議 v0.7.2 PATCH 把 Step 3 重新排序到 Step 2 之前）
+- **dogfood signal #11 候選 — condition mutability 三層分類**（v0.7.1 user 直接提議、frontmatter scaffold 已 ship、紀律本體留 v0.8.0）：user 公司接入痛點對話直接提議「IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE 三層」+「3-strike 刪除」+「user-initiated consolidation」。v0.7.1 ship 了 frontmatter scaffold（structural 預備）；**v0.8.0 待做**：(a) 新加 `core/condition-mutability.md` 條款（或擴 `domain-axiom-slot §4`）規範三層 mutability + 3-strike 刪除協議 + user-initiated consolidation 紀律 + AI 對 condition 的修訂權限分層；(b) `tools/doctor-spec.md §3.7` 加 mutability frontmatter 校驗。**判斷**：等公司接入 1-2 週、user 累積 1-2 次「想刪 / 想改 / 想統整」痛點 → 條款化
+- ~~**dogfood signal #12 候選 — 雙路徑（user 主筆 vs AI 代產）**~~ ✅ **v0.7.1 完成**：`core/domain-axiom-slot §3.3` 加雙路徑明文 + `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl` 新檔（路徑 B prompt）+ QUICKSTART Step 3 雙路徑說明 + frontmatter `Status: AI-DRAFTED`/`USER-RATIFIED` 二態紀律。**user 公司接入痛點對話直接提議 → 30 分鐘內 ship 條款化** — 對應 user 對話原話「成長中、想法碰撞」
 - AgentCharter 自身採用 framework 的邊界（dogfooding 何時、如何啟動）
 - 條款命名規範統一（kebab-case vs snake_case 一致性）
 - 多語系策略（當前繁中 + 英文小標題並陳）
@@ -130,6 +133,16 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.7.1 release（2026-04-28）— 領域公理雙路徑 + condition mutability frontmatter scaffold
+
+✅ **dogfood-driven hardening 第六循環 — user 直接 framing 最快 ship 案例**（30 分鐘內 ship）：
+- signal #12 候選 → 完整條款化（`domain-axiom-slot §3.3` 雙路徑明文 + 新檔 `domain-axioms-via-ai-draft-prompt.md.tpl` 路徑 B prompt + `_role.md.tpl` frontmatter Status 二態 + QUICKSTART Step 3 雙路徑）
+- signal #11 候選 → frontmatter scaffold 預備（紀律本體留 v0.8.0）
+
+✅ **連動更新**：三 preset yaml `charter_version: "0.7.0"` → `"0.7.1"` + ADOPTION/TUTORIAL/maintainer-load 升版號 + CHANGELOG v0.7.1 段
+
+✅ **設計層意義**：顯化「**user 對 AI 在採用方專案內的協作維度**」（與 `ai-vendor-onboarding` 規範的 framework 對 vendor 維度正交）— charter 設計軸新顯化第一個
 
 ### v0.7.0 release（2026-04-28）— 公司專案接入失敗大批次條款修訂
 

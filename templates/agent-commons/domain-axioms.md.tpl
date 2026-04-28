@@ -1,15 +1,27 @@
+---
+# v0.7.1 加：mutability frontmatter（紀律本體留 v0.8.0 完整條款化）
+status: USER-RATIFIED          # 或 AI-DRAFTED（路徑 B AI 代產草稿、待 user 校）/ DRAFT
+mutability_default: APPEND-ONLY # 或 IMMUTABLE-by-AI / FULL-MUTABLE（per-clause 可在條款層覆寫）
+created_by: user                # 或 ai-drafted（路徑 B）
+created_at: <YYYY-MM-DD>
+---
+
 # <PROJECT_NAME> 開發鐵律 (Domain Axioms)
 
 > **版本**：v<X.Y> · <YYYY-MM-DD> · <更新主題>
 > **位階**：本文件為本專案最高且唯一不可妥協之領域底線。違反任一條，系統將面臨直接 <核心後果，如「資金損失 / 安全事故 / 合規違反」>。
 > **口訣**：<n 字濃縮，便於記憶>
-> **修訂限制**：本文件**僅限增加**內容。若需執行「刪除」，必須向使用者連續確認三次並取得授權。
+> **修訂限制**：本文件**僅限增加**內容。若需執行「刪除」，必須向使用者連續確認三次並取得授權（對應 `core/domain-axiom-slot §3.2`；v0.7.1 frontmatter scaffold；v0.8.0 將升格為架構級 condition mutability 條款 — IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE 三層）。
 
 ---
 
 ## 🛑 第一梯 · <血鐵律名>（違反 = <直接後果>）
 
 ### ① <條款名>（<層級標籤，如 L1>）
+
+<!-- 可選：每條款 per-clause mutability 覆寫（v0.7.1 加；不寫則繼承 frontmatter mutability_default）
+mutability: IMMUTABLE-by-AI    # 或 APPEND-ONLY / FULL-MUTABLE
+-->
 
 <條款內容 — 簡潔陳述，可分多面向：計算面 / 解析面 / 操作面 / ...>
 
@@ -79,3 +91,19 @@
 依 `mapping.yaml.domain_axioms.primary` 指向本檔位置；通常放在 `<common-memory-root>/protocols/` 下。
 
 → **撰寫紀律的最低要求**（必含後果段、可驗證、有編號等）由 `core/domain-axiom-slot.md §3` 規範；本檔的「撰寫紀律」段是其建議實作。違反 → `/charter-doctor` 報錯（依 `domain-axiom-slot.md §6` 嚴重度分級）。
+
+### 初次生成路徑（v0.7.1 加，雙路徑）
+
+依 `core/domain-axiom-slot.md §3.3`：
+
+| 路徑 | 動作 | 適用 |
+|---|---|---|
+| **A. user 主筆** | user 親自寫 → 預設 `Status: USER-RATIFIED` + `created_by: user` | user 對領域底線有明確心智模型；典型場景 |
+| **B. AI 讀 codebase 代產草稿 + user 校** | user 邀請 AI 讀既有 codebase 推斷紀律 → 寫 draft → 預設 `Status: AI-DRAFTED` + `created_by: ai-drafted` → user 校過後親自改為 `USER-RATIFIED` | user 想低門檻起手 / AI 有 codebase context 比通用 stub 準 |
+
+**路徑 B 觸發 prompt 範本**：見 `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`。
+
+**路徑 B 紀律**（對齊 v0.7.0 PROVISIONAL/ACTIVE 二態 + multi-role-tracking §3.4.4）：
+- AI 寫的草稿**不能自己升 `USER-RATIFIED`** — 必須 user 親自改
+- 草稿每條附「我從哪推斷的」（檔案路徑或 grep 結果）— 給 user 校時知道推斷依據
+- AI 不可編造（只顯化 codebase 真實紀律 / 找不到就少寫幾條）

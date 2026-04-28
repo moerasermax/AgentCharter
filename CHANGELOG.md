@@ -6,7 +6,94 @@
 
 ## [Unreleased]
 
-（空 — v0.7.0 已釋出；下批次未開）
+（空 — v0.7.1 已釋出；下批次未開）
+
+---
+
+## [0.7.1] — 2026-04-28
+
+> **PATCH release** — 領域公理雙路徑明文 + condition mutability frontmatter scaffold。對應 user 在公司接入痛點對話直接提議的兩個設計（dogfood signal #11 + #12 候選 — user 跳過累積閾值直接條款化、同源 v0.5.8 maintainer-discipline 處理）。
+>
+> **動機**：v0.7.0 release 半小時後，user 公司接入卡在「dbsdk.md 不知怎麼寫」痛點。對話過程 user 直接提議兩個設計：(1) condition mutability 三層分類（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE + 3-strike 刪除）、(2) 初次領域公理雙路徑（user 主筆 vs AI 讀 codebase 代產草稿 + user 校）。兩者擊中 charter 既有設計 gap — 前者已隱性存在於 `domain-axiom-slot §3.2` + `domain-axioms.md.tpl` line 7 但未顯化；後者在 `tools/scan-spec.md`（v0.4 起）已有同源精神但領域公理層未明示。
+>
+> **本 release scope**：顯化雙路徑 + frontmatter scaffold；condition mutability 紀律本體（3-strike / consolidation 機制）留 v0.8.0 累積真實 use case 後條款化。
+
+### Added — 雙路徑明文（dogfood signal #12 候選條款化）
+
+#### `core/domain-axiom-slot.md §3.3`
+
+新增「初次領域公理生成路徑（雙路徑明文）」段：
+- **路徑 A**：user 主筆（既有 default）→ frontmatter `status: USER-RATIFIED` + `created_by: user`
+- **路徑 B**：AI 讀 codebase 代產草稿 + user 校 → frontmatter `status: AI-DRAFTED` + `created_by: ai-drafted`
+- 路徑 B 紀律 4 項：AI 不可自升 Status / 每條附推斷依據 / 不可編造 / 校正前不啟動 init
+- 與 `ai-vendor-onboarding` 區別說明（framework 對 vendor vs user 對 AI 兩個維度正交）
+
+#### `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（新檔）
+
+路徑 B 觸發 prompt 範本：
+- 完整 prompt（含 codebase 訊號源 6 項 + 紀律 5 項 + 輸出格式範例）
+- user 校正 checklist（6 項：真實性 / 適用性 / 可驗證性 / 後果段 / 編號 / 缺漏）
+- 與既有條款關係表（domain-axiom-slot §3.3 / multi-role-tracking §3.4.4 / scan-spec / ai-vendor-onboarding）
+
+### Added — frontmatter scaffold（dogfood signal #11 候選預備）
+
+#### `templates/agent-commons/domain-axioms.md.tpl`
+
+加 frontmatter scaffold：
+```yaml
+---
+status: USER-RATIFIED          # 或 AI-DRAFTED / DRAFT
+mutability_default: APPEND-ONLY # 或 IMMUTABLE-by-AI / FULL-MUTABLE
+created_by: user                # 或 ai-drafted
+created_at: <YYYY-MM-DD>
+---
+```
+
+每條鐵律可加 per-clause mutability 覆寫（HTML 註解格式）：
+```html
+<!-- mutability: IMMUTABLE-by-AI -->
+```
+
+condition mutability 紀律本體（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE 三層 + 3-strike 刪除 + user-initiated consolidation）留 v0.8.0 完整條款化（待累積 1-2 次採用方真實 use case）。
+
+### Changed — 連動更新
+
+- `QUICKSTART.md` Step 3：加雙路徑說明（A / B）+ 路徑 B prompt 連結 + 哪條路徑選擇表
+- `tools/profiles/{minimal,standard,strict}.yaml`：`charter_version: "0.7.0"` → `"0.7.1"`
+- `ADOPTION.md` line 5：charter v0.7.0 → v0.7.1
+- `TUTORIAL.md` line 6：charter v0.7.0 → v0.7.1
+- `.claude/commands/maintainer-load.md`：當前狀態 v0.7.0 → v0.7.1 + 加領域公理雙路徑說明
+
+### Triggered — user 直接提議的兩個 dogfood signal
+
+| Signal | user 提議 | 本 release 處理 | 留 v0.8.0 |
+|---|---|---|---|
+| **#11 候選** | condition mutability 三層分類 + 3-strike 刪除 + user-initiated consolidation | frontmatter scaffold（structural 預備）| 紀律本體（3-strike / consolidation 機制 / 升級協議）|
+| **#12 候選** | 初次領域公理雙路徑（user 主筆 vs AI 代產） | 雙路徑明文（§3.3）+ 路徑 B prompt 範本 + frontmatter `Status: AI-DRAFTED` + 校正紀律 | — |
+
+兩 signal 同源精神：**charter 應顯化 user 對 AI 在採用方專案內的協作維度**（與 `ai-vendor-onboarding` 規範的 framework 對 vendor 維度正交）。
+
+### 採用方影響
+
+- ✅ **完全向後相容**：純擴展 / 顯化既有設計、不破壞既有 v0.7.0 採用方
+- ✅ **既有 user 主筆專案**：`domain-axioms.md` 沒 frontmatter 不影響運作；可後補（不溯及）
+- 🟢 **新採用方推薦**：採用 v0.7.1 後第一份 axiom 檔含 frontmatter；路徑 B 立刻可用
+- 既有採用方升 v0.7.0 → v0.7.1：只改 profile.yaml `charter_version: "0.7.0"` → `"0.7.1"` 即可
+
+### dogfood-driven hardening 第六循環
+
+第一循環 v0.5.10 = signal #4 條款化
+第二循環 v0.6.0 = signal #5 條款化
+第三循環 v0.6.0 = 邀請制 pattern 顯性化
+第四循環 v0.6.1 = auditor 第一次實戰
+第五循環 v0.7.0 = 公司接入失敗大批次封閉（5 signals）
+**第六循環 v0.7.1 = user 公司接入痛點對話直接提議 2 個設計（30 分鐘內 ship）— 證明 charter dogfood-driven hardening 哲學在「user 直接 framing」場景的回應速度**
+
+→ 對應 user 對話原話：「成長中、想法碰撞」 — charter 自身演化的最佳體現。
+
+### Git tag
+
+- `v0.7.1`（本 commit）
 
 ---
 

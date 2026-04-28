@@ -71,6 +71,43 @@
 | **每條鐵律引用 IM / event 章節** | 紀律來自實證事件而非空想；引用是審計痕跡 |
 | **「已落實」段標明完成事件 ID** | 給未來 AI 看到「此鐵律已內化進工具 / hook」，避免重複實作 |
 
+### 3.3 初次領域公理生成路徑（v0.7.1 加，雙路徑明文）
+
+> **動機**：dogfood signal #12 候選 — user 直接提議「初次要請 AI 代產還是要自己手寫變成一種選擇」（公司接入痛點對話 2026-04-28）。charter `tools/scan-spec.md`（v0.4 起）早就有「AI 讀 codebase 推斷」設計精神，但**領域公理層**沒明示雙路徑 — 導致 user 第一次接入時誤以為「必須 user 主筆從零寫」、心理門檻高。本段顯化雙路徑紀律。
+
+採用方初次寫領域公理檔（`mapping.yaml.domain_axioms.primary` 指向）有兩條合法路徑：
+
+| 路徑 | 動作 | 適用 | 預設 frontmatter |
+|---|---|---|---|
+| **A. user 主筆**（既有預設） | user 親自寫每條鐵律 | user 對領域底線有明確心智模型；典型場景 | `status: USER-RATIFIED` + `created_by: user` |
+| **B. AI 讀 codebase 代產草稿 + user 校** | user 邀請 AI 讀既有 codebase、推斷隱含工程紀律、寫 draft；user 親自校正並升 Status | user 想低門檻起手 / 既有 codebase 已有隱含紀律可被推斷 / AI 有 codebase context 比通用 stub 準 | `status: AI-DRAFTED` + `created_by: ai-drafted` |
+
+**路徑 B 紀律**（對齊 v0.7.0 PROVISIONAL/ACTIVE 二態 + multi-role-tracking §3.4.4）：
+
+| 紀律 | 細節 |
+|---|---|
+| **AI 不可自升 Status** | AI 寫的 draft `Status: AI-DRAFTED`；升 `USER-RATIFIED` 必須 user **親自**改 frontmatter；違反 = F1（假宣告就位）|
+| **每條附推斷依據** | AI 寫的鐵律每條須附「我從哪推斷的」（檔案路徑 + 行號 / grep 結果 / commit hash）— 給 user 校正時知道推斷依據 |
+| **不可編造** | AI 只顯化「codebase 真實存在的紀律」；找不到 = 少寫幾條、不要湊數；對應 `failure-modes F3` 防呆 |
+| **校正前不啟動 init** | user 校過 axiom 檔（升 RATIFIED）才繼續 charter-init Phase 1-5b；對應 v0.7.0 Phase 5b 物理存在校驗的精神延伸 |
+
+**對應載體**：
+
+| 載體 | 內容 |
+|---|---|
+| `templates/agent-commons/domain-axioms.md.tpl` | 含 frontmatter scaffold（status / mutability_default / created_by / created_at）|
+| `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl` | 路徑 B 觸發 prompt 範本（v0.7.1 新加）|
+| `QUICKSTART.md Step 3` | 雙路徑說明 + 路徑 B prompt 連結 |
+
+**與 `ai-vendor-onboarding.md` 的區別**：
+
+| 條款 | 規範對象 |
+|---|---|
+| `ai-vendor-onboarding.md`（v0.6.0）| **framework 對 vendor**：charter 不代寫 vendor 層 |
+| 本 §3.3（v0.7.1）| **user 對 AI**：採用方專案內、user 邀請 AI 讀自己 codebase 寫領域公理 draft |
+
+兩者**正交**：A3 公理「專案 ⊥ 框架」雙向 — framework 不知領域差異 / 但 framework **不該管 user 跟 AI 在採用方專案內怎麼協作**。
+
 ---
 
 ## 4. 與其他配置的關係
@@ -148,4 +185,19 @@
 
 ## 8. 變更歷史
 
-- **v0.1（自 v0.5.5 引入）** — 初版。把 `templates/agent-commons/domain-axioms.md.tpl` 的撰寫紀律提煉至 core 層，並補完 §2 衝突優先序的理論依據、§6 /charter-doctor 違反處置嚴重度分級。
+### v0.2（自 v0.7.1 起）
+
+**動作**：新增 §3.3「初次領域公理生成路徑（雙路徑明文）」段 — 顯化路徑 A（user 主筆）vs 路徑 B（AI 讀 codebase 代產草稿 + user 校）；附 `AI-DRAFTED` / `USER-RATIFIED` Status 二態紀律 + 路徑 B 必含「推斷依據」紀律 + 不可自升 Status 紀律。
+
+**觸發**：dogfood signal #12 候選 — user 公司接入痛點對話 2026-04-28 直接提議「初次要請 AI 代產還是要自己手寫變成一種選擇」。同對話 user 第一個提議「condition mutability 三層」(IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE + 3-strike 刪除) 觸發 dogfood signal #11，本 v0.7.1 同步 ship frontmatter scaffold 預備（紀律本體留 v0.8.0 完整條款化）。
+
+**修訂類型**：PATCH — 顯化既有設計（charter `scan-spec` v0.4 起就有「AI 讀 codebase 推斷」精神 / 本檔 §3.2 「修訂只增不刪 + 三重授權」原本就有）；不破壞既有採用方（既有 user 主筆專案 frontmatter 可後補）。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `templates/agent-commons/domain-axioms.md.tpl`（v0.7.1 加 frontmatter scaffold + per-clause mutability HTML 註解 + 撰寫指南雙路徑段）
+- `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（v0.7.1 新檔 — 路徑 B 觸發 prompt 範本）
+- `QUICKSTART.md Step 3`（v0.7.1 加雙路徑說明）
+
+### v0.1（自 v0.5.5 引入）
+
+初版。把 `templates/agent-commons/domain-axioms.md.tpl` 的撰寫紀律提煉至 core 層，並補完 §2 衝突優先序的理論依據、§6 /charter-doctor 違反處置嚴重度分級。

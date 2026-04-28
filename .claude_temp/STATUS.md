@@ -1,19 +1,20 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-04-28（台灣時間，post-v0.7.0 release 收尾 snapshot）
-> **當前版本**：v0.7.0（公司專案接入失敗大批次條款修訂 — 5 個 dogfood signal 一次處理 / 採用方半邊「自抽自驗」結構性盲區封閉 / **dogfood-driven hardening 第五循環**）
-> **Working tree 狀態**：v0.7.0 修訂完成、auditor 抽驗通過（ERROR 0 / WARN 3 / INFO 2 — W001+W003 已在 P6 收尾、W002 已修補）；**待 commit + tag + push**（含 v0.6.1 後 4 處未 commit 異動已併入本批次）
+> **更新時間**：2026-04-28（台灣時間，post-v0.7.1 release 收尾 snapshot）
+> **當前版本**：v0.7.1（領域公理雙路徑明文 + condition mutability frontmatter scaffold — user 公司接入痛點對話 30 分鐘內 ship 的 PATCH / **dogfood-driven hardening 第六循環**）
+> **Working tree 狀態**：v0.7.1 修訂完成、auditor 抽驗（簡版）擬跑；**待 commit + tag + push**
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
-> **最後 checkpoint**：本檔為 v0.7.0 release 前 snapshot（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
-> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` (待打)
+> **最後 checkpoint**：本檔為 v0.7.1 release 前 snapshot
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` (待打)
 
 ---
 
-## Version 軌跡（最新 9 次 commit）
+## Version 軌跡（最新 10 次 commit）
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| **v0.7.0** | （待 commit）| **MINOR** — 公司專案接入失敗大批次條款修訂。一次取得 5 個 dogfood signal（#3 結構性實證 + #4 第三次同類 + #5 第二次完整實證 + #7 候選新增 + #8 候選新增）。**dogfood-driven hardening 第五循環** — 採用方半邊「自抽自驗」結構性盲區封閉（init-spec Phase 5b + validator §3.6）對稱於 v0.6.0 的 maintainer 半邊（auditor）。連動 5 條款 + 3 spec + 三 preset yaml + _role.md.tpl + 4 文檔（CHANGELOG/ADOPTION/TUTORIAL/QUICKSTART/maintainer-load）+ 1 個新檔（templates/role-invocation-prompt.md.tpl）併入 |
+| **v0.7.1** | （待 commit）| **PATCH** — 領域公理雙路徑明文 + condition mutability frontmatter scaffold。對應 user 公司接入痛點對話 2026-04-28 直接提議 2 個設計（dogfood signal #11 condition mutability 三層 / signal #12 雙路徑），30 分鐘內 ship。修 `core/domain-axiom-slot §3.3` + `templates/agent-commons/domain-axioms.md.tpl` frontmatter + 新檔 `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（路徑 B prompt）+ QUICKSTART Step 3 雙路徑 + 三 preset 升 0.7.1 + 文檔升版號。**condition mutability 紀律本體（3-strike / consolidation 機制）留 v0.8.0**。**dogfood-driven hardening 第六循環**（user 直接 framing 的最快 ship 案例）|
+| **v0.7.0** | `bcbf964` | **MINOR** — 公司專案接入失敗大批次條款修訂。一次取得 5 個 dogfood signal（#3 結構性實證 + #4 第三次同類 + #5 第二次完整實證 + #7 候選新增 + #8 候選新增）。**dogfood-driven hardening 第五循環** — 採用方半邊「自抽自驗」結構性盲區封閉（init-spec Phase 5b + validator §3.6）對稱於 v0.6.0 的 maintainer 半邊（auditor）。連動 5 條款 + 3 spec + 三 preset yaml + _role.md.tpl + 4 文檔（CHANGELOG/ADOPTION/TUTORIAL/QUICKSTART/maintainer-load）+ 1 個新檔（templates/role-invocation-prompt.md.tpl）併入 |
 | **v0.6.1** | `72caaee` | **PATCH** — 文檔層 sync 修補（v0.6.0 release 漏的 ADOPTION/TUTORIAL/README/maintainer-load/charter-config schema 範例同步點）。**auditor 第一次實戰** spawn fresh-context sub-agent 跑 cross-reference + spec sync audit（dogfood-driven hardening 第四循環）抓到 3 ERROR + 4 WARN，本 release 修 3 ERROR + 2 WARN。揭露**dogfood signal #6 候選**「條款層 sync 與文檔層 sync 不對等」。**v0.6.1 是公司 production 接入用的 stable 版本（雖然第一次接入仍失敗、觸發 v0.7.0）** |
 | v0.6.0 | `9493814` | **大工程批次第二階段**：架構擴張 + LLM 行為紀律 gap — 新增 `core/ai-vendor-onboarding.md` 邀請制條款（架構級概念第 10 個）+ 新增 `roles/auditor/_spec.md` maintainer-only 角色概念層 + 新增 `roles/validator/_spec.md` 採用方角色概念層 + PM 漸進 deprecate 抽驗職責（v0.x 並存 / v1.0 接管）+ dogfood signal #5 條款化（role-separation §3.5 繞路禁令 / multi-role-tracking §3.4 身份穩定承諾 / role-conflict-resolution §5.4 角色切換決策權屬 user / pm/gemini-cli §3.5 sub-agent 跨界禁令補段，架構級概念第 11 個）。條款 20 → 21、角色 2 → 4 |
 | v0.5.10 | `6dd3eda` | **大工程批次第一階段**：MINOR self-instantiation 結尾自帶 doctor schema 驗證（六步驟 → 七步驟 + F6 新增）+ PATCH HANDOFF 排序 wording + PATCH spec-sync 修補（v0.5.8/v0.5.9 release 漏：preset charter_version 跳升 + 19→20 條 .md + 移除 Python 前置）+ 併入 [Unreleased] QUICKSTART 多 AI 提醒。對應 dogfood signal #4 YC_AIAgentCrew 實證 |
@@ -180,6 +181,7 @@ project-root/
 | v0.6.0 | **架構擴張 + dogfood-driven hardening 第二、三循環**：邀請制原則條款化（隱性 pattern 顯性化 — Gemini PM 接入歷程的形式化）+ 兩個新角色誕生（auditor maintainer-only / validator 採用方）+ dogfood signal #5 條款化（LLM 找路徑繞過角色約束三層 gap 封閉）。架構級概念 9 → **11**（新增「角色擴展邀請制 / vendor 不代寫」+「角色身份穩定 / 繞路禁令」）|
 | **v0.6.1** | **dogfood-driven hardening 第四循環 — auditor 第一次實戰**：spawn fresh-context sub-agent 對 charter v0.6.0 自身跑 cross-reference + spec sync audit，抓到 3 ERROR + 4 WARN（揭露 v0.6.0 文檔層 sync 不徹底）。本 release 修 3 ERROR + 2 WARN，揭露 dogfood signal #6 候選「條款層 sync 與文檔層 sync 不對等」。**v0.6.0 引入 auditor 的設計價值在 v0.6.1 release 即實證** — auditor 抓到 maintainer 自己漏的東西，封閉「自抽自驗」結構性盲區 |
 | **v0.7.0** | **dogfood-driven hardening 第五循環 — 公司接入失敗大批次封閉**：v0.6.1 後 user 派 Gemini PM 跑「單一 prompt 跑完 init-spec + self-instantiation」，回報「成功」但實際 7 ERROR + 5 WARN 結構性失敗（dbsdk.md 沒建 / PM 自激活 / agent-commons 結構錯位 / F6 漏啟用 / charter-init.toml 寫死絕對路徑等）。一次取得 5 個 dogfood signal（#3 結構性實證 + #4 第三次同類 + #5 第二次完整實證 + #7 候選新增 + #8 候選新增）→ 大批次條款修訂。**核心設計突破**：採用方半邊「自抽自驗」結構性盲區封閉（Phase 5b + validator §3.6）對稱於 v0.6.0 的 maintainer 半邊（auditor）→ 架構級概念第 12 個誕生。auditor 抽驗本 release：ERROR 0 / WARN 3（W001+W003 在 P6 收尾、W002 已修補）/ INFO 2 — 通過 |
+| **v0.7.1** | **dogfood-driven hardening 第六循環 — user 直接 framing 最快 ship 案例**：v0.7.0 release 半小時內、user 公司接入卡在「dbsdk.md 不知怎麼寫」痛點對話、user 直接提議 2 個設計（condition mutability 三層 / 雙路徑 user-vs-AI 代產），30 分鐘內 ship v0.7.1 PATCH。本 release 顯化「user 對 AI 在採用方專案內的協作維度」（與 ai-vendor-onboarding 規範的 framework 對 vendor 維度正交）。**condition mutability 紀律本體（3-strike / consolidation 機制）留 v0.8.0**。對應 user 對話原話「成長中、想法碰撞」 — charter 自身演化最佳體現 |
 
 ### B. 十二個架構級概念已釐清
 

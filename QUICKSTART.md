@@ -75,15 +75,28 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 
 **preset 選哪個？** 不確定 → `standard`。詳見 [TUTORIAL §3.3](./TUTORIAL.md#33-preset-選哪個)。
 
-### Step 3：寫領域公理（10 分鐘）
+### Step 3：寫領域公理（10 分鐘 — 兩條路徑擇一）
 
-編輯 `agent-commons/protocols/<YOUR_AXIOM>.md`（init 已複製模板）。
+> ⚠️ **v0.7.1 加雙路徑**：依 [`core/domain-axiom-slot §3.3`](./core/domain-axiom-slot.md)，user 初次寫領域公理可選兩條合法路徑。
 
-**最低要求**（依 [domain-axiom-slot §3.1](./core/domain-axiom-slot.md)）：
+#### 路徑 A：user 主筆（既有 default）
+
+user 親自寫每條鐵律。最低要求：
 
 - 每條鐵律必含「**後果**」段（具體損害，禁模糊「可能會出錯」）
 - 條款內容**可被驗證**（grep / runtime probe；「應該寫得好」不可驗）
 - 有獨立**編號**（便於跨檔引用）
+
+frontmatter（依 [`templates/agent-commons/domain-axioms.md.tpl`](./templates/agent-commons/domain-axioms.md.tpl)）：
+
+```yaml
+---
+status: USER-RATIFIED
+mutability_default: APPEND-ONLY
+created_by: user
+created_at: 2026-04-28
+---
+```
 
 **範例**（金融專案的金額處理鐵律）：
 
@@ -94,6 +107,30 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 
 > **後果**：浮點累積誤差 → 對帳出現 ¢ 級漂移 → 合規 fine
 ```
+
+#### 路徑 B：AI 讀 codebase 代產草稿 + user 校（v0.7.1 加）
+
+適用：user 想低門檻起手 / 既有 codebase 已有隱含工程紀律。
+
+1. 用 [`templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`](./templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl) 內的 prompt 範本貼給你的 AI（Claude / Gemini / Cursor）
+2. AI 讀 codebase 推斷紀律 → 寫 `agent-commons/protocols/<axiom>.md` 草稿
+   - frontmatter 預設 `status: AI-DRAFTED` + `created_by: ai-drafted`
+   - 每條鐵律附「推斷依據」段（檔案路徑 + grep 結果）
+3. **user 親自校正**（不能讓 AI 升 Status — 對應 `multi-role-tracking §3.4.4`）：
+   - 看 AI 推斷 vs 實際 codebase
+   - 改 / 刪 / 新增條款
+   - frontmatter `status: AI-DRAFTED` → `USER-RATIFIED`
+   - frontmatter `created_by: ai-drafted` → `user-ratified-from-ai-draft`（保留審計痕跡）
+4. **user 校完（升 USER-RATIFIED）才能跑 Step 4（charter init Phase 1-5b）— 不可在 AI-DRAFTED 狀態啟動 init**（對應 v0.7.0 Phase 5b 物理存在校驗 + multi-role-tracking §3.4.4 user explicit 授權精神）
+
+#### 哪條路徑選？
+
+| 你的情境 | 推薦路徑 |
+|---|---|
+| 你對領域底線有明確心智模型 | A |
+| 你說「邊做邊補、不確定有什麼鐵律」 | B（AI 讀 codebase 起手）|
+| 既有 codebase 大、有 README / docs / 大量 invariant | B（AI 能挖出 user 沒意識到的紀律）|
+| 早期 startup / 探索期專案 | B 起手（→ 演化）+ META 鐵律（依 `core/domain-axiom-slot §3.1` 撰寫紀律最低要求只需 1 條 + 後果 + 可驗 + 編號）|
 
 ### Step 4：通知 AI 自我具象化（5 分鐘）
 
