@@ -223,14 +223,16 @@ project-root/
 ### 已完成里程碑
 
 ✅ 核心條款覆蓋率盤點 — 全部完成（v0.5.2〜v0.5.6 共 5 條，commit `bfef9b0`）
-✅ **YC_AIAgentCrew 接入完成（2026-04-28，第二個非 CryptoBot 採用案例）** — A3「專案 ⊥ 框架」公理首次跨領域實證 + v0.5.9 純規範框架外部 dogfood + dogfood signal #4 預測達標 + 雙 AI 雙角色 self-instantiation 全部跑通。對應 NEXT.md 🔴 §4 已完結。
+✅ **YC_AIAgentCrew 接入完成（2026-04-28）** — 第二個非 CryptoBot 採用案例
+✅ **大工程批次三段式 release 完成（2026-04-28）** — v0.5.10 (`6dd3eda`) → v0.6.0 (`9493814`) → v0.6.1 (`72caaee`)；含 dogfood-driven hardening 四循環（signal #4 / signal #5 / 邀請制 pattern / auditor 第一次實戰）；全部 push 到 GitHub remote
+✅ **auditor 角色第一次實戰落地（v0.6.1）** — fresh-context sub-agent 跑 cross-reference + spec sync audit 抓出 v0.6.0 文檔層 sync 漏，**v0.6.0 引入 auditor 的設計價值即時驗證**
 
-### 下一階段焦點（依 NEXT.md 高優先序）
+### 下一階段焦點
 
-1. ~~`roles/pm/gemini-cli.md` 提交~~ ✅ **2026-04-27 完成**（Gemini Round 1 + Round 2 + Claude 校正）— PM × Gemini 是首份 vendor spec 雙層結構範本（概念層 / 實作層 / 跨 AI 對應），對齊 A1「角色 ⊥ AI」公理
-2. **v0.5+ Reference Impl** — Phase 1（charter-doctor.py）已完成；Phase 2（charter-upgrade.py）等 v0.6+ 第一次 BREAKING 升級時實證；Phase 3-4（init / scan）訊號驅動才做
-3. **第二個非 CryptoBot example**（A3「專案 ⊥ 框架」公理實證）— 等實際採用方出現
-4. **roles/engineer Gemini vendor spec / Claude PM vendor spec**（A1 公理進一步覆蓋）— 視需求
+1. **🔴 公司專案接入準備中** — 使用者準備接入 production 專案、要求「最穩定」。等使用者回 5 個問題（領域 / 風險 / AI 配置 / 既有結構 / 保守度）→ 產出 production-ready 接入計畫 5 段。詳見 `.claude_temp/COMPANY-ONBOARDING-DRAFT.md`
+2. **未解 thread**：使用者提到「另一個專案接入很棒!!!」但沒展開哪個專案 / 哪面向 — 下次可詢問
+3. **PM gemini-cli.md vendor spec** ✅ 完成（2026-04-27）
+4. **roles/engineer Gemini vendor spec / Claude PM vendor spec / auditor + validator vendor 層**（A1 公理進一步覆蓋；走 `ai-vendor-onboarding §3` 邀請制）— 視需求
 
 ### 跨 session 接班指引
 
@@ -242,3 +244,4 @@ project-root/
 - 若議題涉及條款修訂 → 同步檢查 charter-config.md 相依表 / 各 profile yaml / 反向引用 / CHANGELOG（依 maintainer-discipline §2.2 引用範圍）
 - 若議題涉及版本升級 → 走 `versioning-migration.md §3` 7 步流程
 - **若議題涉及第二採用案例（charter 視覺化版本）** → 讀 `.claude_temp/CHARTER-VIZ-ONBOARDING.md` 對齊接入脈絡與 dogfood signal 觀察
+- **若議題涉及公司專案接入** → 讀 `.claude_temp/COMPANY-ONBOARDING-DRAFT.md` 對齊當前準備狀態與待 user 回應的 5 個問題；user 回答後依 DRAFT §「user 回答後該產出的接入計畫」直接產出 5 段
