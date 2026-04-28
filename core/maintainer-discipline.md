@@ -88,9 +88,11 @@ framework 維護者**修改 charter repo 內** `core/` / `templates/` / `tools/*
 
 對應條款條文的**強制力**（自我約束 + 工具輔助，無外部強制）：
 
-### 3.1 工具層：spec-driven self-check（**由 AI 自具象化執行**）
+### 3.1 工具層：spec-driven self-check（**由 auditor 角色執行**）
 
-依 `core/init-template.md §3.3` self-instantiation 精神，charter 維護者可請 AI 依以下 prompt 自具象化 `/charter-self-check` slash command：
+> **v0.6.0 演化**：原「由 AI 自具象化執行」（無明確角色載體）改為「**由 auditor 角色執行**」 — 對應 `roles/auditor/_spec.md`（v0.6.0 新增、maintainer-only 位階）。auditor 透過 fresh-context sub-agent / 不同 session / 邀請其他 vendor 達成「他抽」屬性（避免自抽自驗）。
+
+依 `core/init-template.md §3.3` self-instantiation 精神 + `core/ai-vendor-onboarding.md §3` 邀請制流程，charter 維護者可請已具象化 auditor 角色的 AI 跑以下檢查項，或 prompt 自具象化 `/charter-self-check` slash command：
 
 ```
 請依以下檢查項對 charter repo 自身做一致性檢查，並順便具象化為

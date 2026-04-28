@@ -655,7 +655,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 | 想找什麼 | 去哪 |
 |---|---|
-| 條款全文 | [core/](./core/)（20 個 .md） |
+| 條款全文 | [core/](./core/)（21 個 .md） |
 | 模板（capsule / handoff / IM / nextwork / domain-axioms / _role）| [templates/agent-commons/](./templates/agent-commons/) |
 | 真實採用案例 | [examples/cryptobot/mapping.md](./examples/cryptobot/mapping.md) |
 | AI 視角的採用指南 | [ADOPTION.md](./ADOPTION.md) |

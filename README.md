@@ -64,7 +64,8 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移職責 + 接班方接收職責 + 強化抽驗狀態傳遞 |
 | `working-stack-discipline.md` | DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
 | `maintainer-discipline.md` | **framework 維護者紀律**（位階特殊：對採用方無關，三 preset 預設關）— spec sync check + DRAFT 紀律對 maintainer 也適用 |
-| `init-template.md` | Role Init Mandate — 四大職責 + 多 AI 具象化 + AI 自我具象化機制 |
+| `init-template.md` | Role Init Mandate — 四大職責 + 多 AI 具象化 + AI 自我具象化機制（v0.5.10：七步驟含 step 5 schema 驗證強制點）|
+| `ai-vendor-onboarding.md` | **新 vendor / 新角色接入「邀請制」四步驟**（v0.6.0）— 禁 charter 預先寫死 vendor 層；charter 寫概念層 → 邀請 vendor 寫 vendor 層 → 既有 vendor 校正 regression → maintainer 簽收 |
 
 ---
 
@@ -75,8 +76,10 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 - `<ai-vendor>.md` — 該 AI 在扮演此角色時的執行細節（如 Claude 用 hook，Gemini 用主動讀檔）
 
 當前提供：
-- `roles/engineer/claude-code.md` — Claude Code 工程師實作（v0.1 reference impl）
-- `roles/pm/gemini-cli.md` — Gemini CLI PM 實作（v1.0，從 CryptoBot S70 事件沉澱，三層結構範本）
+- `roles/engineer/_spec.md` + `roles/engineer/claude-code.md` — Engineer 概念層 + Claude Code 工程師實作（v0.1 reference impl）
+- `roles/pm/_spec.md` + `roles/pm/gemini-cli.md` — PM 概念層（v0.6.0 加 §3.3/§3.4 漸進 deprecate 抽驗）+ Gemini CLI PM 實作（v1.1，含 §3.5 sub-agent 跨界禁令）
+- `roles/validator/_spec.md` — **新採用方角色（v0.6.0 概念層）** — 抽驗權專職載體；漸進接管 PM 抽驗職責；vendor 層待邀請制流程
+- `roles/auditor/_spec.md` — **新 maintainer-only 角色（v0.6.0 概念層）** — charter repo 自身一致性抽驗；對應 `maintainer-discipline §3.1` 執行載體；vendor 層待邀請制流程
 
 ---
 

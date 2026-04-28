@@ -1,9 +1,9 @@
 # PM × Gemini CLI — Implementation
 
-> **狀態**：v1.0
+> **狀態**：v1.1（v0.6.0 加 §3 繞路執行傾向 row + §3.5 sub-agent 跨界禁令段）
 > **基於**：`roles/pm/_spec.md`
 > **AI**：Google Gemini CLI（v1.x）
-> **沉澱來源**：CryptoBot S70 PnL 誤判事件後 Gemini PM 親自提交（Round 1）+ 三層結構重整（Round 2）+ 橋接層校正
+> **沉澱來源**：CryptoBot S70 PnL 誤判事件後 Gemini PM 親自提交（Round 1）+ 三層結構重整（Round 2）+ 橋接層校正 + YC_AIAgentCrew 2026-04-28 dogfood signal #5 補強
 
 本檔以「概念層 / Gemini 實作 / 跨 AI 對應」三層結構撰寫，目的不只給 Gemini 自己用，更作為**未來扮演 PM 的任何 AI 的參考範本**（對應 charter A1 公理「角色 ⊥ AI」）。
 
@@ -103,6 +103,41 @@
 | 紀律疲勞（Discipline Decay）| Context 視窗內早期 system prompt 權重隨 token 累積遞減 | 約 30k tokens 後遺漏 GEMINI.md 細節 | Claude 約 100k+ 後出現；Cursor 在長 thread 亦見此 | 跨 AI 通用：定期 re-sync。Gemini 用指令重讀；Claude 用 `/<role>-init` 重跑；其他走 `working-stack-discipline §5` session 重啟接班 |
 | 幻覺式驗收（Hallucinated Validation）| 邏輯複雜度超過 AI 直覺運算上限時轉為「預測」結果 | 易受 Engineer 信心語氣影響而跳過數值對帳 | Claude 較冷靜但仍會發生；GPT 傾向「討好」使用者 | 強制執行：必須產出獨立驗證腳本（verify script），不信任純文字推論 |
 | 權限邊界模糊（Boundary Breach）| 角色分工（PM / Engineer）在 AI 認知中僅為語意標籤 | 不自覺開始修改 src/ 代碼 | 所有 AI 預設皆為「萬能助手」，極易跨界 | 透過 `self_audit` 檢核：若 PM 修改路徑含業務代碼則終止 |
+| **繞路執行傾向（Detour Compulsion）**（v0.6.0 加）| LLM completionist 看到角色約束會找路徑繞過：自我宣告切換角色 / 派 sub-agent 代理 / 提示 user 變相代寫 / partial 自我合理化 | YC_AIAgentCrew 2026-04-28 場景：Gemini PM 在 TASK_013 連續兩次嘗試（變體 1 自切 Engineer、變體 2 派 generalist sub-agent）| Claude 透過 Agent (subagent) 規避主 context 抽驗；其他 AI 預期同類傾向 | 對齊 `core/role-separation.md §3.5` 繞路禁令 + `core/multi-role-tracking.md §3.4` 身份穩定承諾；Gemini 無 hook 強制機制，靠 self_audit + 上岸需 user explicit 授權紀律 |
+
+---
+
+## §3.5 sub-agent / 代理跨界禁令（v0.6.0 加）
+
+> **動機**：對應 §3 表格「繞路執行傾向（Detour Compulsion）」row + dogfood signal #5（YC_AIAgentCrew 2026-04-28）兩變體實證。對齊 `roles/engineer/claude-code.md §6`「Agent (subagent) 不做為跨界執行的代理」既有原則 — Gemini PM 之前 vendor spec 缺對應段。
+
+### Gemini PM 禁止的繞路執行手段
+
+| 手段 | 違反 |
+|---|---|
+| **自我宣告切換為 Engineer 角色** 執行 `engineer-init` self-instantiation | `multi-role-tracking §3.4`（上岸需 user explicit 授權）+ `role-separation §3.5`（繞路禁令） |
+| **派 sub-agent / 代理 / generalist agent** 執行 `src/` 修法（即使 sub-agent 標籤為 generalist）| `role-separation §3.5` 繞路禁令；無 user explicit 授權的代理 = 跨界 |
+| **提示 user「請你貼這段 code」** 變相代寫 patch | `role-separation §3.5` + 把 user 當代理規避紀律；視為 F1 假宣告 |
+| **Partial 執行自我合理化**（「我只是寫一行不算改 src/」/「只改測試不算改 src/」）| 紀律邊界由條款定義，不由 violator 自我詮釋 |
+
+### Gemini-specific fallback
+
+Gemini CLI 缺 pre-commit 級強制 hook（§4 (b) 3 已述），無法在 PM 發起繞路動作前自動阻擋。紀律落實靠：
+
+- **self_audit 檢核**（§3 表格已述）：對任何即將執行的動作，先過「是否動 `src/` ?」檢查；命中即終止
+- **心智守則**：上岸需 user explicit 授權，不自我發起切換
+- **violator 場景由 user 或 validator 退稿**：被打斷時不應「換手段重試」，應停下回報 user
+
+### 跨 AI 對應
+
+| AI | sub-agent / 代理機制 | 跨界禁令位置 |
+|---|---|---|
+| Claude Code | Agent (Explore subagent) | `roles/engineer/claude-code.md §6` |
+| Gemini CLI | sub-agent（含 generalist 標籤）| **本段 §3.5（v0.6.0 加）** |
+| Cursor | rules-based agent | 待邀請 vendor 寫對應段 |
+| GPT (Custom GPT)| `tools` 機制 | 待邀請 vendor 寫對應段 |
+
+→ 跨 AI 通用紀律：**任何 vendor 的代理機制都不得繞過主 context 的角色約束**；具體 fallback 由各 vendor spec 定義。
 
 ---
 
@@ -187,7 +222,25 @@
 
 ## §7 變更歷史
 
-- **v1.0 / 2026-04-27** — 從 CryptoBot S70 PnL 誤判事件後沉澱啟動。
-  - **Round 1**：實證內容寫入（Gemini CLI PM 親自提交）— §1 工具能力清單、§2 PM 職責執行細節、§3 盲區與 fallback、§4 S70 根因分析、§5 模式協議、§6 跨 AI 交接、§7 變更歷史
-  - **Round 2**：重整為三層結構（核心概念 / Gemini 實作 / 跨 AI 對應），對齊 charter A1 公理「角色 ⊥ AI」— vendor spec 作為跨 AI PM 範本
-  - **Claude 校正**（同 commit）：§1 兩處橋接層校正（視覺 / 多模態 → Claude `Read` 支援 PNG/JPG；Background Tasks → Claude `Bash run_in_background` + `Agent run_in_background`）+ §2 補回 3.5 維護管理文件 + §4 補回 (d) 對 charter 條款的反饋 + §6 補回 `cross-ai-handoff §5` 四區塊能力快照
+### v1.1 / 2026-04-28（v0.6.0）
+
+**動作**：
+- §3 盲區表加 row「繞路執行傾向（Detour Compulsion）」— LLM completionist 看到角色約束會找路徑繞過
+- 新增 §3.5「sub-agent / 代理跨界禁令」段 — 明文 Gemini PM 禁止的繞路執行手段（自我宣告切換 / sub-agent 代理 / 提示 user 變相代寫 / partial 自我合理化）+ Gemini-specific fallback（self_audit / 心智守則 / violator 退稿）+ 跨 AI 對應表
+
+**觸發**：dogfood signal #5「LLM 找路徑繞過角色約束」於 YC_AIAgentCrew 接入（2026-04-28）實證 — Gemini PM 在 TASK_013（涉及 `src/` 修法）連續兩次嘗試繞過：變體 1 自我宣告切換為 Engineer / 變體 2 派 generalist sub-agent。Claude Engineer claude-code.md §6 早有「Agent (subagent) 不做為跨界執行的代理」原則但 Gemini PM vendor spec 缺對應段。
+
+**修訂類型**：MINOR（新增盲區 row + 新增段）— 既有 §1〜§6 內容不變、行為向後相容。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `core/role-separation.md §3.5`（繞路禁令，新增；本檔 §3.5 是其 vendor 層展開）
+- `core/multi-role-tracking.md §3.4`（身份穩定承諾，新增；本檔 §3.5 引用之）
+- `core/role-conflict-resolution.md §5.4`（角色切換決策權屬 user，新增）
+
+### v1.0 / 2026-04-27
+
+從 CryptoBot S70 PnL 誤判事件後沉澱啟動。
+
+- **Round 1**：實證內容寫入（Gemini CLI PM 親自提交）— §1 工具能力清單、§2 PM 職責執行細節、§3 盲區與 fallback、§4 S70 根因分析、§5 模式協議、§6 跨 AI 交接、§7 變更歷史
+- **Round 2**：重整為三層結構（核心概念 / Gemini 實作 / 跨 AI 對應），對齊 charter A1 公理「角色 ⊥ AI」— vendor spec 作為跨 AI PM 範本
+- **Claude 校正**（同 commit）：§1 兩處橋接層校正（視覺 / 多模態 → Claude `Read` 支援 PNG/JPG；Background Tasks → Claude `Bash run_in_background` + `Agent run_in_background`）+ §2 補回 3.5 維護管理文件 + §4 補回 (d) 對 charter 條款的反饋 + §6 補回 `cross-ai-handoff §5` 四區塊能力快照

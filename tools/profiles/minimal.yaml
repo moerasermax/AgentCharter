@@ -3,11 +3,11 @@
 # 適用：探索型專案、單人 + 1 AI、短期實驗。
 # 設計：只啟用最核心防線，配置從寬，搬遷成本最低。
 #
-# 條款啟用：9 / 18（maintainer-discipline 採用方無關）
+# 條款啟用：9 / 19（maintainer-discipline 採用方無關 / ai-vendor-onboarding 預設關，minimal 場景單 AI 單角色不需要）
 # 預設參數：寬鬆
 
 version: "0.4.0"
-charter_version: "0.5.10"
+charter_version: "0.6.0"
 preset: minimal
 
 # === B1 粒度：條款啟用 ===
@@ -32,6 +32,7 @@ enabled:
   multi-role-tracking: false           # 1 AI 多角色 — 預設單 AI 單角色；若兼任 ≥ 2 角色須改 true
   maintainer-discipline: false         # 位階特殊 — 對採用方無關，僅 framework 維護者啟用
   init-template: true                  # 角色 init 模板 — 仍建議啟用
+  ai-vendor-onboarding: false          # v0.6.0 加 — minimal 場景（單 AI 單角色）通常不會邀請新 vendor 或誕生新角色；擴展時請改 true
 
 # === B3 粒度：條款參數（寬鬆）===
 parameters:

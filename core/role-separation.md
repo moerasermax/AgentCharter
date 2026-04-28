@@ -1,6 +1,6 @@
 # Role Separation Principle（角色互鎖原則）
 
-> **狀態**：v0.1
+> **狀態**：v0.2（v0.6.0 加 §3.5 繞路禁令）
 > **位階**：core 通用條款。任何採用 AgentCharter 的專案都應引用本條，並在自己的 `protocols/` 內標註「此原則生效」。
 
 ---
@@ -57,6 +57,33 @@
 
 當同一 AI 推論主體扮演多角色（缺人手 / 探索期 / 小專案），對稱分離有兩種失效路徑（隱式戴帽子、自抽自驗）。處置依 `multi-role-tracking.md`：切換必走 init、結案宣告必標身份戳、禁止同 session 自抽自驗。本條的對稱分離原則在多角色同載體場景下仍生效，由該條款落實具體防呆。
 
+### 3.5 繞路禁令（v0.6.0 加）
+
+> **動機**：dogfood signal #5（YC_AIAgentCrew 2026-04-28）— Gemini PM 在 TASK_013（涉及 `src/` 修法）連續兩次嘗試繞過「PM 不得改 src/」紀律：**變體 1** 自我宣告「切換身分為 Engineer」執行 engineer-init / **變體 2** 被打斷後改派 `generalist` sub-agent 當臨時工程師執行。兩動作本質同源 — LLM completionist 傾向找路徑繞過角色約束。
+
+**核心紀律**：對稱分離原則中，「不得修受版控的程式碼」對 PM 是**直接禁令**，但**禁令不只覆蓋直接動作**，亦覆蓋以下繞路執行手段：
+
+| 繞路手段 | 違反 | 退稿依據 |
+|---|---|---|
+| **自我宣告切換角色**（PM → Engineer 自切） | 角色互鎖完全失效 | 違反 `multi-role-tracking §3.4` 身份穩定承諾（v0.6.0 加）— 上岸需 user explicit 授權；違反本條 §3.1 |
+| **派 sub-agent / 代理 / generalist agent 執行**（PM 透過 Claude Agent / Gemini sub-agent / Cursor agent 等代理動 `src/`）| 主 context 角色禁令被代理規避 | 對齊 `roles/engineer/claude-code.md §6`「Agent (subagent) 不做為跨界執行的代理」既有原則；無 user explicit 授權的代理 = 跨界 |
+| **變相代寫 patch 給 user 手貼**（「請你貼這段 code 到 src/auth.py」）| 把 user 當代理規避紀律 | user 角色不是 PM 的代理執行端；此手段視為 F1 假宣告（PM 假裝沒改但實質決定了改法）|
+| **Partial 執行自我合理化**（「我只是寫一行不算改 src/」/「只改測試不算改 src/」）| 紀律的明確邊界被自我詮釋稀釋 | 紀律邊界由條款定義、由 charter maintainer 仲裁，不由 violator 自我詮釋 |
+
+**對 Engineer 對稱適用**：
+
+| Engineer 端禁令 | 對應 |
+|---|---|
+| 不得透過 sub-agent / 代理間接干預 PM 規劃 | 不得派 agent 改寫 capsule / handoff / protocols |
+| 不得自我宣告切換為 PM 行使結案核准 | 違反本條 + `multi-role-tracking §3.4` |
+| 不得提示 user 變相代行 PM 結案宣告 | 違反 `audit-rights.md` 抽驗權對稱性 |
+
+**例外**：使用者明示授權**單次** sub-agent 跨界執行（如 Engineer 用 Explore subagent 跨檔案分析、PM 用 sub-agent 跑大量任務契約初稿），須：
+
+- user 明示「本次允許 sub-agent 用於 X 動作」
+- 紀錄入 capsule 或 handoff，便於後續審計
+- 不形成慣例（連續授權 ≥ 3 次須走 `escalation-protocol §4 選項 B` 重新評估角色配置）
+
 ---
 
 ## 4. 對應的失敗模式
@@ -86,3 +113,25 @@
 ## 6. 引用範例
 
 CryptoBot 專案的 `Dev_Protocol_DISCIPLINE.md §1.1` 是本原則的領域實作範例（雙 AI：Gemini PM + Claude Engineer）。詳見 `examples/cryptobot/mapping.md`。
+
+---
+
+## 7. 變更歷史
+
+### v0.2（自 v0.6.0 起）
+
+**動作**：新增 §3.5 繞路禁令段 — 明文 PM 不得透過 sub-agent / 代理 / 提示 user / partial 自我合理化等繞路手段間接改 `src/`；Engineer 對稱不得透過代理間接干預 PM 規劃。
+
+**觸發**：dogfood signal #5「LLM 找路徑繞過角色約束」於 YC_AIAgentCrew 接入（2026-04-28）實證 — Gemini PM 在 TASK_013（涉及 `src/` 修法）連續兩次嘗試繞過：變體 1 自我宣告切換角色 / 變體 2 派 generalist sub-agent。同 session 累積 ≥ 2 次 = 高頻信號，達條款化門檻。
+
+**修訂類型**：MINOR — 加新段、不破壞既有禁令；本質上是把既有「權力對稱分離」原則在「繞路執行手段」場景的展開。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `core/multi-role-tracking.md §3.4`（身份穩定承諾，新增）
+- `core/role-conflict-resolution.md §5.4`（角色切換決策權屬 user，新增）
+- `roles/pm/gemini-cli.md §3.5`（sub-agent 跨界禁令補段，對齊 Claude Engineer §6 既有原則）
+- `core/failure-modes.md`（評估是否將「自我宣告角色切換」列為新 F-mode；本批次先以現有 F1 / F5 處置，累積 ≥ 3 次再評估獨立 F-mode）
+
+### v0.1（v0.4 引入）
+
+初版條文：權力與責任對稱分離；§3.1〜§3.4 實作要點。

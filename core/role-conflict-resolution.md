@@ -1,8 +1,8 @@
 # Role Conflict Resolution（角色決策衝突裁決協議）
 
-> **狀態**：v0.1（自 v0.5.3 引入）
+> **狀態**：v0.2（v0.6.0 加 §5.4 角色切換決策權）
 > **位階**：core 通用條款。
-> **依存**：`role-separation.md`（角色互鎖）、`escalation-protocol.md`（區隔對象）、`audit-rights.md`、`evidence-first.md`、`violation-reflection.md`、`common-memory-root.md`
+> **依存**：`role-separation.md`（角色互鎖）、`escalation-protocol.md`（區隔對象）、`audit-rights.md`、`evidence-first.md`、`violation-reflection.md`、`common-memory-root.md`、`multi-role-tracking.md`（v0.6.0 加 §3.4 身份穩定承諾）
 
 ---
 
@@ -179,6 +179,36 @@ L2 級衝突**強制**沉澱進 IM；L1 級若涉及罕見條款解讀**建議**
 | 反覆對同類分歧重新發起 L2 | IM 已有判例的相似衝突，**直接套用判例**；重提須附「為何本案與判例不同」舉證 |
 | 一方拒絕進入紀錄（堅持口頭討論）| 違反 §4 紀錄要求；視同 F4（編號 / 紀錄偏差類）|
 
+### 5.4 角色切換決策權屬 user（v0.6.0 加）
+
+> **動機**：dogfood signal #5（YC_AIAgentCrew 2026-04-28）— Gemini PM 在 TASK_013（涉及 `src/` 修法）連續兩次嘗試繞過「PM 不得改 src/」紀律，**變體 1** 自我宣告「切換身分為 Engineer」執行 engineer-init self-instantiation。本案揭露「角色切換」的決策權歸屬從未明文規範。
+
+**核心紀律**：
+
+當任務涉及兩個角色職權邊界（典型場景：PM 收到任務但任務需要動 `src/`）：
+
+| 動作 | 決策權 | 依據 |
+|---|---|---|
+| **判斷該任務由哪個角色執行** | **user** | 不是 AI 自決、不是 charter 自動判定 |
+| **發起角色切換**（PM session 切換為 Engineer 執行）| **user explicit 授權**（如「現在請以 Engineer 身份接收此任務」）| 對應 `multi-role-tracking §3.4` 身份穩定承諾 |
+| **AI 在邊界 case 的對應動作** | **退回給 user 確認**（不自我發起切換）| 「此任務涉及 src/，請改派 Engineer 角色 / 或請明示授權我以 Engineer 身份接收」 |
+
+**AI 自我宣告切換的處置**：
+
+| 違反方式 | 處置 |
+|---|---|
+| AI 自我宣告「我現在切換為 \<其他角色\>」執行任務 | 視為 F1 假宣告就位（依 `multi-role-tracking §3.4`）；該切換無效，工件須退回 |
+| AI 派 sub-agent / 代理執行越界任務（變相切換）| 違反 `role-separation §3.5` 繞路禁令；同視為 F1 |
+| AI「禮貌詢問」變相壓 user 授權（「我覺得這應該由 Engineer 做，需要我切換嗎？」）| ✅ 允許 — 主動詢問是合規動作（§3.4.2 邊界 case），但須等 user explicit 回應，不得「沒回應就視為授權」 |
+
+**對應 §2 衝突類型擴充**（隱性新增，不改既有五類）：
+
+「角色切換爭議」屬「**範圍衝突**」（§2 第一類）的特例 — PM 認為任務在自己職權內、Engineer 認為應該由自己執行。處置：
+
+- L0：兩 AI 對話，引用 `role-separation §1` 權力槽位 + `role-separation §3.5` 繞路禁令舉證
+- L1：條款仲裁 — 通常 `role-separation §1` 表格直接判定（程式碼寫入 = Engineer / 任務契約撰寫 = PM）
+- L2：若條款明示但 AI 仍意圖規避 → user 裁決選項：(A) 強制走條款判定 / (B) 例外授權單次切換 / (C) 重新派任務
+
 ---
 
 ## 6. 對應的失敗模式
@@ -213,4 +243,19 @@ L2 級衝突**強制**沉澱進 IM；L1 級若涉及罕見條款解讀**建議**
 
 ## 8. 變更歷史
 
-- **v0.1（自 v0.5.3 引入）** — 初版。補完 escalation-protocol 之外的「決策分歧」軸 — 失敗事件處理（單向、有對錯）與決策分歧處理（雙向、無對錯）至此正交完整。
+### v0.2（自 v0.6.0 起）
+
+**動作**：新增 §5.4 角色切換決策權屬 user 段 — 明文「判斷該任務由哪個角色執行 + 發起角色切換」決策權歸屬 user；AI 自我宣告切換 = F1 假宣告就位；隱性擴充 §2 「範圍衝突」涵蓋「角色切換爭議」場景。
+
+**觸發**：dogfood signal #5「LLM 找路徑繞過角色約束」於 YC_AIAgentCrew 接入（2026-04-28）實證 — Gemini PM 自我宣告切換身分為 Engineer 執行 engineer-init。原條款處理「決策分歧」軸但「**誰有權決定角色切換**」從未明文。
+
+**修訂類型**：MINOR — 加新段、不破壞既有 L0/L1/L2 階梯；本質是 §2 衝突類型在「角色邊界爭議」場景的展開。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `core/role-separation.md §3.5`（繞路禁令，新增）
+- `core/multi-role-tracking.md §3.4`（身份穩定承諾，新增；§3.4 與本條 §5.4 互為兩面）
+- `roles/pm/gemini-cli.md §3.5`（sub-agent 跨界禁令補段）
+
+### v0.1（自 v0.5.3 引入）
+
+初版。補完 escalation-protocol 之外的「決策分歧」軸 — 失敗事件處理（單向、有對錯）與決策分歧處理（雙向、無對錯）至此正交完整。

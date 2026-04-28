@@ -1,10 +1,10 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-04-28（台灣時間）
-> **當前版本**：v0.5.10（大工程批次第一階段完成）
+> **當前版本**：v0.6.0（大工程批次第二階段完成 — 架構擴張 + LLM 行為紀律 gap）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔即為 session 斷點儲存（仿 /checkpoints save，但 AgentCharter 用 .claude_temp/ 替代 management/）
-> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` (即將打)
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` (即將打)
 
 ---
 
@@ -12,7 +12,8 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| **v0.5.10** | （待 commit）| **大工程批次第一階段**：MINOR self-instantiation 結尾自帶 doctor schema 驗證（六步驟 → 七步驟 + F6 新增）+ PATCH HANDOFF 排序 wording + PATCH spec-sync 修補（v0.5.8/v0.5.9 release 漏：preset charter_version 跳升 + 19→20 條 .md + 移除 Python 前置）+ 併入 [Unreleased] QUICKSTART 多 AI 提醒。對應 dogfood signal #4 YC_AIAgentCrew 實證 |
+| **v0.6.0** | （待 commit）| **大工程批次第二階段**：架構擴張 + LLM 行為紀律 gap — 新增 `core/ai-vendor-onboarding.md` 邀請制條款（架構級概念第 10 個）+ 新增 `roles/auditor/_spec.md` maintainer-only 角色概念層 + 新增 `roles/validator/_spec.md` 採用方角色概念層 + PM 漸進 deprecate 抽驗職責（v0.x 並存 / v1.0 接管）+ dogfood signal #5 條款化（role-separation §3.5 繞路禁令 / multi-role-tracking §3.4 身份穩定承諾 / role-conflict-resolution §5.4 角色切換決策權屬 user / pm/gemini-cli §3.5 sub-agent 跨界禁令補段，架構級概念第 11 個）。條款 20 → 21、角色 2 → 4 |
+| v0.5.10 | `6dd3eda` | **大工程批次第一階段**：MINOR self-instantiation 結尾自帶 doctor schema 驗證（六步驟 → 七步驟 + F6 新增）+ PATCH HANDOFF 排序 wording + PATCH spec-sync 修補（v0.5.8/v0.5.9 release 漏：preset charter_version 跳升 + 19→20 條 .md + 移除 Python 前置）+ 併入 [Unreleased] QUICKSTART 多 AI 提醒。對應 dogfood signal #4 YC_AIAgentCrew 實證 |
 | v0.5.9 | `a24c15c` | **Removed python 工具** + Added agent-commons 結構穩定性承諾（versioning-migration §2.3）— 回歸純規範框架；採用方第一次 init 後 agent-commons 結構零變更承諾（v1.0 後永久）|
 | v0.5.8 | `5ed0cec` | Maintainer Discipline 條款（framework 維護者紀律 — 位階特殊：採用方無關、維護者強制；對應 v0.5.7 累積的兩次 dogfood signal #1+#2，使用者授權跳過 ≥3 次累積直接條款化）|
 | v0.5.7 | `5c6e76d` | Working Stack Discipline 條款（DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續；補完三種接班場景的正交盲區）|
@@ -45,16 +46,16 @@
 
 ---
 
-## 20 條 core 條款清單（按概念分組）
+## 21 條 core 條款清單（按概念分組）
 
 ### A. 角色與職權（4 條）
 
 | 條款 | 一句話 |
 |---|---|
-| `role-separation.md` | 程式碼權與結案權對稱分離 |
+| **`role-separation.md`** | 程式碼權與結案權對稱分離（**v0.6.0 加 §3.5 繞路禁令**）|
 | `audit-rights.md` | 抽驗權不得放棄；結案宣告默認待抽驗 |
-| **`role-conflict-resolution.md`** | **角色決策衝突（v0.5.3）**：三級階梯 L0/L1/L2，與 escalation 嚴格區隔（分歧雙向、無對錯）|
-| **`multi-role-tracking.md`** | **單 AI 多角色審計（v0.5.4）**：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令 |
+| **`role-conflict-resolution.md`** | **角色決策衝突（v0.5.3）**：三級階梯 L0/L1/L2，與 escalation 嚴格區隔（分歧雙向、無對錯）（**v0.6.0 加 §5.4 角色切換決策權屬 user**）|
+| **`multi-role-tracking.md`** | **單 AI 多角色審計（v0.5.4）**：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令（**v0.6.0 加 §3.4 身份穩定承諾 + 上岸需 user explicit 授權**）|
 
 ### B. 失敗 / 違規 / 升級（4 條）
 
@@ -73,14 +74,15 @@
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 危險度標籤 / 期望錨點 / 失敗解讀表 |
 
-### D. 交接 / 跨 AI（4 條）
+### D. 交接 / 跨 AI（5 條）
 
 | 條款 | 一句話 |
 |---|---|
 | `handoff-chain.md` | session 末交接鏈必含項目（結案級 / 重型）|
 | **`cross-ai-handoff.md`** | **跨 AI 接班（v0.5.2）**：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
 | **`working-stack-discipline.md`** | **暫存堆疊紀律（v0.5.7）**：DRAFT 累積 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
-| `init-template.md` | **Role Init Mandate（v0.5）**：四職責（召喚 / 校準 / 簽名 / 守門）+ 多 AI 具象化（v0.5.1 自我具象化）|
+| **`init-template.md`** | **Role Init Mandate（v0.5）**：四職責（召喚 / 校準 / 簽名 / 守門）+ 多 AI 具象化（v0.5.1 自我具象化、**v0.5.10 七步驟含 step 5 schema 驗證強制點**）|
+| **`ai-vendor-onboarding.md`** | **新 vendor / 新角色接入「邀請制」（v0.6.0）**：禁 charter 預先寫死 vendor 層、四步驟（charter 寫概念層 → 邀請 vendor 寫 vendor 層 → 既有 vendor 校正 regression → maintainer 簽收）|
 
 ### E. 架構 / 配置 / 版本（4 條）
 
@@ -133,13 +135,13 @@ project-root/
 
 ## 三個 preset
 
-| Preset | 條款啟用（v0.5.8）| 適用 |
+| Preset | 條款啟用（v0.6.0）| 適用 |
 |---|---|---|
-| `minimal.yaml` | 9 / 18 條，寬鬆參數 | 探索型 / 單人 + 1 AI |
-| `standard.yaml` | 17 / 18 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
-| `strict.yaml` | 17 / 18 條，嚴格上限 | 嚴格合規 / 高風險領域 |
+| `minimal.yaml` | 9 / 19 條，寬鬆參數 | 探索型 / 單人 + 1 AI（ai-vendor-onboarding 預設關）|
+| `standard.yaml` | 18 / 19 條，中等參數 | 一般雙 AI 協作（CryptoBot 級）|
+| `strict.yaml` | 18 / 19 條，嚴格上限 | 嚴格合規 / 高風險領域 |
 
-> 註：20 條條款中，2 條為架構級前提（`common-memory-root` 與 `charter-config`，不設 enabled 開關），1 條為 maintainer-only（`maintainer-discipline`，三 preset 預設關 — 採用方無關），故各 preset 的 enabled 計數 max 為 18，採用方場景常用 17。
+> 註：21 條條款中，2 條為架構級前提（`common-memory-root` 與 `charter-config`，不設 enabled 開關），1 條為 maintainer-only（`maintainer-discipline`，三 preset 預設關 — 採用方無關），故各 preset 的 enabled 計數 max 為 19，採用方場景 standard/strict 18 條（含 ai-vendor-onboarding）。
 
 ---
 
@@ -171,9 +173,10 @@ project-root/
 | v0.5.5 | **Domain Axiom Slot** 條款：把 template 的撰寫紀律提煉至 core 層；定義「領域公理 > core 條款」衝突優先序為架構級條文；/charter-doctor 違反處置分級 |
 | v0.5.6 | **Versioning & Migration** 條款：SemVer 對 AgentCharter 的具體語意（PATCH/MINOR/MAJOR/架構級）+ 已採用專案升級流程 + 多 AI 版本一致性；**5 候選盤點完成** |
 | v0.5.7 | **Working Stack Discipline** 條款：補完「session 內物理中斷再續」結構性盲區；DRAFT 暫存堆疊 + save 同步 git commit；三種接班場景（結案 / 換 AI / 物理中斷）正交完整 |
-| **v0.5.10** | **dogfood-driven hardening 首次循環**：dogfood signal #4 累積 ≥1 次同類觀察 → 條款修訂門檻達標 → 自身改進 self-instantiation 七步驟 + F6 新增。對應使用者提的「dogfood 內測優化也是持續健壯一環」精神首次落地 |
+| v0.5.10 | **dogfood-driven hardening 首次循環**：dogfood signal #4 累積 ≥1 次同類觀察 → 條款修訂門檻達標 → 自身改進 self-instantiation 七步驟 + F6 新增。對應使用者提的「dogfood 內測優化也是持續健壯一環」精神首次落地 |
+| **v0.6.0** | **架構擴張 + dogfood-driven hardening 第二、三循環**：邀請制原則條款化（隱性 pattern 顯性化 — Gemini PM 接入歷程的形式化）+ 兩個新角色誕生（auditor maintainer-only / validator 採用方）+ dogfood signal #5 條款化（LLM 找路徑繞過角色約束三層 gap 封閉）。架構級概念 9 → **11**（新增「角色擴展邀請制 / vendor 不代寫」+「角色身份穩定 / 繞路禁令」）|
 
-### B. 九個架構級概念已釐清
+### B. 十一個架構級概念已釐清
 
 1. **Common Memory Root**（v0.4.1）：多 AI 共享資產位於單一根；可覆寫名稱但禁止分散；典型路徑 `agent-commons/`
 2. **AI Self-Instantiation**（v0.5.1）：「角色 ⊥ AI」公理的執行機制；AI 自己讀 charter → 自己生成 slash command → 自己簽名
@@ -184,6 +187,8 @@ project-root/
 7. **版本演化雙軌**（v0.5.6）：`version`（profile schema）⊥ `charter_version`（條款集），各自演化；多 AI 同 session 強制版本一致；BREAKING-LITE 中間級別處理 0.x 階段的架構級變動
 8. **三種接班場景正交完整**（v0.5.7）：session 末邏輯結案（handoff-chain）/ AI 廠商換手（cross-ai-handoff）/ session 內物理中斷再續（working-stack-discipline）— 三條款互斥互補；DRAFT-HANDOFF 兩級存檔 + save 同步 git commit 為核心紀律
 9. **純規範框架 + agent-commons 結構穩定承諾**（v0.5.9）：framework 不附 python / npm 等實作工具（移除 charter-init.py / charter-doctor.py），所有工具動作由 AI 依 spec 自具象化；採用方第一次 init 後得到的 agent-commons/ 結構是穩定承諾（versioning-migration §2.3），v1.0 後永久不破壞既有採用方
+10. **角色擴展邀請制 / vendor 不代寫原則**（v0.6.0）：charter 接觸新 AI vendor / 新角色時，禁止 charter 預先寫死 vendor 層內容；走「邀請制四步驟」（charter 寫概念層 → 邀請 vendor 寫 vendor 層 → 既有 vendor 校正 regression → maintainer 簽收）。同源 `init-template §3.3 self-instantiation`「框架不代生成」原則 — 從接班方半邊延伸到 vendor 接入半邊 + 新角色誕生半邊。對應 `core/ai-vendor-onboarding.md`
+11. **角色身份穩定性 / 繞路禁令**（v0.6.0）：對應 LLM completionist 傾向找路徑繞過角色約束的結構性盲區。三層條款封閉：(a) `role-separation §3.5` 繞路禁令（不得透過 sub-agent / 代理 / 提示 user / partial 自我合理化等手段間接違反角色約束）/ (b) `multi-role-tracking §3.4` 身份穩定承諾（上岸需 user explicit 授權、AI 自我發起切換 = F1）/ (c) `role-conflict-resolution §5.4` 角色切換決策權屬 user。對應 dogfood signal #5（YC_AIAgentCrew Gemini PM 兩變體繞路）
 
 ### C. 模擬演練紀錄（討論完成，未寫入 examples）
 

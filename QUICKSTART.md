@@ -169,7 +169,7 @@ PM 對 AI 下指令：
 | 想理解每步**為什麼**這樣做 | [TUTORIAL.md](./TUTORIAL.md) |
 | doctor 報錯不知道意思 | [TUTORIAL §11 troubleshooting](./TUTORIAL.md#11-troubleshooting) |
 | AI 不會自我具象化 | [TUTORIAL §5 AI onboarding](./TUTORIAL.md#5-ai-自我具象化) |
-| 想查某條款全文 | [core/](./core/) 20 個 .md |
+| 想查某條款全文 | [core/](./core/) 21 個 .md |
 | 想看真實採用案例 | [examples/cryptobot/mapping.md](./examples/cryptobot/mapping.md) |
 | AI 自己讀的版本 | [ADOPTION.md](./ADOPTION.md)（給 AI 看，密集格式） |
 | 概念總覽 | [README.md](./README.md) |

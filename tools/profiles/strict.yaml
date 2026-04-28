@@ -3,11 +3,11 @@
 # 適用：嚴格合規 / 多團隊 / 高風險領域（金融、醫療、軍工、生產系統）。
 # 設計：全條款啟用 + 最嚴格參數 + 禁用所有寬鬆條款。
 #
-# 條款啟用：17 / 18（maintainer-discipline 是 maintainer-only）
+# 條款啟用：18 / 19（maintainer-discipline 是 maintainer-only）
 # 預設參數：嚴格上限
 
 version: "0.4.0"
-charter_version: "0.5.10"
+charter_version: "0.6.0"
 preset: strict
 
 # === B1 粒度：條款啟用 ===
@@ -30,6 +30,7 @@ enabled:
   working-stack-discipline: true
   maintainer-discipline: false       # 位階特殊 — 對採用方無關
   init-template: true
+  ai-vendor-onboarding: true         # v0.6.0 加 — 採用方加新 vendor / 新角色時須遵守邀請制四步驟
 
 # === B3 粒度：條款參數（嚴格）===
 parameters:

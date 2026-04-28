@@ -13,7 +13,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 把「PM / Engineer / Reviewer」這類職能**從 AI 廠商解綁**：任何 AI（Claude / Gemini / Codex / GPT / 你下個用的 LLM）都能扮演任何角色，協議跨 AI 一致。
 
-**框架本體 = 20 條 core 條款 + 6 份 templates**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
+**框架本體 = 21 條 core 條款 + 6 份 templates**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
 
 **採用識別**：專案根有 `agent-commons/` 目錄 = 用了本框架。
 
@@ -44,7 +44,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 ---
 
-## 3. 18 條 core 條款（按概念分組）
+## 3. 20 條 core 條款（採用方視角，按概念分組）
 
 ### A. 角色與職權（4 條）
 
@@ -72,14 +72,15 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 期望錨點 / 失敗解讀表 |
 
-### D. 交接 / 跨 AI（4 條）
+### D. 交接 / 跨 AI（5 條）
 
 | 條款 | 一句話 |
 |---|---|
 | `handoff-chain.md` | session 末交接鏈必含 7 項（結案級 / 重型）|
 | `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
 | `working-stack-discipline.md` | DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
-| `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化 |
+| `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化（v0.5.10：六步驟 → 七步驟，加 step 5 schema 驗證）|
+| `ai-vendor-onboarding.md` | **新 vendor / 新角色接入「邀請制」四步驟**（v0.6.0）：禁 charter 預先寫死 vendor 層，由真實接觸累積差異 |
 
 ### E. 架構 / 配置 / 版本（4 條，含 2 條架構級前提）
 
@@ -90,7 +91,15 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `domain-axiom-slot.md` | 領域公理槽位：位階（領域 > 核心）+ 撰寫紀律 |
 | `versioning-migration.md` | SemVer 對 charter 的具體含義 + 升級流程 |
 
-→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 16 條由 `profile.yaml.enabled.<condition>` 控制。
+→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 17 條由 `profile.yaml.enabled.<condition>` 控制（v0.6.0 加 `ai-vendor-onboarding` 後）。
+
+### F. Maintainer-only（1 條，採用方無關）
+
+| 條款 | 一句話 |
+|---|---|
+| `maintainer-discipline.md` | framework 維護者紀律 — spec sync check / DRAFT 紀律也適用維護者；三 preset 預設 `false`（採用方不必啟用）|
+
+→ 採用方修改自己的 charter copy 時不必啟用本條款；其執行載體為 `roles/auditor/_spec.md`（v0.6.0 新增的 maintainer-only 角色概念層）。
 
 ---
 
@@ -235,7 +244,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 | Day | 動作 | 主筆 |
 |---|---|---|
-| Day 1 | 讀 README + 本檔 + 18 條 core；選 preset | PO |
+| Day 1 | 讀 README + 本檔 + 20 條 core（採用方視角）；選 preset | PO |
 | Day 1 | 手動建 `agent-commons/` 結構；寫 mapping.yaml + profile.yaml | PO |
 | Day 1〜2 | 各 AI 跑 self-instantiation（§7）→ 簽名 `_role.md` | 各 AI |
 | Day 2〜3 | 寫領域公理 `protocols/<axiom>.md`（依 domain-axiom-slot §3）| PO + AI 共寫 |
@@ -283,7 +292,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 |---|---|
 | **人類採用方的 5 分鐘入門** | **[QUICKSTART.md](./QUICKSTART.md)** |
 | **人類採用方的 reference 工具書** | **[TUTORIAL.md](./TUTORIAL.md)** |
-| 條款全文 | [core/](./core/)（20 個 .md）|
+| 條款全文 | [core/](./core/)（21 個 .md）|
 | 工具（charter-init / charter-doctor）| [tools/](./tools/) |
 | 模板（capsule / handoff / IM / nextwork / domain-axioms / _role）| [templates/agent-commons/](./templates/agent-commons/) |
 | 角色職能定義 | [roles/<role>/_spec.md](./roles/) |

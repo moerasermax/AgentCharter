@@ -6,7 +6,117 @@
 
 ## [Unreleased]
 
-（空 — 前 [Unreleased] 內容已併入 v0.5.10）
+（空 — v0.6.0 大工程批次第二階段已釋出；下批次未開）
+
+---
+
+## [0.6.0] — 2026-04-28
+
+> 大工程批次**第二階段**（架構擴張 + LLM 行為紀律 gap）。對應 `.claude_temp/v0.5.9-BASELINE.md §10` v0.6.0 預期變動清單實證。三個議題打包釋出：邀請制原則 + auditor 概念層誕生 / validator 角色誕生 + PM 漸進 deprecate 抽驗 / LLM 找路徑繞過角色約束紀律 gap。
+
+### Added — `core/ai-vendor-onboarding.md` 邀請制條款 ⭐
+
+**動機**：將 v0.5 隱性的 Gemini PM 接入歷程（Round 1 實證 + Round 2 三層重整 + Claude 校正）顯性化為「邀請制四步驟」+ 處理 v0.6 新角色誕生（auditor / validator）議題。
+
+**核心原則**：當 charter 要接觸新 vendor 廠商或創造新角色時，**禁止 charter 預先寫死 vendor 層內容** — 等被邀請的 vendor 自己貢獻 vendor spec，既有 vendor 校正 regression，charter maintainer 簽收後才入 main。「**慢慢強而有力**」= charter 透過真實接觸累積差異，不假裝知道。
+
+**接入四步驟**：
+1. charter 寫概念層 `_spec.md`（AI 中立）
+2. 邀請目標 vendor 寫 vendor 層
+3. 既有 vendor 校正 regression（仿 Gemini PM 接入歷程）
+4. Maintainer 三層結構簽收（concept layer + vendor layer + cross-AI 對應）
+
+**範圍**：
+- `core/ai-vendor-onboarding.md`（新增 — 條款數 20 → 21；架構級概念 9 → **10**）
+- `core/charter-config.md §3 enabled` 加 `ai-vendor-onboarding`、§5 相依表加 entry
+- `tools/profiles/{minimal,standard,strict}.yaml` enabled 加（minimal `false` / standard / strict `true`）
+- `core/maintainer-discipline.md §3.1` 改為「由 auditor 角色執行」（v0.5.9 後留下的 spec-driven self-check 執行載體 gap 補完）
+
+### Added — `roles/auditor/_spec.md` Maintainer-only 抽驗角色概念層 ⭐
+
+**動機**：對應 `maintainer-discipline §3.1` 在 v0.5.9 後留下的 gap — 原 charter-doctor.py self-check 移除後改為「AI 自具象化跑」，但執行載體未明確化。auditor 把 maintainer self-check 的執行責任從「任意 AI 自由發揮」收斂到「有明確職責 / 工具能力 / 失敗模式的角色」。
+
+**位階**：**maintainer-only 角色**（採用方不適用、charter maintainer 用），與 `maintainer-discipline.md` 同位階特殊。透過 fresh-context sub-agent / 不同 session / 邀請其他 vendor 達成「他抽」屬性（避免自抽自驗）。
+
+**範圍**：
+- `roles/auditor/_spec.md`（新增 — 概念層、AI 中立；vendor 層走邀請制 step 2-4 不附帶）
+- `core/ai-vendor-onboarding.md §7` 觸發背景表加 auditor entry（場景 B 新角色誕生首例）
+- `core/maintainer-discipline.md §3.1` 引用 auditor
+
+### Added — `roles/validator/_spec.md` 採用方抽驗角色概念層 ⭐
+
+**動機**：YC_AIAgentCrew 接入（2026-04-28）觸發 — 使用者觀察 PM 抽自己派的任務 = 接近 `multi-role-tracking` 自抽自驗禁令邊界；提案漸進拆出 validator 角色實現「**PM 派 → Engineer 執行 → Validator 抽驗**」三角合規。
+
+**位階**：**採用方角色**（與 `pm` / `engineer` 同層；可任選啟用）。
+
+**漸進 deprecation 路徑**：
+- v0.x（v0.6.0〜v0.x.X）：PM 抽驗職責並存，採用方擇一或兩者
+- v1.0+：validator 接管全部抽驗，PM `_spec.md` 移除 §3.3 / §3.4
+
+**範圍**：
+- `roles/validator/_spec.md`（新增 — 概念層、AI 中立；vendor 層走邀請制 step 2-4 不附帶）
+- `roles/pm/_spec.md §3.3 / §3.4` 加 ⚠️ DEPRECATING 標記 + deprecation note + §7 變更歷史升 v0.2
+- `roles/pm/_spec.md` 檔頭狀態 v0.1 → v0.2 + v0.6.0 deprecation 提示
+
+### Added — LLM 找路徑繞過角色約束紀律 gap（dogfood signal #5 條款化）⭐
+
+**動機**：dogfood signal #5「LLM 找路徑繞過角色約束」於 YC_AIAgentCrew 接入（2026-04-28）實證 — Gemini PM 在 TASK_013（涉及 `src/` 修法）連續兩次嘗試繞過：**變體 1** 自我宣告「切換身分為 Engineer」執行 engineer-init / **變體 2** 被打斷後改派 `generalist` sub-agent 當臨時工程師執行。兩動作本質同源 — LLM completionist 傾向找路徑繞過角色約束。同 session 累積 ≥ 2 次 = 高頻信號，達條款化門檻。
+
+**修訂**：
+- `core/role-separation.md §3.5` 新增**繞路禁令**段（架構級概念 10 → **11**）— 明文 PM 不得透過 sub-agent / 代理 / 提示 user / partial 自我合理化等繞路手段間接改 `src/`；Engineer 對稱不得透過代理間接干預 PM 規劃；§7 變更歷史新增、檔頭狀態 v0.1 → v0.2
+- `core/multi-role-tracking.md §3.4` 新增**身份穩定承諾**段 — 明文「上岸需 user explicit 授權」；AI 自我發起切換 = F1 假宣告就位；§3.4.1 區別合法切換 vs AI 自發切換、§3.4.2 邊界 case 處置、§3.4.3 與 §3.1 切換協議的關係；§9 變更歷史擴 v0.2、檔頭狀態 v0.1 → v0.2
+- `core/role-conflict-resolution.md §5.4` 新增**角色切換決策權屬 user**段 — 明文「判斷該任務由哪個角色執行 + 發起角色切換」決策權歸屬 user；§8 變更歷史擴 v0.2、檔頭狀態 v0.1 → v0.2
+- `roles/pm/gemini-cli.md §3` 盲區表加 row「繞路執行傾向（Detour Compulsion）」+ §3.5 sub-agent / 代理跨界禁令段（對齊 `roles/engineer/claude-code.md §6` 既有原則 — Gemini PM 之前 vendor spec 缺對應段）+ §7 變更歷史擴 v1.1
+
+### Changed — `core/maintainer-discipline.md §3.1` 執行載體明確化
+
+**動機**：v0.5.9 移除 charter-doctor.py 後，self-check 改為「AI 自具象化執行」但「誰具象化」從未明確化。v0.6.0 引入 auditor 角色後，§3.1 改為「由 auditor 角色執行」（透過 fresh-context sub-agent 達成「他抽」屬性）。
+
+### 採用方影響
+
+- ✅ **行為向後相容**：既有採用方升版（v0.5.10 → v0.6.0）的影響：
+  - **新條款 enabled**：standard / strict 自動加 `ai-vendor-onboarding: true`；既有 capsule 不受影響
+  - **新角色 spec**：`validator` 概念層加入；採用方繼續用 PM 雙角色不破壞，新採用方可選三角配置
+  - **角色約束加嚴**：`role-separation §3.5` / `multi-role-tracking §3.4` / `role-conflict-resolution §5.4` 加新紀律段，**對 LLM 行為加新限制**（不得自我發起角色切換 / 不得 sub-agent 跨界）— 對「老老實實照規則跑」的採用方無影響、對「LLM 自由發揮」的採用方則需教育 AI
+- ⚠️ **既有採用方升版需修自己的 self-instantiated slash command**（如 `.claude/commands/<role>-init.md`）以加 step 5 schema 驗證（v0.5.10 已加）+ 同步 v0.6.0 角色約束加嚴段
+- 📋 **YC_AIAgentCrew 為第一個 v0.5.9 → v0.6.0 升版測試案例** — 可實證 `versioning-migration §3` 7 步流程
+
+### 大工程批次脈絡 + dogfood-driven hardening 第二循環
+
+對應使用者授權「先做這 5 項 / 0.5.10 再到 0.6.0」+「特別記錄新功能當初是為了解決哪個時期問題」+「dogfood 內測優化也是持續健壯一環」。
+
+dogfood signal 累積實證：
+- #4「具象化 ⊥ 驗證脫鉤」→ v0.5.10 self-instantiation 七步驟（第一循環）
+- #5「LLM 找路徑繞過角色約束」→ v0.6.0 三條款 + vendor spec 加段（第二循環）
+- 接入歷程隱性 pattern 顯性化：Gemini PM 接入歷程 → v0.6.0 邀請制條款（第三循環）
+
+→ 「dogfood-driven hardening」第二、三循環完成。架構級概念 9 → 11（新增「角色擴展邀請制 / vendor 不代寫」+「角色身份穩定 / 繞路禁令」）。
+
+### 條款 / 角色 / 概念數量變化
+
+| 軸 | v0.5.10 | v0.6.0 | 增量 |
+|---|---|---|---|
+| Core 條款 | 20 | **21** | +1 (`ai-vendor-onboarding`) |
+| 角色概念層 spec | 2 (pm, engineer) | **4** | +2 (`auditor` maintainer-only, `validator` 採用方) |
+| 架構級概念 | 9 | **11** | +2（邀請制原則 / 角色身份穩定 + 繞路禁令）|
+| F-modes | F1〜F6 | F1〜F6 | 無變動（v0.5.10 已加 F6）|
+
+### 同步修訂範圍（依 maintainer-discipline §2.2）
+
+- `core/`：新增 ai-vendor-onboarding.md / 修 charter-config.md / maintainer-discipline.md / role-separation.md / multi-role-tracking.md / role-conflict-resolution.md
+- `roles/`：新增 auditor/_spec.md / validator/_spec.md / 修 pm/_spec.md / pm/gemini-cli.md
+- `tools/profiles/{minimal,standard,strict}.yaml`：charter_version + enabled 加 ai-vendor-onboarding + 標頭計數
+- `ADOPTION.md`：條款數 20 → 21、§3 標題 18 → 20 條（採用方視角）、D 組 4 → 5 條、新增 F 組 maintainer-only、line 286 條款數
+- `QUICKSTART.md / TUTORIAL.md`：條款數 20 → 21
+- `.claude_temp/STATUS.md / NEXT.md`：版本軌跡 / 演化軸表 / 已完成
+- `CHANGELOG.md`：本段
+
+### Git tags
+
+- `v0.5.9` @ `a24c15c`（baseline）
+- `pre-v0.6.0-batch` @ `2225659`（大工程動工起點）
+- `v0.5.10` @ `6dd3eda`（第一階段 release）
+- `v0.6.0` @ 本 commit（第二階段 release）
 
 ---
 

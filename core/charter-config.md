@@ -136,6 +136,7 @@ enabled:
   working-stack-discipline: <bool>
   maintainer-discipline: <bool>      # 預設 false（採用方無關，framework 維護者用）
   init-template: <bool>
+  ai-vendor-onboarding: <bool>       # v0.6.0 加 — 採用方加新 vendor / 新角色時須遵守
 
 # === B3 粒度：條款參數 ===
 parameters:
@@ -191,6 +192,7 @@ v0.4 暫不支援，需要時 PR 升級 schema。
 | `versioning-migration` | `charter-config`, `handoff-chain`, `init-template` |
 | `working-stack-discipline` | `handoff-chain`, `cross-ai-handoff`, `evidence-first`, `common-memory-root` |
 | `maintainer-discipline` | `working-stack-discipline`, `versioning-migration`, `structural-anti-fabrication`, `audit-rights`（**位階特殊**：對採用方無關，僅 framework 維護者啟用）|
+| `ai-vendor-onboarding` | `init-template`, `role-separation`, `cross-ai-handoff`, `maintainer-discipline`（v0.6.0 加；採用方加新 vendor / 新角色時須遵守）|
 | `role-separation` | `common-memory-root`（`roles/<role>/` 目錄須在此根下）|
 | **所有條款** | **`common-memory-root`**（v0.4.1 起為架構級前提）|
 
