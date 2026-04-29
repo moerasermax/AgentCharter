@@ -41,6 +41,7 @@
 
 **對既有 SSS 級候選的對齊**：
 - S2「v0.8.0/v0.9.0 lifecycle 設計素材」→ 見下（user LIVE 設計直覺保留、待 v0.9.0 fresh head 設計 lifecycle.md / mutability.md 時拿來用）
+- S3「charter as diagnose + remediate protocol（引導式紀律、非封鎖式 freelance）」→ 見下（v0.8.0 ship 後 user LIVE 抓到 Gemini 三輪編造 + 第四輪認錯閉環、實證 SSS S3 設計提議的需求性 + 引導式 framing 的優越性）
 
 ### S2. v0.8.0/v0.9.0 lifecycle 設計素材（LIVE capture 2026-04-29）
 
@@ -125,6 +126,81 @@
 這呼應 A1「角色 ⊥ AI」公理的 reverse — 不只「角色不綁 AI」、是「**同一角色在不同 AI 身上演化、互為養分**」。
 
 **Ship 時機**：v0.9.0 lifecycle.md ship 時、一併進 README §設計哲學段
+
+### S3. charter as diagnose + remediate protocol（引導式紀律、v0.8.x PATCH 漸進落地候選）
+
+**user 提案原話（2026-04-29 LIVE）**：「**doctor 診斷然後給出符合現在版本的範疇... 透過我們的框架定義好目前最合規的方式、並且找出不合規的點、並且給予針對性建議**」+「**不要封鎖它的限制而是引導式的帶他做**」+「**把必不可缺的都列為檢查項目、如果有缺或不合規、再透過我們事先定義好的規定、讓 AI 去發想**」
+
+**核心設計**：charter 從「**規範框架**」進化到「**diagnose + remediate 標準作業協議**」、但採「**引導式紀律**」非「**封鎖式 freelance 抑制**」。
+
+**現況（v0.8.0）vs 提議（SSS S3）對比**：
+
+| 維度 | v0.8.0 現況 | SSS S3 提議（引導式） |
+|---|---|---|
+| charter spec 角色 | detect 規範 + 抽象「處置」描述 | detect + **修補方向 + 約束 + 反例**（引導式紀律） |
+| AI 角色 | 看 ERROR 自行想 prompt（易 freelance）| 在 charter 框架內**發想具體執行方式**、寫 prompt 給 user 確認 |
+| user 角色 | trust AI 修補建議 | trust charter ground truth、AI 在約束內 context-aware 優化 |
+| LLM 行為紀律 | 容易 freelance / 編造 anti-pattern | 既有 ground truth + 既能 vendor-specific 優化（青出於藍） |
+
+**對齊既有條款脈絡**（不是新概念、是既有「不代寫」精神往 fix layer 擴張）：
+
+| 既有條款 / signal | 對應 |
+|---|---|
+| v0.6.0 `core/ai-vendor-onboarding.md` 邀請制四步驟 | charter 對 vendor「不代寫、給概念層引導」精神同源、本 SSS S3 = 對「fix layer」的延伸 |
+| v0.7.3 北極星「charter 引導採用方、不讓 user 記」 | 深化：+「**引導 AI 在紀律內發想、不讓 user trust AI 判斷**」 |
+| v0.7.4 雙軌節奏「PATCH 頻繁小擴增」 | 落地：每個 error code 加四欄（v0.8.x PATCH 漸進） |
+| dogfood signal #5「LLM 繞路」治本路徑 | 給 AI「該做 / 不該做 / 反例」明確 → AI 不需要繞路 |
+| dogfood signal #20「LLM vocal 推 anti-pattern + 編造論述」 | 直接治本：spec 自帶 anti-pattern 反例 → AI 看反例就知道不能那樣做 |
+| dogfood signal #21「採用方動 schema 必須給 AI prompt」 | 延伸：fix 動作也要有 prompt、且 prompt 由 AI 在 charter 框架內發想（非 user 自寫、非 charter 寫死）|
+| dogfood signal #22「v0.x 結構修正 >> 規範補丁」 | 落地：「處置」描述（規範補丁）→ 五欄結構（結構修正） |
+| 框架價值第 4 條候選（1+1>2 / 青出於藍）| AI 在引導下發想、可能比 charter 預設更好（vendor-specific / project-specific 優化）|
+
+**spec 結構設計**（每個 error code 五欄）：
+
+```markdown
+### E<code>：<簡述>
+
+**校驗集**：[既有 schema 校驗 — 不變]
+**失敗描述**：[既有 — 不變]
+
+**合規規定**（v0.8.x PATCH 加、charter ground truth 寫死）：
+- 必須狀態：<目標終態>
+- 對齊條款：<引用具體 § 條款>
+
+**修補方向 + 約束**（v0.8.x PATCH 加、引導 AI 在框架內發想）：
+- ✅ 目標：<最終狀態描述>
+- ✅ 必動：<必須改的欄位 / 動作>
+- 🚫 不可動：<框架禁碰的東西>
+- 🚫 不可代決：<必須 user explicit 提供、AI 不得自代>
+- 推薦路徑：<charter 認可的修補方向、允許 AI 在約束內變體>
+
+**反例**（charter 已駁回的 anti-pattern、防 AI 重蹈覆轍）：
+- ❌ <具體 anti-pattern + 對應正解>
+- ❌ <另一個 anti-pattern + 對應正解>
+```
+
+**LIVE 實證閉環**（2026-04-29 user LIVE 抓到的 SSS S3 需求性）：
+
+| 階段 | charter 角色 | AI 行為 | LLM 紀律密度 |
+|---|---|---|---|
+| 第一輪 doctor | 給 error code + 抽象處置描述 | freelance 編造（移除 F6 + 在地化 vendor specs）= 兩個 anti-pattern | 不足 |
+| user 給挑戰 prompt | 三份 spec 原文 quote | 仍 double-down + 加碼編造 created_by 路徑 B | spec 紀律密度仍不足以單向 enforce |
+| user 加 ground truth + **「不要 freelance」明示 + 該動 / 不該動 / 反例** | spec 原文 + 強化引導結構 | **回歸實證立場、執行 charter 規範** ← **這就是引導式紀律的目標終態** | 紀律密度足夠 |
+
+→ **2026-04-29 user + maintainer 手動 simulate 了未來 v0.8.x SSS S3 條款化後 spec 自帶的引導結構**、實證設計提議的需求性 + 引導式 framing 比封鎖式更好。
+
+**ship 路徑（v0.8.x PATCH 漸進）**：
+
+- **v0.8.1 PATCH**（短期可 ship、~1-2 hr fresh head）：doctor-spec 既有 error codes（E601-E605 + E606-E608 + E801/W802）全加四欄結構（合規規定 + 修補方向約束 + 反例）
+- **v0.8.2 PATCH**：post-upgrade-verify-spec 5 軸 error codes 全加四欄
+- **v0.8.3 PATCH**：擴 init-spec Phase 5b CHECK 1-10 對應四欄
+- **v0.9.0 MINOR（架構級）**：新加 `core/diagnose-remediate-protocol.md` 條款（架構級概念第 13 個正式條款化）+ 對應 SSS S1 落地（自治模式安全閥）
+
+**對 SSS S1「AI 自治協作 + user 授權閘」前置基礎建設**：本 SSS S3 是 SSS S1 的前置 — 沒這層、AI 自治 = AI freelance（危險）；有這層、AI 自治 = AI 在 charter 框架內發想 + user 授權閘確認。**SSS S3 ship 完才有條件啟動 SSS S1 真正設計**。
+
+**架構級概念候選編號**：第 13 個（lifecycle.md / condition-mutability.md 留 v0.9.0 lifecycle 議程、屬第 14 / 15 個）。
+
+**SSS S3 不走「累積 ≥ 3 次」門檻**：本 LIVE 實證自身（signal #20 第 1〜4 次同 session 完整閉環）= 設計提議充分、跨多 release 漸進落地由 maintainer 視 use case 演化決定節奏。
 
 ---
 
@@ -298,6 +374,14 @@ framework 永久維持「**純規範**」位階。
 - **新 dogfood signal #19 候選 — doctor §3.7 E602 雙重否定措辭引發 LLM 誤判**（2026-04-29 YC 升版實證）：YC 升版 Step 3 跑 doctor、Gemini 讀 `tools/doctor-spec.md §3.7` 「`<common_memory_root>/shared/` 目錄存在 → E602 ERROR」措辭、把 YC 實際「shared/ 不存在」（合規狀態）誤判為「⚠️ WARN (Non-Critical) — 未偵測到 management/shared/ 目錄」。實際應該全綠通過。**根因**：spec 用「shared/ 應不存在」雙重否定描述 anti-pattern、Gemini 防禦性編程把「找不到」也標 WARN。**累積**：1 次（YC 升版實證）。**判斷**：屬 v0.7.6 BOOTSTRAP 順手修補的同類議題（doctor spec 對 LLM 友善的措辭明確化）；v0.7.6 議程 順帶 sweep doctor §3.7 + §3.8 對「禁存在 / 應存在」表述加正反例對照；當前先觀察、不條款化
 
 - **新 dogfood signal #21 候選 — charter 對「framework 全域 vs agent-commons 專案私有」雙層架構解釋不夠**（2026-04-29 user 升版完問「.agentcharter 在 user home 會影響其他專案嗎」直接抓到）：charter 文件（README / QUICKSTART / ADOPTION / TUTORIAL）多處提到 `~/.agentcharter/` 路徑、但**沒有清楚架構圖**（雙層 framework + agent-commons）讓 user 一眼看懂兩層隔離設計。user 第一次接觸時會困惑「會不會影響其他專案」。**對齊條款**：`core/common-memory-root.md` + `core/versioning-migration §6` + `core/charter-config.md §2` 都有相關說明、但分散；新 user 找不到全景。**判斷**：屬 v0.7.6 BOOTSTRAP 必修方向 — BOOTSTRAP.md 第一段應有 ASCII 架構圖 + 三個關鍵保證表（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）。**累積**：1 次（YC 升版完問）；屬一見即明痛點、可不必累積到 3 次直接條款化（BOOTSTRAP 設計順手做）
+
+- **新 dogfood signal #28 候選 — progressive adoption / 採用門檻 framing 缺**（2026-04-30 CliSpike Engineer Claude 外部評估觸發）：Engineer 報「過重 if 你只想要 AI 別瞎掰、抓 3-5 條核心落地就 80% 收益」 + 「適配場景 vs 反適配」二分。**根因**：charter 採用方分層採用紀律沒明示、三個 preset (minimal/standard/strict) 是「設定嚴格度」軸、不是「採用深度」軸。**候選方向**：v0.9.0 essential preset（3-5 條 core、targets 探索期 / 單人 / 快迭代）+ 採用 lifecycle「初始 footprint 超低、漸進深化」設計。詳見 `examples/external-evaluations/clispike-engineer-claude-2026-04-30.md`
+
+- **新 dogfood signal #27 候選 — spec-driven 與 LLM 自律 循環依賴 reality check**（2026-04-30 CliSpike Engineer Claude 外部評估觸發）：Engineer 報「框架自己的前提就是『LLM 不可矯正』循環依賴」 — spec-driven 工具鏈 + AI 自具象化 = 紀律執行最終仍依賴 LLM 自律、但 charter 自身條款（violation-reflection §2「反省不能矯正 LLM」）已承認 LLM 不可矯正。**直接對應 SSS S3 引導式紀律設計的需求性** — SSS S3 v0.8.x PATCH ship 後此循環解開。詳見 `examples/external-evaluations/clispike-engineer-claude-2026-04-30.md`
+
+- **新 dogfood signal #26 候選 — init token cost / ROI 系統評估缺位**（2026-04-30 CliSpike Engineer Claude 外部評估觸發）：Engineer 報「每次 init 約 25k+ tokens 讀協議；單人 / 小專案 ROI 會吃緊」。**根因**：charter 至今沒系統評估過 init token cost vs ROI、minimal preset 雖 9/19 仍偏重。**候選方向**：v0.9.0 essential preset（3-5 條 core、< 5k init token、與 #28 同源族群）。詳見 `examples/external-evaluations/clispike-engineer-claude-2026-04-30.md`
+
+- **新 dogfood signal #25 候選 — walkthrough 設計層未涵蓋 v0.7.1 frontmatter scaffold ship 前接入採用方**（2026-04-29 user LIVE 抓到）：v0.7.5 → v0.8.0 walkthrough §0 表只有 A/B/C 三類採用方分類、但 user IRON.md case 屬第 4 類 D（路徑 A user 主筆 + axiom 完全缺 frontmatter、v0.7.1 frontmatter scaffold ship 前接入採用方）。**現況走 manual override**（user 用我給的修補 prompt 跑通）；walkthrough 文件需補 §0 第 4 類 D + 新加 Step 3.D「路徑 A axiom 補 frontmatter scaffold」（簡化版、無校正紀錄行、created_by: user）。**累積**：1 次（YC 升版 LIVE 實證）。**判斷**：累積觀察、暫不條款化、待 v0.8.x PATCH 順手補
 
 - **新 dogfood signal #24 候選 — ADOPTION/TUTORIAL 變更歷史段 sync 缺漏連續違反**（2026-04-29 user post-v0.8.0 ship 抓到）：v0.8.0 ship commit 後 user 立即問「**文件有更新嗎、有記得補更新的文件讓採用方可以照著步驟更新了嗎**」→ maintainer 檢查發現 (a) ADOPTION.md §13 變更歷史最新 entry 為 v1.5 (charter v0.7.3)、缺 v0.7.4 + v0.7.5 + v0.8.0 entries；(b) TUTORIAL.md 變更歷史最新 entry 為 v1.3 (charter v0.7.0)、缺 v0.7.1 + v0.7.2 + v0.7.3 + v0.7.4 + v0.7.5 + v0.8.0 entries。**已 v0.8.0 commit 後修補**（add follow-up commit、不動 v0.8.0 tag、本 commit 純文檔補完不影響 release）。**根因**：v0.7.2 ship `core/maintainer-discipline §3.4.2` 文檔層 sync checklist 子項「變更歷史段（採用方文檔）」、但 maintainer 在 v0.7.4 / v0.7.5 / v0.8.0 三次連續 release 中漏執行此 checklist 子項 = **連續 ≥ 3 次同類違反同一子項**、對應 §3.4 違反處置「升級該子項至 §3.1 工具層自動偵測」。**已達 dogfood-driven hardening 第十二循環觸發點**。**處置候選**（v0.8.x PATCH 議程 / v0.9.0 一併）：
   - (a) `tools/doctor-spec.md` 新加 §3.10「採用方文檔變更歷史 sync」校驗 — 比對 ADOPTION/TUTORIAL 變更歷史最新 entry 對應 charter version vs profile.yaml `charter_version`、不一致 → WARN
