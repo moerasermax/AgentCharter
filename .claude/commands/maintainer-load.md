@@ -65,15 +65,22 @@ charter maintainer 接班完成，待下達議題。
 
 `maintainer-discipline.md §3` 規定三層執行機制（工具層 / 流程層 / commit 層）。本指令是「**接班便利化**」的延伸 — 不在 §3 列出的三層內，而是對應 §1 條文「DRAFT 須是檔案」紀律的反向（**接班讀檔**對應**累積寫檔**）。
 
-當前狀態（v0.7.5）：
+當前狀態（v0.8.0）：
 - 寫檔：自然執行（每次重要工作更新 `.claude_temp/` + commit）
 - 讀檔：本指令落實
 - 抽驗執行載體：`roles/auditor/_spec.md`（v0.6.0 概念層誕生）— 跑 spec sync check 走 fresh-context sub-agent 達成「他抽」屬性
 - 採用方半邊對稱（v0.7.0 加）：`tools/init-spec.md Phase 5b` + `roles/validator/_spec.md §3.6`（採用方接入流程 init 結果抽驗）
-- 領域公理雙路徑（v0.7.1 加）：`core/domain-axiom-slot §3.3` + `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（路徑 B AI 代產草稿）；condition mutability 完整紀律留 v0.8.0
+- 領域公理雙路徑（v0.7.1 加）：`core/domain-axiom-slot §3.3` + `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（路徑 B AI 代產草稿）
 - 文檔層 sync checklist（v0.7.2 加，dogfood signal #6 三次同類條款化）：`core/maintainer-discipline §3.4`
 - **設計哲學（北極星）顯化**（v0.7.3 加）：README 加「設計哲學」段顯化 user 兩個無痛定義（回鍋開發者 / 小白）+ 三條服務原則（解決重複溝通 / charter 引導採用方 / 培養魚塭）+ 對未來修訂的紀律。所有未來修訂須對照「**讓未來採用方更舒適 vs 現在這個夠用**」三題對齊
-- **vendor 端 slash command schema 規範**（v0.7.4 加，dogfood signal #16 條款化）：`roles/pm/gemini-cli.md §3.6`（toml 扁平結構強制）+ `roles/engineer/claude-code.md §4.1`（.md 純 markdown 規範）+ `tools/doctor-spec.md §3.8`（vendor schema check spec 層、實作 defer v0.8+）
+- **vendor 端 slash command schema 規範**（v0.7.4 加 spec 層 → v0.8.0 實作層啟用、dogfood signal #16 條款化）：`roles/pm/gemini-cli.md §3.6`（toml 扁平結構強制）+ `roles/engineer/claude-code.md §4.1`（.md 純 markdown 規範）+ `tools/doctor-spec.md §3.8`（vendor schema check 啟用 E801/W802）
 - **跨多版本升版指引 + 回鍋開發者無痛實證**（v0.7.5 加）：`core/versioning-migration §3.4`（跨多 MINOR 累積升級流程）+ `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md`（第一個跨版本 walkthrough）
-- **v0.7.x 後續 PATCH 議程**（小步快跑、嚴守向下兼容）：v0.7.6 BOOTSTRAP.md 入口檔 / v0.7.7 prompt 簡化 / v0.7.8 versioning-migration BREAKING-LITE 判定 checklist
-- **v0.8.0 MINOR 議程**：`core/adoption-lifecycle.md` 完整條款（全新 / 升版 / 棄用 / 重新採用 + vendor 升級 path）+ condition mutability 紀律本體 + doctor §3.8 vendor schema check 實作啟用
+- **v0.8.0「升版 + 接入防呆強化」slim release**（2026-04-29 ship）：
+  1. `tools/post-upgrade-verify-spec.md` 新檔（5 軸 spec：A clone / B schema / C structure / D axiom / E stale ref；user LIVE 提議 `/charter-upgrade-verify` slash command）
+  2. `tools/doctor-spec.md §3.9` axiom 紀律對齊（E606/E607/W608 — dogfood signal #23 條款化、跨 init/doctor/post-upgrade-verify 三層雙重防禦）
+  3. `tools/doctor-spec.md §3.8` vendor schema 從 spec 層升實作層（v0.7.4 累積 → v0.8.0 啟用）
+  4. `tools/init-spec.md Phase 5b CHECK 7 ext` axiom frontmatter status 校驗（init 端 fail-fast 載體）
+  5. QUICKSTART Step 2 ↔ Step 3 swap（v0.7.6 prep 併入；signal #10 從 cross-reference 升結構修正、signal #22 候選紀錄）
+  6. SSS 級議程紀錄：S1 AI 自治協作 + user 授權閘 / S2 v0.8.0/v0.9.0 lifecycle 設計素材（含 `/charter-uninstall` 流程 + vendor 升級 path 三路徑 + 互學深化）
+- **v0.7.x 留下議程**（v0.8.0 跳號收編 / 議程順位 shift 到 v0.8.x PATCH）：BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE 判定 checklist
+- **v0.9.0 MINOR 議程**：`core/adoption-lifecycle.md` 完整條款（全新 / 升版 / 棄用 / 重新採用 + vendor 升級 path）+ `core/condition-mutability.md` 紀律本體 + post-upgrade-verify 模式 B/C ship

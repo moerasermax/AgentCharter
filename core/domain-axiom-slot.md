@@ -89,7 +89,7 @@
 | **AI 不可自升 Status** | AI 寫的 draft `Status: AI-DRAFTED`；升 `USER-RATIFIED` 必須 user **親自**改 frontmatter；違反 = F1（假宣告就位）|
 | **每條附推斷依據** | AI 寫的鐵律每條須附「我從哪推斷的」（檔案路徑 + 行號 / grep 結果 / commit hash）— 給 user 校正時知道推斷依據 |
 | **不可編造** | AI 只顯化「codebase 真實存在的紀律」；找不到 = 少寫幾條、不要湊數；對應 `failure-modes F3` 防呆 |
-| **校正前不啟動 init** | user 校過 axiom 檔（升 RATIFIED）才繼續 charter-init Phase 1-5b；對應 v0.7.0 Phase 5b 物理存在校驗的精神延伸 |
+| **校正前不啟動 init** | user 校過 axiom 檔（升 RATIFIED）才繼續 charter-init Phase 1-5b；對應 v0.7.0 Phase 5b 物理存在校驗的精神延伸；**v0.8.0 加執行載體**（dogfood signal #23 條款化）：`tools/init-spec.md` Phase 5b CHECK 7 ext + `tools/doctor-spec.md §3.9` E606 + `tools/post-upgrade-verify-spec.md` 軸 D D001 三層雙重防禦 |
 
 **對應載體**：
 
@@ -97,7 +97,10 @@
 |---|---|
 | `templates/agent-commons/domain-axioms.md.tpl` | 含 frontmatter scaffold（status / mutability_default / created_by / created_at）|
 | `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl` | 路徑 B 觸發 prompt 範本（v0.7.1 新加）|
-| `QUICKSTART.md Step 3` | 雙路徑說明 + 路徑 B prompt 連結 |
+| `QUICKSTART.md Step 2` | 雙路徑說明 + 路徑 B prompt 連結 |
+| `tools/init-spec.md` Phase 5b CHECK 7 | v0.8.0 加 axiom frontmatter status 校驗（init 端 fail-fast、AI-DRAFTED → FAIL）|
+| `tools/doctor-spec.md §3.9` | v0.8.0 加 axiom 紀律對齊（任意時點驗證載體、E606/E607/W608） |
+| `tools/post-upgrade-verify-spec.md` 軸 D | v0.8.0 加 axiom status 校驗（升版專屬載體、D001/D003/D004） |
 
 **與 `ai-vendor-onboarding.md` 的區別**：
 
@@ -196,7 +199,7 @@
 **連動範圍**（依 `maintainer-discipline §2.2`）：
 - `templates/agent-commons/domain-axioms.md.tpl`（v0.7.1 加 frontmatter scaffold + per-clause mutability HTML 註解 + 撰寫指南雙路徑段）
 - `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl`（v0.7.1 新檔 — 路徑 B 觸發 prompt 範本）
-- `QUICKSTART.md Step 3`（v0.7.1 加雙路徑說明）
+- `QUICKSTART.md Step 2`（v0.7.1 加雙路徑說明 / v0.7.6 swap 後從 Step 3 移到 Step 2）
 
 ### v0.1（自 v0.5.5 引入）
 

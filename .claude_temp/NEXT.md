@@ -5,6 +5,129 @@
 
 ---
 
+## 🚀 SSS 級 — 架構級議程（v1.0 前必處理）
+
+> 本段為**跨多 release / 架構級議題**、優先序**高於** 🔴 高優先（單 release 議題）。每次 release 修訂須對照本段方向不偏離。SSS 級不走「累積 ≥ 3 次同類觀察」條款化門檻 — 由 maintainer 視 use case 演化決定 ship 節奏；可能跨 v0.8 → v1.0 多 release 漸進落地。
+
+### S1. AI 自治協作 + user 授權閘模式（user 角色 redefinition）
+
+**user 提案原話（2026-04-29）**：「**讓 AI 們互相自己工作、我從監督決策的角色變成讓他們自動升級的概念、但是要我授權後才可以**」
+
+**三軸拆解**：
+
+| 軸 | 內容 | 現有條款 gap |
+|---|---|---|
+| **A. AI 互相自己工作** | AI-to-AI direct collaboration、不每步 user-in-the-loop | `cross-ai-handoff` 是換手非並行；`role-separation` 沒規範 autonomous 模式下的 role-to-role 直接交互 |
+| **B. user 角色：監督決策 → 授權閘** | user 從持續監督變 consent-gate；AI 提案、user 通過 / 否決 | **完全新概念** — 可能新加 `core/user-authorization-gate.md` + 改 `audit-rights` 在 autonomous mode 下的執行模式 |
+| **C. AI 自動升級** | AI 自驅 charter migration / 自身能力進化 / 自抓 signal 自提條款修訂；user 授權閘通過才生效 | 改 `versioning-migration` (auto-migration with gate)、`maintainer-discipline` (誰發起條款修訂的擴張)、可能新概念「AI-as-maintainer-candidate」|
+
+**戰略意義**：
+- v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」從**文件層引導**擴展到**運作層引導**
+- 採用方放大化路徑：user 也可從「持續監督多 AI」→「授權閘」、降低採用門檻、放大 framework 影響力
+- 對齊「**培養魚塭、不討魚**」精神 — 建立 AI 自治紀律本身就是長期生態養成
+
+**起手方向**（待下次 session 深化）：
+1. **概念 framing 文件先寫**（不寫條款、不寫 spec）— 三軸再拆細 / 「AI 自治模式」邊界 / 與既有條款相容性盤點 / 與 v0.8.0 議程 `adoption-lifecycle` + `condition-mutability` 兩條既有 v0.8.0 議題的整合關係
+2. **謹守向下兼容**：autonomous mode 必為 opt-in、既有 supervisor mode 永久 default
+3. **dogfood signal 累積**：採用方（YC / 公司專案 / CryptoBot）1-2 個月後問「你想讓 AI 自治到什麼程度」累積真實 use case 觸發條款化
+4. **不限單一 release ship**：可能跨 v0.8 → v1.0 多 release 漸進落地
+
+**潛在影響範圍**（初步盤點、深化時擴）：
+- **條款層**：可能新加 1-3 條（user-authorization-gate / autonomous-collaboration / ai-self-driven-evolution）
+- **架構級概念**：新加第 13 / 14 / 15 個（視議題拆解深度）
+- **spec 層**：init-spec / doctor-spec 全部可能有 autonomous-mode 對應段
+- **role 層**：可能新 role（autonomous-coordinator？supervisor-on-gate？）
+- **preset 層**：autonomous mode 開關 / 可能新 preset
+
+**對既有 SSS 級候選的對齊**：
+- S2「v0.8.0/v0.9.0 lifecycle 設計素材」→ 見下（user LIVE 設計直覺保留、待 v0.9.0 fresh head 設計 lifecycle.md / mutability.md 時拿來用）
+
+### S2. v0.8.0/v0.9.0 lifecycle 設計素材（LIVE capture 2026-04-29）
+
+> **位階**：本段為 user LIVE 設計 fresh-head 素材保留（即使疲勞模式直覺仍清晰）— 對應 v0.9.0 議程 `core/adoption-lifecycle.md` + `core/condition-mutability.md` 兩條大條款。**不在本段直接條款化**、保留待 v0.9.0 fresh head 設計時直接拿來用。
+
+#### S2.1 `/charter-uninstall` 工具設計（user 提案 + maintainer enrichment）
+
+**核心精神（user framing）**：「**盡到最後的溫柔**」— 對齊「培養魚塭、不討魚」精神、棄用是有尊嚴的離別不是 lock-in。
+
+**流程設計**：
+
+```
+[Phase 1] 三次確認
+  Q1: 確定要棄用 charter？
+  Q2: 已備份 agent-commons/ 重要資產？
+  Q3: 確認執行不可逆操作？
+[Phase 2] 保留最後的溫柔 — export adoption archive
+  寫入 <project>/charter-archive/CHARTER_ADOPTION_REPORT_<date>.md：
+  - 接入摘要（charter_version / preset / 採用日期 / 棄用日期 / 採用時長）
+  - capsules/ 統計（總 N、closed M、failed K）
+  - HANDOFF 鏈時間線
+  - institutional-memory/ 全部 entries
+  - protocols/<axiom>.md snapshot
+  - state/violations + failure_modes.log 統計（F1〜F6 各觸發次數）
+  - dogfood signal 觸發紀錄
+  - 結語「感謝採用 AgentCharter v<X>、你的紀律遺產保留於本檔」
+[Phase 3] level 選擇（預設 Soft）
+  Soft：移除 vendor slash command、agent-commons/_role.md 加 status: ARCHIVED + uninstalled_at
+  Full：Soft + 砍 _config（保留 protocols/）+ 加 1 次確認
+  Nuclear：Full + 砍整個 agent-commons/（archive 先寫完）+ 加 2 次確認
+[Phase 4] charter clone 處理
+  檢查 ~/.agentcharter 有無其他 active 專案在用
+  詢問 user 是否刪 ~/.agentcharter
+[Phase 5] 結束 + 輸出 archive 報告位置
+```
+
+**紀律重點**：
+- LLM 不得自代回答三次確認（對應 dogfood signal #5 LLM 繞路同源）
+- archive 報告先寫完才動刪除（structural-anti-fabrication 精神）
+- agent-commons/ 預設不刪（A3 公理 — user 對自己工作軌跡 ownership 永久）
+- `~/.agentcharter` 刪除前必查 multi-project 影響
+
+**對應條款定位**：新檔 `tools/uninstall-spec.md` + `core/adoption-lifecycle.md` 「棄用」階段引用
+
+#### S2.2 vendor 升級 path 三路徑設計（user 提案）
+
+**user 核心原則**：「**有始終有備案、不死在那邊**」
+
+**機制**：vendor-specific init slash command（`/pm-init` / `/engineer-init`）內含 vendor 版本一致性 check —— 比對 `current vendor version` vs `last_known_vendor_version`（後者記在 `agent-commons/roles/<role>/_role.md` frontmatter）：
+
+- **一致** → 直跳 init 流程
+- **不一致** → 三路徑供 user 選：
+
+| 路徑 | 內容 | 對應紀律 |
+|---|---|---|
+| **A. 維持現狀** | 採用方繼續用既有 toml/md | 純等待、向下兼容精神 |
+| **B. 開 issue** | 採用方開 issue 給 charter maintainer | charter 走 `ai-vendor-onboarding §3` 邀請制 v2 重新校正 vendor spec |
+| **C. AI 自驅修復** | vendor AI 重新具象化 init slash command 對齊新 vendor schema | **SSS S1「AI 自治協作 + user 授權閘」子集**、user explicit 授權閘後執行 |
+
+**對應落地檔**：
+- `core/init-template §3.3.2` 加 step 8 vendor 版本一致性 check（或擴 step 5 schema validation）
+- `roles/<role>/<vendor>.md` frontmatter 加 `vendor_supports: ">=X.Y.Z,<X+1.0.0"`
+- `agent-commons/roles/<role>/_role.md` frontmatter 加 `last_known_vendor_version`（init 時記）
+
+#### S2.3 新 vendor 接入「互學深化」設計（user 提案）
+
+**user 核心原則**：「**1+1>2 / 青出於藍勝於藍 = 框架價值**」
+
+**機制擴張**：
+- `ai-vendor-onboarding §3 step 2`（vendor 寫實作層）**強制紀律**：必須先讀既有所有同角色 vendor spec、做 cross-vendor pattern extraction
+- 新 vendor spec 模板加 `§N. 與既有 vendor 對照學習` — 顯化吸收什麼 / 創新什麼
+- `§3 step 4`（既有 vendor 校正 regression）擴為「**vendor 互學深化**」— 新 vendor 接入後、既有 vendor 回頭吸收新 vendor 的創新（雙向 pollination）
+
+#### S2.4 README §設計哲學第 4 條候選（v0.7.3 北極星擴）
+
+**user 今天 reframing**：
+
+> **4. 跨 vendor 知識聚合 + 互為養分 + 收斂 best-of-breed**
+>
+> charter 不只是「讓多 AI 協作」、而是「**讓多 AI 學彼此、超越彼此**」。每次新 vendor 接入 = 新 cross-pollination 機會；charter spec 收斂 best-of-breed 紀律 = 跨廠商演化機制本身就是 framework 價值。
+
+這呼應 A1「角色 ⊥ AI」公理的 reverse — 不只「角色不綁 AI」、是「**同一角色在不同 AI 身上演化、互為養分**」。
+
+**Ship 時機**：v0.9.0 lifecycle.md ship 時、一併進 README §設計哲學段
+
+---
+
 ## 🔴 高優先（影響 v1.0）
 
 ### 1. 核心條款覆蓋率盤點 ✅ **全部完成**
@@ -53,6 +176,59 @@ framework 永久維持「**純規範**」位階。
 
 **狀態**：YC_AIAgentCrew 接入完成 — 第二個非 CryptoBot 採用案例。雙 AI 雙角色 self-instantiation 全部跑通（PM Gemini ✅、Engineer Claude ✅、charter-init 兩 vendor ✅），doctor 全綠 + 1 個合理 W201（lazy create）。同步驗證 v0.5.9 純規範框架（無 python 工具仍可跑通）+ dogfood signal #4「具象化 ⊥ 驗證結構性脫鉤」預測完全成立。詳見 STATUS §已對外實證。
 **A3 公理實證**：「專案 ⊥ 框架」公理由真實非金融專案實證 — YC_AIAgentCrew 不是 CryptoBot 系列，charter 條款抽象層次經得起跨領域考驗。
+
+### 5. `/charter-upgrade-verify` — 升版後標準驗證流程 ✅ **v0.8.0 完成**（2026-04-29 ship）
+
+**Ship 內容**：`tools/post-upgrade-verify-spec.md` 新檔（5 軸 spec：A clone / B schema / C structure / D axiom / E stale ref + 模式 A 完整健康檢查）。模式 B 升版 diff / C pre-commit sync 留 v0.9+ 議程。
+
+**最終命名**：`/charter-upgrade-verify`（user 2026-04-29 確認、選 「強調升版場景」候選）
+
+**Ship 路徑**：v0.8.0 slim release（lifecycle.md / condition-mutability.md 兩條大條款 fresh-head risk 高、留 v0.9.0）
+
+**累積跳門檻紀錄**：1 次（user 直接提議、2026-04-29 LIVE 條款化、同 v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）
+
+**詳細歷史 entry 看下面**（保留供查、不刪）：
+
+---
+
+**user 提案原話**：「**升版後需要一個檢核機制、看目前的文件狀態、`~/.agentcharter`、目前 agent-commons 哪些標準的格式不合規等**」 — 升版完**之後**的 standard post-migration verification protocol。
+
+**位階定位**：
+- spec layer（tools/）— 不是 condition
+- 與 `tools/doctor-spec.md`（通用 schema validation）並列、定位**升版專屬**
+- 對應 `core/versioning-migration §3` 第 7 步「跑 doctor」的擴充強化（升版後完整度驗證）
+
+**和既有的區別**：
+
+| | doctor-spec | versioning-migration §3 | **新 post-upgrade verify** |
+|---|---|---|---|
+| 場景 | 任何時候 | 升版**過程** | 升版**完之後** |
+| 範圍 | 通用 schema | 升版步驟流程 | 升版完整度 + stale reference + 跨多版累積遺漏 |
+
+**檢查範圍盤點（5 軸）**：
+
+| 軸 | 檢查內容 |
+|---|---|
+| **A. charter clone 對齊** | `~/.agentcharter` git log 是否含 user profile.yaml 宣稱的 `charter_version` 對應 commit / tag |
+| **B. 本專案 schema 對齊** | profile.yaml 啟用條款數對齊當前 charter spec + enable_modes 含 F6（v0.7.0 起必啟） |
+| **C. agent-commons/ 結構合規** | v0.7.0 namespace（shared/ 不存在）+ v0.7.4 vendor toml 扁平結構 + `_role.md` PROVISIONAL/ACTIVE 二態 |
+| **D. axiom 紀律對齊** | frontmatter `status: USER-RATIFIED`（v0.7.1 + 待 signal #23 ship 後加 status check） |
+| **E. stale reference 檢查** | 文件 / vendor toml / template 內 `charter_version` / spec section / step 編號是否對齊當前 |
+
+**工具命名候選**：`/charter-version-status` (user 暫名) / `/charter-upgrade-verify` / `/charter-postmigration` / `/charter-sync-check`
+
+**位階建議**：新檔 `tools/post-upgrade-verify-spec.md`（與 doctor-spec 並列）+ AI 自具象化為 slash command（依 init-template §3.3）+ 三 preset 不需新欄位
+
+**Ship 路徑選項**：
+- **選項 1：v0.7.6 BOOTSTRAP 批次** — scope 變大（QUICKSTART swap + signal #23 + BOOTSTRAP.md + 本工具）、但同源北極星精神
+- **選項 2：v0.7.7 獨立 PATCH** — scope 乾淨、可優先於 v0.7.7 既有「prompt 簡化」或合併
+- **選項 3：v0.8.0 「lifecycle 完整化」** — 整合進 `core/adoption-lifecycle.md` 升版階段
+
+**對齊 SSS S1**：本工具自動化驗證是 **SSS S1「AI 自治協作 + user 授權閘」的子集** — 自動驗證後 AI 自提升版完整度報告 → user 授權閘批准 release lifecycle 推進。可作 S1 起手方向之一
+
+**累積觸發**：1 次（user 直接提議、跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 user 直接條款化 pattern）
+
+**user 待決**：(a) Ship 路徑（選項 1 / 2 / 3 / 其他組合）+ (b) 工具最終命名
 
 ---
 
@@ -108,11 +284,36 @@ framework 永久維持「**純規範**」位階。
 
 ## ⚪ 待對話的議題
 
+> **處理紀律**（user 2026-04-29 強調）：本段每個議題處理完後**必須**：
+> 1. 劃線標 ✅ vN.M 完成 + 簡述條款化位置（如「✅ v0.7.6 完成：core/X.md §Y 加段」）
+> 2. 若部分完成：明示「**部分完成**：X 已條款化 / Y 留 v0.8.0」
+> 3. 不可只在腦中知道做完了、必須回頭來標
+> → 對齊 `working-stack-discipline §1` DRAFT 紀律 + `maintainer-discipline §3.4.3` 內部追蹤層 sync
+
 - **v0.7.6 BOOTSTRAP.md 入口檔議程備註 — 必含「升版快速執行版」段**（v0.7.5 對話揭露 / 2026-04-29 user 直接抓到）：v0.7.5 ship 的 `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` walkthrough §3 7 步流程對採用方仍偏重（含大量 reference + 條款引用 + 設計學意義段）；對話內 maintainer 即興整理的「**5 步精簡實戰執行版**」（Step 0 前置 / Step 1 toml / Step 2 profile / Step 3 doctor / Step 4 axiom / Step 5 commit + 預估時間 + 驗證點）對採用方體感更佳、但**沒沉澱回文件**。對應 v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」精神不夠到位 → v0.7.6 BOOTSTRAP.md 設計時必含「**升版快速執行版**」結構（採用方端入口、對應 walkthrough §3 但精簡 actionable）；既有 walkthrough §3 保留為「**標準學術版**」、可加 §3a「**快速執行版**」對照 cross-reference。**對應 NEXT 區段 v0.7.x 後續議程的 v0.7.6 BOOTSTRAP**
+
+  - **第二輪 user 抓到的同源設計盲區（2026-04-29 升版實戰）**：v0.7.5 walkthrough §3 Step 4「應用 migration」段（4.1 profile.yaml 修補 / 4.2 toml 修補 / 4.3 axiom frontmatter）— **4.1 + 4.3 是「給 user 的 yaml/markdown diff 範例」、不是「給 AI 的 prompt」**（vs 4.2 toml 修補是「給 AI 的 prompt」格式）。user 反問「這邊要自己手改(?，不能用指令嗎 這樣似乎不是無痛」抓到此設計矛盾。**v0.7.6 BOOTSTRAP 設計必修紀律**：所有採用方需要動 schema / 修檔的動作（profile.yaml 改 / mapping.yaml 改 / axiom 加 frontmatter / commit message 模板等）— **必須有對應「給 AI 的 prompt」模板**（user 貼一次 AI 自動完成）；不可只給「user 視角的 diff 範例」（要求 user 親自編輯）。對齊「**user 最少做 1 個動作**」北極星精神 — user 動作 = 貼 prompt、AI 動作 = 修檔。
+  - **同源 dogfood signal**：charter 過去半天 ship 的 v0.7.0〜v0.7.5 多個 release 文件（QUICKSTART / ADOPTION / TUTORIAL / walkthrough）很多段落都犯這個「maintainer 視角寫法」毛病 — 顯化條款細節 vs 顯化採用方執行路徑 兩者落差。v0.7.6 BOOTSTRAP 順帶 sweep 整個採用方文檔層、把「執行類段落」全部對齊「給 AI 的 prompt」格式。**累積觀察**：本次 user 反問是第 1 次直接抓到這類同源 pattern；累積觀察、視 BOOTSTRAP 設計範圍評估是否擴大 sweep 範圍
+
+- **新 dogfood signal #19 候選 — doctor §3.7 E602 雙重否定措辭引發 LLM 誤判**（2026-04-29 YC 升版實證）：YC 升版 Step 3 跑 doctor、Gemini 讀 `tools/doctor-spec.md §3.7` 「`<common_memory_root>/shared/` 目錄存在 → E602 ERROR」措辭、把 YC 實際「shared/ 不存在」（合規狀態）誤判為「⚠️ WARN (Non-Critical) — 未偵測到 management/shared/ 目錄」。實際應該全綠通過。**根因**：spec 用「shared/ 應不存在」雙重否定描述 anti-pattern、Gemini 防禦性編程把「找不到」也標 WARN。**累積**：1 次（YC 升版實證）。**判斷**：屬 v0.7.6 BOOTSTRAP 順手修補的同類議題（doctor spec 對 LLM 友善的措辭明確化）；v0.7.6 議程 順帶 sweep doctor §3.7 + §3.8 對「禁存在 / 應存在」表述加正反例對照；當前先觀察、不條款化
+
+- **新 dogfood signal #21 候選 — charter 對「framework 全域 vs agent-commons 專案私有」雙層架構解釋不夠**（2026-04-29 user 升版完問「.agentcharter 在 user home 會影響其他專案嗎」直接抓到）：charter 文件（README / QUICKSTART / ADOPTION / TUTORIAL）多處提到 `~/.agentcharter/` 路徑、但**沒有清楚架構圖**（雙層 framework + agent-commons）讓 user 一眼看懂兩層隔離設計。user 第一次接觸時會困惑「會不會影響其他專案」。**對齊條款**：`core/common-memory-root.md` + `core/versioning-migration §6` + `core/charter-config.md §2` 都有相關說明、但分散；新 user 找不到全景。**判斷**：屬 v0.7.6 BOOTSTRAP 必修方向 — BOOTSTRAP.md 第一段應有 ASCII 架構圖 + 三個關鍵保證表（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）。**累積**：1 次（YC 升版完問）；屬一見即明痛點、可不必累積到 3 次直接條款化（BOOTSTRAP 設計順手做）
+
+- ~~**新 dogfood signal #23 候選 — Phase 5b CHECK 7 axiom 校驗範圍 gap（surface-level vs structural-level F6 sub-pattern 第二次同類）**~~ ✅ **v0.8.0 完成**（user LIVE 直接授權跳累積門檻、跨 init/doctor/post-upgrade-verify 三層雙重防禦：`tools/init-spec.md` Phase 5b CHECK 7 ext + `tools/doctor-spec.md §3.9` E606/E607/W608 + `tools/post-upgrade-verify-spec.md` 軸 D D001 全 ship）（2026-04-29 公司專案第二次接入 LIVE 實證、user 直接授權「下一次升版順便修」）：v0.7.0 公司接入第一次失敗（Gemini 寫 dbsdk.md schema 但檔案沒建）= 第一次同類；本次公司專案第二次接入（Gemini 路徑 B 寫 axiom AI-DRAFTED + user 未升 USER-RATIFIED）→ init Phase 1-5b 跑通 + Phase 5b CHECK 7 PASS = 第二次同類。**根因三層**：(a) `tools/init-spec.md Phase 5b CHECK 7` 只驗「檔案物理存在」、**沒驗 frontmatter `status` 值**；(b) `core/domain-axiom-slot §3.3` 路徑 B 紀律「不可在 AI-DRAFTED 啟動 init」**執行載體缺位**；(c) `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl` 第 5 步寫了、但 QUICKSTART Step 3 init prompt 沒交叉引用、AI 跑 init 不主動驗 axiom status。**累積**：2 次（v0.7.0 一次 + v0.7.6 LIVE 二次）。**queued v0.7.6 BOOTSTRAP 批次候選 / 或 v0.7.7 獨立 PATCH**（user 2026-04-29 LIVE 授權「順便修」、不打斷當前 LIVE 接入；當前 LIVE 走 Option B 就地補救手動升 status）：
+  - (a) `tools/init-spec.md Phase 5b CHECK 7` 擴含「frontmatter `status` == `USER-RATIFIED`」校驗（不通則 fail）
+  - (b) `QUICKSTART.md Step 3` init prompt 加紀律提示「跑 init 前自驗 axiom frontmatter `status` 是否 USER-RATIFIED、AI-DRAFTED 即終止退稿」
+  - (c) `core/domain-axiom-slot §3.3` 反向引用 init-spec Phase 5b CHECK 7（雙向引用對齊）
+  - (d) `tools/doctor-spec.md §3.7` 加 axiom frontmatter status 校驗（與 Phase 5b CHECK 7 互補）
+
+  **設計學意義**：F6 sub-pattern「surface vs structural」精神在 Phase 5b 自身內部的反向實證 — Phase 5b 設計是用來補 doctor 半邊「自抽自驗」、自身也可以有結構性盲區（surface PASS / structural fail）。對應 v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」紀律 — 目前要 user 自己記「升 status」是反向
+
+- **新 dogfood signal #22 候選 — v0.x 階段紀律補丁應預設重評為結構修正**（2026-04-29 user LIVE 公司接入駁回 v0.7.2 取捨）：v0.7.2 對 dogfood signal #10「QUICKSTART Step 2-3 順序與 Phase 5b 衝突」採 cross-reference 方案（保留編號 + 加警告）、留 v0.8+ 線性化；user 公司接入 LIVE 跑 Step 2 看到「前置條件 Step 3」直接反問「為啥不對調」 → cross-reference 警告 LIVE 失效訊號 #1。v0.7.6 prep 直接 swap、移除全部 cross-reference 警告。**結構性反思**：v0.x 階段「紀律補丁類修訂」（cross-reference / 警告 / 提醒）對採用方體感是反作用 — **多記東西** ⊥ v0.7.3 北極星「charter 引導採用方、不讓 user 記」。應預設「**結構修正**」（直接 swap / 重排 / 命名修正）而非「**規範補丁**」（加警告 / 加 footnote / 加紀律提醒）。**累積**：1 次（QUICKSTART #10 v0.7.2 → v0.7.6 升級實證）。**判斷**：累積 ≥ 2 次同類後條款化進 `core/maintainer-discipline §X` —「v0.x 階段條款修訂優先序：結構修正 >> 規範補丁」+ 反例段引 v0.7.2 cross-reference 為何 LIVE 失效；當前先觀察、不條款化
+
+- **新 dogfood signal #20 候選 — LLM 主動推薦 anti-pattern + 編造論述**（2026-04-29 YC 升版實證、**比 #19 嚴重**）：承 #19、Gemini 不只把 E602 標 WARN、**還主動建議 user 執行「結構遷移」**：mkdir management/shared/ + mv 所有資產進去 + 改 mapping.yaml layout.shared.<key>: shared/<key>/。**這正好是 v0.7.0 公司接入失敗的 dogfood signal #4 同源 anti-pattern**（Gemini 把 schema namespace `shared.*` 翻譯為檔案系統目錄）。Gemini 還編造論述：「對齊 v0.7.5 標準命名空間結構」 — **charter 沒這個結構**、v0.7.5 標準就是頂層扁平。**根因比 #19 深**：(a) v0.7.0 採「不重命名 namespace + 雙重防禦」決策（charter-config §3 註明 + doctor §3.7 校驗）對「**LLM silent 寫錯**」夠用、但對「**LLM vocal 主動推 anti-pattern + 編造論述**」不夠 — Gemini 不只是被動踩坑、還會說服 user 跟著踩。(b) doctor §3.7 措辭問題（#19）讓 Gemini 防禦性編程進入「主動建議修補」模式。**累積**：1 次（YC 升版實證）。**判斷**：v0.7.6 BOOTSTRAP 順手沒解；可能需要 v0.8.0 重新評估 v0.7.0「不重命名 namespace」決策 — 之前 user 選雙重防禦、本實證揭露雙重防禦對「LLM vocal misrecommendation」不夠、累積到 ≥3 次同類後評估是否在 v0.8.0 把 mapping schema `shared.*` namespace 重命名為不像路徑的字（如 `commons.*` / `xroles.*`）。**v0.7.0 決策回看**：「不重命名」決策仍對 — 重命名是 BREAKING-LITE 對既有採用方破壞大；但 v0.8.0 可考慮 alias（`shared.*` 仍 work、新採用方用 `commons.*`）漸進遷移路徑
 
 - ~~**dogfood signal #6 — 「條款層 sync 與文檔層 sync 不對等」**~~ ✅ **v0.7.2 完成**（達 ≥3 次同類門檻、條款化）：v0.6.1 auditor 第一次實戰（漏 numeric/version）+ v0.6.1 後 session（templates 範圍兜底含糊）+ **v0.7.1 後 user 直覺抓到 structural-anti-fabrication §5 反向引用漏**（v0.7.0 + v0.7.1 加段全部漏）= 三次同類觀察。v0.7.2 條款化為 `core/maintainer-discipline §3.4` 文檔層 sync checklist 三子段（條款層連動 + 文檔層連動 + 內部追蹤層）+ 違反處置 + v0.8+ 升級到工具層 doctor 自動偵測的演化路徑
 - **新 dogfood signal #9 候選**（v0.7.0 auditor 抽驗時發現） — 「**release 收尾步驟（STATUS/NEXT 更新）放到 commit 之後 = 容易在 release 當下漏掉 signal 紀錄**」。本次 v0.7.0 auditor 抽驗第一次跑時就抓到 W001（STATUS / NEXT 缺 signal #7/#8 紀錄、雖然 P6 task 排程內），對應「signal 紀錄 vs 條款修訂的時間差」結構性問題。**判斷**：累積 ≥3 次同類再評估，候選方向：(a) `maintainer-discipline §2.2` 引用範圍表加「STATUS / NEXT signal sync」項；(b) release commit 前 checklist 加「STATUS §D + NEXT.md ⚪ 是否已對齊本 release 修訂的 signal」；(c) 把 P6 標準化到 release 流程的 P3 之後（即修完條款立刻寫 STATUS/NEXT、再走 auditor）
-- ~~**dogfood signal #10 — QUICKSTART Step 2-3 順序與 v0.7.0 Phase 5b 衝突**~~ ✅ **v0.7.2 完成**（cross-reference 方案 — 條款化但保留編號）：QUICKSTART 檔頂「5 步流程」段加紀律警告（**實際執行順序：Step 1 → Step 3 → Step 2 → Step 4 → Step 5**）+ Step 2 加「前置條件 Step 3 必先完成」+ Step 3 加「先於 Step 2」執行順序提醒。**留 v0.8+** 整理為線性編號（消除「編號 vs 執行順序」的不一致）
+- ~~**dogfood signal #10 — QUICKSTART Step 2-3 順序與 v0.7.0 Phase 5b 衝突**~~ ✅ **v0.7.2 cross-reference → v0.8.0 直接 swap ship**（v0.7.6 prep 併入 v0.8.0、議程順位 shift）：v0.7.2 加紀律警告（檔頂執行順序 + Step 2 前置條件 + Step 3 順序提醒）為過渡方案；**v0.8.0 ship 直接 swap**（QUICKSTART Step 2 (axiom) ↔ Step 3 (init) + 移除全部 cross-reference 警告 + 修 path B item 4 pre-existing drift Step 4 → Step 3 + sweep README / domain-axiom-slot / maintainer-discipline §3.4.2 / templates 路徑 B prompt 共 5 檔同步）。**觸發於**：2026-04-29 user LIVE 公司專案接入時直接駁回 v0.7.2 取捨「為啥不對調」 → 累積 1 次 LIVE 失效訊號 + signal #22 候選同源「v0.x 結構修正 >> 規範補丁」原則。**設計學意義**：對齊 v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」+ v0.7.4 雙軌節奏「PATCH 頻繁小擴增」
 
 - **新 dogfood signal #13 候選 — user 對 charter 自身演化行使「他抽」屬性**（v0.7.2 觸發、抽驗時發現）：v0.7.1 release 後、user 連續兩次 IDE 開 `core/structural-anti-fabrication.md` 抓到 maintainer + auditor 漏的 §5 反向引用同步 → 觸發 v0.7.2 條款化 signal #6 + signal #10。**設計學意義**：v0.7.0 加的 Phase 5b 採用方半邊「他抽」屬性 → user 學會 → user 反過來他抽 charter 自己。**判斷**：累積 use case 後評估是否在 `roles/validator/_spec.md` 加 §3.7「對 charter 自身演化行使他抽」段（採用方視角的 charter dogfood 貢獻路徑明示）；當前先觀察、不條款化
 
@@ -141,6 +342,31 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.8.0 release（2026-04-29）— 升版 + 接入防呆強化（slim 版）
+
+✅ **dogfood-driven hardening 第十一循環 — 三條同 session 條款化（不依賴 release 等待）**：
+
+✅ **新增**：
+- `tools/post-upgrade-verify-spec.md` 新檔（5 軸 spec + 模式 A 完整健康檢查；user LIVE 提議 `/charter-upgrade-verify`）
+- `tools/doctor-spec.md §3.9` 加 axiom 紀律對齊段（E606/E607/W608、dogfood signal #23 條款化）
+
+✅ **啟用 / 擴**：
+- `tools/doctor-spec.md §3.8` vendor schema 從 spec 層升實作層（v0.7.4 累積條件滿足、E801/W802 強制）
+- `tools/init-spec.md` Phase 5b CHECK 7 ext（axiom frontmatter status 校驗 — init 端 fail-fast 載體）
+
+✅ **結構修正**：
+- `QUICKSTART.md` Step 2 ↔ Step 3 swap（v0.7.6 prep 併入；signal #10 從 cross-reference 升結構修正、signal #22 候選紀錄 v0.x 紀律補丁應預設重評為結構修正）
+
+✅ **連動更新**：三 preset yaml `0.7.5` → `0.8.0` + ADOPTION/TUTORIAL/maintainer-load 升版號 + core/domain-axiom-slot §3.3 對應載體加 v0.8.0 三層雙重防禦反向引用 + maintainer-discipline §3.4.2 checklist 範例更新 + CHANGELOG v0.8.0 段
+
+✅ **議程位階重整**：原 v0.8.0 議程 lifecycle.md + condition-mutability.md 兩條大條款（架構級新概念）fresh-head risk 高、留 v0.9.0；v0.7.x 留下議程（BOOTSTRAP / prompt 簡化 / BREAKING-LITE checklist）shift 到 v0.8.x PATCH
+
+✅ **SSS 級 capture（無 ship、跨 release 演化）**：
+- S1：AI 自治協作 + user 授權閘模式（user 角色 redefinition）
+- S2：v0.8.0/v0.9.0 lifecycle 設計素材（`/charter-uninstall` 流程 + vendor 升級 path 三路徑 A/B/C + 新 vendor 互學深化 + README §設計哲學第 4 條候選「跨 vendor 知識聚合 + 互為養分 + 收斂 best-of-breed」）
+
+✅ **採用方影響**：升版基本動作 = 改 charter_version 一行；既有 vendor toml/md 若 schema 不合規 / axiom AI-DRAFTED → 跑 doctor 抓新 ERROR、屬可接受 BREAKING-LITE（v0.x 階段、校驗強化非條款新增）；新採用方按新 QUICKSTART step order
 
 ### v0.7.5 release（2026-04-28）— 跨多版本升級指引 + 第一個回鍋開發者無痛實證 walkthrough
 

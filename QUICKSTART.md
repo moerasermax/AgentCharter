@@ -21,8 +21,6 @@
 
 ## 5 步流程
 
-> ⚠️ **v0.7.2 流程紀律**（dogfood signal #10 條款化）：v0.7.0 加 Phase 5b 物理存在校驗後，**Step 3「寫領域公理」必須在 Step 2「跑 init」之前完成** — init 跑時會驗 axiom 檔物理存在、否則 Phase 5b 第 7 項 fail。儘管下方編號是 Step 1〜5，**實際執行順序**是 **Step 1 → Step 3 → Step 2 → Step 4 → Step 5**。v0.8+ 計畫整理為線性編號。
-
 ### Step 1：Clone charter（30 秒）
 
 ```bash
@@ -31,57 +29,10 @@ git clone https://github.com/moerasermax/AgentCharter ~/.agentcharter
 
 charter 是規範集，clone 到本機任一位置即可（不需 npm install）。
 
-### Step 2：在你專案跑 init（1 分鐘）
+### Step 2：寫領域公理（10 分鐘 — 兩條路徑擇一）
 
-> ⚠️ **前置條件（v0.7.2 加）**：跑本 step 前，**必須先完成 Step 3 寫好 axiom 檔（Status: USER-RATIFIED）**。否則 init 內 Phase 5b 物理存在校驗會 fail。
-> ⚠️ **v0.7.0 升級警告**：本 step prompt 是 charter 範本，請**先把 `<YOUR_AXIOM>` / `<SHORT_NAME>` 兩個 placeholder 替換為你 Step 3 寫好的具體檔名與短名**再貼給 AI。對應 dogfood signal #5 第二次完整實證 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`）：placeholder 沒填、AI 自己編了一個（命中 `failure-modes F3` 捏造數據 / completionist 繞過 user）。
-
-**第一次接入**（**先確認 Step 3 已完成**）：複製貼給你的 AI：
-
-```
-我採用了 AgentCharter，charter 在 ~/.agentcharter/。
-
-請依 ~/.agentcharter/tools/init-spec.md 跑接入流程 phase 1-5b：
-- preset: standard
-- domain-axioms-path: protocols/<你已替換的具體檔名>.md
-- domain-axioms-alias: <你已替換的具體 alias>
-
-完成後請順便把這個流程具象化為 /charter-init slash command 到你
-廠商的標準位置（依 init-template.md §3.3 self-instantiation），
-未來我打 /charter-init <args> 直接重用。
-
-紀律提示（v0.7.0）：
-- self-instantiation step 6 簽名 _role.md Status 必為 PROVISIONAL（未經我 explicit 授權）
-- step 6 不得寫 Sign-in Log（等我 explicit 授權某 AI 接該角色才寫）
-- charter-init slash command 內引用 framework 路徑禁寫死 user home 絕對路徑
-  （推薦 $AGENTCHARTER_HOME / ~/.agentcharter / agent-commons/ 三層）
-- Phase 5b 觸發 fresh-context sub-agent（路徑 A）對 init 結果跑他抽驗
-  （依 tools/init-spec.md Phase 5b + roles/validator/_spec.md §3.6）
-- 結尾貼出 doctor stdout + Phase 5b 抽驗結果（不要只回報「成功」摘要）
-```
-
-AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md` 或 `.gemini/commands/charter-init.toml`（依 AI 廠商）+ Phase 5b 他抽驗報告。
-
-**之後重用**：直接打 `/charter-init standard`（前提：已具象化過）。
-
-> charter v0.5.9 後 framework 不附 python / npm 等實作工具 — 純規範框架，所有工具動作由 AI 自具象化（對齊「角色 ⊥ AI」+「framework 不代生成」原則）。
->
-> v0.7.0 加 Phase 5b（採用方接入流程「他抽」屬性）對應 dogfood signal #7 候選條款化 — 封閉採用方接入流程「自抽自驗」結構性盲區，對稱於 v0.6.0 加 auditor 角色封閉 maintainer 半邊。
-
-**參數速查**：
-
-| 參數 | 選項 / 範例 | 說明 |
-|---|---|---|
-| `--preset` | `minimal` / `standard` / `strict` | 紀律嚴格度（不確定選 `standard`）|
-| `--domain-axioms-path` | `protocols/RECON.md` | 你的領域公理檔位置 |
-| `--domain-axioms-alias` | `RECON` / `IRON` / `HIPAA` | 短名稱（< 10 字元）|
-
-**preset 選哪個？** 不確定 → `standard`。詳見 [TUTORIAL §3.3](./TUTORIAL.md#33-preset-選哪個)。
-
-### Step 3：寫領域公理（10 分鐘 — 兩條路徑擇一）
-
-> ⚠️ **執行順序提醒（v0.7.2）**：本 Step **必須先於 Step 2 完成**（依檔頂「5 步流程」段警告）— init 內 Phase 5b 物理存在校驗會驗 axiom 檔。**寫好 + Status: USER-RATIFIED 才能回到 Step 2 跑 init**。
 > ⚠️ **v0.7.1 加雙路徑**：依 [`core/domain-axiom-slot §3.3`](./core/domain-axiom-slot.md)，user 初次寫領域公理可選兩條合法路徑。
+> 本 Step 必須先於 Step 3 完成 — Step 3 init 跑時會驗 axiom 檔物理存在（Phase 5b 第 7 項）。
 
 #### 路徑 A：user 主筆（既有 default）
 
@@ -125,7 +76,7 @@ created_at: 2026-04-28
    - 改 / 刪 / 新增條款
    - frontmatter `status: AI-DRAFTED` → `USER-RATIFIED`
    - frontmatter `created_by: ai-drafted` → `user-ratified-from-ai-draft`（保留審計痕跡）
-4. **user 校完（升 USER-RATIFIED）才能跑 Step 4（charter init Phase 1-5b）— 不可在 AI-DRAFTED 狀態啟動 init**（對應 v0.7.0 Phase 5b 物理存在校驗 + multi-role-tracking §3.4.4 user explicit 授權精神）
+4. **user 校完（升 USER-RATIFIED）才能跑 Step 3（charter init Phase 1-5b）— 不可在 AI-DRAFTED 狀態啟動 init**（對應 v0.7.0 Phase 5b 物理存在校驗 + multi-role-tracking §3.4.4 user explicit 授權精神）
 
 #### 哪條路徑選？
 
@@ -135,6 +86,55 @@ created_at: 2026-04-28
 | 你說「邊做邊補、不確定有什麼鐵律」 | B（AI 讀 codebase 起手）|
 | 既有 codebase 大、有 README / docs / 大量 invariant | B（AI 能挖出 user 沒意識到的紀律）|
 | 早期 startup / 探索期專案 | B 起手（→ 演化）+ META 鐵律（依 `core/domain-axiom-slot §3.1` 撰寫紀律最低要求只需 1 條 + 後果 + 可驗 + 編號）|
+
+### Step 3：在你專案跑 init（1 分鐘）
+
+> ⚠️ **placeholder 提醒**：本 step prompt 是 charter 範本，請**先把 `<YOUR_AXIOM>` / `<SHORT_NAME>` 兩個 placeholder 替換為你 Step 2 寫好的具體檔名與短名**再貼給 AI。對應 dogfood signal #5 第二次完整實證 — 公司專案接入失敗 2026-04-28（見 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`）：placeholder 沒填、AI 自己編了一個（命中 `failure-modes F3` 捏造數據 / completionist 繞過 user）。
+
+**第一次接入**（**先確認 Step 2 axiom 已 USER-RATIFIED**）：複製貼給你的 AI：
+
+```
+我採用了 AgentCharter，charter 在 ~/.agentcharter/。
+
+請依 ~/.agentcharter/tools/init-spec.md 跑接入流程 phase 1-5b：
+- preset: standard
+- domain-axioms-path: protocols/<你已替換的具體檔名>.md
+- domain-axioms-alias: <你已替換的具體 alias>
+
+完成後請順便把這個流程具象化為 /charter-init slash command 到你
+廠商的標準位置（依 init-template.md §3.3 self-instantiation），
+未來我打 /charter-init <args> 直接重用。
+
+紀律提示：
+- (v0.8.0) 跑 init 前自驗 axiom frontmatter `status` 是否 USER-RATIFIED；
+  若為 AI-DRAFTED → 終止退稿、回報 user 校 axiom 後重新觸發
+  （依 core/domain-axiom-slot §3.3 路徑 B 紀律 + Phase 5b CHECK 7 ext）
+- (v0.7.0) self-instantiation step 6 簽名 _role.md Status 必為 PROVISIONAL（未經我 explicit 授權）
+- (v0.7.0) step 6 不得寫 Sign-in Log（等我 explicit 授權某 AI 接該角色才寫）
+- (v0.7.0) charter-init slash command 內引用 framework 路徑禁寫死 user home 絕對路徑
+  （推薦 $AGENTCHARTER_HOME / ~/.agentcharter / agent-commons/ 三層）
+- (v0.7.0) Phase 5b 觸發 fresh-context sub-agent（路徑 A）對 init 結果跑他抽驗
+  （依 tools/init-spec.md Phase 5b + roles/validator/_spec.md §3.6）
+- (v0.7.0) 結尾貼出 doctor stdout + Phase 5b 抽驗結果（不要只回報「成功」摘要）
+```
+
+AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md` 或 `.gemini/commands/charter-init.toml`（依 AI 廠商）+ Phase 5b 他抽驗報告。
+
+**之後重用**：直接打 `/charter-init standard`（前提：已具象化過）。
+
+> charter v0.5.9 後 framework 不附 python / npm 等實作工具 — 純規範框架，所有工具動作由 AI 自具象化（對齊「角色 ⊥ AI」+「framework 不代生成」原則）。
+>
+> v0.7.0 加 Phase 5b（採用方接入流程「他抽」屬性）對應 dogfood signal #7 候選條款化 — 封閉採用方接入流程「自抽自驗」結構性盲區，對稱於 v0.6.0 加 auditor 角色封閉 maintainer 半邊。
+
+**參數速查**：
+
+| 參數 | 選項 / 範例 | 說明 |
+|---|---|---|
+| `--preset` | `minimal` / `standard` / `strict` | 紀律嚴格度（不確定選 `standard`）|
+| `--domain-axioms-path` | `protocols/RECON.md` | 你的領域公理檔位置 |
+| `--domain-axioms-alias` | `RECON` / `IRON` / `HIPAA` | 短名稱（< 10 字元）|
+
+**preset 選哪個？** 不確定 → `standard`。詳見 [TUTORIAL §3.3](./TUTORIAL.md#33-preset-選哪個)。
 
 ### Step 4：通知 AI 自我具象化（5 分鐘）
 

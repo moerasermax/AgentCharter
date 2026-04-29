@@ -131,15 +131,16 @@ cd ~/projects/<your-project>
 ```
 
 ```
-# Step 2: prompt AI 跑接入（AI 完成 + 自具象化 /charter-init）
+# Step 2: 編 agent-commons/protocols/<YOUR_AXIOM>.md（先寫好鐵律；
+#         init Phase 5b 會驗 axiom 物理存在）
+
+# Step 3: prompt AI 跑接入（AI 完成 + 自具象化 /charter-init）
 我採用了 AgentCharter，charter 在 ~/.agentcharter/。
 請依 ~/.agentcharter/tools/init-spec.md 跑接入流程：
 - preset: standard
 - domain-axioms-path: protocols/<YOUR_AXIOM>.md
 - domain-axioms-alias: <SHORT_NAME>
 完成後請順便具象化為 /charter-init slash command（依 init-template §3.3）。
-
-# Step 3: 編 agent-commons/protocols/<YOUR_AXIOM>.md（init 已複製模板）
 
 # Step 4: prompt 雙 AI 自我具象化角色 init（依 init-template §3.3）
 

@@ -6,7 +6,139 @@
 
 ## [Unreleased]
 
-（空 — v0.7.5 已釋出；下批次 v0.7.6 BOOTSTRAP / v0.7.7 prompt 簡化 / v0.7.8 BREAKING-LITE checklist / v0.8.0 lifecycle 完整化）
+（空 — v0.8.0 已釋出；下批次 v0.8.x PATCH 議程 BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist；v0.9.0 lifecycle.md + condition-mutability.md fresh head 設計）
+
+---
+
+## [0.8.0] — 2026-04-29
+
+> **MINOR release — 升版 + 接入防呆強化（slim 版）**。**dogfood-driven hardening 第十一循環**。
+>
+> **Triggered by**：user 2026-04-29 LIVE session 連續觸發三條設計議題：
+> 1. **公司專案接入第二次失敗**（axiom AI-DRAFTED 違規但 init Phase 1-5b 跑通 + Phase 5b CHECK 7 PASS = surface vs structural F6 sub-pattern 同源實證）— dogfood signal #23 累積到第 2 次同類
+> 2. **user 提議「升版後需要一個檢核機制」** — `/charter-upgrade-verify` 工具 LIVE 直接條款化（user 直接授權跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 pattern）
+> 3. **v0.7.4 vendor schema 規範累積到實作啟用條件滿足** — dogfood signal #16 從 spec 層升實作層
+>
+> **議程位階重整**：原 v0.8.0 議程含 `core/adoption-lifecycle.md` + `core/condition-mutability.md` 兩條大條款（架構級新概念）— 評估後 fresh-head 設計 risk 高（半夜疲勞趕設計 = 設計缺陷成本不可逆）、留 v0.9.0 fresh head 設計；v0.8.0 縮 scope 為「**升版 + 接入防呆強化**」slim 主題、使本 release 純擴增 spec 層 + 文檔層 swap、向下兼容（除 doctor 校驗強化屬可接受 BREAKING-LITE）。
+
+### Added — 升版後標準驗證工具
+
+#### `tools/post-upgrade-verify-spec.md`（新檔）
+
+採用方升版**完成後**的標準驗證流程 — 與 doctor-spec / versioning-migration §3 並列、定位升版專屬 + 跨多版累積遺漏偵測。**5 軸校驗**：
+
+- **軸 A：charter clone 對齊** — `~/.agentcharter` git log 是否含採用方宣稱版本對應 commit / tag
+- **軸 B：本專案 schema 對齊** — profile.yaml 啟用條款數 + F6 必啟 + parameters / mapping 對齊
+- **軸 C：agent-commons/ 結構合規** — v0.7.0 namespace 紀律 + v0.7.4 vendor schema + _role.md 二態
+- **軸 D：axiom 紀律對齊** — frontmatter `status: USER-RATIFIED` 校驗（dogfood signal #23 條款化）
+- **軸 E：stale reference 檢查** — charter_version 跨檔對齊 + spec / step 編號 stale 偵測（含 v0.8.0 QUICKSTART swap 後 stale 引用偵測）
+
+**模式**：A 完整健康檢查 ship；B 升版 diff / C pre-commit sync 留 v0.9+ 議程。
+
+→ user 自具象化為 `/charter-upgrade-verify` slash command 給未來重用（依 init-template §3.3）。
+
+### Changed — 雙重防禦執行載體啟用（dogfood signal #23 條款化）
+
+#### `tools/doctor-spec.md` §3.9（新段）axiom 紀律對齊
+
+dogfood signal #23 條款化執行載體（任意時點驗證）：
+
+- **E606**：axiom frontmatter `status: AI-DRAFTED`（未升 USER-RATIFIED）— 違反 v0.7.1 路徑 B 紀律「不可在 AI-DRAFTED 啟動 init」
+- **E607**：axiom frontmatter `status` 非二態合法值
+- **W608**：axiom frontmatter 缺 `mutability_default` 欄位
+
+#### `tools/init-spec.md` Phase 5b CHECK 7 擴含 axiom frontmatter status 校驗
+
+CHECK 7 從「檔案物理存在」擴含「frontmatter status 校驗」（init 端 fail-fast）：
+- `USER-RATIFIED` → PASS
+- `AI-DRAFTED` → FAIL（依 v0.7.1 路徑 B 紀律 + `core/domain-axiom-slot §3.3`）
+- 其他 → FAIL
+
+#### 三層雙重防禦對應 v0.7.3 北極星「不讓 user 記」
+
+| 載體 | 觸發時機 |
+|---|---|
+| `tools/init-spec.md` Phase 5b CHECK 7 ext | init 端 fail-fast |
+| `tools/doctor-spec.md §3.9` | 任意時點驗證 |
+| `tools/post-upgrade-verify-spec.md` 軸 D D001 | 升版專屬驗證 |
+
+對應 user LIVE 提的「**user 下班再回不會記得修、流程要強制抓**」精神。
+
+### Changed — vendor schema 從 spec 層升實作層（dogfood signal #16）
+
+#### `tools/doctor-spec.md §3.8` v0.7.4 spec 層 → v0.8.0 實作啟用
+
+對齊 §3.8.1 漸進啟用路徑 — E801 / W802 列為強制：
+- **E801**：vendor schema 違反（如 Gemini CLI toml nested table、缺必填、禁用欄位）→ 致命；依 vendor.md schema 規範修補
+- **W802**：vendor.md 缺 schema 規範段 → 警告；走 `ai-vendor-onboarding §3` 邀請補完
+
+啟用條件已滿足（vendor.md schema 段已 v0.7.4 ship + post-upgrade-verify 軸 C C005 對齊雙工具防禦）。
+
+### Changed — QUICKSTART step 編號從 cross-reference 升結構修正（dogfood signal #10）
+
+#### QUICKSTART.md Step 2 ↔ Step 3 swap
+
+QUICKSTART 流程順序紀律從 v0.7.2 cross-reference 方案升為直接 swap（user LIVE 駁回 v0.7.2 取捨、對應 signal #22 候選「v0.x 階段紀律補丁應預設重評為結構修正」）：
+
+- 新 Step 2：寫領域公理（原 Step 3 axiom）
+- 新 Step 3：在你專案跑 init（原 Step 2 init）
+- 移除 v0.7.2 cross-reference 警告（檔頂執行順序紀律 + Step 2 前置條件 + Step 3 順序提醒）
+- 修 path B item 4 pre-existing drift（`Step 4 charter init` → `Step 3`）
+- Step 3 init prompt 加 v0.8.0 紀律提示（跑 init 前自驗 axiom `status` 是否 USER-RATIFIED）
+
+**連動 sweep**（依 maintainer-discipline §3.4 文檔層 sync checklist）：
+- README.md quick-start 摘要 swap
+- core/domain-axiom-slot §3.3 兩處 step 引用 + 反向引用 v0.8.0 三層雙重防禦
+- core/maintainer-discipline §3.4.2 checklist 範例「v0.7.2 重排」→「v0.7.6/v0.8.0 swap」
+- templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl line 20 step 引用
+
+### dogfood-driven hardening 第十一循環
+
+| Signal | 內容 | 處置 |
+|---|---|---|
+| **#23 條款化（user LIVE 直接授權跳累積門檻）** | Phase 5b CHECK 7 axiom 校驗範圍 gap（surface PASS / structural fail F6 sub-pattern 同源、累積 2 次同類） | doctor §3.9 + init-spec Phase 5b CHECK 7 ext + post-upgrade-verify 軸 D 三層雙重防禦 |
+| **#16 升實作層** | v0.7.4 vendor schema spec 層 → v0.8.0 實作啟用 | doctor §3.8 E801/W802 強制 |
+| **#10 升結構修正** | QUICKSTART Step 2-3 順序 v0.7.2 cross-reference → v0.8.0 直接 swap | QUICKSTART swap + 5 檔連動 sweep |
+| **#22 候選紀錄** | v0.x 階段紀律補丁應預設重評為結構修正（v0.7.2 → v0.8.0 升級實證） | NEXT.md ⚪ 累積觀察、≥ 2 次同類後條款化 |
+| **SSS S1 capture** | AI 自治協作 + user 授權閘模式（user 角色 redefinition） | NEXT.md SSS 段紀錄、跨多 release 演化 |
+| **SSS S2 capture** | v0.8.0/v0.9.0 lifecycle 設計素材（/charter-uninstall 流程 + vendor 升級 path 三路徑 A/B/C + 新 vendor 互學深化 + README §設計哲學第 4 條候選） | NEXT.md SSS 段紀錄、待 v0.9.0 fresh head 設計時拿來用 |
+
+### 採用方影響
+
+| 項目 | 影響 | 處置 |
+|---|---|---|
+| 升版基本動作 | 改 profile.yaml `charter_version: "0.7.5"` → `"0.8.0"` | 改一行 |
+| doctor §3.8 vendor schema 啟用 | 既有 vendor toml/md 若有 nested table / 缺必填 → 跑 doctor 抓新 ERROR | 升版前先跑一次 doctor 修補（屬 BREAKING-LITE）|
+| doctor §3.9 axiom status 啟用 | 既有 axiom 若 frontmatter `status: AI-DRAFTED` → 跑 doctor 抓 E606 | 升 status: USER-RATIFIED + 加校正紀錄行 |
+| init-spec Phase 5b CHECK 7 ext | 新接入採用方若 axiom 未升 USER-RATIFIED → init 失敗 | 校 axiom 升 status 後重觸發 init |
+| `/charter-upgrade-verify` 新工具 | 新增採用方可選工具、不強制使用 | 推薦升版完成後跑一次確認 5 軸 |
+| QUICKSTART Step 2 ↔ Step 3 swap | 新採用方按新 order；既有外部引用具體 step 編號 → stale | 既有採用方若有自寫文件引用 → 對齊 |
+
+→ **升版推薦流程**：
+1. 跑一次 doctor 看 vendor schema + axiom status 是否需修補
+2. 修補不一致（如有）
+3. 升 `charter_version` 為 `0.8.0`
+4. 跑 `/charter-upgrade-verify`（新工具）確認 5 軸全綠
+
+### 連動更新
+
+- 三 preset yaml `charter_version: "0.7.5"` → `"0.8.0"`
+- ADOPTION.md / TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.8.0
+- `tools/init-spec.md §9` + `tools/doctor-spec.md §8` 變更歷史加 v0.8.0 entry
+- `core/domain-axiom-slot §3.3` 對應載體表 + 路徑 B 紀律加 v0.8.0 三層雙重防禦反向引用
+- `core/maintainer-discipline §3.4.2` checklist 範例 v0.7.2 → v0.8.0 swap
+
+### 嚴守向下兼容紀律對齊（v0.7.3 北極星 + v0.7.4 雙軌節奏）
+
+| 紀律 | v0.8.0 對齊狀態 |
+|---|---|
+| 純擴增 spec 層 | ✅（post-upgrade-verify 新檔 + doctor §3.9 + init-spec Phase 5b CHECK 7 ext + QUICKSTART swap）|
+| 既有條款不破壞 | ✅（21 條 condition 不增不減；架構級概念 12 個維持）|
+| doctor 校驗強化 | ⚠️ **可接受 BREAKING-LITE**（v0.x 階段、已超過半年、屬「校驗強化」非「條款新增」、明確 migration 路徑提供）|
+| QUICKSTART step swap | ⚠️ **文檔層可接受 BREAKING-LITE**（內部引用已 sweep；外部引用主要在 examples/upgrades/ 已驗證不影響執行）|
+| 升版動作清晰可追溯 | ✅（採用方影響表 + 升版推薦流程 + dogfood signal 對應全列）|
+
+對應 v0.7.4 dogfood signal #15 候選「versioning-migration BREAKING-LITE 判定 checklist」議程 — v0.8.0 ship 同時實證該 checklist 的需求性、v0.8.x PATCH ship checklist 時可參考本 release 為案例。
 
 ---
 

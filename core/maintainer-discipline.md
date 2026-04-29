@@ -167,7 +167,7 @@ feat(core): <X> 條款修訂
 
 - [ ] **`charter_version` 跨檔同步**：`tools/profiles/*.yaml` 三檔 + `ADOPTION.md` line 5 + `TUTORIAL.md` line 6 + `.claude/commands/maintainer-load.md` 「當前狀態」段 — 全部更新到本 release 版號？
 - [ ] **條款數同步**：若新增 / 刪除條款 — `README.md` 條款目錄 + `ADOPTION.md §3` + `QUICKSTART.md` 「條款數速查」段 + `TUTORIAL.md §3.3` preset 表母數 — 全部對齊？
-- [ ] **流程圖 / step 順序對齊**：若改 phase / step（如 v0.7.0 加 Phase 5b、v0.7.2 重排 QUICKSTART Step 2-3）— `init-spec` / `doctor-spec` / `QUICKSTART` / `TUTORIAL` 流程圖是否更新？
+- [ ] **流程圖 / step 順序對齊**：若改 phase / step（如 v0.7.0 加 Phase 5b、v0.7.6 swap QUICKSTART Step 2 ↔ Step 3）— `init-spec` / `doctor-spec` / `QUICKSTART` / `TUTORIAL` 流程圖是否更新？
 - [ ] **變更歷史段（採用方文檔）**：`ADOPTION.md §13` / `TUTORIAL.md` 變更歷史 — 是否加本 release 對應 entry（含採用方升版注意事項）？
 
 #### 3.4.3 內部追蹤層 sync（maintainer 視角）

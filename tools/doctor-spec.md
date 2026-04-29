@@ -48,6 +48,12 @@
   §3.7 結構頂層完整性 + namespace vs 檔案路徑校驗
   （E601/E602/E603/E604/E605 全部跑；尤其 E605 不依賴 profile.yaml 的 enable_modes 設定）
 
+必驗（v0.8.0 加，dogfood signal #23 條款化）：
+  §3.9 axiom 紀律對齊（E606/E607/W608 — axiom frontmatter status 二態紀律執行載體）
+
+啟用（v0.8.0 加，dogfood signal #16 spec 層 → 實作層）：
+  §3.8 vendor 端 slash command schema 校驗（E801/W802 — v0.8.0 實作啟用）
+
 可選：
   §3.2 條款相依、§3.4 角色 init 狀態、§3.6 失敗模式累積（self-instantiation 階段太早，可跳過）
 ```
@@ -176,13 +182,13 @@
 
 **諷刺循環攔截**：E605（F6 沒啟用）本身是 F6 行為的高發誘因（沒啟用 → 沒攔住未驗證即宣告就緒）。doctor 模式 B 強制檢查 §3.7 → 即使 profile.yaml 漏寫 F6、doctor 仍會抓到（因為這條 check 不依賴 enable_modes，是強制執行）。
 
-### 3.8 vendor 端 slash command schema 校驗（v0.7.4 加，spec 層；實作 defer v0.8+）
+### 3.8 vendor 端 slash command schema 校驗（v0.7.4 spec 層 → v0.8.0 實作啟用）
 
 > **動機**：對應 dogfood signal #16 條款化 — YC_AIAgentCrew（v0.5.9 接入）2026-04-28 user 重啟 Gemini CLI v0.39.1 時，3 個自具象化 toml（charter-init / engineer-init / pm-init）全部被 vendor 端 schema validator 抓出格式錯（nested table）跳過載入。原因：v0.5.9 接入時 Gemini PM 自具象化「自編 schema」、charter v0.5.9 〜 v0.7.3 此層 schema 規範完全空白。
 >
 > 對應 v0.7.0 加的 F6 sub-pattern「surface-level vs structural-level」精神在 vendor schema 層的實證 — toml 檔書寫存在（surface）≠ vendor 載入有效（structural）。本段把 vendor schema check 從「採用方踩坑後手動修」前移到「doctor 自動偵測」。
 
-**校驗集**（v0.7.4 spec 層加、實作 defer v0.8+；v0.7.4 doctor 不會跑此 check 故既有採用方升 v0.7.4 零新 ERROR/WARN）：
+**校驗集**（v0.7.4 spec 層加 → v0.8.0 實作啟用、E801 / W802 列為強制；既有 v0.7.x 採用方升 v0.8.0 前須先跑一次 doctor 修補 vendor schema 不一致）：
 
 ```
 對採用方專案內每個 vendor 端 slash command 檔：
@@ -203,25 +209,60 @@
 
 | 失敗 | 狀態碼 | 處置 |
 |---|---|---|
-| vendor schema 違反（nested table / 缺必填 / 禁用欄位）| **E801**（v0.8+ 啟用）| 依 `<vendor>.md` schema 規範修補；v0.7.4 階段純 spec 規範、不報錯 |
-| vendor schema 規範未在 `<vendor>.md` 顯化 | **W802**（v0.8+ 啟用）| INFO：`<vendor>.md` 缺 schema 規範段；建議走 `ai-vendor-onboarding §3` 邀請 vendor 補完；v0.7.4 階段純 spec 規範、不報錯 |
+| vendor schema 違反（nested table / 缺必填 / 禁用欄位）| **E801**（v0.8.0 啟用）| 致命；依 `<vendor>.md` schema 規範修補（如 Gemini CLI toml 改扁平結構、移除 nested table）|
+| vendor schema 規範未在 `<vendor>.md` 顯化 | **W802**（v0.8.0 啟用）| 警告：`<vendor>.md` 缺 schema 規範段；走 `ai-vendor-onboarding §3` 邀請 vendor 補完 |
 
-### 3.8.1 v0.7.4 → v0.8+ 漸進啟用路徑
+### 3.8.1 v0.7.4 → v0.8.0 漸進啟用路徑（已完成）
 
 對齊 charter 北極星「**向下兼容嚴守**」紀律：
 
 | 階段 | doctor 行為 | 對既有採用方影響 |
 |---|---|---|
 | **v0.7.4**（spec 層）| 規範寫進本 §3.8 + 各 `<vendor>.md` schema 段；doctor **不跑** vendor schema check | **零動作 migration**；既有採用方升版 doctor 不會跑出新 ERROR/WARN |
-| **v0.7.5〜v0.7.x**（採用方體感優化期）| 仍 spec 層；累積 vendor 落地 + 採用方反饋 | 同 v0.7.4 |
-| **v0.8+**（實作層、若採用方準備好）| doctor 啟用 §3.8 校驗、E801 / W802 報錯 | 升版前須**先跑一次** doctor + 修補 vendor schema 不一致；對應 `versioning-migration §3` 7 步流程 |
+| **v0.7.5**（採用方體感優化期）| 仍 spec 層；YC_AIAgentCrew 升版實證觸發 dogfood signal #19/#20/#21 累積 | 同 v0.7.4 |
+| **v0.8.0**（實作層、本 release 啟用）| doctor 啟用 §3.8 校驗、E801 / W802 報錯 | 升版前須**先跑一次** doctor + 修補 vendor schema 不一致；對應 `versioning-migration §3` 7 步流程 |
 
-**啟用條件**（v0.8+ 才滿足）：
-- 至少 2 個 vendor（Claude Code / Gemini CLI）`<vendor>.md` 完整 schema 規範段
-- `core/adoption-lifecycle.md`（v0.8.0 議程）含 vendor 升級 path
-- 採用方有時間 review v0.7.x → v0.8 升版指引
+**v0.8.0 啟用條件**（已滿足）：
+- 至少 2 個 vendor（Claude Code §4.1 / Gemini CLI §3.6）`<vendor>.md` schema 規範段已 v0.7.4 ship ✅
+- `tools/post-upgrade-verify-spec.md`（v0.8.0 ship）軸 C C005 對齊本 §3.8 校驗、雙工具防禦 ✅
+- 採用方升版指引：`core/versioning-migration §3.4` 跨多版本升級子段已 v0.7.5 ship + YC walkthrough 實證 ✅
 
-→ v0.7.4 ship 此 spec 段不破壞任何既有採用方；v0.8+ 啟用時對應有完整 lifecycle 條款給採用方依循。
+→ v0.8.0 ship vendor schema 實作層、既有 v0.7.x 採用方升 v0.8.0 須跑 doctor 修補 vendor schema 不一致 — 屬可接受 BREAKING-LITE（v0.x 階段、純擴增校驗、不變更條款規範）。
+
+### 3.9 axiom 紀律對齊（v0.8.0 加；dogfood signal #23 條款化）
+
+對應 **dogfood signal #23** 第二次同類觀察（v0.7.0 公司接入第一次失敗：Gemini 寫 dbsdk.md schema 但檔案沒建 + v0.7.6 LIVE 公司專案接入第二次：Gemini 路徑 B 寫 axiom AI-DRAFTED + user 未升 USER-RATIFIED + init Phase 1-5b 跑通 + Phase 5b CHECK 7 PASS = surface PASS / structural fail）— v0.7.1 加路徑 B「不可在 AI-DRAFTED 啟動 init」紀律但執行載體缺位。
+
+本段為 **doctor 端執行載體**（升版後 + 任意時點驗證）；`init-spec` Phase 5b CHECK 7 ext 為 **init 端執行載體**（fail-fast）；`post-upgrade-verify-spec.md` 軸 D 為 **升版專屬執行載體** — **三層雙重防禦**。
+
+**校驗集**（v0.8.0 必跑）：
+
+```
+1. 對 profile.yaml `domain_axioms.primary` 指向的 axiom 檔：
+   檔案物理存在（§3.5 領域公理檔存在已抓、本段不重抓物理存在）
+
+2. 讀 axiom 檔 frontmatter：
+   檢查 status 欄位值
+     - status: USER-RATIFIED → PASS
+     - status: AI-DRAFTED → ERROR (E606)
+     - status: 其他值 / 缺 status → ERROR (E607)
+   檢查 mutability_default 欄位（v0.7.1 scaffold）
+     - 存在 → PASS
+     - 缺 → WARN (W608)
+```
+
+| 失敗 | 狀態碼 | 處置 |
+|---|---|---|
+| axiom frontmatter `status: AI-DRAFTED`（未升 USER-RATIFIED） | **E606** | 致命；user 校 axiom 後改 frontmatter `status: AI-DRAFTED` → `USER-RATIFIED` + `created_by: ai-drafted` → `user-ratified-from-ai-draft` + 加校正紀錄行（依 `core/domain-axiom-slot §3.3` 路徑 B 紀律）|
+| axiom frontmatter `status` 值非 USER-RATIFIED 也非 AI-DRAFTED | **E607** | 致命；違反 v0.7.1 雙路徑二態紀律；改回合法二態之一 |
+| axiom frontmatter 缺 `mutability_default` 欄位 | **W608** | 警告；補上 `mutability_default: APPEND-ONLY`（v0.7.1 scaffold 預設值）|
+
+**對應雙重防禦設計**：
+- `tools/init-spec.md` Phase 5b CHECK 7 ext（v0.8.0 加）— init 階段 fail-fast、未升 USER-RATIFIED 不允許 init 跑通
+- `tools/doctor-spec.md §3.9`（本段）— 升版後 + 任意時點驗證
+- `tools/post-upgrade-verify-spec.md` 軸 D（v0.8.0 加）— 升版後 5 軸 verify 中的軸 D D001
+
+三層同源紀律、三處執行載體 — 對齊 v0.7.3 北極星「**不讓 user 記**」精神（即使 user 跨 session / 下班再回、流程強制抓 axiom 升級狀態）。
 
 ---
 
@@ -365,6 +406,7 @@ CI / pre-commit hook 可依退出碼 gate。
 | **v0.5.10** | **§2.1 呼叫模式拆分**（A 人工 / B self-instantiation 結尾強制驗證點）；§7 反向引用加 `init-template §3.3.2 step 5` + `failure-modes F6`。**觸發**：dogfood signal #4 於 YC_AIAgentCrew 接入（2026-04-28）實證；驗證從「使用者另一動作」內化到「self-instantiation 流程內必跑」 | ✅ |
 | **v0.7.0** | **§3.7 加結構頂層完整性 + namespace vs 檔案路徑校驗**（E601/E602/E603/E604/E605）；§2.1 模式 B minimal 必驗集擴充含 §3.7。**觸發**：dogfood signal #4 第三次同類（公司專案接入失敗 2026-04-28）— `shared.*` namespace 被 Gemini 誤翻譯為檔案系統目錄，整個 agent-commons/ 結構錯位 + F6 漏啟用 + dbsdk.md 完全沒建。對應 charter-config.md mapping schema 段加註明的雙重防禦 | ✅ |
 | **v0.7.4** | **§3.8 加 vendor 端 slash command schema 校驗**（spec 層、實作 defer v0.8+）+ §3.8.1 v0.7.4 → v0.8+ 漸進啟用路徑說明。**觸發**：dogfood signal #16 條款化（YC_AIAgentCrew 2026-04-28 Gemini CLI v0.39.1 載入 toml 失敗、charter v0.5.9 〜 v0.7.3 vendor schema 規範完全空白）。**嚴守向下兼容**：v0.7.4 doctor 不跑此 check、既有採用方升版零新 ERROR/WARN；實作待 v0.8+ 對齊 `core/adoption-lifecycle.md` 完整化後啟用 | ✅ |
+| **v0.8.0** | **§3.8 vendor schema 從 spec 層升實作層**（E801/W802 列為強制）+ §3.8.1 漸進路徑表加 v0.8.0 已完成行 + **§3.9 加 axiom 紀律對齊**（E606/E607/W608 — axiom frontmatter status 二態紀律執行載體）+ §2.1 模式 B minimal 必驗集擴含 §3.9。**觸發**：(a) v0.7.4 spec 層累積至 v0.8.0 實作層啟用條件滿足（vendor schema 段已 ship + post-upgrade-verify 軸 C C005 對齊雙工具防禦）；(b) **dogfood signal #23 條款化**（v0.7.0 公司接入第一次失敗 + v0.7.6 LIVE 公司專案接入第二次同類觀察、user 直接授權跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 直接條款化 pattern）— init-spec Phase 5b CHECK 7 ext 為 init 端執行載體、本 §3.9 為 doctor 端執行載體、post-upgrade-verify 軸 D 為升版專屬執行載體、三層雙重防禦 | ✅ |
 
 **實作模式**：採用方對 AI prompt「依本 spec 跑健康檢查」+ 順便自具象化 `/charter-doctor` slash command（依 `core/init-template.md §3.3` self-instantiation 精神）。
 

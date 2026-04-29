@@ -352,6 +352,19 @@ charter_version: "0.5.5"   # 採用的 charter 版本
 
 ## 10. 變更歷史
 
+### v0.3（自 v0.8.0 起）
+
+**動作**：本條款本身未動條文；但 §3 升版 7 步流程在 v0.8.0 ship 後新增**第 8 步建議**「跑 `/charter-upgrade-verify` 確認 5 軸全綠」（對應 `tools/post-upgrade-verify-spec.md` 新工具、依 user LIVE 提議條款化）。
+
+**觸發**：v0.8.0 ship 升版 + 接入防呆強化主題、`tools/post-upgrade-verify-spec.md` 新檔提供升版完成後標準驗證流程、自然延伸 §3 升版流程。
+
+**修訂類型**：PATCH（變更歷史 entry 追溯記錄 / 新工具引用、本條款條文未動）。
+
+**連動範圍**：
+- `tools/post-upgrade-verify-spec.md`（v0.8.0 新檔）— 5 軸校驗 spec
+- `core/domain-axiom-slot §3.3` 路徑 B 紀律加 v0.8.0 三層雙重防禦反向引用
+- `CHANGELOG.md` v0.8.0 段
+
 ### v0.2（自 v0.7.5 起）
 
 **動作**：新增 §3.4「跨多版本升級（回鍋開發者無痛場景）」段 — 5 子段：(1) 適用範圍 (2) 跨多版本升級允許性 (3) 跨多版本升級流程（§3.1 7 步擴充版）(4) 對北極星紀律的實證 walkthrough 表 (5) 「停用一段時間後重新採用」場景的具體指引。

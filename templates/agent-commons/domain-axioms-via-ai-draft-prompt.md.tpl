@@ -17,7 +17,7 @@
    - 改 / 刪 / 新增條款（保留 codebase 真實紀律、刪 AI 推錯的）
    - 確認 frontmatter `Status` 從 `AI-DRAFTED` 改為 `USER-RATIFIED`
    - 確認 `created_by` 改為 `user-ratified-from-ai-draft`（保留審計痕跡）
-5. user 校完才跑 charter init Phase 1-5b（依 QUICKSTART.md Step 2）
+5. user 校完才跑 charter init Phase 1-5b（依 QUICKSTART.md Step 3）
 
 ---
 
