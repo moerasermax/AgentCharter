@@ -55,12 +55,16 @@
 
 → **既有採用方升 v0.8.1 → v0.8.2**：純改 `charter_version` 一行。
 
+→ **詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.1-to-v0.8.2.md`](./examples/upgrades/v0.8.1-to-v0.8.2.md)** — charter 升版系列最簡 walkthrough（2 步流程、純改 `charter_version` + 跑 verify）+ §5 跨版本場景（v0.7.5 / v0.8.0 直跳 v0.8.2）。
+
 ### 連動更新
 
 - 三 preset yaml `charter_version: "0.8.1"` → `"0.8.2"`
 - ADOPTION.md（line 5 / 149 / 336）+ TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.8.2
 - ADOPTION.md §13 / TUTORIAL.md 變更歷史加 v1.10 entry
 - maintainer-load.md 加 v0.8.2 release entry 子段
+- **新檔 `examples/upgrades/v0.8.1-to-v0.8.2.md`**（v0.8.2 PATCH walkthrough、charter walkthrough 系列「5 個升版場景」收齊 — 純擴增 PATCH 升版第二例、含 §5 跨版本場景指引、dogfood signal #29 LIVE 實證 capture）
+- `examples/upgrades/v0.7.5-to-v0.8.0.md §3 Step 1` 加跨版本紀律提示（dogfood signal #29 條款化第一處）
 
 ### SSS S3 v0.8.x 後續議程（剩餘段）
 
