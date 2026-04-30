@@ -43,6 +43,34 @@
 - S2「v0.8.0/v0.9.0 lifecycle 設計素材」→ 見下（user LIVE 設計直覺保留、待 v0.9.0 fresh head 設計 lifecycle.md / mutability.md 時拿來用）
 - S3「charter as diagnose + remediate protocol（引導式紀律、非封鎖式 freelance）」→ 見下（v0.8.0 ship 後 user LIVE 抓到 Gemini 三輪編造 + 第四輪認錯閉環、實證 SSS S3 設計提議的需求性 + 引導式 framing 的優越性）
 
+#### LIVE prototype 觀察（2026-04-30 多 sub-agent 評估）
+
+> **位階**：SSS S1 LIVE prototype 實證紀錄 — 完整紀錄在 `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md`。**user LIVE 明示「僅限本 session」、不條款化此 multi-agent prototype 模式**；本子段純為 SSS S1 設計素材保留、非條款化。
+> **對應 dogfood-driven hardening 第十四循環（新類型）**：maintainer 派多視角 sub-agent 反向校準自身判斷 — 對齊 v0.6.0 auditor「自抽自驗封閉」精神延伸到 maintainer 對自身判斷的校準軸。
+
+**觸發場景**：
+- CliSpike Engineer Claude 出 Round 3+4 修正提案（binary 化 / hook 寫進概念層 / npm install -g 等）
+- maintainer 第一輪綜合給「洞見採、載體駁」初步判斷
+- user LIVE 提議「特地找 3 個一樣的你、扮 4 個角色、不同角度評估、你綜合」、強調「**我需要的是對不是快、慢工出細活**」
+- 4 sub-agent（框架結構師 / 核心理念守護者 / 軟體工程師 / 採用方）並行獨立、不互看彼此產出、不看 maintainer 第一輪判斷（避免污染）
+- maintainer 綜合 → 補出 4 個第一輪沒到的深度（雙軸矩陣 / 方向性誤讀 / token 估算挑錯 / Phase 5b 解循環依賴）
+
+**對 SSS S1 設計的啟示**：
+
+| SSS S1 三軸 | prototype 對應 | 設計啟示 |
+|---|---|---|
+| **A. AI 互相自己工作** | 4 sub-agent 各擔一角、獨立作業、不互看 | 設計時注意「**獨立性 vs 一致性**」張力 — 完全獨立可能輸出衝突、需要綜合者協調機制 |
+| **B. user 角色：監督決策 → 授權閘** | user 派 sub-agent 後不干預內容、只在 maintainer 綜合後決定要不要 ship | **user 授權閘形態 LIVE 實證**：user 不需看每個 sub-agent 全文、只看綜合判斷 → 授權 ship 三件事 |
+| **C. AI 自動升級** | 不對應（本次只是評估、未涉及條款修訂）| 待後續 prototype 累積 |
+
+**設計挑戰浮現**：
+- **「不條款化此模式」紀律的微妙張力**：本次 LIVE 證明 multi-agent 評估可行、但 SSS S1 條款化機制設計仍需 fresh-head；若未來 SSS S1 條款化時包含此模式、本次 prototype 是參考素材、不是強制範本
+- **多視角綜合 → 升維洞見**：4 sub-agent 各自獨立到深層洞見（雙軸矩陣 / 方向性誤讀 / 採用方層 vs 維護者層分離 / essential preset），單一 AI 第一輪沒到 — 這暗示 SSS S1 條款化時「**多 actor 評估**」可能比「**單 AI 深思**」更高效
+- **maintainer 自我抽驗的新軸**：v0.6.0 auditor 是 charter 自身被抽驗、Phase 5b validator 是採用方接入被抽驗、本次是 **maintainer 對自身判斷的多視角校準** — 三條軸正交、是否值得在 SSS S1 條款化階段顯化為架構級概念第 13 個？待累積觀察
+
+**衍生新議程候選**：
+- v0.8.x PATCH 雙軸矩陣 framing（結構師金礦、見下方 ⚪ 待對話段「新議程候選 — 雙軸矩陣 framing」）
+
 ### S2. v0.8.0/v0.9.0 lifecycle 設計素材（LIVE capture 2026-04-29）
 
 > **位階**：本段為 user LIVE 設計 fresh-head 素材保留（即使疲勞模式直覺仍清晰）— 對應 v0.9.0 議程 `core/adoption-lifecycle.md` + `core/condition-mutability.md` 兩條大條款。**不在本段直接條款化**、保留待 v0.9.0 fresh head 設計時直接拿來用。
@@ -365,6 +393,25 @@ framework 永久維持「**純規範**」位階。
 > 2. 若部分完成：明示「**部分完成**：X 已條款化 / Y 留 v0.8.0」
 > 3. 不可只在腦中知道做完了、必須回頭來標
 > → 對齊 `working-stack-discipline §1` DRAFT 紀律 + `maintainer-discipline §3.4.3` 內部追蹤層 sync
+
+- **新議程候選 — v0.8.x PATCH 雙軸矩陣 framing（multi-perspective 評估第十四循環、結構師金礦）**（2026-04-30 LIVE capture）：對應 `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md` 結構師金礦 — 顯化 charter 條款的雙軸正交分類：
+  - **物理依據軸**：結構強制 / 多 actor 互檢 / 單 actor 自律
+  - **檢測時點軸**：init / runtime / post-upgrade / handoff
+  - **目標**：每條 charter 條款補 (物理依據, 檢測時點) 雙標籤、顯化「**弱保證項 = 單 actor 自律格**」（真正需要加固的條款）— 加固路徑優先「升級到多 actor 互檢」、不走 binary（保 vendor-agnostic）
+  - **對齊條款 / 北極星**：
+    - `core/violation-reflection §2`「LLM 不可矯正」自覺的延伸（讓採用方知道哪些保證靠誰守）
+    - 北極星「解決重複溝通」（user 不必每次跟 AI 確認「這條靠誰守」）
+    - feedback `structural-over-patch` 紀律（**結構修正、不是規範補丁**）
+  - **ship 路徑**（v0.8.x PATCH 漸進）：
+    - **v0.8.x PATCH 1**：README §設計哲學第 5 條加雙軸矩陣 framing 段 + 對應 SSS S3 spec-as-data 五欄結構 cross-reference
+    - **v0.8.x PATCH 2**：21 條 core 條款逐條補雙軸標籤（frontmatter 或 §1 加 `<!-- enforcement: structural | external-arbitration | llm-self -->` + `<!-- detection-time: init | runtime | post-upgrade | handoff -->`）
+    - **v0.8.x PATCH 3**：「依賴 LLM 紀律的條款清單」公開（自動由雙軸標籤派生 = 單 actor 自律格清單、放 README §設計哲學）
+  - **scope 估算**：21 條條款逐條補雙軸標籤 ~ 中等工作量（每條 5-10 分鐘 × 21 條 = 2-3 hr fresh head）
+  - **獨立性**：可獨立於 SSS S3 ship（不衝突、互補）— SSS S3 是 spec 設計層、本議程是 condition 設計層
+  - **判斷**：multi-perspective 評估第十四循環直接 capture、**不走「累積 ≥ 3 次」門檻**（對齊 v0.7.4 / v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）；user 同意 ship 路徑後、列 v0.8.x PATCH 議程
+  - **配套檔案**：
+    - `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md` §3.2 結構師金礦（雙軸矩陣完整推導）
+    - 本檔 SSS S1「LIVE prototype 觀察（2026-04-30 多 sub-agent 評估）」子段（觸發脈絡）
 
 - **v0.7.6 BOOTSTRAP.md 入口檔議程備註 — 必含「升版快速執行版」段**（v0.7.5 對話揭露 / 2026-04-29 user 直接抓到）：v0.7.5 ship 的 `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` walkthrough §3 7 步流程對採用方仍偏重（含大量 reference + 條款引用 + 設計學意義段）；對話內 maintainer 即興整理的「**5 步精簡實戰執行版**」（Step 0 前置 / Step 1 toml / Step 2 profile / Step 3 doctor / Step 4 axiom / Step 5 commit + 預估時間 + 驗證點）對採用方體感更佳、但**沒沉澱回文件**。對應 v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」精神不夠到位 → v0.7.6 BOOTSTRAP.md 設計時必含「**升版快速執行版**」結構（採用方端入口、對應 walkthrough §3 但精簡 actionable）；既有 walkthrough §3 保留為「**標準學術版**」、可加 §3a「**快速執行版**」對照 cross-reference。**對應 NEXT 區段 v0.7.x 後續議程的 v0.7.6 BOOTSTRAP**
 
