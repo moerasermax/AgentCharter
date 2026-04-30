@@ -1,11 +1,11 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-04-28（台灣時間，post-v0.7.5 release 收尾 snapshot）
-> **當前版本**：v0.7.5（跨多版本升級指引 + 第一個回鍋開發者無痛實證 walkthrough — `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` 新檔 + `core/versioning-migration §3.4` 跨多版本升級子段、**嚴守向下兼容**、**dogfood-driven hardening 第十循環**）
-> **Working tree 狀態**：v0.7.5 修訂完成、深度 sweep 中（user 要求 0 ERROR + 0 WARN）
+> **更新時間**：2026-04-30（台灣時間，post-v0.8.1 release 收尾 snapshot）
+> **當前版本**：v0.8.1（SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修 — `tools/doctor-spec.md §3.7-§3.9` 全加四欄 spec-as-data 結構 + 新加 §3.10 採用方文檔變更歷史 sync 校驗（W901）+ 校驗集措辭修、**嚴守向下兼容**、**dogfood-driven hardening 第十四循環 + 第十五循環**）
+> **Working tree 狀態**：v0.8.1 修訂完成、待 commit + push
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔為 v0.7.5 release 前 snapshot（含深度 sweep）
-> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打 + 深度 sweep 後)
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` (待打)
 
 ---
 
@@ -13,7 +13,8 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
-| **v0.8.0** | （待 commit）| **MINOR — 升版 + 接入防呆強化（slim 版）** — `tools/post-upgrade-verify-spec.md` 新檔（5 軸 spec：A clone / B schema / C structure / D axiom / E stale ref + 模式 A 完整健康檢查；user LIVE 提議 `/charter-upgrade-verify`）+ `tools/doctor-spec.md §3.9` 加 axiom 紀律對齊（E606/E607/W608 — dogfood signal #23 條款化）+ `tools/doctor-spec.md §3.8` vendor schema 從 spec 層升實作層（v0.7.4 累積 → 啟用 E801/W802）+ `tools/init-spec.md` Phase 5b CHECK 7 ext（axiom frontmatter status 校驗、init 端 fail-fast）+ QUICKSTART Step 2 ↔ Step 3 swap（v0.7.6 prep 併入；signal #10 從 cross-reference 升結構修正）+ SSS S1 (AI 自治協作) / S2 (lifecycle 設計素材) capture。**dogfood-driven hardening 第十一循環** — 三 signal 同 session 條款化（#23 跳累積門檻 + #16 升實作層 + #10 升結構修正）+ 三層雙重防禦（init/doctor/post-upgrade-verify 對齊 v0.7.3 北極星「不讓 user 記」精神）。原 v0.8.0 議程 lifecycle.md + condition-mutability.md 兩條大條款留 v0.9.0 fresh-head 設計 |
+| **v0.8.1** | （待 commit）| **PATCH — SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修** — `tools/doctor-spec.md §3.7-§3.9` 既有 error codes 全加四欄 spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例）+ `tools/doctor-spec.md §3.10` 新加採用方文檔變更歷史 sync 校驗（W901、signal #24 升工具層條款化、`core/maintainer-discipline §3.4` 演化路徑落地）+ §3.7 校驗集第 2 條雙重否定措辭修（signal #19 YC v0.8.0 升版 LIVE 實證 Gemini 把合規「shared/ 不存在」誤標 WARN）。**dogfood-driven hardening 第十四循環**（multi-perspective sub-agent 反向校準新類型 — `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md` commit `afcd330`）+ **第十五循環**（signal #24 升工具層 + signal #19 順手修 + SSS S3 起手 三 signal 同 LIVE session 條款化、第二日連續 ship 對齊雙軌節奏）。**嚴守向下兼容**：純擴增 spec 層 + 文檔層、採用方升版只改 `charter_version` 一行。SSS S3 v0.8.x PATCH 漸進落地起手、後續 v0.8.2 propagate 到 post-upgrade-verify-spec + 雙軸矩陣 framing 第一段、v0.8.3 propagate 到 init-spec + 21 條條款補雙軸標籤 |
+| **v0.8.0** | `b5866b5` | **MINOR — 升版 + 接入防呆強化（slim 版）** — `tools/post-upgrade-verify-spec.md` 新檔（5 軸 spec：A clone / B schema / C structure / D axiom / E stale ref + 模式 A 完整健康檢查；user LIVE 提議 `/charter-upgrade-verify`）+ `tools/doctor-spec.md §3.9` 加 axiom 紀律對齊（E606/E607/W608 — dogfood signal #23 條款化）+ `tools/doctor-spec.md §3.8` vendor schema 從 spec 層升實作層（v0.7.4 累積 → 啟用 E801/W802）+ `tools/init-spec.md` Phase 5b CHECK 7 ext（axiom frontmatter status 校驗、init 端 fail-fast）+ QUICKSTART Step 2 ↔ Step 3 swap（v0.7.6 prep 併入；signal #10 從 cross-reference 升結構修正）+ SSS S1 (AI 自治協作) / S2 (lifecycle 設計素材) capture。**dogfood-driven hardening 第十一循環** — 三 signal 同 session 條款化（#23 跳累積門檻 + #16 升實作層 + #10 升結構修正）+ 三層雙重防禦（init/doctor/post-upgrade-verify 對齊 v0.7.3 北極星「不讓 user 記」精神）。原 v0.8.0 議程 lifecycle.md + condition-mutability.md 兩條大條款留 v0.9.0 fresh-head 設計 |
 | **v0.7.5** | `9c57d9b`（tag v0.7.5）| **PATCH** — 跨多版本升級指引 + 第一個回鍋開發者無痛實證 walkthrough：`examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` 新檔（含跨 8 release 演化軸 + 7 步具體升版流程 + YC 三個必做動作 + 升版後 self-check + 設計學意義）+ `core/versioning-migration §3.4` 跨多版本升級子段（5 子段、含「停用一段時間後重新採用」場景具體指引）。**嚴守向下兼容**。**dogfood-driven hardening 第十循環** — 對應 v0.7.3 北極星紀律「回鍋開發者無痛」第一個實證 ship；觸發於 user 在 v0.7.4 ship 後直接要求「文件上記得補充如何更新、以 YC_AIAgentCrew 為例該如何從 v0.5.9 → v0.7.4」 |
 | **v0.7.4** | `130638b` | **PATCH** — vendor 端 slash command schema 規範條款化（dogfood signal #16）：`roles/pm/gemini-cli.md §3.6` 加 toml 扁平結構強制 + `roles/engineer/claude-code.md §4.1` 加 .md schema 規範 + `tools/doctor-spec.md §3.8` 加 vendor schema check（spec 層、實作 defer v0.8+）。**嚴守向下兼容** — 純擴增 / 既有採用方零動作 / doctor 不跑新 check。**dogfood-driven hardening 第九循環** — 觸發於 YC_AIAgentCrew Gemini CLI v0.39.1 載入 toml 失敗（v0.5.9 接入時 Gemini 自編 nested schema、charter 此層空白）；同時 user 提「為什麼 0.7.3 → 0.8」修正 maintainer 規範密度導向殘留、charter 改走「**頻繁小擴增 PATCH** + **大方向新加條款用 MINOR**」雙軌節奏 |
 | **v0.7.3** | `0468570` | **PATCH** — 完整文檔層 sync sweep（auditor 抓 10 ERROR + 3 WARN 全修：ADOPTION 7 處 / TUTORIAL 4 處 / README 3 處 / charter-config §5 1 處）+ **README 設計哲學（北極星）段**顯化 user 兩個無痛定義（回鍋開發者 / 小白）+ 三條服務原則（解決重複溝通 / charter 引導採用方 / 培養魚塭）+ 對未來修訂的紀律 + v0.7.0 mislabel BREAKING-LITE 追溯說明（dogfood signal #15 候選）。**dogfood-driven hardening 第八循環** — user 設計哲學 framing 觸發完整 sweep + 北極星顯化 |
@@ -162,6 +163,7 @@ project-root/
 | S70 修法後 Dashboard PnL 顯示對齊真值 | role-separation / completion-delivery / 結構性反捏造 |
 | 使用者觀察 v0.1.1 引入後 Token 影響 | structural-anti-fabrication §7.1 估算合理 |
 | **YC_AIAgentCrew 接入完成（2026-04-28，第二個非 CryptoBot 採用案例）** | AI Self-Instantiation §3.3.2（雙 AI 雙角色具象化）+ v0.5.9 純規範框架首次外部驗證（無 python 工具仍可跑通）+ dogfood signal #4「具象化 ⊥ 驗證脫鉤」預測完全成立（PM Gemini schema 違規 → Engineer Claude 修補）+ multi-role-tracking + cross-ai-handoff + A3「專案 ⊥ 框架」公理首次跨領域實證 |
+| **YC_AIAgentCrew 升 v0.8.0 verify 全綠（2026-04-30）** | `tools/post-upgrade-verify-spec.md`（v0.8.0 ship）5 軸全綠 0 ERROR / 0 WARN / 0 INFO = v0.7.0 namespace 雙重防禦（B004/C001）+ v0.7.4 vendor flat TOML schema 升實作層（C005）+ v0.7.1 雙路徑 axiom（D004 路徑 A 標記）+ v0.8.0 三層雙重防禦（init Phase 5b CHECK 7 ext / doctor §3.9 / post-upgrade-verify 軸 D D001）對 axiom 紀律工作正常 + v0.7.0 E605 諷刺循環攔截（B002 F6 enabled）+ E001 stale reference 排除歷史日誌紀律對齊綜合反向實證；對齊 v0.7.3 北極星「回鍋開發者無痛」+ SSS S1「user 授權閘」第二次 LIVE prototype 累積（user 不自抽驗、AI 跑 verify、user 看報告即授權） |
 
 ---
 

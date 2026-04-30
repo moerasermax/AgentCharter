@@ -6,7 +6,94 @@
 
 ## [Unreleased]
 
-（空 — v0.8.0 已釋出；下批次 v0.8.x PATCH 議程 BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist；v0.9.0 lifecycle.md + condition-mutability.md fresh head 設計）
+（空 — v0.8.1 已釋出；下批次 v0.8.x PATCH 議程：v0.8.2 SSS S3 propagate 到 post-upgrade-verify-spec / 雙軸矩陣 framing 第一段（README §設計哲學第 5 條）；v0.8.3 SSS S3 propagate 到 init-spec / 雙軸矩陣第二段（21 條補雙軸標籤）；v0.7.6 BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist；v0.9.0 lifecycle.md + condition-mutability.md + diagnose-remediate-protocol.md + essential preset fresh head 設計）
+
+---
+
+## [0.8.1] — 2026-04-30
+
+> **PATCH release — SSS S3 起手實證 + dogfood signal #24 升工具層 + signal #19 順手修**。**嚴守向下兼容**：純擴增 spec 層 + 文檔層、既有採用方升版只改 `charter_version: "0.8.0"` → `"0.8.1"`。**dogfood-driven hardening 第十四循環**（multi-perspective sub-agent 反向校準新類型）+ **第十五循環**（signal #24 升工具層、第二日連續 ship）。
+>
+> **Triggered by**：2026-04-30 LIVE session：
+> 1. **multi-perspective 評估第十四循環**（external Engineer Round 3-4 提案被 4 sub-agent 反向校準）— SSS S3「引導式紀律」起手實證觸發
+> 2. **dogfood signal #24 達 ≥3 次同類違反門檻**（v0.7.4 / v0.7.5 / v0.8.0 連續 release 漏執行 maintainer-discipline §3.4.2 checklist 子項「採用方文檔變更歷史」）— 已達 §3.4 演化路徑「升級到工具層自動偵測」觸發點
+> 3. **dogfood signal #19 順手修**（YC v0.8.0 升版 LIVE 實證 Gemini 把合規「shared/ 不存在」誤標 WARN）— doctor §3.7 校驗集第 2 條雙重否定措辭修
+> 4. **YC_AIAgentCrew 升 v0.8.0 verify 全綠**（2026-04-30）— v0.8.0 三層雙重防禦設計成功實證、SSS S1「user 授權閘」第二次 LIVE prototype 累積
+
+### Added — SSS S3 起手實證
+
+#### `tools/doctor-spec.md` §3.7-§3.9 既有 error codes 全加四欄 spec-as-data 結構
+
+對應 multi-perspective 評估第十四循環 SSS S3「引導式紀律」起手 — 把 spec 結構從「detect 規範 + 抽象處置」升維為「**detect + 修補方向 + 約束 + 反例**」（spec-as-data）：
+
+每個 error code 加 **4 欄結構**：
+- **合規規定**（charter ground truth、寫死）：必須狀態 + 對齊條款
+- **修補方向 + 約束**：✅ 必動 / ✅ 補完前提 / 🚫 不可動 / 🚫 不可代決 / 推薦路徑
+- **反例**（charter 已駁回的 anti-pattern + 對應正解）
+
+**範圍**：
+- §3.7 E601-E605（5 個 H4 子段）
+- §3.8 E801/W802（2 個 H4 子段）
+- §3.9 E606/E607/W608（3 個 H4 子段）
+
+對應 multi-perspective 評估理念守護者金礦：spec 自帶反例 → AI 看反例就知道不能那樣做 → 不需要繞路 → `core/violation-reflection §2`「集體記憶才重要」設計方向得到結構性強化（spec-as-data 抹掉「LLM completionist 易踩」需求軸）。
+
+#### `tools/doctor-spec.md` §3.10（新段）採用方文檔變更歷史 sync 校驗
+
+對應 **dogfood signal #24** 連續 ≥3 次同類違反條款化 — `core/maintainer-discipline §3.4` 演化路徑「升級到工具層自動偵測」終局實作：
+
+- **W901**：採用方文檔變更歷史最新 entry 不對齊 profile.yaml `charter_version`
+
+校驗 ADOPTION.md / TUTORIAL.md / QUICKSTART.md 三採用方文檔的變更歷史段、比對最新 entry 對應的 charter version vs profile.yaml `charter_version`、不一致 → WARN。
+
+### Changed — `tools/doctor-spec.md §3.7` 校驗集措辭修（dogfood signal #19）
+
+對應 YC v0.8.0 升版 LIVE 實證 — Gemini 把合規「shared/ 不存在」誤標為 WARN（讀「不應存在 → ERROR」雙重否定誤判）：
+
+校驗集第 2 條改寫為「**期望狀態（合規） vs 違規狀態**」對照表 + 紀律提醒：「不存在」是合規、「存在」才報 ERROR；不要把「找不到 shared/」誤判為 WARN/ERROR。
+
+### dogfood-driven hardening 循環
+
+| 循環 | Signal / 議程 | 處置 |
+|---|---|---|
+| **第十四循環** | multi-perspective sub-agent 反向校準（雙軸矩陣金礦 + 4 個 maintainer 校準點）| 4 sub-agent verbatim + 綜合判斷 + 守住禁區歸檔 `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md`（v0.8.0 ship 後 commit `afcd330`）|
+| **第十五循環** | dogfood signal #24 升工具層 + signal #19 順手修 + SSS S3 起手 | doctor-spec §3.7-§3.9 + §3.10 全擴四欄結構 |
+
+### 採用方影響
+
+| 項目 | 影響 | 處置 |
+|---|---|---|
+| 升版基本動作 | 改 profile.yaml `charter_version: "0.8.0"` → `"0.8.1"` | 改一行 |
+| doctor §3.10 W901 啟用 | 採用方文檔變更歷史漏 entry → 跑 doctor 抓 W901 | 補變更歷史 entry（依 maintainer-discipline §3.4.2）|
+| doctor §3.7-§3.9 四欄擴展 | spec 內容擴增、不影響採用方執行邏輯 | 純文檔層擴增、零動作 migration |
+| §3.7 E602 措辭修 | 對「shared/ 不存在」合規狀態的判斷更明確 | 既有採用方無影響、解決 LLM 誤判風險 |
+
+→ **既有採用方升 v0.8.0 → v0.8.1**：純改 `charter_version` 一行（除非採用方文檔變更歷史漏 entry、需順手補完）。
+
+### 連動更新
+
+- 三 preset yaml `charter_version: "0.8.0"` → `"0.8.1"`
+- ADOPTION.md（line 5 / 149 / 336）+ TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.8.1
+- `tools/doctor-spec.md §8` 變更歷史加 v0.8.1 entry
+- ADOPTION.md §13 / TUTORIAL.md 變更歷史加 v1.9 entry
+
+### SSS S3 v0.8.x 後續議程
+
+對應 multi-perspective 評估綜合判斷 §3.4「五軸分類」I 軸「立刻可採」：
+
+- **v0.8.2 PATCH**：post-upgrade-verify-spec 5 軸 error codes 全加四欄結構 + 雙軸矩陣 framing 第一段（README §設計哲學第 5 條）
+- **v0.8.3 PATCH**：init-spec Phase 5b CHECK 1-10 對應四欄 + 雙軸矩陣 framing 第二段（21 條條款補雙軸標籤）
+
+### 嚴守向下兼容紀律對齊
+
+| 紀律 | v0.8.1 對齊狀態 |
+|---|---|
+| 純擴增 spec 層 | ✅（doctor §3.7-§3.9 四欄擴展 + §3.10 新段、屬 W 級警告）|
+| 既有條款不破壞 | ✅（21 條 condition 不增不減；架構級概念 12 個維持）|
+| 既有採用方升版動作 | ✅（純改 `charter_version` 一行；W901 為新增 WARN、可選修補）|
+| dogfood-driven hardening 連續循環 | ✅（第十四 + 第十五循環同 24 hr 內、對齊 v0.7.4 雙軌節奏「頻繁小擴增 PATCH」）|
+
+對應 v0.7.4 雙軌節奏「**頻繁小擴增 PATCH** + **大方向新加條款用 MINOR**」紀律 — v0.8.1 純 PATCH 範圍、SSS S3 架構級條款化留 v0.9.0 MINOR。
 
 ---
 

@@ -418,7 +418,7 @@ framework 永久維持「**純規範**」位階。
   - **第二輪 user 抓到的同源設計盲區（2026-04-29 升版實戰）**：v0.7.5 walkthrough §3 Step 4「應用 migration」段（4.1 profile.yaml 修補 / 4.2 toml 修補 / 4.3 axiom frontmatter）— **4.1 + 4.3 是「給 user 的 yaml/markdown diff 範例」、不是「給 AI 的 prompt」**（vs 4.2 toml 修補是「給 AI 的 prompt」格式）。user 反問「這邊要自己手改(?，不能用指令嗎 這樣似乎不是無痛」抓到此設計矛盾。**v0.7.6 BOOTSTRAP 設計必修紀律**：所有採用方需要動 schema / 修檔的動作（profile.yaml 改 / mapping.yaml 改 / axiom 加 frontmatter / commit message 模板等）— **必須有對應「給 AI 的 prompt」模板**（user 貼一次 AI 自動完成）；不可只給「user 視角的 diff 範例」（要求 user 親自編輯）。對齊「**user 最少做 1 個動作**」北極星精神 — user 動作 = 貼 prompt、AI 動作 = 修檔。
   - **同源 dogfood signal**：charter 過去半天 ship 的 v0.7.0〜v0.7.5 多個 release 文件（QUICKSTART / ADOPTION / TUTORIAL / walkthrough）很多段落都犯這個「maintainer 視角寫法」毛病 — 顯化條款細節 vs 顯化採用方執行路徑 兩者落差。v0.7.6 BOOTSTRAP 順帶 sweep 整個採用方文檔層、把「執行類段落」全部對齊「給 AI 的 prompt」格式。**累積觀察**：本次 user 反問是第 1 次直接抓到這類同源 pattern；累積觀察、視 BOOTSTRAP 設計範圍評估是否擴大 sweep 範圍
 
-- **新 dogfood signal #19 候選 — doctor §3.7 E602 雙重否定措辭引發 LLM 誤判**（2026-04-29 YC 升版實證）：YC 升版 Step 3 跑 doctor、Gemini 讀 `tools/doctor-spec.md §3.7` 「`<common_memory_root>/shared/` 目錄存在 → E602 ERROR」措辭、把 YC 實際「shared/ 不存在」（合規狀態）誤判為「⚠️ WARN (Non-Critical) — 未偵測到 management/shared/ 目錄」。實際應該全綠通過。**根因**：spec 用「shared/ 應不存在」雙重否定描述 anti-pattern、Gemini 防禦性編程把「找不到」也標 WARN。**累積**：1 次（YC 升版實證）。**判斷**：屬 v0.7.6 BOOTSTRAP 順手修補的同類議題（doctor spec 對 LLM 友善的措辭明確化）；v0.7.6 議程 順帶 sweep doctor §3.7 + §3.8 對「禁存在 / 應存在」表述加正反例對照；當前先觀察、不條款化
+- ~~**新 dogfood signal #19 候選 — doctor §3.7 E602 雙重否定措辭引發 LLM 誤判**~~ ✅ **v0.8.1 完成**（2026-04-30）：`tools/doctor-spec.md §3.7` 校驗集第 2 條改為「期望狀態（合規）vs 違規狀態」對照表 + 紀律提醒（不要把「找不到」誤判為 WARN/ERROR）+ §3.7 E602 詳盡引導反例段加此 anti-pattern 對照。原候選紀錄保留（2026-04-29 YC 升版實證）：YC 升版 Step 3 跑 doctor、Gemini 讀 `tools/doctor-spec.md §3.7` 「`<common_memory_root>/shared/` 目錄存在 → E602 ERROR」措辭、把 YC 實際「shared/ 不存在」（合規狀態）誤判為「⚠️ WARN (Non-Critical) — 未偵測到 management/shared/ 目錄」。實際應該全綠通過。**根因**：spec 用「shared/ 應不存在」雙重否定描述 anti-pattern、Gemini 防禦性編程把「找不到」也標 WARN。**累積**：1 次（YC 升版實證）。**判斷**：屬 v0.7.6 BOOTSTRAP 順手修補的同類議題（doctor spec 對 LLM 友善的措辭明確化）；v0.7.6 議程 順帶 sweep doctor §3.7 + §3.8 對「禁存在 / 應存在」表述加正反例對照；當前先觀察、不條款化
 
 - **新 dogfood signal #21 候選 — charter 對「framework 全域 vs agent-commons 專案私有」雙層架構解釋不夠**（2026-04-29 user 升版完問「.agentcharter 在 user home 會影響其他專案嗎」直接抓到）：charter 文件（README / QUICKSTART / ADOPTION / TUTORIAL）多處提到 `~/.agentcharter/` 路徑、但**沒有清楚架構圖**（雙層 framework + agent-commons）讓 user 一眼看懂兩層隔離設計。user 第一次接觸時會困惑「會不會影響其他專案」。**對齊條款**：`core/common-memory-root.md` + `core/versioning-migration §6` + `core/charter-config.md §2` 都有相關說明、但分散；新 user 找不到全景。**判斷**：屬 v0.7.6 BOOTSTRAP 必修方向 — BOOTSTRAP.md 第一段應有 ASCII 架構圖 + 三個關鍵保證表（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）。**累積**：1 次（YC 升版完問）；屬一見即明痛點、可不必累積到 3 次直接條款化（BOOTSTRAP 設計順手做）
 
@@ -430,7 +430,7 @@ framework 永久維持「**純規範**」位階。
 
 - **新 dogfood signal #25 候選 — walkthrough 設計層未涵蓋 v0.7.1 frontmatter scaffold ship 前接入採用方**（2026-04-29 user LIVE 抓到）：v0.7.5 → v0.8.0 walkthrough §0 表只有 A/B/C 三類採用方分類、但 user IRON.md case 屬第 4 類 D（路徑 A user 主筆 + axiom 完全缺 frontmatter、v0.7.1 frontmatter scaffold ship 前接入採用方）。**現況走 manual override**（user 用我給的修補 prompt 跑通）；walkthrough 文件需補 §0 第 4 類 D + 新加 Step 3.D「路徑 A axiom 補 frontmatter scaffold」（簡化版、無校正紀錄行、created_by: user）。**累積**：1 次（YC 升版 LIVE 實證）。**判斷**：累積觀察、暫不條款化、待 v0.8.x PATCH 順手補
 
-- **新 dogfood signal #24 候選 — ADOPTION/TUTORIAL 變更歷史段 sync 缺漏連續違反**（2026-04-29 user post-v0.8.0 ship 抓到）：v0.8.0 ship commit 後 user 立即問「**文件有更新嗎、有記得補更新的文件讓採用方可以照著步驟更新了嗎**」→ maintainer 檢查發現 (a) ADOPTION.md §13 變更歷史最新 entry 為 v1.5 (charter v0.7.3)、缺 v0.7.4 + v0.7.5 + v0.8.0 entries；(b) TUTORIAL.md 變更歷史最新 entry 為 v1.3 (charter v0.7.0)、缺 v0.7.1 + v0.7.2 + v0.7.3 + v0.7.4 + v0.7.5 + v0.8.0 entries。**已 v0.8.0 commit 後修補**（add follow-up commit、不動 v0.8.0 tag、本 commit 純文檔補完不影響 release）。**根因**：v0.7.2 ship `core/maintainer-discipline §3.4.2` 文檔層 sync checklist 子項「變更歷史段（採用方文檔）」、但 maintainer 在 v0.7.4 / v0.7.5 / v0.8.0 三次連續 release 中漏執行此 checklist 子項 = **連續 ≥ 3 次同類違反同一子項**、對應 §3.4 違反處置「升級該子項至 §3.1 工具層自動偵測」。**已達 dogfood-driven hardening 第十二循環觸發點**。**處置候選**（v0.8.x PATCH 議程 / v0.9.0 一併）：
+- ~~**新 dogfood signal #24 候選 — ADOPTION/TUTORIAL 變更歷史段 sync 缺漏連續違反**~~ ✅ **v0.8.1 完成**（2026-04-30）：`tools/doctor-spec.md §3.10` 新加採用方文檔變更歷史 sync 校驗（W901）— `core/maintainer-discipline §3.4` 演化路徑「升級到工具層自動偵測」終局實作。原候選紀錄保留（2026-04-29 user post-v0.8.0 ship 抓到）：v0.8.0 ship commit 後 user 立即問「**文件有更新嗎、有記得補更新的文件讓採用方可以照著步驟更新了嗎**」→ maintainer 檢查發現 (a) ADOPTION.md §13 變更歷史最新 entry 為 v1.5 (charter v0.7.3)、缺 v0.7.4 + v0.7.5 + v0.8.0 entries；(b) TUTORIAL.md 變更歷史最新 entry 為 v1.3 (charter v0.7.0)、缺 v0.7.1 + v0.7.2 + v0.7.3 + v0.7.4 + v0.7.5 + v0.8.0 entries。**已 v0.8.0 commit 後修補**（add follow-up commit、不動 v0.8.0 tag、本 commit 純文檔補完不影響 release）。**根因**：v0.7.2 ship `core/maintainer-discipline §3.4.2` 文檔層 sync checklist 子項「變更歷史段（採用方文檔）」、但 maintainer 在 v0.7.4 / v0.7.5 / v0.8.0 三次連續 release 中漏執行此 checklist 子項 = **連續 ≥ 3 次同類違反同一子項**、對應 §3.4 違反處置「升級該子項至 §3.1 工具層自動偵測」。**已達 dogfood-driven hardening 第十二循環觸發點**。**處置候選**（v0.8.x PATCH 議程 / v0.9.0 一併）：
   - (a) `tools/doctor-spec.md` 新加 §3.10「採用方文檔變更歷史 sync」校驗 — 比對 ADOPTION/TUTORIAL 變更歷史最新 entry 對應 charter version vs profile.yaml `charter_version`、不一致 → WARN
   - (b) `tools/post-upgrade-verify-spec.md` 軸 E（stale reference 檢查）擴含「採用方文檔變更歷史 entry 對齊當前 charter_version」校驗（E3 stale reference 自動延伸）
   - (c) `core/maintainer-discipline §3.4.2` 加紅色強調「變更歷史段（採用方文檔）— 連續 3 次違反、已升級為硬性 release blocker」+ 視為 release commit pre-flight 必查項
@@ -481,6 +481,27 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.8.1 release（2026-04-30）— SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修
+
+✅ **dogfood-driven hardening 第十四循環**（multi-perspective sub-agent 反向校準新類型）：
+- `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md` 新檔（4 sub-agent 原文 verbatim + maintainer 綜合判斷 + 五軸分類 + 守住禁區）— commit `afcd330`
+- 4 sub-agent 補強 maintainer 第一輪沒到的深度：結構師雙軸正交矩陣（物理依據 ⊥ 檢測時點）+ 理念守護者「LLM 不可矯正」方向性誤讀指認 + 工程師 token 25k→8k 估算挑錯 + 採用方 essential preset 才是真槓桿
+
+✅ **dogfood-driven hardening 第十五循環**（signal #24 升工具層 + #19 順手修 + SSS S3 起手 三 signal 同 LIVE session 條款化）：
+
+✅ **新增**：
+- `tools/doctor-spec.md §3.7-§3.9` 既有 error codes 全加四欄 spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例）— SSS S3「引導式紀律」起手實證、共 10 個 H4 子段（E601-E605 + E801/W802 + E606/E607/W608）
+- `tools/doctor-spec.md §3.10` 新加採用方文檔變更歷史 sync 校驗（W901）— signal #24 升工具層條款化、`core/maintainer-discipline §3.4` 演化路徑「升級到工具層自動偵測」終局實作
+
+✅ **修正**：
+- `tools/doctor-spec.md §3.7` 校驗集第 2 條雙重否定措辭修（signal #19 YC v0.8.0 升版 LIVE 實證 Gemini 把合規「shared/ 不存在」誤標 WARN）
+
+✅ **連動更新**：三 preset yaml `0.8.0` → `0.8.1` + ADOPTION/TUTORIAL/maintainer-load 升版號 + ADOPTION §13 v1.9 + TUTORIAL 變更歷史 v1.9 + CHANGELOG v0.8.1 段 + STATUS Version 軌跡 v0.8.1 row + STATUS frontmatter「當前版本」+ Git tags
+
+✅ **議程位階重整**：v0.8.x SSS S3 漸進落地起手、v0.8.2 propagate 到 post-upgrade-verify-spec + 雙軸矩陣 framing 第一段（README §設計哲學第 5 條）、v0.8.3 propagate 到 init-spec + 21 條條款補雙軸標籤
+
+✅ **嚴守向下兼容**：純擴增 spec 層 + 文檔層、採用方升版只改 `charter_version` 一行；W901 為新增 WARN、可選修補
 
 ### v0.8.0 release（2026-04-29）— 升版 + 接入防呆強化（slim 版）
 

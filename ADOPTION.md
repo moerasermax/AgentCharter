@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.8.0`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.8.1`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -146,7 +146,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.8.0"`（或當前最新版）。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.8.1"`（或當前最新版）。
 
 ### T1 接入
 
@@ -333,7 +333,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 採用方在 Day 7 結束前應能對所有問題回答 ✅：
 
 - [ ] `agent-commons/` 目錄結構齊全（依 §4）+ **agent-commons/shared/ 不存在**（v0.7.0 doctor §3.7 E602 — namespace ≠ 檔案路徑）
-- [ ] `_config/profile.yaml` 含 `charter_version: "0.8.0"`（或當前最新版）+ 選定 preset
+- [ ] `_config/profile.yaml` 含 `charter_version: "0.8.1"`（或當前最新版）+ 選定 preset
 - [ ] `_config/profile.yaml` 內 `parameters.failure-modes.enable_modes` **含 F6**（v0.5.10 加 / v0.7.0 強制必啟、doctor §3.7 E605）
 - [ ] `_config/mapping.yaml` 含 `common_memory_root` + `domain_axioms.primary` + `working_stack_discipline.shared.draft_context`
 - [ ] `_config/mapping.yaml` 內 `layout.<key>` 不含 `shared/` / `roles/` 等 namespace 同名中介層（v0.7.0 doctor §3.7 E601 — namespace ≠ 檔案路徑）
@@ -351,6 +351,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 ## 13. 變更歷史
 
+- **v1.9（2026-04-30，charter v0.8.1）** — SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修連動 sync：line 5 / 149 / 336 charter_version v0.8.0 → v0.8.1 + §12 採用就緒 self-check charter_version 範例值升。**採用方升 v0.8.1 注意事項**：(a) 純擴增 spec 層 + 文檔層、既有採用方升版只改 profile.yaml `charter_version: "0.8.0"` → `"0.8.1"`；(b) `tools/doctor-spec.md §3.10` 新加採用方文檔變更歷史 sync 校驗（W901）— 採用方文檔變更歷史漏 entry 會抓 WARN、需補變更歷史 entry（依 maintainer-discipline §3.4.2 紀律）；(c) `tools/doctor-spec.md §3.7-§3.9` 全加四欄 spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例）— 對採用方執行邏輯零影響、純文檔層擴增；(d) §3.7 校驗集第 2 條雙重否定措辭修（dogfood signal #19、解決 Gemini 把合規「shared/ 不存在」誤標 WARN 風險）。**對應 dogfood-driven hardening 第十四循環**（multi-perspective sub-agent 反向校準）+ **第十五循環**（signal #24 升工具層、第二日連續 ship 對齊雙軌節奏）。詳見 CHANGELOG v0.8.1 段 + `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md`。
 - **v1.8（2026-04-29，charter v0.8.0）** — 升版 + 接入防呆強化（slim 版）連動 sync：line 5 / 149 / 336 charter_version v0.7.5 → v0.8.0 + §12 採用就緒 self-check 加新項「`/charter-upgrade-verify` 5 軸全綠」（v0.8.0 新工具、軸 D 含 axiom frontmatter `status: USER-RATIFIED` 校驗）。**採用方升 v0.8.0 注意事項**：(a) `tools/doctor-spec.md §3.8` vendor schema check 從 spec 層升實作層、E801/W802 強制 — 既有 vendor toml/md 不合規（如 Gemini CLI nested table）會抓新 ERROR、升版前須先跑 doctor 修補；(b) `tools/doctor-spec.md §3.9` 新加 axiom 紀律對齊（E606/E607/W608）— 既有 axiom 若 frontmatter `status: AI-DRAFTED` 會抓 E606、需校 axiom + 升 USER-RATIFIED + 加校正紀錄行；(c) `tools/init-spec.md` Phase 5b CHECK 7 ext — 新接入採用方若 axiom 未升 USER-RATIFIED → init 失敗；(d) 新 spec `tools/post-upgrade-verify-spec.md` 提供 `/charter-upgrade-verify` 工具（user 自具象化為 slash command、跑 5 軸 A/B/C/D/E 校驗）；(e) `QUICKSTART.md` Step 2 ↔ Step 3 swap（axiom 寫在前、init 跑在後）— 對齊 v0.7.0 Phase 5b 物理存在校驗精神、移除 v0.7.2 cross-reference 警告。**升版推薦流程**（5 步抽象、**詳細 step-by-step 流程含每步 AI prompt 範本見 [`examples/upgrades/v0.7.5-to-v0.8.0.md`](./examples/upgrades/v0.7.5-to-v0.8.0.md)** — 對應 dogfood signal #21 紀律修正：每步給 AI 的 prompt、不要求 user 自己編輯）：1) 跑 /charter-doctor 看不合規項；2) 修補（B 類修 vendor schema / C 類升 axiom status）；3) profile.yaml `charter_version: "0.8.0"`；4) 自具象化 /charter-upgrade-verify；5) 跑 /charter-upgrade-verify 確認 5 軸全綠。**對應 dogfood-driven hardening 第十一循環** — signal #23 條款化 + #16 升實作層 + #10 升結構修正、三 signal 同 LIVE session 條款化 + SSS S1/S2 首次 capture。詳見 CHANGELOG v0.8.0 段。
 - **v1.7（2026-04-28，charter v0.7.5）** — 跨多版本升級指引補完：line 5 / 149 / 336 charter_version v0.7.4 → v0.7.5 + 引用 `core/versioning-migration §3.4`（跨多 MINOR 累積升級流程子段、含「停用一段時間後重新採用」場景具體指引）+ `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md`（charter 第一個跨版本 walkthrough、回鍋開發者無痛實證）。**採用方升 v0.7.5 注意**：純擴增 / 零動作 migration（只改 profile.yaml charter_version）。對應 v0.7.3 北極星紀律「回鍋開發者無痛」第一個實證 ship。
 - **v1.6（2026-04-28，charter v0.7.4）** — vendor 端 slash command schema 規範條款化（dogfood signal #16）：line 5 / 149 / 336 charter_version v0.7.3 → v0.7.4 + §7 self-instantiation 步驟對應提示 vendor schema 規範段（`roles/pm/gemini-cli.md §3.6` toml 扁平結構強制 / `roles/engineer/claude-code.md §4.1` .md 純 markdown 規範）。**採用方升 v0.7.4 注意**：純擴增 / 零動作 migration、doctor 不跑新 check（實作層留 v0.8+ 啟用、已於 v0.8.0 啟用、見 v1.8 entry）。

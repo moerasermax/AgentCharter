@@ -3,7 +3,7 @@
 > **給誰**：採用 AgentCharter 框架的團隊（人類採用方）
 > **性質**：reference / 工具書（章節獨立、可跳讀）
 > **不是**：線性教學書（如想線性走完 → [QUICKSTART.md](./QUICKSTART.md)）
-> **配對**：本檔對應 charter `v0.8.0`
+> **配對**：本檔對應 charter `v0.8.1`
 
 ## 目錄
 
@@ -688,6 +688,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 ## 變更歷史
 
+- **v1.9（2026-04-30，charter v0.8.1）** — SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修連動 sync：line 6 charter 對應版本 v0.8.0 → v0.8.1。**升 v0.8.1 注意**：純擴增 spec 層 + 文檔層、既有採用方升版只改 profile.yaml `charter_version: "0.8.0"` → `"0.8.1"`。`tools/doctor-spec.md §3.10` 新加採用方文檔變更歷史 sync 校驗（W901）— 採用方文檔變更歷史漏 entry 會抓 WARN、需補變更歷史 entry（依 maintainer-discipline §3.4.2 紀律）。`tools/doctor-spec.md §3.7-§3.9` 全加四欄 spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例）— 對採用方執行邏輯零影響、純文檔層擴增。詳見 CHANGELOG v0.8.1 段。
 - **v1.8（2026-04-29，charter v0.8.0）** — 升版 + 接入防呆強化（slim 版）連動 sync：line 6 charter 對應版本 v0.7.5 → v0.8.0 + 對應 v0.8.0 新增條款 / spec 段引用（`tools/post-upgrade-verify-spec.md` 新工具、5 軸 spec 校驗 / `tools/doctor-spec.md §3.9` axiom 紀律對齊 E606/E607/W608 / `tools/doctor-spec.md §3.8` vendor schema 從 spec 升實作層、E801/W802 強制 / `tools/init-spec.md` Phase 5b CHECK 7 ext axiom status fail-fast / `QUICKSTART.md` Step 2 ↔ Step 3 swap）。**升 v0.8.0 注意**：(a) 升版前先跑 /charter-doctor 看 §3.8 vendor schema + §3.9 axiom status 是否合規、修補後再升 charter_version；(b) 新接入採用方需先寫 axiom + 升 USER-RATIFIED 才能跑 init（Phase 5b CHECK 7 ext 強制）；(c) /charter-upgrade-verify 為新工具、自具象化為 slash command 給未來重用。**詳細 step-by-step 升版流程（含每步 AI prompt 範本）見 [`examples/upgrades/v0.7.5-to-v0.8.0.md`](./examples/upgrades/v0.7.5-to-v0.8.0.md)**。詳見 CHANGELOG v0.8.0 段。
 - **v1.7（2026-04-28，charter v0.7.5）** — 跨多版本升級指引：line 6 charter 對應版本 v0.7.4 → v0.7.5。對應 `core/versioning-migration §3.4` 跨多 MINOR 累積升級流程子段（含「停用一段時間後重新採用」場景）+ YC_AIAgentCrew 第一個跨版本 walkthrough 實證（回鍋開發者無痛紀律 ship）。**升 v0.7.5 注意**：純擴增 / 零動作 migration。
 - **v1.6（2026-04-28，charter v0.7.4）** — vendor 端 slash command schema 規範條款化（dogfood signal #16）：line 6 charter 對應版本 v0.7.3 → v0.7.4 + §11 troubleshooting 應加 vendor schema 違規（如 Gemini CLI toml nested table）的修法。**升 v0.7.4 注意**：純擴增 / 零動作 migration、doctor 不跑新 check（實作層留 v0.8+ 啟用、已於 v0.8.0 啟用、見 v1.8 entry）。

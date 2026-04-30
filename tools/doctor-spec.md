@@ -157,9 +157,11 @@
    檢查 value 字串是否以 namespace 同名的中介層開頭（如 shared/<...>）
    命中 → ERROR
 
-2. 校驗 <common_memory_root>/ 下的實際結構：
-   不應存在 <common_memory_root>/shared/ 目錄
-   命中 → ERROR
+2. 校驗 <common_memory_root>/ 下實際結構：
+   - 期望狀態（合規）：shared/ 目錄**不存在**
+   - 違規狀態：<common_memory_root>/shared/ 目錄**存在** → ERROR
+   ⚠️ 紀律提醒（v0.8.1 加、對應 dogfood signal #19）：「不存在」是合規、「存在」才報 ERROR；
+   不要把「找不到 shared/」誤判為 WARN/ERROR（YC v0.8.0 升版 LIVE 實證 Gemini 把合規「shared/ 不存在」誤標 WARN）
 
 3. standard / strict preset 下的頂層必要目錄都存在：
    capsules/ / handoffs/ / protocols/ / institutional-memory/
@@ -181,6 +183,101 @@
 | `enable_modes` 缺 F6 | **E605** | ERROR；補上 F6（dogfood signal #4 條款化要求）|
 
 **諷刺循環攔截**：E605（F6 沒啟用）本身是 F6 行為的高發誘因（沒啟用 → 沒攔住未驗證即宣告就緒）。doctor 模式 B 強制檢查 §3.7 → 即使 profile.yaml 漏寫 F6、doctor 仍會抓到（因為這條 check 不依賴 enable_modes，是強制執行）。
+
+#### E601 詳盡引導（v0.8.1 加；SSS S3 spec-as-data）
+
+**合規規定**（charter ground truth）：
+- 必須狀態：`mapping.yaml` 內 `layout.<key>: <value>` 的 value 不含 namespace 同名中介層（如 `shared/<...>`）
+- 對齊條款：
+  - `core/charter-config.md §3` mapping schema namespace 註明（v0.7.0 加）
+  - `core/failure-modes.md §F6` surface-level vs structural-level 完成感脫鉤
+
+**修補方向 + 約束**：
+- ✅ 必動：移除 mapping value 中的 `shared/` 中介層、改為頂層路徑（如 `shared/capsules/` → `capsules/`）
+- 🚫 不可動：mapping schema 結構（保 `layout.<key>: <value>` pattern、不重命名 key）
+- 🚫 不可代決：是否 mkdir 新目錄 → 走 `/charter-init` 流程、不可繞過
+- **推薦路徑**：依 `tools/init-spec.md Phase 1-3` 重新跑結構建立流程（不要手動 mkdir）
+
+**反例**（charter 已駁回的 anti-pattern）：
+- ❌ AI 看到 `layout.capsules: shared/capsules/` → 解讀為「應 mkdir shared/ 然後在底下建 capsules/」
+  - ✅ 正解：value 是 namespace 標記、頂層 capsules/ 才是實際路徑、mapping 內 value 應改為 `capsules/`
+- ❌ AI 把 `shared.*` namespace 翻譯為實際目錄結構（v0.7.0 公司接入失敗 dogfood signal #4 第三次同類）
+  - ✅ 正解：`shared.*` 是 schema 邏輯命名空間、charter 已明示「不是檔案路徑」
+
+#### E602 詳盡引導（v0.8.1 加）
+
+**合規規定**：
+- 必須狀態：`<common_memory_root>/shared/` 目錄**不存在**（charter 設計、頂層扁平結構）
+- 對齊條款：`core/charter-config.md §3` namespace vs 檔案路徑分離（v0.7.0 加）
+
+**修補方向 + 約束**：
+- ✅ 必動：移除已誤建的 `<common_memory_root>/shared/` 目錄、把內容（如有）移到頂層
+- 🚫 不可動：頂層既有目錄結構（capsules/ / handoffs/ / protocols/ / institutional-memory/）
+- 🚫 不可代決：合併移動內容時可能的衝突 → user explicit 決定（不可 AI 自代）
+- **推薦路徑**：
+  1. `mv <common_memory_root>/shared/<sub>/* <common_memory_root>/<sub>/`（每個子目錄）
+  2. `rmdir <common_memory_root>/shared/`
+  3. 跑 `/charter-doctor` 重驗 → E602 解除
+
+**反例**：
+- ❌ AI 看到「shared/ 目錄不存在 → ERROR」誤判：「找不到 shared/ 目錄、可能要建」（**dogfood signal #19**、YC v0.8.0 升版 LIVE 實證）
+  - ✅ 正解：「禁存在」是合規狀態、`shared/` 不存在 = PASS、AI 看到此狀態應該不報錯
+- ❌ AI 主動建議「結構遷移：mkdir shared/ + mv 所有資產進去」（**dogfood signal #20**、YC v0.8.0 升版 LIVE 實證、Gemini 主動推 anti-pattern + 編造論述「對齊 v0.7.5 標準命名空間結構」）
+  - ✅ 正解：v0.7.0 起 charter 主動明示「不重命名 namespace、namespace 是邏輯標記不是檔案路徑」、不要 mkdir shared/
+
+#### E603 詳盡引導（v0.8.1 加）
+
+**合規規定**：
+- 必須狀態：頂層必要目錄齊全（capsules/ / handoffs/ / protocols/ / institutional-memory/）— standard/strict preset 強制
+- 對齊條款：`tools/init-spec.md Phase 1-3` 結構建立流程
+
+**修補方向 + 約束**：
+- ✅ 必動：補建缺項目錄（依 init-spec phase 1-3 順序）
+- 🚫 不可動：既有頂層目錄結構
+- **推薦路徑**：跑 `/charter-init` 補建缺項
+
+**反例**：
+- ❌ AI 把 `capsules/` 缺項解讀為「不需要 capsules/ 此 preset」 → 違反 standard/strict preset 紀律
+  - ✅ 正解：standard/strict preset 強制此 4 個頂層目錄、不可省
+
+#### E604 詳盡引導（v0.8.1 加）
+
+**合規規定**：
+- 必須狀態：`roles/` 子目錄至少含 pm 或 engineer 之一（standard/strict preset）
+- 對齊條款：`core/init-template.md §3.3 self-instantiation` + A1 公理「角色 ⊥ AI」
+
+**修補方向 + 約束**：
+- ✅ 必動：建立 `roles/<role>/` scaffold（依 `templates/agent-commons/_role.md.tpl`）
+- 🚫 不可動：跨 vendor 預設機制（A1 公理「角色 ⊥ AI」）
+- 🚫 不可代決：哪個 vendor 擔該角色 → user explicit 決定
+- **推薦路徑**：邀請 AI 自具象化 role（不要 maintainer 寫死 vendor）
+
+**反例**：
+- ❌ AI 直接 mkdir 空 `roles/pm/` 目錄但無 `_role.md`
+  - ✅ 正解：依 `templates/agent-commons/_role.md.tpl` 建立、含 init-template §2 八項最終狀態
+- ❌ AI 寫死 `roles/pm/_role.md` 內含「PM = Gemini」（vendor lock-in）
+  - ✅ 正解：A1 公理「角色 ⊥ AI」、_role.md 寫角色職責、不寫死 vendor
+
+#### E605 詳盡引導（v0.8.1 加；諷刺循環攔截軸的執行載體）
+
+**合規規定**：
+- 必須狀態：`profile.yaml` `parameters.failure-modes.enable_modes` 含 `F6`（v0.7.0 起 standard/strict preset 預設）
+- 對齊條款：
+  - `core/failure-modes.md §F6`（surface-level vs structural-level、dogfood signal #4 條款化要求）
+  - `tools/profiles/standard.yaml` / `strict.yaml` 預設值
+
+**修補方向 + 約束**：
+- ✅ 必動：在 `enable_modes` 列表加上 `F6`
+- ✅ 補完前提：`enable_modes` 是 list 結構（如 `[F1, F2, F3, F4, F5, F6]`）
+- 🚫 不可動：`profile.yaml` 其他段（domain_axioms / preset / charter_version 等）
+- 🚫 不可代決：F6 不可缺、AI 不可建議「跳過 F6」（諷刺循環設計、E605 攔截「沒 F6」狀態本身）
+- **推薦路徑**：直接在 `enable_modes` 列表末加 `F6`、不需動其他欄位、跑 `/charter-doctor` 重驗 → PASS
+
+**反例**：
+- ❌ AI 自作主張改 `enable_modes` 縮減到 `[F1, F2, F3]`（不含 F6）→ 違反 v0.7.0 後 standard/strict 紀律
+  - ✅ 正解：完整含 F1-F6
+- ❌ AI 建議「諷刺循環、沒 F6 也沒關係」（v0.7.0 公司接入失敗 dogfood signal #4 第三次同類、YC v0.8.0 升版 LIVE Gemini 編造同類）
+  - ✅ 正解：F6 攔截不可繞、是 dogfood signal #4 條款化要求；E605 設計是攔截「沒 F6」狀態本身、AI 不可繞過
 
 ### 3.8 vendor 端 slash command schema 校驗（v0.7.4 spec 層 → v0.8.0 實作啟用）
 
@@ -211,6 +308,43 @@
 |---|---|---|
 | vendor schema 違反（nested table / 缺必填 / 禁用欄位）| **E801**（v0.8.0 啟用）| 致命；依 `<vendor>.md` schema 規範修補（如 Gemini CLI toml 改扁平結構、移除 nested table）|
 | vendor schema 規範未在 `<vendor>.md` 顯化 | **W802**（v0.8.0 啟用）| 警告：`<vendor>.md` 缺 schema 規範段；走 `ai-vendor-onboarding §3` 邀請 vendor 補完 |
+
+#### E801 詳盡引導（v0.8.1 加；SSS S3 spec-as-data）
+
+**合規規定**：
+- 必須狀態：vendor 端 slash command 檔依對應 `roles/<role>/<vendor>.md` schema 規範段
+- 對齊條款：
+  - `roles/pm/gemini-cli.md §3.6`（toml 扁平結構強制、v0.7.4 加）
+  - `roles/engineer/claude-code.md §4.1`（.md 純 markdown 規範、v0.7.4 加）
+
+**修補方向 + 約束**：
+- ✅ 必動：依 vendor schema 規範修補 slash command 檔（如 Gemini CLI toml 改扁平結構、移除 nested table）
+- ✅ 補完前提：對應 `<vendor>.md` 已有 schema 規範段
+- 🚫 不可動：vendor schema 規範本身（charter 既有條文）
+- 🚫 不可代決：跨 vendor 設計（不可寫死 Claude Code hook / Gemini 沒對應機制等 vendor-specific 假設）
+- **推薦路徑**：對照 `<vendor>.md` schema 段逐項對齊、跑 doctor 重驗 → PASS
+
+**反例**：
+- ❌ AI 寫 `.gemini/commands/charter-init.toml` 用 nested `[command]` table（v0.5.9 接入時 Gemini 自編 schema 違反、dogfood signal #16）
+  - ✅ 正解：扁平結構、root level prompt + description（依 `roles/pm/gemini-cli.md §3.6`）
+- ❌ AI 寫死 vendor-specific 工具（如 hook 注入身份戳寫進 charter 概念層）
+  - ✅ 正解：走 `core/ai-vendor-onboarding §3` 邀請制 vendor 自實作
+
+#### W802 詳盡引導（v0.8.1 加）
+
+**合規規定**：
+- 必須狀態：vendor schema 規範必在對應 `<vendor>.md` 顯化（不是 charter 概念層）
+- 對齊條款：`core/ai-vendor-onboarding §3.1` 邀請制（charter 不代寫 vendor schema）
+
+**修補方向 + 約束**：
+- ✅ 必動：走 `core/ai-vendor-onboarding §3` 邀請制 step 2-4 補完 `<vendor>.md` schema 規範段
+- 🚫 不可動：charter 概念層（不可在 `core/` 寫死 vendor schema）
+
+**反例**：
+- ❌ Maintainer 在 charter `core/init-template.md` 直接寫 Gemini CLI toml schema → 違反 ai-vendor-onboarding §3.1 邀請制
+  - ✅ 正解：邀請 vendor 在 `roles/<role>/<vendor>.md` 自寫
+- ❌ AI 看 W802 → 自己代寫 vendor schema 段給 charter（補丁）
+  - ✅ 正解：W802 是給 maintainer 的提醒「該邀請 vendor 補完」、不是 AI 代寫信號
 
 ### 3.8.1 v0.7.4 → v0.8.0 漸進啟用路徑（已完成）
 
@@ -263,6 +397,98 @@
 - `tools/post-upgrade-verify-spec.md` 軸 D（v0.8.0 加）— 升版後 5 軸 verify 中的軸 D D001
 
 三層同源紀律、三處執行載體 — 對齊 v0.7.3 北極星「**不讓 user 記**」精神（即使 user 跨 session / 下班再回、流程強制抓 axiom 升級狀態）。
+
+#### E606 詳盡引導（v0.8.1 加；SSS S3 spec-as-data）
+
+**合規規定**：
+- 必須狀態：axiom 檔 frontmatter `status: USER-RATIFIED`
+- 對齊條款：
+  - `core/domain-axiom-slot §3.3` 路徑 B「不可在 AI-DRAFTED 啟動 init」紀律（v0.7.1 加）
+  - `templates/agent-commons/domain-axioms-via-ai-draft-prompt.md.tpl` 第 5 步（v0.7.1 加）
+
+**修補方向 + 約束**：
+- ✅ 必動：user 校 axiom 內容後改 frontmatter `status: AI-DRAFTED` → `USER-RATIFIED`
+- ✅ 補完前提：`created_by: ai-drafted` → `user-ratified-from-ai-draft` + 加校正紀錄行
+- 🚫 不可動：axiom 內容本身的修訂權（path B「不可在 AI-DRAFTED 啟動 init」）
+- 🚫 不可代決：升級到 `USER-RATIFIED` **必由 user 親操作**、AI 不可代
+
+**反例**：
+- ❌ AI 自我宣告「我已校過、status 改 USER-RATIFIED」（dogfood signal #23 第二次同類、v0.7.6 LIVE 公司專案接入第二次實證）
+  - ✅ 正解：必由 user explicit 動作、AI 不可代
+- ❌ AI 跑 init 時看到 `status: AI-DRAFTED` → 自動「為了讓 init 跑通」改 `USER-RATIFIED`
+  - ✅ 正解：終止 init、回報 user「需先校 axiom 升 USER-RATIFIED」、AI 不可代
+
+#### E607 詳盡引導（v0.8.1 加）
+
+**合規規定**：
+- 必須狀態：axiom frontmatter `status` 值合法二態（`USER-RATIFIED` 或 `AI-DRAFTED`）
+- 對齊條款：`core/domain-axiom-slot §3.3` 路徑 B 雙路徑二態紀律（v0.7.1 加）
+
+**修補方向 + 約束**：
+- ✅ 必動：改回合法二態之一（依 `core/domain-axiom-slot §3.3` 路徑 B 紀律）
+- 🚫 不可代決：哪一態屬必由 user 確認
+
+**反例**：
+- ❌ AI 自編 `status: PROVISIONAL` / `DRAFT` / 別的值
+  - ✅ 正解：`USER-RATIFIED` 或 `AI-DRAFTED` 二擇一、不可創新
+
+#### W608 詳盡引導（v0.8.1 加）
+
+**合規規定**：
+- 必須狀態：axiom frontmatter 含 `mutability_default` 欄位
+- 對齊條款：`core/domain-axiom-slot §3.3` v0.7.1 frontmatter scaffold
+
+**修補方向 + 約束**：
+- ✅ 必動：補 `mutability_default: APPEND-ONLY`（v0.7.1 scaffold 預設值）
+- 🚫 不可代決：mutability 級別（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）必由 user 確認、AI 不可建議放寬
+
+**反例**：
+- ❌ AI 自編 `mutability_default: FULL-MUTABLE`（最寬鬆）→ AI 不該主動推「方便」級
+  - ✅ 正解：v0.7.1 scaffold 預設 `APPEND-ONLY`、user 可改但 AI 不主動建議放寬
+
+### 3.10 採用方文檔變更歷史 sync 校驗（v0.8.1 加；dogfood signal #24 條款化）
+
+對應 **dogfood signal #24** 連續 ≥3 次同類違反（v0.7.4 / v0.7.5 / v0.8.0 三次 release 中 maintainer 漏執行 `core/maintainer-discipline §3.4.2` 文檔層 sync checklist 子項「變更歷史段（採用方文檔）」）— 已達 §3.4「升級該子項至 §3.1 工具層自動偵測」演化路徑觸發點。
+
+**校驗集**（v0.8.1 加；非模式 B minimal 必驗、屬模式 A 全量檢查項）：
+
+```
+對採用方專案內 ADOPTION.md / TUTORIAL.md / QUICKSTART.md 三採用方文檔（檔名可採用方自定、依 mapping.yaml shared.adoption_doc / shared.tutorial / shared.quickstart 指向實際檔）：
+
+  1. 讀檔末段「變更歷史」表（pattern：行內含「v<X.Y> | charter v<A.B.C>」格式）
+  2. 讀 profile.yaml `charter_version` 值
+  3. 比對：變更歷史最新 entry 對應的 charter v<A.B.C> 是否 == profile.yaml charter_version
+     - 對應 → PASS
+     - 不對應 → WARN (W901)
+  4. 若採用方文檔不存在（mapping 未指向）：跳過、不報錯
+```
+
+| 失敗 | 狀態碼 | 處置 |
+|---|---|---|
+| 採用方文檔變更歷史最新 entry 不對齊 profile.yaml charter_version | **W901** | 警告；補齊變更歷史 entry（依 maintainer-discipline §3.4.2 紀律）或標記「升版過渡期」說明 |
+
+#### W901 詳盡引導（v0.8.1 加；SSS S3 spec-as-data）
+
+**合規規定**：
+- 必須狀態：採用方文檔變更歷史最新 entry 對應的 charter version == profile.yaml charter_version
+- 對齊條款：`core/maintainer-discipline §3.4.2` 文檔層 sync checklist（v0.7.2 加）
+
+**修補方向 + 約束**：
+- ✅ 必動：補齊缺漏的變更歷史 entry（如 ADOPTION.md §13 加 v1.X entry）
+- ✅ 補完前提：依 `core/maintainer-discipline §3.4.2` 變更歷史 entry 格式（v<X.Y> | <date> | charter v<A.B.C> | <change-summary>）
+- 🚫 不可動：既有 entry（保歷史紀錄完整、append-only）
+- 🚫 不可代決：升版本身（AI 補變更歷史 entry ≠ 升版完成、charter_version 對齊與否是另一軸）
+
+**反例**：
+- ❌ AI 看到不對齊 → 自動把 charter_version 改到舊版本以「對齊」
+  - ✅ 正解：補變更歷史 entry、不動 charter_version（charter_version 對齊由升版流程決定）
+- ❌ AI 把 W901 解讀為「採用方升版未完成」並終止其他動作
+  - ✅ 正解：W901 是 WARN 不是 ERROR、是「文檔層 sync 漏」提醒、不阻擋其他流程
+
+**對應條款 / signal**：
+- v0.7.2 ship 文檔層 sync checklist 為人為紀律 → v0.8.1 升工具層自動偵測
+- dogfood signal #6「條款層 sync 與文檔層 sync 不對等」終局實作層
+- `tools/post-upgrade-verify-spec.md` 軸 E（stale reference）擴含此項留 v0.8.x PATCH 後續（雙重防禦）
 
 ---
 
@@ -407,6 +633,7 @@ CI / pre-commit hook 可依退出碼 gate。
 | **v0.7.0** | **§3.7 加結構頂層完整性 + namespace vs 檔案路徑校驗**（E601/E602/E603/E604/E605）；§2.1 模式 B minimal 必驗集擴充含 §3.7。**觸發**：dogfood signal #4 第三次同類（公司專案接入失敗 2026-04-28）— `shared.*` namespace 被 Gemini 誤翻譯為檔案系統目錄，整個 agent-commons/ 結構錯位 + F6 漏啟用 + dbsdk.md 完全沒建。對應 charter-config.md mapping schema 段加註明的雙重防禦 | ✅ |
 | **v0.7.4** | **§3.8 加 vendor 端 slash command schema 校驗**（spec 層、實作 defer v0.8+）+ §3.8.1 v0.7.4 → v0.8+ 漸進啟用路徑說明。**觸發**：dogfood signal #16 條款化（YC_AIAgentCrew 2026-04-28 Gemini CLI v0.39.1 載入 toml 失敗、charter v0.5.9 〜 v0.7.3 vendor schema 規範完全空白）。**嚴守向下兼容**：v0.7.4 doctor 不跑此 check、既有採用方升版零新 ERROR/WARN；實作待 v0.8+ 對齊 `core/adoption-lifecycle.md` 完整化後啟用 | ✅ |
 | **v0.8.0** | **§3.8 vendor schema 從 spec 層升實作層**（E801/W802 列為強制）+ §3.8.1 漸進路徑表加 v0.8.0 已完成行 + **§3.9 加 axiom 紀律對齊**（E606/E607/W608 — axiom frontmatter status 二態紀律執行載體）+ §2.1 模式 B minimal 必驗集擴含 §3.9。**觸發**：(a) v0.7.4 spec 層累積至 v0.8.0 實作層啟用條件滿足（vendor schema 段已 ship + post-upgrade-verify 軸 C C005 對齊雙工具防禦）；(b) **dogfood signal #23 條款化**（v0.7.0 公司接入第一次失敗 + v0.7.6 LIVE 公司專案接入第二次同類觀察、user 直接授權跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 直接條款化 pattern）— init-spec Phase 5b CHECK 7 ext 為 init 端執行載體、本 §3.9 為 doctor 端執行載體、post-upgrade-verify 軸 D 為升版專屬執行載體、三層雙重防禦 | ✅ |
+| **v0.8.1** | **SSS S3 起手實證 — doctor-spec 既有 error codes 全加四欄 spec-as-data 結構**（合規規定 / 修補方向 + 約束 / 反例）：§3.7 E601-E605（5 個 H4 子段）+ §3.8 E801/W802（2 個）+ §3.9 E606/E607/W608（3 個）+ **新加 §3.10 採用方文檔變更歷史 sync**（W901、dogfood signal #24 升工具層）+ §3.7 校驗集第 2 條措辭修（dogfood signal #19 雙重否定）。**觸發**：(a) 2026-04-30 multi-perspective 評估第十四循環 — external Engineer Round 3-4 提案被 4 sub-agent 反向校準後、SSS S3「引導式紀律」起手實證；(b) **dogfood signal #24 條款化**（v0.7.4/v0.7.5/v0.8.0 連續 ≥3 次同類違反、達 §3.4 演化路徑觸發點）；(c) **dogfood signal #19 順手修**（YC v0.8.0 升版 LIVE Gemini 把合規「shared/ 不存在」誤標 WARN）。**對齊**：v0.7.3 北極星「不讓 user 記」+ v0.7.4 雙軌節奏「頻繁小擴增 PATCH」+ feedback `structural-over-patch` 紀律（spec 結構升維、不是規範補丁）+ `core/violation-reflection §2`「LLM 個體不重要、集體記憶才重要」設計方向（spec 自帶反例段抹掉「LLM completionist 易踩」需求） | ✅ |
 
 **實作模式**：採用方對 AI prompt「依本 spec 跑健康檢查」+ 順便自具象化 `/charter-doctor` slash command（依 `core/init-template.md §3.3` self-instantiation 精神）。
 

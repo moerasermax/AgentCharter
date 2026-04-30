@@ -65,7 +65,7 @@ charter maintainer 接班完成，待下達議題。
 
 `maintainer-discipline.md §3` 規定三層執行機制（工具層 / 流程層 / commit 層）。本指令是「**接班便利化**」的延伸 — 不在 §3 列出的三層內，而是對應 §1 條文「DRAFT 須是檔案」紀律的反向（**接班讀檔**對應**累積寫檔**）。
 
-當前狀態（v0.8.0）：
+當前狀態（v0.8.1）：
 - 寫檔：自然執行（每次重要工作更新 `.claude_temp/` + commit）
 - 讀檔：本指令落實
 - 抽驗執行載體：`roles/auditor/_spec.md`（v0.6.0 概念層誕生）— 跑 spec sync check 走 fresh-context sub-agent 達成「他抽」屬性
@@ -82,5 +82,11 @@ charter maintainer 接班完成，待下達議題。
   4. `tools/init-spec.md Phase 5b CHECK 7 ext` axiom frontmatter status 校驗（init 端 fail-fast 載體）
   5. QUICKSTART Step 2 ↔ Step 3 swap（v0.7.6 prep 併入；signal #10 從 cross-reference 升結構修正、signal #22 候選紀錄）
   6. SSS 級議程紀錄：S1 AI 自治協作 + user 授權閘 / S2 v0.8.0/v0.9.0 lifecycle 設計素材（含 `/charter-uninstall` 流程 + vendor 升級 path 三路徑 + 互學深化）
-- **v0.7.x 留下議程**（v0.8.0 跳號收編 / 議程順位 shift 到 v0.8.x PATCH）：BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE 判定 checklist
-- **v0.9.0 MINOR 議程**：`core/adoption-lifecycle.md` 完整條款（全新 / 升版 / 棄用 / 重新採用 + vendor 升級 path）+ `core/condition-mutability.md` 紀律本體 + post-upgrade-verify 模式 B/C ship
+- **v0.8.1「SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修」PATCH release**（2026-04-30 ship）：
+  1. `tools/doctor-spec.md §3.7-§3.9` 既有 error codes 全加四欄 spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例）— SSS S3「引導式紀律」起手實證、共 10 個 H4 子段（E601-E605 + E801/W802 + E606/E607/W608）
+  2. `tools/doctor-spec.md §3.10` 新加採用方文檔變更歷史 sync 校驗（W901）— dogfood signal #24 升工具層條款化、`core/maintainer-discipline §3.4` 演化路徑「升級到工具層自動偵測」終局實作
+  3. `tools/doctor-spec.md §3.7` 校驗集第 2 條雙重否定措辭修（signal #19 YC v0.8.0 升版 LIVE 實證 Gemini 誤標 WARN）
+  4. **dogfood-driven hardening 第十四循環**：multi-perspective sub-agent 反向校準（雙軸矩陣金礦 + 4 個 maintainer 校準點）— `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md`、commit `afcd330`
+  5. **第十五循環**：signal #24 + #19 + SSS S3 起手 三 signal 同 LIVE session 條款化、第二日連續 ship 對齊雙軌節奏「頻繁小擴增 PATCH」精神
+- **v0.8.x PATCH 後續議程**：v0.8.2（SSS S3 propagate 到 post-upgrade-verify-spec + 雙軸矩陣 framing 第一段 README §設計哲學第 5 條）+ v0.8.3（SSS S3 propagate 到 init-spec + 21 條條款補雙軸標籤 + 「依賴 LLM 紀律的條款清單」公開派生）+ BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist
+- **v0.9.0 MINOR 議程**：`core/adoption-lifecycle.md` 完整條款（全新 / 升版 / 棄用 / 重新採用 + vendor 升級 path 三路徑）+ `core/condition-mutability.md` 紀律本體 + `core/diagnose-remediate-protocol.md`（SSS S3 架構級條款化）+ essential preset (3-5 條 core、< 5k init token) + post-upgrade-verify 模式 B/C ship
