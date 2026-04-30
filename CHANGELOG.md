@@ -70,12 +70,15 @@
 
 → **既有採用方升 v0.8.0 → v0.8.1**：純改 `charter_version` 一行（除非採用方文檔變更歷史漏 entry、需順手補完）。
 
+→ **詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.0-to-v0.8.1.md`](./examples/upgrades/v0.8.0-to-v0.8.1.md)** — 對齊 dogfood signal #21 紀律「每步 = 給 AI 的 prompt」+ v0.7.3 北極星「回鍋開發者無痛」單 PATCH 純擴增升版場景。
+
 ### 連動更新
 
 - 三 preset yaml `charter_version: "0.8.0"` → `"0.8.1"`
 - ADOPTION.md（line 5 / 149 / 336）+ TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.8.1
 - `tools/doctor-spec.md §8` 變更歷史加 v0.8.1 entry
 - ADOPTION.md §13 / TUTORIAL.md 變更歷史加 v1.9 entry
+- **新檔 `examples/upgrades/v0.8.0-to-v0.8.1.md`**（v0.8.1 PATCH walkthrough、charter walkthrough 系列收齊「4 個升版場景」第 4 個 — 單 PATCH 純擴增升版）
 
 ### SSS S3 v0.8.x 後續議程
 
