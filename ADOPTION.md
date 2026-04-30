@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.8.2`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.9.0`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -13,7 +13,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 把「PM / Engineer / Reviewer」這類職能**從 AI 廠商解綁**：任何 AI（Claude / Gemini / Codex / GPT / 你下個用的 LLM）都能扮演任何角色，協議跨 AI 一致。
 
-**框架本體 = 21 條 core 條款 + 6 份 templates**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
+**框架本體 = 25 條 core 條款 + 7 份 templates**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
 
 **採用識別**：專案根有 `agent-commons/` 目錄 = 用了本框架。
 
@@ -44,9 +44,9 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 ---
 
-## 3. 21 條 core 條款（按概念分組）
+## 3. 25 條 core 條款（按概念分組）
 
-> **採用方視角**：A 組〜E 組共 20 條對應 `profile.yaml.enabled` 開關（含 2 條架構級前提無開關 + 18 條由 enabled 控制）；F 組 1 條為 **maintainer-only**（採用方無關，三 preset 預設 `false`）。下方分組依此排序。
+> **採用方視角**：A 組〜E 組共 24 條對應 `profile.yaml.enabled` 開關（含 2 條架構級前提無開關 + 22 條由 enabled 控制）；F 組 1 條為 **maintainer-only**（採用方無關，三 preset 預設 `false`）。下方分組依此排序。
 
 ### A. 角色與職權（4 條）
 
@@ -57,7 +57,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `role-conflict-resolution.md` | 角色決策衝突三級階梯（L0 對話 → L1 條款仲裁 → L2 使用者裁決）|
 | `multi-role-tracking.md` | 1 AI 兼 ≥ 2 角色：離岸/上岸宣告 + 身份戳 + 自抽自驗禁令 |
 
-### B. 失敗 / 違規 / 升級（4 條）
+### B. 失敗 / 違規 / 升級（5 條）
 
 | 條款 | 一句話 |
 |---|---|
@@ -65,6 +65,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `structural-anti-fabrication.md` | 缺 stdout 區塊即視同未交付 |
 | `violation-reflection.md` | 違規退稿後須補交反省 |
 | `escalation-protocol.md` | 連續 ≥2 次升級強化抽驗、≥3 次觸發使用者裁決 |
+| `diagnose-remediate-protocol.md` | **（v0.9.0 加）**SSS S3 架構級條款化 — spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據）+ commit hook vendor 邀請制加固 + 真實 stdout 證據要求 |
 
 ### C. 證據與交付（3 條）
 
@@ -74,17 +75,18 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 期望錨點 / 失敗解讀表 |
 
-### D. 交接 / 跨 AI（5 條）
+### D. 交接 / 跨 AI（6 條）
 
 | 條款 | 一句話 |
 |---|---|
 | `handoff-chain.md` | session 末交接鏈必含 7 項（結案級 / 重型）|
 | `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移 + 接班方接收 + 強化抽驗不繼承解除權 |
 | `working-stack-discipline.md` | DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
-| `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化（v0.5.10：六步驟 → 七步驟，加 step 5 schema 驗證；**v0.7.0**：step 6 簽名 Status 必為 `PROVISIONAL`/`ACTIVE` 二態 + slash command 引用紀律禁絕對路徑）|
+| `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化（v0.5.10：六步驟 → 七步驟，加 step 5 schema 驗證；**v0.7.0**：step 6 簽名 Status 必為 `PROVISIONAL`/`ACTIVE` 二態 + slash command 引用紀律禁絕對路徑；**v0.9.0**：七步驟 → 八步驟、加 step 0「讀過去違反紀錄」對應個體學習迴圈）|
 | `ai-vendor-onboarding.md` | **新 vendor / 新角色接入「邀請制」四步驟**（v0.6.0）：禁 charter 預先寫死 vendor 層，由真實接觸累積差異 |
+| `individual-learning-loop.md` | **（v0.9.0 加、第 13 個架構級概念、補完接班場景四軸的第 4 軸）**個體 AI 跨任務 / 跨 session 學習迴圈：寫紀律（雙寫個體 `roles/<role>/reflections/` + 集體 `state/failure_mode_log.md`）+ 讀紀律（init step 0 強制讀）+ 跨 session 學習迴圈（接班 AI 紀律繼承）|
 
-### E. 架構 / 配置 / 版本（4 條，含 2 條架構級前提）
+### E. 架構 / 配置 / 版本（6 條，含 2 條架構級前提）
 
 | 條款 | 一句話 |
 |---|---|
@@ -92,8 +94,10 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `charter-config.md` | mapping.yaml + profile.yaml schema |
 | `domain-axiom-slot.md` | 領域公理槽位：位階（領域 > 核心）+ 撰寫紀律 |
 | `versioning-migration.md` | SemVer 對 charter 的具體含義 + 升級流程 |
+| `adoption-lifecycle.md` | **（v0.9.0 加）**5 階段 lifecycle 完整化：全新接入 / 升版 / 棄用（含「保留最後的溫柔」精神）/ 重新採用 / vendor 升級 path 三路徑（A 維持現狀 / B 開 issue / C AI 自驅修復對齊 SSS S1 子集）|
+| `condition-mutability.md` | **（v0.9.0 加）**condition mutability 紀律本體：三層 mutability（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層 |
 
-→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 17 條由 `profile.yaml.enabled.<condition>` 控制（v0.6.0 加 `ai-vendor-onboarding` 後）。
+→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 21 條由 `profile.yaml.enabled.<condition>` 控制（v0.6.0 加 `ai-vendor-onboarding` 後 / v0.9.0 加 4 條後）。
 
 ### F. Maintainer-only（1 條，採用方無關）
 
@@ -128,15 +132,18 @@ project-root/
 
 ---
 
-## 5. 三個 preset
+## 5. 四個 preset
 
 | Preset | enabled 條款數 | 適用 |
 |---|---|---|
-| `minimal.yaml` | 9 / 19 | 探索型 / 單人 + 1 AI / 短期實驗（ai-vendor-onboarding 預設關）|
-| `standard.yaml` | 18 / 19（中等參數） | 一般雙 AI 協作 |
-| `strict.yaml` | 18 / 19（嚴格上限） | 嚴格合規 / 高風險領域（金融 / 醫療 / 軍工） |
+| `essential.yaml`（v0.9.0 加）| 3-5 / 23 | 探索期 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本（< 5k init token）|
+| `minimal.yaml` | 10 / 23 | 探索型 / 單人 + 1 AI / 短期實驗（含 individual-learning-loop = true）|
+| `standard.yaml` | 22 / 23（中等參數） | 一般雙 AI 協作（v0.9.0 後含 4 條新加 condition）|
+| `strict.yaml` | 22 / 23（嚴格上限） | 嚴格合規 / 高風險領域（金融 / 醫療 / 軍工） |
 
-> 註：母數 19 = 21 條 core 條款 - 2 條架構級前提（不設 enabled 開關）。1 條 maintainer-only（`maintainer-discipline`）三 preset 皆預設 `false` — 採用方無關。
+> 註：母數 23 = 25 條 core 條款 - 2 條架構級前提（不設 enabled 開關）。1 條 maintainer-only（`maintainer-discipline`）四 preset 皆預設 `false` — 採用方無關。
+>
+> v0.9.0 加 essential preset 對應 dogfood signal #28 progressive adoption + #26 init token cost / ROI 真槓桿；minimal 加 individual-learning-loop = true 對應 user 明示「框架必備」（signal #34）。
 
 詳見 [tools/profiles/](./tools/profiles/)。
 
@@ -146,7 +153,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.8.2"`（或當前最新版）。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.9.0"`（或當前最新版）。
 
 ### T1 接入
 
@@ -333,7 +340,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 採用方在 Day 7 結束前應能對所有問題回答 ✅：
 
 - [ ] `agent-commons/` 目錄結構齊全（依 §4）+ **agent-commons/shared/ 不存在**（v0.7.0 doctor §3.7 E602 — namespace ≠ 檔案路徑）
-- [ ] `_config/profile.yaml` 含 `charter_version: "0.8.2"`（或當前最新版）+ 選定 preset
+- [ ] `_config/profile.yaml` 含 `charter_version: "0.9.0"`（或當前最新版）+ 選定 preset
 - [ ] `_config/profile.yaml` 內 `parameters.failure-modes.enable_modes` **含 F6**（v0.5.10 加 / v0.7.0 強制必啟、doctor §3.7 E605）
 - [ ] `_config/mapping.yaml` 含 `common_memory_root` + `domain_axioms.primary` + `working_stack_discipline.shared.draft_context`
 - [ ] `_config/mapping.yaml` 內 `layout.<key>` 不含 `shared/` / `roles/` 等 namespace 同名中介層（v0.7.0 doctor §3.7 E601 — namespace ≠ 檔案路徑）
@@ -344,6 +351,8 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 - [ ] 第一份 HANDOFF 寫成（依 [handoff-chain §2](./core/handoff-chain.md) 7 項齊全）
 - [ ] AI 與 PO 都能引用至少 5 條 core 條款 + 1 條領域公理 + 1 個 F-mode（**含 F6**）
 - [ ] **`/charter-upgrade-verify` 5 軸全綠**（v0.8.0 加新工具）— 升版 / 接入完成後跑、確認軸 A clone 對齊 / 軸 B schema / 軸 C 結構合規 / 軸 D axiom 紀律（含 frontmatter `status: USER-RATIFIED` 校驗）/ 軸 E stale reference 全綠
+- [ ] **個體學習迴圈合規**（v0.9.0 加、`core/individual-learning-loop §6` 對齊、doctor §3.11 校驗）— 每個 ACTIVE 角色 `agent-commons/roles/<role>/reflections/` 目錄存在 + 至少一個 reflection 檔（W1101）+ failure_mode_log F-mode 命中 entry 都有對應個體層 reflection 雙寫對應（W1102）+ reflection 檔 frontmatter 完整 5 欄（E1103）
+- [ ] **AI self-instantiation 八步驟對齊**（v0.9.0 加、`core/init-template §3.3.2` 七步驟 → 八步驟）— 每個 ACTIVE 角色 slash command 含 step 0「讀過去違反紀錄」（individual-learning-loop §3 讀紀律）
 
 → 全綠 = 採用完成；任一未綠 = 找對應條款回頭補。
 
@@ -351,6 +360,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 ## 13. 變更歷史
 
+- **v1.11（2026-04-30，charter v0.9.0）** — 紀律完整性 + AI 自我覺察升維 MINOR 連動 sync（dogfood signal #34 LIVE 條款化、user 明示「個體學習迴圈框架必備」、第十七循環 dogfood-driven hardening）：line 5 / 149 / 337 charter_version v0.8.2 → v0.9.0 + §3 條款表 21 → 25 條（新加 4 條：B 組 +1 `diagnose-remediate-protocol` SSS S3 架構級條款化 / D 組 +1 `individual-learning-loop` 第 13 個架構級概念 + 補完接班場景四軸的第 4 軸 / E 組 +2 `adoption-lifecycle` lifecycle 5 階段完整化 + `condition-mutability` 紀律本體）+ §5 preset 表 母數 19 → 23 + 新加 essential preset（3-5 / 23、< 5k init token、signal #28 progressive adoption + signal #26 ROI 真槓桿）+ §12 self-check 加 v0.9.0 兩項（個體學習迴圈合規 W1101/W1102/E1103 + AI self-instantiation 八步驟對齊）。**採用方升 v0.9.0 注意事項**：(a) 既有採用方升版主要動作就是改 profile.yaml `charter_version: "0.8.2"` → `"0.9.0"`、然後跑 doctor 看 §3.11 個體學習迴圈合規 W1101（reflections/ 缺）/ W1102（雙寫漏對應）/ E1103（frontmatter 不全）；(b) AI self-instantiation 從七步驟升八步驟（加 step 0「讀過去違反紀錄」）— 既有 slash command 雖仍可用、但 step 0 漏跑 = 命中 F6 surface-level、強烈建議重新具象化；(c) 新範本 `templates/agent-commons/reflection.md.tpl` 為個體層反省範本（雙寫紀律執行載體）；(d) 新加 essential preset（3-5 條 core / < 5k init token）— 探索期專案首選、可從 essential 起手後漸進升 minimal/standard/strict；(e) 新加棄用工具 `tools/uninstall-spec.md`「保留最後的溫柔」精神 — 棄用是有尊嚴的離別不是 lock-in、含 archive 報告 + 三 level（Soft/Full/Nuclear）。**對應 dogfood-driven hardening 第十七循環**（紀律完整性 + AI 自我覺察升維、charter 完成 v0.7.3 北極星閉環 — 對採用方 + AI 雙邊「不讓 user 記」）。**詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.2-to-v0.9.0.md`](./examples/upgrades/v0.8.2-to-v0.9.0.md)** — charter 升版系列第 6 個 walkthrough（單 MINOR 升版、紀律完整性 + AI 自我覺察升維）+ §5 跨版本場景指引（v0.8.0 / v0.7.5 / 更舊版本直跳 v0.9.0 合併路徑）。詳見 CHANGELOG v0.9.0 段。
 - **v1.10（2026-04-30，charter v0.8.2）** — 雙軸矩陣 framing 第一段連動 sync（multi-perspective 第十四循環結構師金礦落地）：line 5 / 149 / 336 charter_version v0.8.1 → v0.8.2 + §12 採用就緒 self-check charter_version 範例值升。**採用方升 v0.8.2 注意事項**：(a) 純擴增 README + 21 條條款開頭 blockquote、既有採用方升版只改 profile.yaml `charter_version: "0.8.1"` → `"0.8.2"`；(b) `README.md §設計哲學` 新加第 5 條「雙軸座標 — 哪些紀律靠誰守」（物理依據軸 + 檢測時點軸 + 依賴 LLM 紀律的條款清單）— 採用方應讀此段、了解每條 charter 條款的保證強度（為主動加固弱保證項作準備）；(c) 21 條 `core/*.md` 開頭加 blockquote 三新行（保證強度 / 檢測時點 / since）— 對採用方執行邏輯零影響、純文檔層擴增。**對應 dogfood-driven hardening 第十六循環**（multi-perspective 評估結構師金礦落地、第二日連續 ship 對齊雙軌節奏）。**詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.1-to-v0.8.2.md`](./examples/upgrades/v0.8.1-to-v0.8.2.md)** — charter 升版系列最簡 walkthrough（2 步流程）+ §5 跨版本場景（v0.7.5 / v0.8.0 直跳 v0.8.2、dogfood signal #29 LIVE 實證 capture）。詳見 CHANGELOG v0.8.2 段。
 - **v1.9（2026-04-30，charter v0.8.1）** — SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修連動 sync：line 5 / 149 / 336 charter_version v0.8.0 → v0.8.1 + §12 採用就緒 self-check charter_version 範例值升。**採用方升 v0.8.1 注意事項**：(a) 純擴增 spec 層 + 文檔層、既有採用方升版只改 profile.yaml `charter_version: "0.8.0"` → `"0.8.1"`；(b) `tools/doctor-spec.md §3.10` 新加採用方文檔變更歷史 sync 校驗（W901）— 採用方文檔變更歷史漏 entry 會抓 WARN、需補變更歷史 entry（依 maintainer-discipline §3.4.2 紀律）；(c) `tools/doctor-spec.md §3.7-§3.9` 全加四欄 spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例）— 對採用方執行邏輯零影響、純文檔層擴增；(d) §3.7 校驗集第 2 條雙重否定措辭修（dogfood signal #19、解決 Gemini 把合規「shared/ 不存在」誤標 WARN 風險）。**對應 dogfood-driven hardening 第十四循環**（multi-perspective sub-agent 反向校準）+ **第十五循環**（signal #24 升工具層、第二日連續 ship 對齊雙軌節奏）。**詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.0-to-v0.8.1.md`](./examples/upgrades/v0.8.0-to-v0.8.1.md)**。詳見 CHANGELOG v0.8.1 段 + `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md`。
 - **v1.8（2026-04-29，charter v0.8.0）** — 升版 + 接入防呆強化（slim 版）連動 sync：line 5 / 149 / 336 charter_version v0.7.5 → v0.8.0 + §12 採用就緒 self-check 加新項「`/charter-upgrade-verify` 5 軸全綠」（v0.8.0 新工具、軸 D 含 axiom frontmatter `status: USER-RATIFIED` 校驗）。**採用方升 v0.8.0 注意事項**：(a) `tools/doctor-spec.md §3.8` vendor schema check 從 spec 層升實作層、E801/W802 強制 — 既有 vendor toml/md 不合規（如 Gemini CLI nested table）會抓新 ERROR、升版前須先跑 doctor 修補；(b) `tools/doctor-spec.md §3.9` 新加 axiom 紀律對齊（E606/E607/W608）— 既有 axiom 若 frontmatter `status: AI-DRAFTED` 會抓 E606、需校 axiom + 升 USER-RATIFIED + 加校正紀錄行；(c) `tools/init-spec.md` Phase 5b CHECK 7 ext — 新接入採用方若 axiom 未升 USER-RATIFIED → init 失敗；(d) 新 spec `tools/post-upgrade-verify-spec.md` 提供 `/charter-upgrade-verify` 工具（user 自具象化為 slash command、跑 5 軸 A/B/C/D/E 校驗）；(e) `QUICKSTART.md` Step 2 ↔ Step 3 swap（axiom 寫在前、init 跑在後）— 對齊 v0.7.0 Phase 5b 物理存在校驗精神、移除 v0.7.2 cross-reference 警告。**升版推薦流程**（5 步抽象、**詳細 step-by-step 流程含每步 AI prompt 範本見 [`examples/upgrades/v0.7.5-to-v0.8.0.md`](./examples/upgrades/v0.7.5-to-v0.8.0.md)** — 對應 dogfood signal #21 紀律修正：每步給 AI 的 prompt、不要求 user 自己編輯）：1) 跑 /charter-doctor 看不合規項；2) 修補（B 類修 vendor schema / C 類升 axiom status）；3) profile.yaml `charter_version: "0.8.0"`；4) 自具象化 /charter-upgrade-verify；5) 跑 /charter-upgrade-verify 確認 5 軸全綠。**對應 dogfood-driven hardening 第十一循環** — signal #23 條款化 + #16 升實作層 + #10 升結構修正、三 signal 同 LIVE session 條款化 + SSS S1/S2 首次 capture。詳見 CHANGELOG v0.8.0 段。

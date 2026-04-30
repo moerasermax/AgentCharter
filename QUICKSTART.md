@@ -130,11 +130,22 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 
 | 參數 | 選項 / 範例 | 說明 |
 |---|---|---|
-| `--preset` | `minimal` / `standard` / `strict` | 紀律嚴格度（不確定選 `standard`）|
+| `--preset` | `essential` / `minimal` / `standard` / `strict` | 紀律嚴格度（不確定選 `standard`、想極簡起手選 `essential`）|
 | `--domain-axioms-path` | `protocols/RECON.md` | 你的領域公理檔位置 |
 | `--domain-axioms-alias` | `RECON` / `IRON` / `HIPAA` | 短名稱（< 10 字元）|
 
-**preset 選哪個？** 不確定 → `standard`。詳見 [TUTORIAL §3.3](./TUTORIAL.md#33-preset-選哪個)。
+**preset 選哪個？**
+
+| Preset | 條款啟用 | 適用 | init token |
+|---|---|---|---|
+| **`essential`**（v0.9.0 加） | 3-5 / 23 | 探索期 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本 | **< 5k** |
+| `minimal` | 10 / 23 | 探索型 / 單人 + 1 AI / 短期實驗（含 individual-learning-loop = true）| ~ 12k |
+| **`standard`** | **22 / 23** | **一般雙 AI 協作** | ~ 30k |
+| `strict` | 22 / 23 | 嚴格合規 / 高風險（金融 / 醫療 / 軍工） | ~ 35k |
+
+> 💡 **v0.9.0 加 essential preset**（dogfood signal #28 progressive adoption + signal #26 init token cost / ROI 真槓桿）— 只啟用最硬層 3-5 條核心防線（structural-anti-fabrication / audit-rights / evidence-first / failure-modes / role-separation）+ 配置最寬鬆。**漸進升維路徑**：essential（探索期）→ minimal（雙 AI 但短期）→ standard（一般協作）→ strict（嚴格合規）。任何時候都可改 `profile.yaml.preset` 升級、不需重建 agent-commons/。
+
+不確定 → `standard`。詳見 [TUTORIAL §3.3](./TUTORIAL.md#33-preset-選哪個)。
 
 ### Step 4：通知 AI 自我具象化（5 分鐘）
 
@@ -256,3 +267,10 @@ PM 對 AI 下指令：
 | **`QUICKSTART.md`** | **人類採用方** | **5 分鐘跑起來** | **接入時** |
 | `TUTORIAL.md` | 人類採用方（深入）| 工具書 / reference | 卡關 / 想深入 |
 | `ADOPTION.md` | 該團隊的 AI | AI 自含 context 採用指南 | AI 接班時 |
+
+---
+
+## 變更歷史
+
+- **v1.1（2026-04-30，charter v0.9.0）** — 紀律完整性 + AI 自我覺察升維 MINOR 連動 sync（dogfood signal #34 LIVE 條款化）：Step 3 preset 表加 essential 一列（v0.9.0 新加、3-5 條 core / < 5k init token、signal #28 progressive adoption + signal #26 ROI 真槓桿）+ 漸進升維路徑說明（essential → minimal → standard → strict）。**升 v0.9.0 注意**：(a) 既有採用方升版主要動作就是改 profile.yaml `charter_version` → `"0.9.0"`；(b) AI self-instantiation 從七步驟升八步驟（加 step 0「讀過去違反紀錄」對應個體學習迴圈 `core/individual-learning-loop §3` 讀紀律）— 既有 slash command 雖仍可用、但 step 0 漏跑 = 命中 F6 surface-level、強烈建議重新具象化；(c) 新範本 `templates/agent-commons/reflection.md.tpl` 為個體層反省範本（雙寫紀律執行載體）；(d) 新 spec `tools/uninstall-spec.md` `/charter-uninstall` 棄用工具設計。**詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.2-to-v0.9.0.md`](./examples/upgrades/v0.8.2-to-v0.9.0.md)**。詳見 CHANGELOG v0.9.0 段。
+- **v1.0（2026-04-27〜2026-04-30，charter v0.5.7 → v0.8.2）** — 初版 5 步流程（前置 / Clone / 寫領域公理 / 跑 init / AI 自我具象化 / 人工二次確認）+ v0.7.x 累積增補（雙路徑領域公理 / Phase 5b 他抽驗 / step 6 PROVISIONAL/ACTIVE 二態 / vendor schema 規範）+ v0.8.x 累積增補（axiom status fail-fast / Step 2 ↔ Step 3 swap / 雙軸矩陣 framing）。

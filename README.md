@@ -80,6 +80,43 @@ charter 既有條款體系隱含**雙軸正交分類**（dogfood-driven hardenin
 
 對應 dogfood signal #22 候選紀律「**v0.x 結構修正 >> 規範補丁**」 — 結構修正 = 升維到多 actor / 結構強制；規範補丁 = 加更多單 actor 自律紀律。
 
+### 個體學習迴圈 — 對 AI 角度的對稱補完（v0.9.0 加）
+
+> charter 既有設計「不讓 user 記」紀律完整 — 但**對 AI 角度的對稱補完缺**：不讓 AI 自己也記不住自己的錯。v0.9.0 補完此對稱。
+
+charter v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」對採用方角度落地完整（walkthrough + verify 工具 + spec-as-data）— 但對 **AI 角度**漏：
+
+| 北極星紀律 | 對採用方角度（既有 ✅）| 對 AI 角度（v0.9.0 補完）|
+|---|---|---|
+| 不讓 user 記 | walkthrough + verify 工具 + spec-as-data | **個體學習迴圈**（individual-learning-loop）|
+| 回鍋無痛 | 跨多版本升版 walkthrough + 跨版本到最新 | **AI 跨 session 學習迴圈**（同上）|
+| 解決重複溝通 | charter 引導採用方 | **個體 / 集體記憶雙寫紀律**（同上）|
+| 培養魚塭 | 跨 vendor 純規範 framework | 不變（vendor-agnostic 維持）|
+
+對齊 [`core/violation-reflection.md §2`](./core/violation-reflection.md)「**LLM 個體不重要、集體記憶才重要**」設計方向 — v0.9.0 把此精神**完整化**：「**設計成集體記憶才重要、但個體記憶仍要寫 + 強制讀**」雙寫紀律。
+
+#### 接班場景四軸補完（個體學習迴圈為第 4 軸）
+
+| 軸 | 對應條款 | 補完狀態 |
+|---|---|---|
+| 軸 1：跨 session 同身份接班 | [`core/working-stack-discipline §5`](./core/working-stack-discipline.md) | ✅ v0.5.7 |
+| 軸 2：session 末交接鏈 | [`core/handoff-chain`](./core/handoff-chain.md) | ✅ v0.5.x |
+| 軸 3：跨 AI 廠商接班 | [`core/cross-ai-handoff`](./core/cross-ai-handoff.md) | ✅ v0.5.x |
+| **軸 4：個體 AI 跨任務 / 跨 session 學習迴圈** | **[`core/individual-learning-loop`](./core/individual-learning-loop.md)** | **✅ v0.9.0 補完** |
+
+→ 接班場景四軸從 v0.5.7 開啟（軸 1）到 v0.9.0 第 4 軸補完、完整閉環、第 13 個架構級概念誕生。
+
+#### 雙寫紀律（個體層 + 集體層）
+
+| 層 | 物理位置 | 何時寫 | 何時讀 |
+|---|---|---|---|
+| **集體層** | `state/failure_mode_log.md` + `institutional-memory/*.md` | 命中 F-mode 時、由抽驗方退稿並寫 | 跨 session 接班 / 設計新條款時參考歷史 |
+| **個體層**（v0.9.0 加） | `roles/<role>/reflections/<YYYY-MM-DD>_<f-mode>_*.md` | 命中 F-mode 時、AI 必雙寫個體層 reflection | **每次 self-instantiation step 0 強制讀**（init-template §3.3.2 八步驟） |
+
+→ 雙寫紀律強制（不可只寫集體 / 不可只寫個體）、雙讀紀律強制（init step 0 必讀個體層 + 集體層 + IM 層）。
+
+對應 dogfood signal #34（user 2026-04-30 LIVE 公司專案接入抓到「個體學習迴圈框架必備」、user 直接條款化、不走累積門檻）。
+
 ---
 
 ## 為什麼存在
@@ -142,8 +179,12 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `cross-ai-handoff.md` | 跨 AI 廠商接班：退出方轉移職責 + 接班方接收職責 + 強化抽驗狀態傳遞 |
 | `working-stack-discipline.md` | DRAFT 暫存堆疊 + save 同步 git commit + session 內物理中斷再續（同身份接班）|
 | `maintainer-discipline.md` | **framework 維護者紀律**（位階特殊：對採用方無關，三 preset 預設關）— spec sync check + DRAFT 紀律對 maintainer 也適用 |
-| `init-template.md` | Role Init Mandate — 四大職責 + 多 AI 具象化 + AI 自我具象化機制（v0.5.10：七步驟含 step 5 schema 驗證強制點 / **v0.7.0：step 6 簽名 Status 必為 PROVISIONAL/ACTIVE 二態 + slash command 引用紀律禁絕對路徑**）|
+| `init-template.md` | Role Init Mandate — 四大職責 + 多 AI 具象化 + AI 自我具象化機制（v0.5.10：七步驟含 step 5 schema 驗證強制點 / **v0.7.0：step 6 簽名 Status 必為 PROVISIONAL/ACTIVE 二態 + slash command 引用紀律禁絕對路徑** / **v0.9.0：七步驟 → 八步驟、加 step 0「讀過去違反紀錄」對應個體學習迴圈**）|
 | `ai-vendor-onboarding.md` | **新 vendor / 新角色接入「邀請制」四步驟**（v0.6.0）— 禁 charter 預先寫死 vendor 層；charter 寫概念層 → 邀請 vendor 寫 vendor 層 → 既有 vendor 校正 regression → maintainer 簽收 |
+| `individual-learning-loop.md` | **（v0.9.0 加、第 13 個架構級概念、補完接班場景四軸的第 4 軸）** — 個體 AI 跨任務 / 跨 session 學習迴圈：寫紀律（雙寫個體 `roles/<role>/reflections/` + 集體 `state/failure_mode_log.md`）+ 讀紀律（init step 0 強制讀）+ 跨 session 學習迴圈（接班 AI 紀律繼承） |
+| `diagnose-remediate-protocol.md` | **（v0.9.0 加）SSS S3 架構級條款化** — spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據）+ 弱保證項清單派生 + commit hook vendor 邀請制加固 + 真實 stdout 證據要求（純文字 PASS = violation-reflection §1 假宣告）|
+| `adoption-lifecycle.md` | **（v0.9.0 加）5 階段 lifecycle 完整化** — 全新接入 / 升版 / 棄用（含「保留最後的溫柔」精神）/ 重新採用 / vendor 升級 path 三路徑（A 維持現狀 / B 開 issue / C AI 自驅修復對齊 SSS S1 子集） |
+| `condition-mutability.md` | **（v0.9.0 加）condition mutability 紀律本體** — 三層 mutability（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層 |
 
 ---
 

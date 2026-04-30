@@ -3,11 +3,12 @@
 # 適用：一般雙 AI 協作專案（CryptoBot 級別）。
 # 設計：全核心條款啟用，參數中等嚴格，適合多數正式專案。
 #
-# 條款啟用：18 / 19（全啟用 — maintainer-discipline 是 maintainer-only，採用方預設關）
+# 條款啟用：22 / 25（全啟用 — maintainer-discipline 是 maintainer-only，採用方預設關 / 架構級前提 2 條免設 enabled /
+#                       v0.9.0 加 4 條全 true：individual-learning-loop / diagnose-remediate-protocol / adoption-lifecycle / condition-mutability）
 # 預設參數：中等
 
 version: "0.4.0"
-charter_version: "0.8.2"
+charter_version: "0.9.0"
 preset: standard
 
 # === B1 粒度：條款啟用 ===
@@ -31,6 +32,12 @@ enabled:
   maintainer-discipline: false       # 位階特殊 — 對採用方無關，僅 framework 維護者啟用
   init-template: true
   ai-vendor-onboarding: true         # v0.6.0 加 — 採用方加新 vendor / 新角色時須遵守邀請制四步驟
+
+  # === v0.9.0 加 4 條條款（standard 全 true）===
+  individual-learning-loop: true     # v0.9.0 加 — 個體學習迴圈（reflections/ 雙寫紀律 + init step 0 強制讀過去違反）；charter 接班場景第 4 軸補完
+  diagnose-remediate-protocol: true  # v0.9.0 加 — spec-as-data + 真實 stdout 證據要求 + commit hook vendor 邀請制（SSS S3 架構級條款化）
+  adoption-lifecycle: true           # v0.9.0 加 — 5 階段 lifecycle（全新接入 / 升版 / 棄用 / 重新採用 / vendor 升級三路徑）
+  condition-mutability: true         # v0.9.0 加 — 三層 mutability 紀律（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation
 
 # === B3 粒度：條款參數（中等）===
 parameters:

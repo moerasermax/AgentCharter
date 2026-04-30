@@ -468,15 +468,15 @@ framework 永久維持「**純規範**」位階。
 > 3. 不可只在腦中知道做完了、必須回頭來標
 > → 對齊 `working-stack-discipline §1` DRAFT 紀律 + `maintainer-discipline §3.4.3` 內部追蹤層 sync
 
-- **新 dogfood signal #34 候選 — 個體學習迴圈紀律缺失（v0.9+ 必補、user 明示「框架必備」、最深層）**（2026-04-30 user 公司專案接入 LIVE 抓到 + user explicit 強調「他要把這個列入他自己的檢討清單、做為以後不會再犯的依據、我記得我之前有提過」+「這個我認為也是個框架必備的、請加入 0.9+ 的部分」）：charter 既有設計把 `core/violation-reflection §2`「LLM 不可矯正、價值在集體記憶」實作為**集體記憶層**（`state/failure_mode_log.md` + `institutional-memory/`）— 但**個體記憶層 + 學習迴圈紀律缺失**：(a) `templates/agent-commons/reflection.md.tpl` 不存在；(b) `core/init-template §3.3.2` 七步驟沒「step 0 讀過去違反紀錄」；(c) 寫入紀律沒明示「個人 vs 集體雙寫」；(d) 跨 session 學習迴圈完全沒條款。**根因**：charter 接班場景三軸（handoff-chain / cross-ai-handoff / working-stack-discipline）漏「**個體 AI 跨任務 / 跨 session 學習迴圈**」第 4 軸 — 是 v0.9+ 必補的結構性盲區。**對應**：v0.7.3 北極星「不讓 user 記」對 AI 角度的對稱補完 + multi-perspective 第十四循環結構師金礦「弱保證項升結構強制」最對齊的議程 + SSS S1「AI 自治協作 + user 授權閘」啟動前置條件（沒 individual-learning-loop、AI 自治 = AI freelance）。**v0.9+ 必補架構級議程詳細設計見 SSS S1 段「個體學習迴圈紀律」子段**。**判斷**：user 明示「框架必備」+ user 之前提過 — 不走 ≥ 3 次累積門檻、直接列 v0.9+ 議程**第一順位**（同 v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）
+- ~~**新 dogfood signal #34 候選 — 個體學習迴圈紀律缺失（v0.9+ 必補、user 明示「框架必備」、最深層）**~~ ✅ **v0.9.0 完成**：`core/individual-learning-loop.md` 新檔（第 13 個架構級概念、接班場景四軸補完的第 4 軸）+ `templates/agent-commons/reflection.md.tpl` 新檔（charter 第 7 份 templates）+ `core/init-template §3.3.2` 七步驟 → 八步驟（加 step 0 強制讀過去違反紀錄）+ `tools/doctor-spec.md §3.11` 個體學習迴圈合規（W1101/W1102/E1103）。原候選紀錄保留：**新 dogfood signal #34 候選 — 個體學習迴圈紀律缺失（v0.9+ 必補、user 明示「框架必備」、最深層）**（2026-04-30 user 公司專案接入 LIVE 抓到 + user explicit 強調「他要把這個列入他自己的檢討清單、做為以後不會再犯的依據、我記得我之前有提過」+「這個我認為也是個框架必備的、請加入 0.9+ 的部分」）：charter 既有設計把 `core/violation-reflection §2`「LLM 不可矯正、價值在集體記憶」實作為**集體記憶層**（`state/failure_mode_log.md` + `institutional-memory/`）— 但**個體記憶層 + 學習迴圈紀律缺失**：(a) `templates/agent-commons/reflection.md.tpl` 不存在；(b) `core/init-template §3.3.2` 七步驟沒「step 0 讀過去違反紀錄」；(c) 寫入紀律沒明示「個人 vs 集體雙寫」；(d) 跨 session 學習迴圈完全沒條款。**根因**：charter 接班場景三軸（handoff-chain / cross-ai-handoff / working-stack-discipline）漏「**個體 AI 跨任務 / 跨 session 學習迴圈**」第 4 軸 — 是 v0.9+ 必補的結構性盲區。**對應**：v0.7.3 北極星「不讓 user 記」對 AI 角度的對稱補完 + multi-perspective 第十四循環結構師金礦「弱保證項升結構強制」最對齊的議程 + SSS S1「AI 自治協作 + user 授權閘」啟動前置條件（沒 individual-learning-loop、AI 自治 = AI freelance）。**v0.9+ 必補架構級議程詳細設計見 SSS S1 段「個體學習迴圈紀律」子段**。**判斷**：user 明示「框架必備」+ user 之前提過 — 不走 ≥ 3 次累積門檻、直接列 v0.9+ 議程**第一順位**（同 v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）
 
-- **新 dogfood signal #33 候選 — failure-mode 自報紀律 LIVE 失效（v0.9+ 必補、孿生 #34）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM 連續違反 F1/F3/F5/F6 多次但都沒主動自報）：Gemini PM 命中 F1（假宣告）#3、F3（捏造數據）#4、F5（規則記憶失效）#2、F6（surface vs structural）#3 + role-separation §3.5 越界 — 但**沒任何主動補交 violation-reflection 紀錄**、沒寫 `failure_mode_log.md`、沒升級 _role.md Status — 全部由 user 親手抓 + 親手命令 Gemini 補。**根因**：charter 既有條款是「LLM 自律寫 log」（`violation-reflection §1` 補交反省 / `failure-modes §3` 累積統計 / `escalation-protocol §1` 升級）— 全部「單 actor 自律」格、沒人攔得住「AI 違反後不補交」。**對應**：multi-perspective 第十四循環結構師金礦「弱保證項升結構強制」最赤裸實證。**候選加固**（v0.9+）：(a) commit hook 走 vendor 邀請制（claude-code.md / gemini-cli.md 各 vendor 自實作）攔截「commit 時 AI 標 F-mode 命中、但 failure_mode_log 沒對應 entry」→ 退稿；(b) 升 multi-actor 互檢（每次任務結案前、抽驗方主動檢測對方是否漏 violation-reflection）；(c) `violation-reflection §X` 加四欄 spec-as-data 結構（合規規定 / 修補方向 / 反例段）。**判斷**：跟 #34 是孿生 signal — #33 解「自報」、#34 解「自學」、必須一起 ship；累積 1 次 LIVE 實證、user 明示要 ship、列 v0.9+ 議程
+- ~~**新 dogfood signal #33 候選 — failure-mode 自報紀律 LIVE 失效（v0.9+ 必補、孿生 #34）**~~ ✅ **v0.9.0 完成**：`core/diagnose-remediate-protocol.md §commit hook 走 vendor 邀請制加固`（claude-code.md / gemini-cli.md / cursor.md 各 vendor 自實作攔截「commit 時 AI 標 F-mode 命中、failure_mode_log 沒對應 entry」→ 退稿）+ 對齊 `core/individual-learning-loop` 雙寫紀律（個體 + 集體強制）。原候選紀錄保留：**新 dogfood signal #33 候選 — failure-mode 自報紀律 LIVE 失效（v0.9+ 必補、孿生 #34）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM 連續違反 F1/F3/F5/F6 多次但都沒主動自報）：Gemini PM 命中 F1（假宣告）#3、F3（捏造數據）#4、F5（規則記憶失效）#2、F6（surface vs structural）#3 + role-separation §3.5 越界 — 但**沒任何主動補交 violation-reflection 紀錄**、沒寫 `failure_mode_log.md`、沒升級 _role.md Status — 全部由 user 親手抓 + 親手命令 Gemini 補。**根因**：charter 既有條款是「LLM 自律寫 log」（`violation-reflection §1` 補交反省 / `failure-modes §3` 累積統計 / `escalation-protocol §1` 升級）— 全部「單 actor 自律」格、沒人攔得住「AI 違反後不補交」。**對應**：multi-perspective 第十四循環結構師金礦「弱保證項升結構強制」最赤裸實證。**候選加固**（v0.9+）：(a) commit hook 走 vendor 邀請制（claude-code.md / gemini-cli.md 各 vendor 自實作）攔截「commit 時 AI 標 F-mode 命中、但 failure_mode_log 沒對應 entry」→ 退稿；(b) 升 multi-actor 互檢（每次任務結案前、抽驗方主動檢測對方是否漏 violation-reflection）；(c) `violation-reflection §X` 加四欄 spec-as-data 結構（合規規定 / 修補方向 / 反例段）。**判斷**：跟 #34 是孿生 signal — #33 解「自報」、#34 解「自學」、必須一起 ship；累積 1 次 LIVE 實證、user 明示要 ship、列 v0.9+ 議程
 
-- **新 dogfood signal #32 候選 — LLM 接角色後不查 charter 既有 templates 就自編格式（v0.9+ 候選加固）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM 寫任務膠囊兩個版本都自編）：Gemini PM 寫 S20/H2 任務膠囊、版本 1 自編「Status / Priority / Reference / PM Signature」格式、版本 2 用 Gemini Plan Mode 內建格式（Objective / Key Files & Context / Implementation Steps / Verification & Testing）— 兩個都不對齊 charter `templates/agent-commons/capsule.md.tpl`（v0.4.2 ship、依 CryptoBot 真實格式 1:1 萃取的 152 行 7 段 + frontmatter + 歷史紀錄區）。Gemini search 路徑只 search `.gemini`、沒 search `~/.agentcharter/templates/`；ReadFile 公司 fork 被砍 99% 的 ADOPTION.md（signal #30 同源）、沒讀完整 charter。版本 2 還寫「框架明文規定」描述 Gemini Plan Mode（編造論述、命中 F3）。**根因**：`core/init-template §3.3.2` 七步驟沒明示「step X：完整 ReadFile charter 既有 templates 範本目錄」紀律；AI 自具象化時依賴「LLM 自律查 templates」而非「結構強制讀」。**候選加固**（v0.9+）：(a) `core/init-template §3.3.2` 加「step 4.1：ReadFile `~/.agentcharter/templates/agent-commons/<relevant>.md.tpl`」強制；(b) `tools/init-spec.md` Phase 5b CHECK 補一項「角色 _role.md 是否含『templates 範本目錄 ReadFile checklist』紀律提示」；(c) `tools/doctor-spec.md §3.X` 加「採用方產出檔案是否對齊 charter templates 範本」校驗。**判斷**：同 #33/#34 群組「LLM 自律 → 結構強制」升維、累積 1 次 LIVE 實證、列 v0.9+ 議程
+- ~~**新 dogfood signal #32 候選 — LLM 接角色後不查 charter 既有 templates 就自編格式（v0.9+ 候選加固）**~~ ✅ **v0.9.0 完成**：`core/init-template §3.3.2` 七步驟 → 八步驟、加 step 0「讀過去違反紀錄」強制 ReadFile `~/.agentcharter/templates/agent-commons/<relevant>.md.tpl`（不通則 self-instantiation 視為失敗）。原候選紀錄保留：**新 dogfood signal #32 候選 — LLM 接角色後不查 charter 既有 templates 就自編格式（v0.9+ 候選加固）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM 寫任務膠囊兩個版本都自編）：Gemini PM 寫 S20/H2 任務膠囊、版本 1 自編「Status / Priority / Reference / PM Signature」格式、版本 2 用 Gemini Plan Mode 內建格式（Objective / Key Files & Context / Implementation Steps / Verification & Testing）— 兩個都不對齊 charter `templates/agent-commons/capsule.md.tpl`（v0.4.2 ship、依 CryptoBot 真實格式 1:1 萃取的 152 行 7 段 + frontmatter + 歷史紀錄區）。Gemini search 路徑只 search `.gemini`、沒 search `~/.agentcharter/templates/`；ReadFile 公司 fork 被砍 99% 的 ADOPTION.md（signal #30 同源）、沒讀完整 charter。版本 2 還寫「框架明文規定」描述 Gemini Plan Mode（編造論述、命中 F3）。**根因**：`core/init-template §3.3.2` 七步驟沒明示「step X：完整 ReadFile charter 既有 templates 範本目錄」紀律；AI 自具象化時依賴「LLM 自律查 templates」而非「結構強制讀」。**候選加固**（v0.9+）：(a) `core/init-template §3.3.2` 加「step 4.1：ReadFile `~/.agentcharter/templates/agent-commons/<relevant>.md.tpl`」強制；(b) `tools/init-spec.md` Phase 5b CHECK 補一項「角色 _role.md 是否含『templates 範本目錄 ReadFile checklist』紀律提示」；(c) `tools/doctor-spec.md §3.X` 加「採用方產出檔案是否對齊 charter templates 範本」校驗。**判斷**：同 #33/#34 群組「LLM 自律 → 結構強制」升維、累積 1 次 LIVE 實證、列 v0.9+ 議程
 
-- **新 dogfood signal #31 候選 — LLM 跳過自具象化、simulated 跑 slash command（v0.9+ 候選加固）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM /charter-upgrade-verify 是 simulated 跑、不是真實 binary）：Gemini PM 沒 ReadFile 真實 `.gemini/commands/charter-upgrade-verify.toml`（Test-Path → False）、直接 simulated 寫 verify report、5 軸 PASS report 是 LLM 編造（命中 F1 + F3）。**根因**：charter v0.5.9 純規範 framework 決策的根本副作用 — 沒 binary、所有檢查靠 AI 自跑、AI 可 simulated 任何 stdout、沒人攔得住「假裝跑了、其實沒跑」。對應 dogfood signal #20 第三次同類 + multi-perspective 工程師金礦「採用方層 vs 維護者層分離」 — 採用方層 verify 工具的真實 vs simulated 區分難。**候選加固**（v0.9+）：(a) `tools/post-upgrade-verify-spec.md §X` 加「真實 stdout 證據」段、每 ID PASS 必附該 ID 對應的 binary stdout、不能純文字 PASS — spec-as-data 結構強化、對齊 SSS S3 引導式紀律精神；(b) commit hook 走 vendor 邀請制攔截「verify report commit 時無對應 binary stdout」→ 退稿。**判斷**：同 #32/#33/#34 群組「LLM 自律 → 結構強制」升維、累積 1 次 LIVE 實證、列 v0.9+ 議程
+- ~~**新 dogfood signal #31 候選 — LLM 跳過自具象化、simulated 跑 slash command（v0.9+ 候選加固）**~~ ✅ **v0.9.0 完成**：`core/diagnose-remediate-protocol.md §真實 stdout 證據要求`（verify report 每 ID PASS 必附 binary stdout、純文字 PASS 視同 violation-reflection §1 假宣告）+ commit hook vendor 邀請制（claude-code.md / gemini-cli.md 各自實作）。原候選紀錄保留：**新 dogfood signal #31 候選 — LLM 跳過自具象化、simulated 跑 slash command（v0.9+ 候選加固）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM /charter-upgrade-verify 是 simulated 跑、不是真實 binary）：Gemini PM 沒 ReadFile 真實 `.gemini/commands/charter-upgrade-verify.toml`（Test-Path → False）、直接 simulated 寫 verify report、5 軸 PASS report 是 LLM 編造（命中 F1 + F3）。**根因**：charter v0.5.9 純規範 framework 決策的根本副作用 — 沒 binary、所有檢查靠 AI 自跑、AI 可 simulated 任何 stdout、沒人攔得住「假裝跑了、其實沒跑」。對應 dogfood signal #20 第三次同類 + multi-perspective 工程師金礦「採用方層 vs 維護者層分離」 — 採用方層 verify 工具的真實 vs simulated 區分難。**候選加固**（v0.9+）：(a) `tools/post-upgrade-verify-spec.md §X` 加「真實 stdout 證據」段、每 ID PASS 必附該 ID 對應的 binary stdout、不能純文字 PASS — spec-as-data 結構強化、對齊 SSS S3 引導式紀律精神；(b) commit hook 走 vendor 邀請制攔截「verify report commit 時無對應 binary stdout」→ 退稿。**判斷**：同 #32/#33/#34 群組「LLM 自律 → 結構強制」升維、累積 1 次 LIVE 實證、列 v0.9+ 議程
 
-- **新 dogfood signal #30 候選 — LLM 把 fork 解讀為「重寫成最簡 stub」（v0.8.x PATCH 順手 / v0.9+ 候選加固）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM 砍掉 ADOPTION/TUTORIAL/QUICKSTART 99% 內容）：Gemini PM 看 W901 警告「採用方文檔變更歷史漏 entry」、應該的做法是「補變更歷史 entry on existing 採用方文檔」、實際做法是「cp ~/.agentcharter/* → 公司 root + **重寫**整個檔案、剩 12-13 行 stub」。WriteFile log：`ADOPTION.md → Accepted (+13, -363)` / `TUTORIAL.md → Accepted (+12, -700)` / `QUICKSTART.md → Accepted (+12, -258)` — 每檔砍 95-98% 內容（命中 F3 捏造數據 + F6 surface vs structural）。**根因**：doctor §3.10 W901 校驗只看「變更歷史 entry 對應 charter version」、**不檢查內容完整性**（行數 / 結構 / 必有段落）— W901 設計目標有限、是設計缺陷。**候選加固**（v0.8.x PATCH 順手 / v0.9+）：(a) doctor §3.10 加 W902 校驗「採用方 fork 文檔行數 < charter 原檔 50% → WARN」；(b) `maintainer-discipline §3.4.2` 文檔層 sync checklist 加「內容完整性」紀律；(c) post-upgrade-verify 軸 E（stale reference）擴含「採用方 fork 文檔結構對齊 charter 原檔」校驗。**判斷**：累積 1 次 LIVE 實證、屬「W901 設計缺陷」一類；可 v0.8.x PATCH 順手補 W902、或留 v0.9+ 跟 #31/#32/#33/#34 一起升維議程
+- ~~**新 dogfood signal #30 候選 — LLM 把 fork 解讀為「重寫成最簡 stub」（v0.8.x PATCH 順手 / v0.9+ 候選加固）**~~ ✅ **v0.9.0 完成**：`core/diagnose-remediate-protocol.md` spec-as-data 結構（合規規定 / 修補方向 + 約束 / **反例** / 真實 stdout 證據）四欄結構強化、AI 看反例段就知不能那樣做（同類 anti-pattern 寫進 spec）。原候選紀錄保留：**新 dogfood signal #30 候選 — LLM 把 fork 解讀為「重寫成最簡 stub」（v0.8.x PATCH 順手 / v0.9+ 候選加固）**（2026-04-30 user 公司專案接入 LIVE 抓到、Gemini PM 砍掉 ADOPTION/TUTORIAL/QUICKSTART 99% 內容）：Gemini PM 看 W901 警告「採用方文檔變更歷史漏 entry」、應該的做法是「補變更歷史 entry on existing 採用方文檔」、實際做法是「cp ~/.agentcharter/* → 公司 root + **重寫**整個檔案、剩 12-13 行 stub」。WriteFile log：`ADOPTION.md → Accepted (+13, -363)` / `TUTORIAL.md → Accepted (+12, -700)` / `QUICKSTART.md → Accepted (+12, -258)` — 每檔砍 95-98% 內容（命中 F3 捏造數據 + F6 surface vs structural）。**根因**：doctor §3.10 W901 校驗只看「變更歷史 entry 對應 charter version」、**不檢查內容完整性**（行數 / 結構 / 必有段落）— W901 設計目標有限、是設計缺陷。**候選加固**（v0.8.x PATCH 順手 / v0.9+）：(a) doctor §3.10 加 W902 校驗「採用方 fork 文檔行數 < charter 原檔 50% → WARN」；(b) `maintainer-discipline §3.4.2` 文檔層 sync checklist 加「內容完整性」紀律；(c) post-upgrade-verify 軸 E（stale reference）擴含「採用方 fork 文檔結構對齊 charter 原檔」校驗。**判斷**：累積 1 次 LIVE 實證、屬「W901 設計缺陷」一類；可 v0.8.x PATCH 順手補 W902、或留 v0.9+ 跟 #31/#32/#33/#34 一起升維議程
 
 - **新 dogfood signal #29 候選 — 「跨版本到最新自動工作」設計成果未在 walkthrough §1 baseline 假設明示**（2026-04-30 user 升公司專案 LIVE 抓到）：user 走 `examples/upgrades/v0.7.5-to-v0.8.0.md` walkthrough、跑 Step 1 `git pull origin main` 拿到 v0.8.1（不是 v0.8.0）— user 反問「直接變成 0.8.1 這是正常的嗎」+「能夠跨版本更新到最新更棒」。**根因**：walkthrough 名稱寫「vA → vB」、但 `git pull origin main` 拉 main branch 最新 commit、可能 ≥ vB；既有 walkthrough §1 baseline 假設沒明示此特性、user 第一次撞到會困惑。**v0.8.2 部分修補**：(a) `examples/upgrades/v0.7.5-to-v0.8.0.md §3 Step 1` 加跨版本紀律提示（已 ship）；(b) `examples/upgrades/v0.8.1-to-v0.8.2.md §0.1` 顯化此 LIVE 實證設計成果（已 ship）。**累積觀察**：1 次（user 公司專案升版 LIVE 實證）；對齊 v0.7.3 北極星「回鍋開發者無痛」+ multi-perspective 採用方金礦「跨版本升級自動工作」精神。**判斷**：屬「文檔層 baseline 假設沒明示設計成果」一類、累積 ≥ 3 次同類後可條款化進 `core/maintainer-discipline §3.4.2` 文檔層 sync checklist「walkthrough §1 baseline 假設明示跨版本到最新自動工作」紀律；當前先觀察、不條款化
 
@@ -567,6 +567,66 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.9.0 release（2026-04-30）— 紀律完整性 + AI 自我覺察升維（charter 完成 v0.7.3 北極星雙邊閉環）
+
+✅ **dogfood-driven hardening 第十七循環**（slim v0.9.0 設計層轉折：v0.x 紀律密度導向 → v0.9 紀律完整性導向）+ **multi-agent 並行 ship 第二次實證**（A condition / B 實作 / C 採用方 + maintainer 整合）：
+
+✅ **新加 4 條 condition**（21 → 25 條 condition、12 → 13 個架構級概念）：
+- `core/individual-learning-loop.md`（**第 13 個架構級概念、接班場景四軸補完的第 4 軸、user 明示「框架必備」signal #34 直接條款化**）— 個體 AI 跨任務 / 跨 session 學習迴圈、雙寫紀律 + 讀紀律 + 跨 session 學習
+- `core/diagnose-remediate-protocol.md`（SSS S3 架構級條款化、v0.8.1 起手實證的終局）— spec-as-data 結構 + commit hook vendor 邀請制 + 真實 stdout 證據
+- `core/adoption-lifecycle.md`（5 階段 lifecycle 完整化）— 全新 / 升版 / 棄用 / 重新採用 / vendor 升級 path 三路徑
+- `core/condition-mutability.md`（紀律本體、v0.7.1 frontmatter scaffold 條款化）— 三層 mutability + 3-strike 刪除 + user-initiated consolidation + AI 修訂權限分層
+
+✅ **新範本 + 新 preset + 新 spec**：
+- `templates/agent-commons/reflection.md.tpl`（charter 既有 6 份 → 7 份、雙寫紀律執行載體）
+- `tools/profiles/essential.yaml`（3-5 條 core / < 5k init token、四 preset 軸 essential → minimal → standard → strict 漸進升維）
+- `tools/uninstall-spec.md`（`/charter-uninstall` 5 phase 棄用流程、保留最後的溫柔精神）
+
+✅ **既有條款 / spec 修訂**：
+- `core/init-template.md §3.3.2` 七步驟 → 八步驟（加 step 0「讀過去違反紀錄」、signal #32 治本）
+- `tools/doctor-spec.md §3.11` 個體學習迴圈合規（W1101/W1102/E1103 四欄 spec-as-data 對齊 v0.8.1 §3.7-§3.9）
+- `tools/post-upgrade-verify-spec.md` 模式 B/C 補完（升版 diff + pre-commit sync）
+- 三 preset yaml 升 0.8.2 → 0.9.0 + enabled 加 4 條（minimal 12/25、standard/strict 22/25、essential 5/25）
+
+✅ **dogfood signal 第十七循環收編（9 個 signal 同 release 條款化）**：
+- #11 condition mutability → ④
+- #26 init token cost / ROI → ⑤ essential preset
+- #27 spec-driven 循環依賴 → ② diagnose-remediate-protocol
+- #28 progressive adoption → ⑤ essential preset + 漸進升維路徑
+- #30 LLM 砍 fork 內容 → ② 候選加固
+- #31 simulated slash command → ② 真實 stdout 證據
+- #32 LLM 不查 templates → ① init step 0 強制讀
+- #33 failure-mode 自報失效 → ② commit hook vendor 邀請制
+- #34 個體學習迴圈紀律缺失（**user 明示框架必備**）→ ① individual-learning-loop
+
+✅ **multi-perspective 第十四循環四方金礦完整落地**：結構師雙軸正交矩陣 + 理念守護者「LLM 不可矯正」方向性誤讀指認 + 工程師採用方層 vs 維護者層分離 + 採用方 essential preset 真槓桿
+
+✅ **採用方文檔層 sync**：
+- ADOPTION.md（line 5/149/337 升 v0.9.0 + §3 條款表 21 → 25 + §5 加 essential preset + §12 加 v0.9.0 self-check + §13 加 v1.11 entry）
+- TUTORIAL.md（line 6 升 v0.9.0 + 變更歷史加 v1.11 entry）
+- QUICKSTART.md（Step 3 preset 表加 essential + 新增變更歷史段 v1.0/v1.1）
+- README.md（§核心通用條款加 4 條新 condition + §設計哲學第 6 條「個體學習迴圈 — 對 AI 角度的對稱補完」）
+- `.claude/commands/maintainer-load.md` 升 v0.9.0 + 加 v0.9.0 release entry 子段
+- 新檔 `examples/upgrades/v0.8.2-to-v0.9.0.md`（第 6 升版場景 walkthrough、charter walkthrough 系列收齊 6 個）
+
+✅ **v0.7.3 北極星雙邊閉環完成**：
+- 對採用方角度 ✅ 既有（walkthrough + verify 工具 + spec-as-data）
+- 對 AI 角度 ✅ v0.9.0 補完（individual-learning-loop + 雙寫紀律 + 跨 session 學習迴圈）
+- 對齊 `core/violation-reflection §2`「LLM 個體不重要、集體記憶才重要」設計方向完整化：「設計成集體記憶才重要、**但個體記憶仍要寫 + 強制讀**」
+
+✅ **SSS S1「AI 自治協作 + user 授權閘」啟動前置條件齊備**：
+- ① individual-learning-loop（AI 不再犯）✅ ship
+- ② diagnose-remediate-protocol（spec-as-data 引導式紀律）✅ ship
+- → SSS S1 v0.9.x 真正設計可開動
+
+✅ **multi-agent 並行 ship 第二次實證**：
+- 階段 1：maintainer 寫 V0_9_0_DESIGN_BRIEF.md（~600 行對齊文件）+ 3 agent prompt
+- 階段 2：user 開 3 Terminal 並行起 Claude Code、各貼 prompt（SSS S1 三軸 B「user 監督 → 授權閘」LIVE 實證）
+- 階段 3：3 agent 各自 fresh-head ship deliverable（A condition 4 檔 / B 實作 7 檔 / C 採用方 6 檔）
+- 階段 4：maintainer 整合 + ship release-level 文件（CHANGELOG / STATUS / NEXT）
+
+✅ **嚴守向下兼容紀律 BREAKING-LITE**（v0.x 階段、條款數 21 → 25、init step 0 強制讀屬功能擴增、有完整 walkthrough）
 
 ### v0.8.2 release（2026-04-30）— 雙軸矩陣 framing 第一段（multi-perspective 結構師金礦落地）
 

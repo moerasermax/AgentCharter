@@ -65,7 +65,7 @@ charter maintainer 接班完成，待下達議題。
 
 `maintainer-discipline.md §3` 規定三層執行機制（工具層 / 流程層 / commit 層）。本指令是「**接班便利化**」的延伸 — 不在 §3 列出的三層內，而是對應 §1 條文「DRAFT 須是檔案」紀律的反向（**接班讀檔**對應**累積寫檔**）。
 
-當前狀態（v0.8.2）：
+當前狀態（v0.9.0）：
 - 寫檔：自然執行（每次重要工作更新 `.claude_temp/` + commit）
 - 讀檔：本指令落實
 - 抽驗執行載體：`roles/auditor/_spec.md`（v0.6.0 概念層誕生）— 跑 spec sync check 走 fresh-context sub-agent 達成「他抽」屬性
@@ -93,5 +93,19 @@ charter maintainer 接班完成，待下達議題。
   2. 21 條 `core/*.md` 開頭加 blockquote 三新行（保證強度 / 檢測時點 / since）— 採用方執行邏輯零影響、純文檔層擴增
   3. **dogfood-driven hardening 第十六循環**：multi-perspective 第十四循環結構師金礦落地、第二日連續 ship 對齊 v0.7.4 雙軌節奏「頻繁小擴增 PATCH」精神
   4. 對齊 `core/violation-reflection §2`「LLM 個體不重要、集體記憶才重要」設計方向
-- **v0.8.x PATCH 後續議程**：v0.8.3（雙軸矩陣 framing 第二段 21 條條款 §X 細節 inline marker + 第三段 lint binary 派生「依賴 LLM 紀律的條款清單」+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構）+ BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist
-- **v0.9.0 MINOR 議程**：`core/adoption-lifecycle.md` 完整條款（全新 / 升版 / 棄用 / 重新採用 + vendor 升級 path 三路徑）+ `core/condition-mutability.md` 紀律本體 + `core/diagnose-remediate-protocol.md`（SSS S3 架構級條款化）+ essential preset (3-5 條 core、< 5k init token) + post-upgrade-verify 模式 B/C ship
+- **v0.9.0「紀律完整性 + AI 自我覺察升維」MINOR release**（2026-04-30 ship、第十七循環 dogfood-driven hardening、charter 完成 v0.7.3 北極星閉環）：
+  1. **4 條新加 condition**（21 → 25 條 condition、12 → 13 個架構級概念）：
+     - `core/individual-learning-loop.md`（**第 13 個架構級概念**、補完接班場景四軸的第 4 軸：個體 AI 跨任務 / 跨 session 學習迴圈）— 寫紀律（雙寫個體 `roles/<role>/reflections/` + 集體 `state/failure_mode_log.md`）+ 讀紀律（init step 0 強制讀）+ 跨 session 學習迴圈（接班 AI 紀律繼承）
+     - `core/diagnose-remediate-protocol.md`（SSS S3 架構級條款化、v0.8.1 起手實證的終局）— spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據）+ 弱保證項清單派生 + commit hook vendor 邀請制加固 + 真實 stdout 證據要求
+     - `core/adoption-lifecycle.md`（5 階段 lifecycle 完整化 + SSS S2 設計素材落地）— 全新 / 升版 / 棄用（含「保留最後的溫柔」精神）/ 重新採用 / vendor 升級 path 三路徑（A/B/C、SSS S1 子集）
+     - `core/condition-mutability.md`（紀律本體、v0.7.1 frontmatter scaffold 條款化）— 三層 mutability + 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層
+  2. **新範本 `templates/agent-commons/reflection.md.tpl`**（個體層反省範本、雙寫紀律執行載體）
+  3. **新 preset `tools/profiles/essential.yaml`**（3-5 條 core / < 5k init token、signal #28 progressive adoption + signal #26 ROI 真槓桿）— 探索期專案首選、漸進升維路徑：essential → minimal → standard → strict
+  4. **新 spec `tools/uninstall-spec.md`**（`/charter-uninstall` 棄用工具設計）— 五 phase（三次確認 / archive 報告 / level 選擇 Soft|Full|Nuclear / charter clone 處理 / 結束報告）+「保留最後的溫柔」精神（棄用是有尊嚴的離別不是 lock-in）
+  5. **`core/init-template.md §3.3.2` 七步驟 → 八步驟**（加 step 0「讀過去違反紀錄」對應個體學習迴圈 §3 讀紀律）— signal #32 條款化（LLM 不查 templates）+ signal #34 紀律本體（個體學習迴圈）
+  6. **`tools/doctor-spec.md §3.11` 個體學習迴圈合規**（W1101 reflections/ 缺 / W1102 雙寫漏對應 / E1103 frontmatter 不全、四欄 spec-as-data 結構對齊 §3.7-§3.10）
+  7. **`tools/post-upgrade-verify-spec.md` 模式 B/C ship**（模式 B 升版 diff 自動列新 condition / 範本 / spec；模式 C pre-commit sync 自動跑 verify、v0.8.0 模式 A 既有 → v0.9.0 補完）
+  8. **dogfood signal 第十七循環收編**：#11 mutability 三層分類 → ④ / #26 init token cost ROI → ⑤ / #27 spec-driven 循環依賴 reality check → ② / #28 progressive adoption → ⑤ / #30 LLM 砍 fork 內容 → ② / #31 simulated slash command → ② 真實 stdout 加固 / #32 LLM 不查 templates → ① init step 0 / #33 failure-mode 自報失效 → ② commit hook 邀請制 / #34 個體學習迴圈紀律缺失（**user 明示「框架必備」**、不走累積門檻直接條款化）→ ①
+  9. **multi-perspective 第十四循環四方金礦完整落地**：結構師雙軸正交矩陣（① + ② 兩格） + 理念守護者「LLM 不可矯正」方向性誤讀指認（① 雙寫紀律對齊「集體記憶才重要」+「但個體記憶仍要寫 + 強制讀」）+ 工程師採用方層 vs 維護者層分離（③ adoption-lifecycle / uninstall-spec 採用方層、② commit hook 候選 vendor 層）+ 採用方 essential preset 真槓桿（⑤ 落地）
+  10. **採用方文檔層 sync**：ADOPTION v1.11 / TUTORIAL v1.11 / QUICKSTART v1.1（首次有變更歷史段）/ README §核心通用條款 + §設計哲學第 6 條「個體學習迴圈 — 對 AI 角度的對稱補完」 / 第 6 個 walkthrough `examples/upgrades/v0.8.2-to-v0.9.0.md`（v0.x 階段 walkthrough 系列收齊 6 個升版場景）
+- **v0.9.x PATCH 後續議程**：v0.8.3 延後 / 併入 v0.9.x（雙軸矩陣 framing 第二段 21 條條款 §X 細節 inline marker + 第三段 lint binary 派生「依賴 LLM 紀律的條款清單」+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構）+ BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ vendor schema 規範擴充（cursor.md / 其他 vendor 邀請制接入）

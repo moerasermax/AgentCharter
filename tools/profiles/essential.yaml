@@ -1,0 +1,75 @@
+# AgentCharter Profile Preset — essential
+#
+# 適用：探索期專案 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本
+# 設計：只啟用最硬層 5 條核心防線、配置最寬鬆、token 成本 < 5k init
+# 對應 dogfood signal #28（progressive adoption） + #26（init token cost / ROI）
+#
+# 條款啟用：5 / 25（最硬 5 條 — 結構性反捏造 + 抽驗權 + 失敗模式 + 角色互鎖 + 實證先行；其他 18 採用方相關全停 + maintainer-only 1 條停 + 架構級前提 2 條免設）
+# 預設參數：最寬鬆（F-mode 只啟最常見、不啟強化抽驗門檻、不要求 stdout 嚴格）
+#
+# vs minimal：minimal 含 init-template / domain-axiom-slot / versioning-migration / working-stack-discipline 等基礎接班 + 升版條款（11+ 啟用）；
+# essential 進一步精簡為「AI 別瞎掰」最後防線、極短 init token 預算
+#
+# 升級路徑（依 core/adoption-lifecycle.md§3 vendor 升級 path）：
+#   essential → minimal → standard → strict
+#   採用方走 progressive adoption，先驗 charter ROI，再逐級加紀律密度
+
+version: "0.4.0"
+charter_version: "0.9.0"
+preset: essential
+
+# === B1 粒度：條款啟用 ===
+enabled:
+  # === 最硬 5 條核心防線（必啟、不可停）===
+  structural-anti-fabrication: true    # L3 硬層 — AI 不可瞎掰、stdout 區塊強制（v0.2 全模式強制、無法停用）
+  audit-rights: true                   # L4 硬層 — 抽驗權（user 退稿 + 強化抽驗模式）
+  failure-modes: true                  # F1〜F6 偵測（最寬鬆參數、見下）
+  role-separation: true                # 角色互鎖 — 即使單 AI 也須區分角色，避免越界
+  evidence-first: true                 # 實證先行 — 隱性 bug 嚴禁盲猜
+
+  # === 其他全停 ===
+  violation-reflection: false          # essential 不要求補反省（單 actor 自律紀律、寬鬆）
+  escalation-protocol: false           # 不要求升級協議（單人快迭代、退稿即修）
+  output-mode-protocol: false          # 不切 eco/verbose（預設 verbose 即可）
+  completion-delivery: false           # 不要求 VCP 結構（探索期專案先驗概念）
+  handoff-chain: false                 # 不要求 HANDOFF 鏈（單 session 場景）
+  cross-ai-handoff: false              # 不要求跨 AI 接班協議（單 AI 場景）
+  role-conflict-resolution: false      # 不要求角色衝突仲裁（單角色場景）
+  multi-role-tracking: false           # 不要求 1 AI 多角色追蹤（單角色場景）
+  domain-axiom-slot: false             # essential 不要求領域公理（純通用 evidence-first 防線）
+  versioning-migration: false          # 不要求升版流程（探索期專案早期）
+  working-stack-discipline: false      # 不要求 DRAFT 暫存堆疊（單 session 場景）
+  init-template: false                 # 不要求 init slash command（最低儀式成本）
+  ai-vendor-onboarding: false          # 不要求邀請制 vendor（單 AI 場景）
+  individual-learning-loop: false      # essential 不要求個體學習迴圈（升級到 minimal 才強制）
+  diagnose-remediate-protocol: false   # 不要求 spec-as-data + 真實 stdout 證據要求（標準至 standard 才強制）
+  adoption-lifecycle: false            # 不要求 5 階段 lifecycle（單 session 場景、棄用直接刪即可）
+  condition-mutability: false          # 不要求三層 mutability 紀律（探索期專案 charter 自身可全改）
+  maintainer-discipline: false         # 位階特殊 — 對採用方無關，僅 framework 維護者啟用
+
+# === B3 粒度：條款參數（最寬鬆）===
+parameters:
+  audit-rights:
+    require_stdout_in_normal_mode: false   # 寬鬆 — 探索期允許純文字描述（升 minimal 起改 true）
+    allow_trust_boundary_disclosure: true   # 寬鬆 — 信任邊界揭示替代 stdout 可接受
+  failure-modes:
+    enable_modes: [F1, F2, F3, F6]         # 最寬鬆 — F1（假宣告）+ F2（虛構）+ F3（測試/實作脫鉤）+ F6（未驗證即就緒）
+                                            # 不啟 F4（結構性失靈）/ F5（角色越界）— 探索期可接受
+
+# === Domain axioms 槽位 ===
+# essential 預設**不要求**領域公理檔（不啟 domain-axiom-slot）
+# 採用方升 minimal 時須補
+# domain_axioms:
+#   primary: <無、採用框架 evidence-first 預設紀律>
+
+# === 升級觸發條件（採用方自評）===
+# essential → minimal 升級時機：
+#   - 開始累積 ≥ 1 個正式 HANDOFF（單 session → 跨 session）
+#   - 開始有第二個 AI 接班（單 AI → 雙 AI）
+#   - 開始累積領域公理（無 → 有）
+#   - 抓到第一次 F-mode 命中（事件級反省紀錄需求）
+#   - charter 升版第一次（versioning-migration 需求）
+#
+# 升級路徑由 /charter-doctor 模式 A + tools/post-upgrade-verify-spec.md
+# 模式 B 升版 diff 引導；對齊 core/adoption-lifecycle.md §3 vendor 升級 path
+# 三路徑（A 維持現狀 / B 開 issue 給 charter / C AI 自驅修復對齊新 vendor schema）。

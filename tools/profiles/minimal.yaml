@@ -3,11 +3,13 @@
 # 適用：探索型專案、單人 + 1 AI、短期實驗。
 # 設計：只啟用最核心防線，配置從寬，搬遷成本最低。
 #
-# 條款啟用：9 / 19（maintainer-discipline 採用方無關 / ai-vendor-onboarding 預設關，minimal 場景單 AI 單角色不需要）
+# 條款啟用：12 / 25（maintainer-discipline 採用方無關 / ai-vendor-onboarding 預設關，minimal 場景單 AI 單角色不需要 /
+#                       v0.9.0 加 4 條：individual-learning-loop=true（user 明示框架必備）、其他 3 條（diagnose-remediate-protocol /
+#                       adoption-lifecycle / condition-mutability）minimal 預設 false、升 standard 起 true）
 # 預設參數：寬鬆
 
 version: "0.4.0"
-charter_version: "0.8.2"
+charter_version: "0.9.0"
 preset: minimal
 
 # === B1 粒度：條款啟用 ===
@@ -33,6 +35,12 @@ enabled:
   maintainer-discipline: false         # 位階特殊 — 對採用方無關，僅 framework 維護者啟用
   init-template: true                  # 角色 init 模板 — 仍建議啟用
   ai-vendor-onboarding: false          # v0.6.0 加 — minimal 場景（單 AI 單角色）通常不會邀請新 vendor 或誕生新角色；擴展時請改 true
+
+  # === v0.9.0 加 4 條條款 ===
+  individual-learning-loop: true       # v0.9.0 加 — user 明示「框架必備」、minimal 即啟用（即使單 AI 也須 reflections/ 雙寫紀律 + init step 0 強制讀過去違反）
+  diagnose-remediate-protocol: false   # v0.9.0 加 — spec-as-data + 真實 stdout 證據要求；minimal 預設 false（探索期 LLM 自律可接受、升 standard 改 true）
+  adoption-lifecycle: false            # v0.9.0 加 — 5 階段 lifecycle 紀律；minimal 場景單人快迭代、棄用直接刪即可；升 standard 改 true 走完整 lifecycle
+  condition-mutability: false          # v0.9.0 加 — 三層 mutability 紀律 + 3-strike 刪除協議；minimal 場景 charter 自身可全改、不需此紀律密度
 
 # === B3 粒度：條款參數（寬鬆）===
 parameters:

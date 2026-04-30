@@ -1,6 +1,6 @@
 # /charter-upgrade-verify — 升版後標準驗證流程設計
 
-> **狀態**：v0.8.0（純 spec — 由 AI 自具象化執行）
+> **狀態**：v0.9.0（純 spec — 由 AI 自具象化執行；模式 A v0.8.0 ship、模式 B/C v0.9.0 ship）
 > **位階**：tools / 設計文檔；與 `init-spec.md` / `doctor-spec.md` / `scan-spec.md` 並列
 > **觸發來源**：user 2026-04-29 LIVE 提議「**升版後需要一個檢核機制、看目前的文件狀態、`~/.agentcharter`、目前 agent-commons 哪些標準的格式不合規等**」+ YC v0.7.4 → v0.7.5 升版實證 + dogfood signal #23（Phase 5b CHECK 7 axiom status gap）累積 2 次同類觸發
 > **實作模式**：採用方對 AI 下 prompt「依本 spec 自具象化 `/charter-upgrade-verify` slash command 給未來重用」，AI 完成具象化後 user 跑 `/charter-upgrade-verify` 取得 5 軸校驗報告。
@@ -26,9 +26,12 @@
 ## 2. 用法
 
 ```
-/charter-upgrade-verify
-/charter-upgrade-verify --json     # 輸出 machine-readable 格式
-/charter-upgrade-verify --strict   # 將 WARN 升為 ERROR（CI/pre-commit 用）
+/charter-upgrade-verify                # 模式 A 完整 5 軸（預設）
+/charter-upgrade-verify --diff         # 模式 B 升版 diff（v0.9.0 加）
+/charter-upgrade-verify --mode-c       # 模式 C pre-commit sync-check 子集（v0.9.0 加）
+/charter-upgrade-verify --json         # 輸出 machine-readable 格式
+/charter-upgrade-verify --strict       # 將 WARN 升為 ERROR（CI/pre-commit 用）
+/charter-upgrade-verify --diff --json  # 模式 B + JSON 輸出（升版 walkthrough 自動化用）
 ```
 
 ### 2.1 呼叫模式
@@ -36,10 +39,10 @@
 | 模式 | 觸發者 | 用途 | 失敗處置 |
 |---|---|---|---|
 | **A. 完整健康檢查（Full Verify）** | 採用方使用者 | 升版完成後 / 任意時點驗證升版完整度 | 列 errors / warnings；user 決定是否修補 |
-| **B. 升版 diff 模式**（v0.9+ 議程） | — | 對比上次 verify 結果、顯化本次升版引入的新 ERROR/WARN | — |
-| **C. pre-commit sync-check**（v0.9+ 議程） | git pre-commit hook | 只跑軸 E（stale reference）+ 軸 B/C 部分項 | hook fail 阻止 commit |
+| **B. 升版 diff 模式**（v0.9.0 ship） | 採用方使用者 / 升版 walkthrough Step 5 | 對比 charter clone 跨 commit 變動、顯化本次升版引入的新 condition / 新範本 / 新 spec / 新 ERROR/WARN | 列 introduced 項目；user 對齊 walkthrough Step 3 修補 |
+| **C. pre-commit sync-check**（v0.9.0 ship） | git pre-commit hook（採用方 vendor 邀請制） | commit message 標 charter_version 變動時、自動跑軸 E（stale reference）+ 軸 B/C 部分項 | hook fail 阻止 commit；走 vendor 邀請制（charter 不附 binary、依 `core/ai-vendor-onboarding §3`）|
 
-> **本 v0.8.0 ship 模式 A**；模式 B / C 屬 spec 層提及、實作層留 v0.9+ 議程。對齊 v0.7.3 北極星「向下兼容嚴守」紀律。
+> **v0.8.0 ship 模式 A**；**v0.9.0 ship 模式 B + C**（dogfood signal #34 條款化同期、charter 紀律完整性升維配套）。對齊 v0.7.3 北極星「向下兼容嚴守」紀律 — 模式 B/C 既有採用方升版前**不強制**、走 walkthrough Step 5 推薦或 vendor 自主邀請。
 
 ---
 
@@ -123,6 +126,132 @@ cd $AGENTCHARTER_HOME && git status --porcelain
 | **E002** | 文件 / vendor toml / template 提到的 spec section 編號（如「依 init-spec §3.3.2」）對齊當前 charter version 內 spec 實際 section 編號 | WARN |
 | **E003** | 文件 / vendor toml / template 提到的 step 編號（如「依 QUICKSTART Step 3」）對齊當前 QUICKSTART 實際 step 順序 — **對應 v0.7.6 QUICKSTART swap 後 stale 引用偵測** | WARN |
 | **E004** | 引用已棄用條款 / spec / 工具（如 v0.5.9 後 charter-init.py 引用 = stale） | WARN |
+
+### 3.6 模式 B：升版 diff 細節（v0.9.0 ship）
+
+**動機**：模式 A 答「當前狀態是否合規」；模式 B 答「**本次升版引入了什麼新東西、採用方需要對齊哪些**」— 對應升版 walkthrough Step 5（self-check「五軸全綠」之前的 diff 校準）。
+
+**前提**：採用方知道**前次 charter_version**（profile.yaml 變更歷史 OR `~/.agentcharter/.last_verify_version` 持久化、hook 寫入）。
+
+**校驗集**：
+
+```
+對 ~/.agentcharter（charter clone）git log 範圍 [前次 charter_version tag, 當前 charter_version tag]：
+
+1. 列出新加 condition：
+   git diff <prev>..<curr> --name-only -- core/ | grep -E '^core/.*\.md$' | filter「新檔」
+   → 對每條新 condition 列：path + frontmatter 抽 status / since / 保證強度 / 檢測時點
+
+2. 列出新加 template：
+   git diff <prev>..<curr> --name-only -- templates/agent-commons/ | grep -E '\.tpl$' | filter「新檔」
+
+3. 列出新加 spec / 新加 profile preset：
+   git diff <prev>..<curr> --name-only -- tools/ | filter「新檔」
+
+4. 列出新引入的 ERROR/WARN code（doctor-spec / init-spec / post-upgrade-verify-spec / uninstall-spec）：
+   grep doctor-spec.md / init-spec.md / 等 — 對比前後版本新引入的 W/E code
+   → 列：code / 對應 spec 段 / 修補方向摘要
+
+5. 列出條款計數變動：
+   profile preset enabled 條目數對比、計數標頭（如「條款啟用：21 / 19」→「22 / 25」）
+
+6. 對比現專案 profile.yaml.charter_version vs charter clone 當前 version：
+   不對應 → 報「升版未完成、profile.yaml 未升 charter_version」（軸 A A001 同源）
+```
+
+**輸出格式**（模式 B 專屬段、附在標準 5 軸報告之後）：
+
+```markdown
+## 模式 B：升版 diff（<prev_version> → <curr_version>）
+
+### 新加 condition（N 條）
+| condition | since | 保證強度 | 檢測時點 | 對齊 walkthrough Step |
+|---|---|---|---|---|
+| <name> | <since> | <X> | <Y> | <step ref> |
+
+### 新加 template（N 個）
+| template | 對應 condition |
+|---|---|
+| <name>.md.tpl | <condition ref> |
+
+### 新加 spec / preset
+| 檔案 | 用途摘要 |
+|---|---|
+
+### 新引入的 ERROR/WARN code
+| code | spec 段 | 修補方向摘要 |
+|---|---|---|
+| W1101 | doctor-spec §3.11 | 補建 reflections/ + 寫第一個 reflection |
+
+### 條款計數變動
+- preset standard: 18 / 21 → 22 / 25
+- preset minimal: 9 / 21 → 10 / 25
+- preset strict: 18 / 21 → 22 / 25
+- preset essential（v0.9.0 新加）: 5 / 25
+```
+
+**強度**：模式 B 全部報告為 **INFO**（不是 ERROR/WARN）— 升版 diff 是**資訊層、不是合規層**；合規軸由模式 A 5 軸 + 升版 walkthrough Step 3 完成。
+
+### 3.7 模式 C：pre-commit sync-check 細節（v0.9.0 ship）
+
+**動機**：對應 dogfood signal #6 + #24 終局實作層 — charter_version 變動 / 採用方文檔 sync 漏寫常見於 commit 階段（升版 PR 漏改 ADOPTION 變更歷史 / 升 charter_version 但 vendor toml 未同步）— hook 在 commit 時自動攔截、減少漏寫流入主分支。
+
+**前提**：採用方願意走 vendor 邀請制（charter 不附 hook binary、依 `core/ai-vendor-onboarding §3` 邀請各 vendor 自實作 hook）— **本 spec 只規範紀律 + 校驗集、不寫死 vendor-specific hook 實作**。
+
+**觸發條件**（hook 邏輯）：
+
+```
+git diff --cached（staged 變動）含以下任一：
+  - <common-memory-root>/_config/profile.yaml 中 charter_version 行變動
+  - commit message 含 "charter_version" / "charter v" 字串（升版 commit 慣例 tag）
+  - <common-memory-root>/_config/profile.yaml preset 行變動
+  - 採用方文檔（ADOPTION / TUTORIAL / QUICKSTART）變動
+→ 觸發模式 C
+```
+
+**校驗集**（模式 C 跑、僅子集）：
+
+```
+1. 軸 E E001（跨檔 charter_version 一致）— 全跑
+2. 軸 E E003（step 編號 stale）— 採用方文檔變動才跑
+3. 軸 B B001（preset 啟用條款數對齊）— charter_version 變動才跑
+4. 軸 B B002（enable_modes 含 F6）— charter_version 變動才跑
+5. 軸 C C003（_role.md Status 二態）— 全跑（commit 不應出現 ACTIVE → PROVISIONAL 退降）
+
+不跑：
+- 軸 A（charter clone 對齊 — 採用方專案 commit 階段不一定有 ~/.agentcharter 連線）
+- 軸 D（axiom 紀律 — frontmatter 變動屬 user 親操作、不該在 commit hook 攔）
+- 軸 C C001/C002/C004/C005（結構 / Sign-in Log / vendor schema — 屬 doctor 範圍、commit 階段太晚）
+```
+
+**hook 失敗處置**：
+
+```
+hook 抓到 WARN/ERROR：
+  - exit code != 0、阻止 commit
+  - stderr 列：失敗 ID + spec 段引用 + 修補方向摘要
+  - 提示：「跑 /charter-upgrade-verify --strict 完整檢查 / 跑 /charter-doctor 看細節」
+
+hook 設計紀律（vendor 自實作時必守）：
+  - hook 失敗訊息禁寫死 vendor-specific 路徑（同 init-template §3.3.2 引用紀律）
+  - hook 必可被 git commit --no-verify 繞過（user explicit 授權閘）
+  - hook 不可代決：exit 1 即停、不嘗試 auto-fix（auto-fix 屬 doctor --fix 範圍、commit hook 不越界）
+```
+
+**vendor 邀請制執行載體**：
+
+依 `core/ai-vendor-onboarding §3`、各 vendor 在 `roles/<role>/<vendor>.md` 加 hook 實作段：
+
+| vendor | hook 位置 | 推薦實作 |
+|---|---|---|
+| Claude Code | `.claude/hooks/pre-commit` | shell 腳本呼叫 `/charter-upgrade-verify --strict --mode-c` |
+| Gemini CLI | `.gemini/hooks/pre-commit`（依 vendor 慣例）| 同上 |
+| Cursor | 依 vendor hook 機制 | 同上 |
+| 通用 git hook | `.git/hooks/pre-commit` | shell 腳本、user 自手動裝 |
+
+> charter 概念層只規範紀律 + 校驗集（本 §3.7）— vendor 層自實作位置 + 細節（依邀請制 step 2-4）。
+
+**對齊雙軌節奏**：模式 C 屬「結構強制 × pre-commit」格（multi-perspective 結構師金礦雙軸矩陣）— 補完 charter v0.9.0 引入的「結構強制」軸三格之一（① individual-learning-loop pre-init / ② diagnose-remediate-protocol runtime / **本 § pre-commit**）。
 
 ---
 
@@ -265,6 +394,27 @@ head -5 agent-commons/protocols/<axiom>.md
 ---
 
 ## 9. 變更歷史
+
+### v0.2（自 v0.9.0 引入）
+
+**動作**：
+1. **§3.6 模式 B 升版 diff 細節**新增：6 條校驗集（新加 condition / 新加 template / 新加 spec / preset / 新引入 ERROR/WARN / 條款計數變動 / charter_version 對齊）+ 專屬輸出格式（INFO 級、不是合規層）
+2. **§3.7 模式 C pre-commit sync-check 細節**新增：觸發條件 + 5 條校驗子集（軸 E E001/E003、軸 B B001/B002、軸 C C003）+ hook 失敗處置 + vendor 邀請制執行載體（charter 概念層只規範紀律 + 校驗集、不附 hook binary）
+3. §2 用法新增 `--diff` / `--mode-c` flag + 對應段
+4. §2.1 呼叫模式表「v0.9+ 議程」標記改 v0.9.0 ship、補完模式 B/C 觸發者 / 用途 / 失敗處置
+5. 對齊雙軌節奏：模式 C 屬「結構強制 × pre-commit」格 — 補完 charter v0.9.0 雙軸矩陣「結構強制」軸三格之一
+
+**觸發**：
+- (a) charter v0.9.0 主軸「紀律完整性 + AI 自我覺察升維」配套 ship — 模式 B/C 與 dogfood signal #34（individual-learning-loop）+ #6/#24（採用方文檔 sync）同期條款化
+- (b) v0.7.3 北極星「不讓 user 記」對 AI 角度補完延伸：模式 C pre-commit hook 是「不讓採用方升版漏寫」結構強制執行載體
+- (c) multi-perspective 結構師金礦雙軸矩陣「結構強制 × pre-commit」格落地
+
+**修訂類型**：MINOR — 純擴增（模式 A 既有不變、模式 B/C 新加）；既有採用方升版**不強制**跑模式 B/C、走 walkthrough Step 5 推薦。
+
+**連動範圍**（依 `maintainer-discipline §2.2`）：
+- `tools/uninstall-spec.md`（v0.9.0 加；模式 C hook 設計紀律對齊「不可繞 user explicit 授權閘」精神 → uninstall 三次確認）
+- `core/ai-vendor-onboarding §3` 邀請制（模式 C hook 走 vendor 邀請制、不寫死 vendor-specific 實作）
+- `core/diagnose-remediate-protocol.md`（v0.9.0 加；模式 C hook 屬其「結構強制 × runtime」延伸）
 
 ### v0.1（自 v0.8.0 引入）
 

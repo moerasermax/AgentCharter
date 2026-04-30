@@ -54,6 +54,10 @@
 啟用（v0.8.0 加，dogfood signal #16 spec 層 → 實作層）：
   §3.8 vendor 端 slash command schema 校驗（E801/W802 — v0.8.0 實作啟用）
 
+必驗（v0.9.0 加，dogfood signal #34 條款化）：
+  §3.11 個體學習迴圈合規 W1101 + E1103
+  （W1102 雙寫對應依賴 failure_mode_log 累積、self-instantiation 階段太早可能無 entry、屬模式 A 全量、可跳過模式 B）
+
 可選：
   §3.2 條款相依、§3.4 角色 init 狀態、§3.6 失敗模式累積（self-instantiation 階段太早，可跳過）
 ```
@@ -490,6 +494,112 @@
 - dogfood signal #6「條款層 sync 與文檔層 sync 不對等」終局實作層
 - `tools/post-upgrade-verify-spec.md` 軸 E（stale reference）擴含此項留 v0.8.x PATCH 後續（雙重防禦）
 
+### 3.11 個體學習迴圈合規（v0.9.0 加；`core/individual-learning-loop §6` 對齊）
+
+對應 **dogfood signal #34**（user 2026-04-30 LIVE 公司專案接入抓到「個體學習迴圈紀律缺失」、user 明示「框架必備」直接條款化）— charter v0.7.x 累積把 `core/violation-reflection §2`「LLM 不可矯正、價值在集體記憶」實作為集體記憶層（`state/failure_mode_log.md` + `institutional-memory/`），但**個體記憶層 + 跨 session 學習迴圈紀律缺失**：reflections/ 目錄無強制累積、F-mode 命中無雙寫對應、init 無 step 0 強制讀過去違反。
+
+本段為 **doctor 端執行載體**（任意時點驗證個體學習迴圈是否落地）；`init-template §3.3.2 step 0` 為 **init 端執行載體**（fail-fast、不通則 step 1 禁止啟動）；`templates/agent-commons/reflection.md.tpl` 為 **個體層 entry 結構模板** — **三層雙重防禦**。
+
+**校驗集**（v0.9.0 必跑、屬模式 A 全量檢查項；模式 B minimal 必驗集**含 W1101 + E1103**、不含 W1102（雙寫對應依賴 failure_mode_log 累積、self-instantiation 階段太早可能無 entry、可跳過））：
+
+```
+1. 對 <common-memory-root>/roles/<role>/_role.md 內 Status 為 ACTIVE 的角色：
+   - <common-memory-root>/roles/<role>/reflections/ 目錄存在
+   - 至少一個 reflection 檔（accumulating audit trail、新接入採用方首個 reflection 可為「無歷史」placeholder）
+   缺 → W1101
+
+2. 對 <common-memory-root>/state/failure_mode_log.md 內每個 F-mode 命中 entry：
+   逐 entry 比對 <common-memory-root>/roles/<role>/reflections/ 下是否有對應檔
+   匹配規則：檔名含 entry 對應 role + F-mode（個體層命名 <YYYY-MM-DD>_<f-mode>_<short>.md
+     OR 舊格式 <task-id>-<role>-<f-mode>-x<count>.md 兩種並存）
+   不對應 → W1102（雙寫紀律違反）
+
+3. 對 <common-memory-root>/roles/<role>/reflections/ 下每個 reflection 檔：
+   讀 frontmatter，必含五欄（date / role / vendor / status / violations）
+   缺欄位或值為空 → E1103（致命）
+```
+
+| 失敗 | 狀態碼 | 處置 |
+|---|---|---|
+| reflections/ 目錄缺或空（ACTIVE 角色） | **W1101** | 警告：補建目錄 + 寫第一個 reflection（可為「首次接班、無歷史」placeholder 含合規 frontmatter） |
+| failure_mode_log F-mode 命中 entry 無對應 reflection 個體層檔 | **W1102** | 警告：補寫 reflection 個體層 entry（依 `templates/agent-commons/reflection.md.tpl`）|
+| reflection 檔 frontmatter 五欄不齊 | **E1103** | 致命：補完 frontmatter 必填欄位（date / role / vendor / status / violations）|
+
+#### W1101 詳盡引導（v0.9.0 加；SSS S3 spec-as-data）
+
+**合規規定**（charter ground truth）：
+- 必須狀態：`<common-memory-root>/roles/<role>/reflections/` 目錄存在 + 至少一個 reflection 檔（ACTIVE 角色）
+- 對齊條款：
+  - `core/individual-learning-loop §2` 寫紀律（雙寫個體 + 集體）
+  - `core/individual-learning-loop §3` 讀紀律（init step 0 強制讀）
+  - `core/init-template §3.3.2 step 0`（v0.9.0 加；讀過去違反紀錄）
+
+**修補方向 + 約束**：
+- ✅ 必動：`mkdir -p <common-memory-root>/roles/<role>/reflections/` + 寫第一個 reflection（首次接班可為「首次接班、無歷史」placeholder、frontmatter 五欄齊）
+- ✅ 補完前提：對應 role 的 `_role.md` Status 已 ACTIVE（PROVISIONAL 階段不要求 reflections/ 累積）
+- 🚫 不可動：reflections/ 既有檔（永不刪除、依 `core/violation-reflection §5` append-only 紀律）
+- 🚫 不可代決：reflection 內容質量（廢話也歸檔、依 `core/violation-reflection §2` 真價值是審計痕跡不是矯正）
+- **推薦路徑**：依 `templates/agent-commons/reflection.md.tpl` 套用、frontmatter 五欄填齊、§1-§3 三段不可省
+
+**反例**（charter 已駁回的 anti-pattern）：
+- ❌ AI 看到 reflections/ 目錄缺 → 自行決定「ACTIVE 角色不需要 reflections/」（違反 individual-learning-loop §2 寫紀律）
+  - ✅ 正解：v0.9.0 起 ACTIVE 角色必有 reflections/ 累積、不可省
+- ❌ AI 看到 W1101 → 寫個空檔 placeholder 但 frontmatter 五欄不齊（順便撞 E1103）
+  - ✅ 正解：placeholder 也須符合 frontmatter 五欄 schema、即使 violations: [] 也明示空陣列
+- ❌ AI 把 W1101 解讀為「升版過渡期可豁免」自行跳過修補
+  - ✅ 正解：W1101 是 WARN 不是阻擋、但補建是 v0.9.0 升版必動作（升版 walkthrough Step 3 對齊）
+
+#### W1102 詳盡引導（v0.9.0 加；雙寫對應軸）
+
+**合規規定**：
+- 必須狀態：`failure_mode_log.md` 每個 F-mode 命中 entry 在 `reflections/` 有對應檔
+- 對齊條款：
+  - `core/individual-learning-loop §2` 雙寫紀律（個體 + 集體）
+  - `core/violation-reflection §3` 五段格式（既有集體層）
+  - `templates/agent-commons/reflection.md.tpl`（v0.9.0 加；個體層）
+
+**修補方向 + 約束**：
+- ✅ 必動：對缺漏的 F-mode entry 補寫 reflection 個體層檔（依 `reflection.md.tpl`）
+- ✅ 補完前提：failure_mode_log entry 完整（含 role / F-mode / 日期 — 缺則先修 entry 再補 reflection）
+- 🚫 不可動：failure_mode_log 既有 entry（append-only、不可改既有歷史）
+- 🚫 不可代決：補寫個體層 reflection ≠ 重寫集體層五段（兩者互補不互斥、依 reflection.md.tpl §3 雙寫紀律段）
+- **推薦路徑**：逐個比對 failure_mode_log → reflections/ 缺項 → 依模板套用補寫、跑 doctor 重驗 → W1102 解除
+
+**反例**：
+- ❌ AI 看到 W1102 → 為對齊統計把 reflection 內容**抄自 failure_mode_log**（內容空虛）
+  - ✅ 正解：個體層 reflection 是 AI 個體的學習迴圈起手 — §1 命中模式 + §2 學習要點 + §3 條款引用必含 AI 自視角的反思（即使廢話也歸檔、`violation-reflection §2`）
+- ❌ AI 把舊事件 reflection 寫日期 = today（偽造時間軸）
+  - ✅ 正解：補寫時 frontmatter date 寫**事件實際發生日**、檔名也用該日期前綴；「補登」事實另在 §1 註明（如「2026-04-30 補登 2026-04-15 漏寫」）
+- ❌ AI 為了讓 W1102 解除把對應條款 §3 引用空表
+  - ✅ 正解：§3 必含 charter 條款編號鏈（`core/<condition>.md §X` + `tools/<spec>.md §Y` + 對應 IM entry）、不可空
+
+#### E1103 詳盡引導（v0.9.0 加）
+
+**合規規定**：
+- 必須狀態：reflection 檔 frontmatter 含五欄（date / role / vendor / status / violations）
+- 對齊條款：
+  - `templates/agent-commons/reflection.md.tpl` frontmatter schema
+  - `core/structural-anti-fabrication.md`（frontmatter 缺欄即視同未交付、抽驗方有權直接退稿）
+
+**修補方向 + 約束**：
+- ✅ 必動：補完 frontmatter 五欄（date 用事件實際日期 / role 對應接班角色 / vendor 對應 AI 廠商 / status: 強化抽驗 / user 裁決待議 / 結案 三擇一 / violations 為 F-mode 編號陣列、空陣列也要明示 `[]`）
+- 🚫 不可動：既有正文段落（§1-§3）— 補完 frontmatter ≠ 重寫
+- 🚫 不可代決：status 升降（強化抽驗 → 結案 屬抽驗方判定、AI 不可代決）
+- **推薦路徑**：對照 `reflection.md.tpl` frontmatter 區塊逐欄補完、跑 doctor 重驗 → E1103 解除
+
+**反例**：
+- ❌ AI 自編新欄位（如 `severity: high`）想表達「重要」但模板無此欄
+  - ✅ 正解：依模板五欄、不可創新；嚴重度透過 violations F-mode + status 表達
+- ❌ AI 把 violations 寫純文字描述（如 `violations: 假宣告就位`）
+  - ✅ 正解：violations 是**陣列**、值是 F-mode 編號或條款 §引用（如 `[F1, role-separation §3.5]`）
+- ❌ AI 看到 E1103 致命 → 為了讓 doctor PASS 直接刪該 reflection 檔
+  - ✅ 正解：reflection 永不刪除（`violation-reflection §5` append-only）— 補完 frontmatter、不可刪檔；刪檔本身是**新一輪 F-mode 命中**（湮滅證據）、抽驗方有權升級至 user 裁決
+
+**對應條款 / signal**：
+- dogfood signal #34（user 2026-04-30 LIVE 直接條款化、明示「框架必備」）
+- charter v0.5.7 working-stack-discipline 補完接班場景三軸 → v0.9.0 補完第 4 軸（個體 AI 跨任務 / 跨 session 學習迴圈）
+- `tools/post-upgrade-verify-spec.md` 軸 C / 軸 E 擴含本段校驗留 v0.9.x PATCH 後續（雙重防禦）
+
 ---
 
 ## 4. `health-report.md` 輸出格式
@@ -634,6 +744,7 @@ CI / pre-commit hook 可依退出碼 gate。
 | **v0.7.4** | **§3.8 加 vendor 端 slash command schema 校驗**（spec 層、實作 defer v0.8+）+ §3.8.1 v0.7.4 → v0.8+ 漸進啟用路徑說明。**觸發**：dogfood signal #16 條款化（YC_AIAgentCrew 2026-04-28 Gemini CLI v0.39.1 載入 toml 失敗、charter v0.5.9 〜 v0.7.3 vendor schema 規範完全空白）。**嚴守向下兼容**：v0.7.4 doctor 不跑此 check、既有採用方升版零新 ERROR/WARN；實作待 v0.8+ 對齊 `core/adoption-lifecycle.md` 完整化後啟用 | ✅ |
 | **v0.8.0** | **§3.8 vendor schema 從 spec 層升實作層**（E801/W802 列為強制）+ §3.8.1 漸進路徑表加 v0.8.0 已完成行 + **§3.9 加 axiom 紀律對齊**（E606/E607/W608 — axiom frontmatter status 二態紀律執行載體）+ §2.1 模式 B minimal 必驗集擴含 §3.9。**觸發**：(a) v0.7.4 spec 層累積至 v0.8.0 實作層啟用條件滿足（vendor schema 段已 ship + post-upgrade-verify 軸 C C005 對齊雙工具防禦）；(b) **dogfood signal #23 條款化**（v0.7.0 公司接入第一次失敗 + v0.7.6 LIVE 公司專案接入第二次同類觀察、user 直接授權跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 直接條款化 pattern）— init-spec Phase 5b CHECK 7 ext 為 init 端執行載體、本 §3.9 為 doctor 端執行載體、post-upgrade-verify 軸 D 為升版專屬執行載體、三層雙重防禦 | ✅ |
 | **v0.8.1** | **SSS S3 起手實證 — doctor-spec 既有 error codes 全加四欄 spec-as-data 結構**（合規規定 / 修補方向 + 約束 / 反例）：§3.7 E601-E605（5 個 H4 子段）+ §3.8 E801/W802（2 個）+ §3.9 E606/E607/W608（3 個）+ **新加 §3.10 採用方文檔變更歷史 sync**（W901、dogfood signal #24 升工具層）+ §3.7 校驗集第 2 條措辭修（dogfood signal #19 雙重否定）。**觸發**：(a) 2026-04-30 multi-perspective 評估第十四循環 — external Engineer Round 3-4 提案被 4 sub-agent 反向校準後、SSS S3「引導式紀律」起手實證；(b) **dogfood signal #24 條款化**（v0.7.4/v0.7.5/v0.8.0 連續 ≥3 次同類違反、達 §3.4 演化路徑觸發點）；(c) **dogfood signal #19 順手修**（YC v0.8.0 升版 LIVE Gemini 把合規「shared/ 不存在」誤標 WARN）。**對齊**：v0.7.3 北極星「不讓 user 記」+ v0.7.4 雙軌節奏「頻繁小擴增 PATCH」+ feedback `structural-over-patch` 紀律（spec 結構升維、不是規範補丁）+ `core/violation-reflection §2`「LLM 個體不重要、集體記憶才重要」設計方向（spec 自帶反例段抹掉「LLM completionist 易踩」需求） | ✅ |
+| **v0.9.0** | **新加 §3.11 個體學習迴圈合規**（W1101 reflections/ 累積 / W1102 雙寫對應 / E1103 frontmatter 五欄；全 3 個含四欄 spec-as-data 結構）+ §2.1 模式 B minimal 必驗集擴含 §3.11 W1101 + E1103（W1102 屬模式 A 全量）。**觸發**：**dogfood signal #34 條款化**（user 2026-04-30 LIVE 公司專案接入抓到「個體學習迴圈紀律缺失」、user 明示「框架必備」直接條款化、跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）— charter v0.7.x 把 `core/violation-reflection §2` 集體記憶實作完成、但個體層 + 跨 session 學習迴圈紀律缺失（reflections/ 無強制累積 / F-mode 命中無雙寫對應 / init 無 step 0 強制讀過去違反）。本 §3.11 為 doctor 端執行載體；`init-template §3.3.2 step 0` 為 init 端執行載體；`templates/agent-commons/reflection.md.tpl`（v0.9.0 加）為個體層 entry 結構模板 — 三層雙重防禦。**對齊**：(a) charter v0.5.7 working-stack-discipline 補完接班場景三軸 → v0.9.0 補完第 4 軸（個體 AI 跨任務 / 跨 session 學習迴圈）；(b) v0.7.3 北極星「不讓 user 記」對 AI 角度補完（既有對採用方角度 walkthrough + verify、v0.9.0 補對 AI 個體的學習迴圈強制讀寫）| ✅ |
 
 **實作模式**：採用方對 AI prompt「依本 spec 跑健康檢查」+ 順便自具象化 `/charter-doctor` slash command（依 `core/init-template.md §3.3` self-instantiation 精神）。
 

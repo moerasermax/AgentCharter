@@ -6,7 +6,194 @@
 
 ## [Unreleased]
 
-（空 — v0.8.2 已釋出；下批次 v0.8.x PATCH 議程：v0.8.3 雙軸矩陣 framing 第三段「依賴 LLM 紀律的條款清單」由 lint binary 派生 + SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構；v0.7.6 BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist；v0.9.0 lifecycle.md + condition-mutability.md + diagnose-remediate-protocol.md + essential preset fresh head 設計）
+（空 — v0.9.0 已釋出；下批次 v0.9.x PATCH 議程：v0.9.1 SSS S1「AI 自治協作 + user 授權閘」概念 framing 起手（前置條件 ① + ② 已 ship、可開動真正設計）；v0.8.x 留下議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+
+---
+
+## [0.9.0] — 2026-04-30
+
+> **MINOR release — 紀律完整性 + AI 自我覺察升維**。**charter 完成 v0.7.3 北極星雙邊閉環**（「不讓 user 記」對採用方角度 + 「不讓 AI 自己也記不住自己的錯」對 AI 角度）。**dogfood-driven hardening 第十七循環 — slim v0.9.0 設計層轉折**（v0.x 紀律密度導向 → v0.9 紀律完整性導向）。**multi-perspective 第十四循環四方金礦完整落地**（結構師雙軸正交矩陣 + 理念守護者「LLM 不可矯正」方向性誤讀指認 + 工程師採用方層 vs 維護者層分離 + 採用方 essential preset 真槓桿）。**multi-agent 並行 ship 第二次實證**（A condition 概念層 / B 實作層 / C 採用方層 + maintainer 整合）。
+>
+> **Triggered by**：2026-04-30 LIVE session — user 連續推進 v0.8.0 → v0.8.1 → v0.8.2 → v0.9.0 共 4 個 release（24 hr 內）+ user 明示「個體學習迴圈紀律是框架必備、加入 v0.9+」（dogfood signal #34 直接條款化、不走累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）。
+
+### Added — 4 條新加 condition（21 → 25 條 condition、12 → 13 個架構級概念）
+
+#### `core/individual-learning-loop.md`（**第 13 個架構級概念、接班場景四軸補完的第 4 軸**）
+
+對應 **dogfood signal #34**（user 明示框架必備）+ multi-perspective 第十四循環結構師金礦「弱保證項升結構強制」最對齊的議程 + v0.7.3 北極星「不讓 user 記」對 AI 角度的對稱補完：
+
+- **個體 AI 跨任務 / 跨 session 學習迴圈**：第 4 軸補完接班場景（軸 1 handoff-chain / 軸 2 cross-ai-handoff / 軸 3 working-stack-discipline / **軸 4 individual-learning-loop**）
+- **寫紀律**（雙寫）：命中 F-mode 後、補 violation-reflection 雙寫到集體層 `state/failure_mode_log.md`（既有）+ **個體層 `roles/<role>/reflections/<YYYY-MM-DD>_<f-mode>_*.md`**（新加）— 不可只寫集體 / 不可只寫個體
+- **讀紀律**（強制）：擴 `core/init-template §3.3.2` 七步驟 → **八步驟**、加 step 0「讀過去違反紀錄」 — 每次 self-instantiation 必先讀自己 reflections + failure_mode_log + IM
+- **跨 session 學習迴圈**：接班 AI 同樣強制（依 cross-ai-handoff），違規不再復發紀律
+
+#### `core/diagnose-remediate-protocol.md`（SSS S3 架構級條款化、v0.8.1 起手實證的終局）
+
+對應 multi-perspective 第十四循環理念守護者金礦「LLM 不可矯正方向性誤讀指認」+ dogfood signal #27 / #30 / #31 / #32 / #33 同源加固：
+
+- **spec-as-data 結構**（v0.8.1 doctor §3.7-§3.9 起手 → v0.9.0 propagate 所有 spec）：每 error code / 校驗項加四欄結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據要求）
+- **commit hook 走 vendor 邀請制**（signal #33 加固、結構強制升維）：charter 概念層寫紀律「commit 時 AI 標 F-mode 命中、failure_mode_log 必有對應 entry 否則退稿」；vendor 層由 claude-code.md / gemini-cli.md / cursor.md 各自實作（依 ai-vendor-onboarding §3 邀請制）
+- **真實 stdout 證據要求**（signal #31 加固）：verify report 每 ID PASS 必附 binary stdout、純文字 PASS 視同 violation-reflection §1 假宣告
+
+#### `core/adoption-lifecycle.md`（5 階段 lifecycle 完整化 + SSS S2 設計素材落地）
+
+對應 SSS S2 設計素材 + dogfood signal #16 vendor 升級 path：
+
+- **5 階段 adoption lifecycle**：全新接入（既有 QUICKSTART）/ 升版（既有 4 walkthrough + v0.8.2-to-v0.9.0 共 5）/ **棄用**（含「保留最後的溫柔」精神）/ **重新採用**（含 archive 報告恢復路徑）/ **vendor 升級 path 三路徑**（A 維持現狀 / B 開 issue / C AI 自驅修復、SSS S1 子集）
+- 對應 `tools/uninstall-spec.md`（新檔、`/charter-uninstall` 工具）
+
+#### `core/condition-mutability.md`（紀律本體、v0.7.1 frontmatter scaffold 條款化）
+
+對應 dogfood signal #11（v0.7.1 user 直接提議、v0.9.0 紀律本體）：
+
+- **三層 mutability**：IMMUTABLE-by-AI（user 親決）/ APPEND-ONLY（AI 可加新項、不可刪改既有）/ FULL-MUTABLE（AI 可改 / 刪 / 加，極少）
+- **3-strike 刪除協議**：連續 3 次 audit 命中該條款違反 → user 評估是否刪除（對齊 escalation-protocol）
+- **user-initiated consolidation**：多條條款重疊 → user 主動提議合併（AI 不可代決）
+- **AI 修訂權限分層**：對齊三層 mutability、AI 在不同層有不同修訂權
+
+### Added — 1 範本 + 1 preset + 1 spec 新檔
+
+#### `templates/agent-commons/reflection.md.tpl`（個體層反省範本、雙寫紀律執行載體）
+
+對齊既有 6 份 templates pattern（capsule / handoff / institutional-memory-entry / nextwork / domain-axioms / _role）— charter 既有 6 份 templates → **v0.9.0 加第 7 份**（reflection）。frontmatter 含 date / role / vendor / status / violations、§1 命中模式（按 charter F-mode 分類）/ §2 學習要點（next-time 紀律）/ §3 對應條款引用。
+
+#### `tools/profiles/essential.yaml`（新檔、3-5 條 core / < 5k init token）
+
+對應 **dogfood signal #28 progressive adoption + signal #26 init token cost ROI** 真槓桿。三 preset 軸（minimal / standard / strict）→ **四 preset 軸（essential / minimal / standard / strict）**。漸進升維路徑：essential → minimal → standard → strict（依專案成熟度遞進）。適用：探索期 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本。
+
+#### `tools/uninstall-spec.md`（`/charter-uninstall` 棄用工具設計）
+
+對應 SSS S2.1 設計素材落地：5 phase 棄用流程（三次確認 → archive 報告 → level 選擇 Soft/Full/Nuclear → charter clone 處理 → 結束報告）+「**保留最後的溫柔**」精神（棄用是有尊嚴的離別不是 lock-in）。
+
+### Changed — 既有條款 / spec 修訂
+
+#### `core/init-template.md §3.3.2` 七步驟 → **八步驟**
+
+加 **step 0「讀過去違反紀錄」**（在現有 step 1 之前）— 對應個體學習迴圈 §3 讀紀律 + dogfood signal #32（LLM 不查 templates）治本：
+
+- ReadFile 個體層 `roles/<role>/reflections/*.md`（最近 5 個）
+- ReadFile 集體層 `state/failure_mode_log.md`
+- ReadFile IM 層 `institutional-memory/*.md`（相關事件）
+- 不通則 self-instantiation 視為失敗、step 0 必過才能進 step 1
+- 違反 → 視同 F1（假宣告就位）
+
+#### `tools/doctor-spec.md §3.11`（新段、個體學習迴圈合規校驗）
+
+對齊 v0.8.1 §3.7-§3.9 四欄 spec-as-data 結構：
+- **W1101**：reflections/ 目錄缺
+- **W1102**：F-mode 命中無對應 reflection 個體層 entry（雙寫對應）
+- **E1103**：reflection frontmatter 不完整
+
+#### `tools/post-upgrade-verify-spec.md` 模式 B/C 補完
+
+v0.8.0 模式 A 既有 → v0.9.0 補：
+- **模式 B（升版 diff）**：跨多 release 累積遺漏自動偵測、列出新加 condition / 新範本 / 新 spec
+- **模式 C（pre-commit sync）**：commit message 標 charter_version 變動時自動跑 verify
+
+#### 三 preset yaml `charter_version "0.8.2" → "0.9.0"` + enabled 加 4 條新 condition
+
+- `minimal.yaml`：12/25（既有 9 + individual-learning-loop = true 對應 user 明示框架必備、其他 3 條預設 false）
+- `standard.yaml` / `strict.yaml`：22/25（既有 18 + 4 條新加全 true）
+
+### dogfood-driven hardening 第十七循環
+
+| signal / 議程 | 對應 v0.9.0 落地 |
+|---|---|
+| **#11** condition mutability 三層分類 | → ④ `core/condition-mutability.md` |
+| **#26** init token cost / ROI | → ⑤ `tools/profiles/essential.yaml` |
+| **#27** spec-driven 循環依賴 reality check | → ② `core/diagnose-remediate-protocol.md` |
+| **#28** progressive adoption | → ⑤ essential preset + 漸進升維路徑 |
+| **#30** LLM 砍 fork 內容（採用方文檔被砍 99%）| → ② diagnose-remediate-protocol（候選加固） |
+| **#31** LLM simulated 跑 slash command | → ② 真實 stdout 證據要求 |
+| **#32** LLM 不查 charter 既有 templates | → ① init-template §3.3.2 step 0 強制讀 |
+| **#33** failure-mode 自報紀律 LIVE 失效 | → ② commit hook vendor 邀請制 |
+| **#34** 個體學習迴圈紀律缺失（**user 明示框架必備**）| → ① `core/individual-learning-loop.md`（v0.9.0 議程第一順位）|
+
+→ **9 個 dogfood signal 同 release 條款化** — charter 紀律完整性收尾。
+
+### multi-perspective 第十四循環四方金礦完整落地
+
+| 金礦 | v0.9.0 落地 |
+|---|---|
+| 結構師：雙軸正交矩陣 | ① + ② 兩格升維（弱保證項升結構強制）|
+| 理念守護者：「LLM 不可矯正」方向性誤讀指認 | ① 雙寫紀律對齊「集體記憶才重要」+「**但個體記憶仍要寫 + 強制讀**」 |
+| 工程師：採用方層 vs 維護者層分離 | ③ adoption-lifecycle / uninstall-spec 採用方層、② commit hook 候選 vendor 層 |
+| 採用方：essential preset 真槓桿 | ⑤ 直接落地 |
+
+### 採用方影響
+
+| 項目 | 影響 | 處置 |
+|---|---|---|
+| 升版基本動作 | 改 profile.yaml `charter_version: "0.8.2"` → `"0.9.0"` | 改一行 |
+| init-template §3.3.2 step 0 強制讀 | 既有採用方升版時、若 reflections/ 目錄不存在 → 跑 doctor 抓 W1101 | 補建 reflections/ 目錄 + 跑 init 接班 AI 強制讀（個體學習迴圈 §3） |
+| doctor §3.11 W1101/W1102/E1103 | 既有採用方若沒寫過 reflection → 抓 W1101（友善 INFO 級警告）| 補第一個 reflection 即可（依 templates/agent-commons/reflection.md.tpl）|
+| essential preset 加入選擇 | 純擴增、既有採用方不影響 | 探索期專案可選 essential 起步 |
+| 4 preset 升維路徑 | 純擴增、既有採用方不影響 | 漸進升維：essential → minimal → standard → strict |
+| 條款 21 → 25 | 既有採用方升 charter_version 後、enabled 自動含 4 條新（依 preset）| ★ 屬可接受 BREAKING-LITE（v0.x 階段、純擴增、有完整 walkthrough）|
+
+→ **詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.2-to-v0.9.0.md`](./examples/upgrades/v0.8.2-to-v0.9.0.md)** — charter walkthrough 系列「6 個升版場景」收齊（v0.x 階段）。
+
+### v0.7.3 北極星雙邊閉環完成
+
+| 北極星紀律 | 對採用方角度（既有 ✅）| 對 AI 角度（v0.9.0 補完）|
+|---|---|---|
+| 不讓 user 記 | walkthrough + verify 工具 + spec-as-data | **個體學習迴圈**（individual-learning-loop）|
+| 回鍋無痛 | 跨多版本升版 walkthrough + 跨版本到最新 | **AI 跨 session 學習迴圈**（同上）|
+| 解決重複溝通 | charter 引導採用方 | **個體 / 集體記憶雙寫紀律**（同上）|
+| 培養魚塭 | 跨 vendor 純規範 framework | 不變（vendor-agnostic 維持）|
+
+對齊 `core/violation-reflection.md §2`「LLM 個體不重要、集體記憶才重要」設計方向 — v0.9.0 把此精神**完整化**：「設計成集體記憶才重要、**但個體記憶仍要寫 + 強制讀**」雙寫紀律。
+
+### SSS S1「AI 自治協作 + user 授權閘」啟動前置條件齊備
+
+| 前置條件 | ship 狀態 |
+|---|---|
+| ① individual-learning-loop（AI 不再犯）| ✅ v0.9.0 |
+| ② diagnose-remediate-protocol（spec-as-data 引導式紀律）| ✅ v0.9.0 |
+| → SSS S1 設計可開動 | **v0.9.x 真正設計起手** |
+
+### 連動更新
+
+- 三 preset yaml `charter_version: "0.8.2"` → `"0.9.0"` + enabled 加 4 條新 condition
+- 新 preset `tools/profiles/essential.yaml`（3-5 條 core）
+- ADOPTION.md（line 5/149/337 升 v0.9.0 + §3 條款表 21 → 25 + §5 加 essential preset + §12 加 v0.9.0 self-check + §13 加 v1.11 entry）
+- TUTORIAL.md（line 6 升 v0.9.0 + 變更歷史加 v1.11 entry）
+- QUICKSTART.md（Step 3 preset 表加 essential + 新增變更歷史段）
+- README.md（§核心通用條款加 4 條新 condition + §設計哲學第 6 條「個體學習迴圈 — 對 AI 角度的對稱補完」）
+- `.claude/commands/maintainer-load.md` 升 v0.9.0 + 加 v0.9.0 release entry 子段
+- 新檔 `examples/upgrades/v0.8.2-to-v0.9.0.md`（第 6 升版場景 walkthrough、charter walkthrough 系列收齊 6 個）
+
+### 嚴守向下兼容紀律對齊（v0.7.3 北極星 + v0.7.4 雙軌節奏）
+
+| 紀律 | v0.9.0 對齊狀態 |
+|---|---|
+| 純擴增 spec | ✅（4 條新加 + 1 範本 + 1 preset + 1 spec、既有 21 條不破壞）|
+| 既有條款不破壞 | ✅（21 條既有 condition 內容維持 + init-template 七 → 八步驟為純擴增）|
+| 既有採用方升版動作 | ⚠️ **可接受 BREAKING-LITE**（v0.x 階段、條款數 21 → 25 + init step 0 強制讀屬功能擴增、有完整 walkthrough + 純擴增 essential preset 不影響既有採用方）|
+| dogfood-driven hardening 雙軌節奏 | ✅（v0.8.0 MINOR slim → v0.8.1/v0.8.2 PATCH 連續 → v0.9.0 MINOR 完整、對齊 v0.7.4 雙軌節奏「頻繁小擴增 PATCH + 大方向新加條款用 MINOR」）|
+
+### multi-agent 並行 ship 第二次實證（multi-perspective prototype 演化）
+
+對齊 SSS S1 LIVE prototype 紀律延伸：
+
+| 階段 | 動作 | 對應紀律 |
+|---|---|---|
+| 1 | maintainer 寫 V0_9_0_DESIGN_BRIEF.md（~600 行對齊文件）+ 3 agent prompt | SSS S1 三軸 A「AI 互相自己工作」前置 |
+| 2 | user 開 3 個 Terminal 並行起 Claude Code、各貼 prompt | SSS S1 三軸 B「user 監督 → 授權閘」LIVE 實證 |
+| 3 | 3 agent 各自 fresh-head ship deliverable（A condition / B 實作 / C 採用方）| SSS S1 三軸 A 進階：parallel 而非互動 |
+| 4 | maintainer 整合 + ship release-level 文件 | maintainer 綜合 = SSS S1 三軸 B 授權閘執行 |
+
+→ 第二次實證後、SSS S1 設計素材累積完整、v0.9.x 條款化階段可開動。
+
+### 公開化前 v1.0 議程更新
+
+v0.9.0 ship 後、charter v1.0 公開化前剩議程：
+- LICENSE 決定（MIT / Apache 2.0 / 其他）
+- CryptoBot 改為引用框架（DISCIPLINE / IRON 引用 charter `core/*`）
+- IRON Pattern 抽到框架（評估通用 vs 領域）
+- ShopStack / Codex walkthrough 寫成實檔
+- v1.0 frozen 紀律精細化（結構穩定 + 條款集仍演化）
+- SSS S1 真正設計起手（前置條件 ① + ② v0.9.0 ship 完齊備）
 
 ---
 
