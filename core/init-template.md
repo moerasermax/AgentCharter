@@ -2,6 +2,9 @@
 
 > **狀態**：v0.5.0 — 升格為職責規範（v0.4 僅為「五步驟骨架」）
 > **位階**：core 通用條款。**抽象規範 + 具象化指引**雙層。
+> **保證強度**：結構強制（核心 step 5 doctor schema 驗證；step 7 self-instantiation 自驅屬單 actor 自律輔助）
+> **檢測時點**：init
+> **since**：v0.5.0（v0.5.10 加 step 5 / v0.7.0 加 step 6 PROVISIONAL/ACTIVE）
 
 ---
 

@@ -3,6 +3,9 @@
 > **狀態**：v0.1（自 v0.6.0 引入）
 > **位階**：core 通用條款。位階上位於 `init-template.md §3.3 self-instantiation` — 後者解「接班方半邊」（既有 vendor spec、AI 自具象化），本條款解「**新 vendor 廠商從未接過此角色**」 + 「**新角色誕生**」兩個前置場景。
 > **依存**：`init-template.md`（self-instantiation 是本條款 step 4 的執行端入口）、`role-separation.md`（角色概念層 spec 是邀請制 step 1 的產物）、`maintainer-discipline.md`（charter maintainer 的接入簽收職責）
+> **保證強度**：多 actor 互檢（邀請制四步驟、charter + vendor + 既有 vendor + maintainer 多方互檢）
+> **檢測時點**：init
+> **since**：v0.6.0
 
 ---
 

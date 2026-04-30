@@ -3,6 +3,9 @@
 > **狀態**：v0.1（本檔自 v0.5.2 引入，補完 v0.5.1 self-instantiation 之後的「退出方—轉移—接班方」全鏈）
 > **位階**：core 通用條款。
 > **依存**：`handoff-chain.md`（基底）、`init-template.md`（接班方入口）、`role-separation.md`（角色身份）、`escalation-protocol.md`（強化抽驗狀態）、`audit-rights.md`（抽驗權繼承）
+> **保證強度**：多 actor 互檢（強化抽驗繼承不解除）
+> **檢測時點**：handoff
+> **since**：v0.5.2
 
 ---
 

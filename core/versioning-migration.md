@@ -3,6 +3,9 @@
 > **狀態**：v0.1（自 v0.5.6 引入）
 > **位階**：core 通用條款。**框架對自身版本演化的紀律**，並規範已採用專案的升級流程。
 > **依存**：`charter-config.md`（schema 版本欄位）、`handoff-chain.md`（升級紀錄）、`audit-rights.md`（升級結果抽驗）
+> **保證強度**：多 actor 互檢（SemVer + 升版流程多步驟、user explicit 授權）
+> **檢測時點**：post-upgrade
+> **since**：v0.5.6（v0.7.5 §3.4 跨多版本升級子段）
 
 ---
 

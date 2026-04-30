@@ -3,6 +3,9 @@
 > **狀態**：v0.1（自 v0.5.5 引入）
 > **位階**：core 通用條款。**框架對「領域公理」這個槽位本身的規範** — 不規範內容，但規範它如何被定義、放在哪、與 core 紀律的優先序。
 > **依存**：`charter-config.md`（schema 入口）、`common-memory-root.md`（位置）、`evidence-first.md`（內容紀律）、`role-conflict-resolution.md`（衝突優先序）
+> **保證強度**：多 actor 互檢 + 結構強制（路徑 B 紀律「不可在 AI-DRAFTED 啟動 init」由 v0.8.0 三層雙重防禦升結構強制）
+> **檢測時點**：init + post-upgrade
+> **since**：v0.5.5（v0.7.1 雙路徑 / v0.8.0 三層雙重防禦）
 
 ---
 

@@ -3,6 +3,9 @@
 > **狀態**：v0.2（自 v0.7.2 加 §3.4 文檔層 sync checklist；v0.1 自 v0.5.8 引入）
 > **位階**：core 通用條款，但**位階特殊** — 對 framework 維護者生效，對採用方無關（採用方修自己的 charter copy 不適用本條款）
 > **依存**：`working-stack-discipline.md`（DRAFT 紀律也適用維護者）、`versioning-migration.md`（升版同步 spec 時機）、`structural-anti-fabrication.md`（commit message 須含證據）、`audit-rights.md`（PR review 是 maintainer 的 audit 機制）
+> **保證強度**：多 actor 互檢 + 結構強制（§3.4.2 文檔層 sync 由 v0.8.1 §3.10 W901 升結構強制）
+> **檢測時點**：runtime + post-upgrade
+> **since**：v0.5.8（v0.7.2 §3.4 文檔層 sync checklist / v0.8.1 §3.10 升工具層）
 
 ---
 

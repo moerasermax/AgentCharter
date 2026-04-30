@@ -2,6 +2,9 @@
 
 > **狀態**：v0.5.10（從 v0.1 起累積；v0.5.10 加 F6）
 > **位階**：core 通用條款。
+> **保證強度**：結構強制（F1-F6 偵測由抽驗方執行）
+> **檢測時點**：runtime
+> **since**：v0.1（v0.5.10 加 F6 / v0.7.0 加 F6 surface vs structural sub-pattern）
 
 ---
 

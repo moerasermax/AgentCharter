@@ -4,6 +4,9 @@
 > **位階**：core 通用條款。定義 `<common-memory-root>/_config/` 下兩份配置檔的 schema。
 >
 > **v0.5.0 變更**：原 `.agentcharter/` 配置目錄已合併至 `<common-memory-root>/_config/`，達成「**單一採用識別目錄**」設計。
+> **保證強度**：結構強制（架構級前提、schema 強制、配置驅動）
+> **檢測時點**：init
+> **since**：v0.5.0
 
 ---
 

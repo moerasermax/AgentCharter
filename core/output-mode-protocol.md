@@ -2,6 +2,9 @@
 
 > **狀態**：v0.1
 > **位階**：core 通用條款。
+> **保證強度**：單 actor 自律（模式切換、vendor-specific）
+> **檢測時點**：runtime
+> **since**：v0.1
 
 ---
 

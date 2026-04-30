@@ -3,6 +3,9 @@
 > **狀態**：v0.2（v0.6.0 加 §5.4 角色切換決策權）
 > **位階**：core 通用條款。
 > **依存**：`role-separation.md`（角色互鎖）、`escalation-protocol.md`（區隔對象）、`audit-rights.md`、`evidence-first.md`、`violation-reflection.md`、`common-memory-root.md`、`multi-role-tracking.md`（v0.6.0 加 §3.4 身份穩定承諾）
+> **保證強度**：多 actor 互檢（L0/L1/L2 三級階梯由抽驗方執行）
+> **檢測時點**：runtime
+> **since**：v0.5.3（v0.6.0 加 §5.4）
 
 ---
 

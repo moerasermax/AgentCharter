@@ -3,6 +3,9 @@
 > **狀態**：v0.1（自 v0.5.7 引入）
 > **位階**：core 通用條款。**處理 session 內中途累積與物理中斷再續**，是 v0.5.x 之前 charter 結構性盲區的補完。
 > **依存**：`handoff-chain.md`（結案級存檔）、`cross-ai-handoff.md`（換 AI 載體）、`failure-modes.md`、`evidence-first.md`、`common-memory-root.md`、`charter-config.md`
+> **保證強度**：結構強制（DRAFT 須是檔案、不為對話累積）
+> **檢測時點**：runtime + handoff
+> **since**：v0.5.7
 
 ---
 

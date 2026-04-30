@@ -3,6 +3,9 @@
 > **狀態**：v0.2（v0.6.0 加 §3.4 身份穩定承諾）
 > **位階**：core 通用條款。
 > **依存**：`role-separation.md`（基底原則）、`audit-rights.md`、`init-template.md`、`cross-ai-handoff.md`（區隔對象）、`failure-modes.md`
+> **保證強度**：結構強制（核心；§3.4 身份穩定承諾屬單 actor 自律輔助）
+> **檢測時點**：runtime
+> **since**：v0.5.4（v0.6.0 加 §3.4）
 
 ---
 

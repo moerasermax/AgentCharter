@@ -2,6 +2,9 @@
 
 > **狀態**：v0.1
 > **位階**：core 通用條款。
+> **保證強度**：結構強制（核心 VCP；directive header 等格式項屬單 actor 自律輔助）
+> **檢測時點**：runtime
+> **since**：v0.1
 
 ---
 

@@ -65,7 +65,7 @@ charter maintainer 接班完成，待下達議題。
 
 `maintainer-discipline.md §3` 規定三層執行機制（工具層 / 流程層 / commit 層）。本指令是「**接班便利化**」的延伸 — 不在 §3 列出的三層內，而是對應 §1 條文「DRAFT 須是檔案」紀律的反向（**接班讀檔**對應**累積寫檔**）。
 
-當前狀態（v0.8.1）：
+當前狀態（v0.8.2）：
 - 寫檔：自然執行（每次重要工作更新 `.claude_temp/` + commit）
 - 讀檔：本指令落實
 - 抽驗執行載體：`roles/auditor/_spec.md`（v0.6.0 概念層誕生）— 跑 spec sync check 走 fresh-context sub-agent 達成「他抽」屬性
@@ -88,5 +88,10 @@ charter maintainer 接班完成，待下達議題。
   3. `tools/doctor-spec.md §3.7` 校驗集第 2 條雙重否定措辭修（signal #19 YC v0.8.0 升版 LIVE 實證 Gemini 誤標 WARN）
   4. **dogfood-driven hardening 第十四循環**：multi-perspective sub-agent 反向校準（雙軸矩陣金礦 + 4 個 maintainer 校準點）— `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md`、commit `afcd330`
   5. **第十五循環**：signal #24 + #19 + SSS S3 起手 三 signal 同 LIVE session 條款化、第二日連續 ship 對齊雙軌節奏「頻繁小擴增 PATCH」精神
-- **v0.8.x PATCH 後續議程**：v0.8.2（SSS S3 propagate 到 post-upgrade-verify-spec + 雙軸矩陣 framing 第一段 README §設計哲學第 5 條）+ v0.8.3（SSS S3 propagate 到 init-spec + 21 條條款補雙軸標籤 + 「依賴 LLM 紀律的條款清單」公開派生）+ BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist
+- **v0.8.2「雙軸矩陣 framing 第一段」PATCH release**（2026-04-30 ship、multi-perspective 第十四循環結構師金礦落地）：
+  1. `README.md §設計哲學` 新加第 5 條「雙軸座標 — 哪些紀律靠誰守」 — 物理依據軸（強制 / 多 actor 互檢 / 單 actor 自律）+ 檢測時點軸（init / runtime / post-upgrade / handoff）+ 依賴 LLM 紀律的條款清單（弱保證項公開）+ 對齊「對未來修訂的紀律」三題新增雙軸對齊軸
+  2. 21 條 `core/*.md` 開頭加 blockquote 三新行（保證強度 / 檢測時點 / since）— 採用方執行邏輯零影響、純文檔層擴增
+  3. **dogfood-driven hardening 第十六循環**：multi-perspective 第十四循環結構師金礦落地、第二日連續 ship 對齊 v0.7.4 雙軌節奏「頻繁小擴增 PATCH」精神
+  4. 對齊 `core/violation-reflection §2`「LLM 個體不重要、集體記憶才重要」設計方向
+- **v0.8.x PATCH 後續議程**：v0.8.3（雙軸矩陣 framing 第二段 21 條條款 §X 細節 inline marker + 第三段 lint binary 派生「依賴 LLM 紀律的條款清單」+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構）+ BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist
 - **v0.9.0 MINOR 議程**：`core/adoption-lifecycle.md` 完整條款（全新 / 升版 / 棄用 / 重新採用 + vendor 升級 path 三路徑）+ `core/condition-mutability.md` 紀律本體 + `core/diagnose-remediate-protocol.md`（SSS S3 架構級條款化）+ essential preset (3-5 條 core、< 5k init token) + post-upgrade-verify 模式 B/C ship

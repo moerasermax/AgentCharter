@@ -6,7 +6,78 @@
 
 ## [Unreleased]
 
-（空 — v0.8.1 已釋出；下批次 v0.8.x PATCH 議程：v0.8.2 SSS S3 propagate 到 post-upgrade-verify-spec / 雙軸矩陣 framing 第一段（README §設計哲學第 5 條）；v0.8.3 SSS S3 propagate 到 init-spec / 雙軸矩陣第二段（21 條補雙軸標籤）；v0.7.6 BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist；v0.9.0 lifecycle.md + condition-mutability.md + diagnose-remediate-protocol.md + essential preset fresh head 設計）
+（空 — v0.8.2 已釋出；下批次 v0.8.x PATCH 議程：v0.8.3 雙軸矩陣 framing 第三段「依賴 LLM 紀律的條款清單」由 lint binary 派生 + SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構；v0.7.6 BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist；v0.9.0 lifecycle.md + condition-mutability.md + diagnose-remediate-protocol.md + essential preset fresh head 設計）
+
+---
+
+## [0.8.2] — 2026-04-30
+
+> **PATCH release — 雙軸矩陣 framing 第一段（README §設計哲學第 5 條）+ 21 條條款補雙軸標籤 blockquote 段**。**嚴守向下兼容**：純擴增 README + 條款開頭 blockquote、既有採用方升版只改 `charter_version: "0.8.1"` → `"0.8.2"`。**dogfood-driven hardening 第十六循環**（multi-perspective 第十四循環結構師金礦落地、第二日連續 ship 對齊雙軌節奏）。
+>
+> **Triggered by**：2026-04-30 LIVE session 接續 v0.8.1 ship — multi-perspective 評估第十四循環結構師金礦「**雙軸正交矩陣（物理依據 ⊥ 檢測時點）**」落地 ship。對齊 multi-perspective 綜合判斷「I. 立刻可採」軸第三項。
+
+### Added — 雙軸座標 framing（README §設計哲學第 5 條）
+
+#### `README.md` §設計哲學新加第 5 條「雙軸座標 — 哪些紀律靠誰守」
+
+對應 multi-perspective 第十四循環結構師金礦顯化：
+
+- **物理依據軸**：結構強制（強）/ 多 actor 互檢（中）/ 單 actor 自律（弱）三層保證強度
+- **檢測時點軸**：init / runtime / post-upgrade / handoff
+- **依賴 LLM 紀律的條款清單**（弱保證項公開）— 6 條典型條款 + 加固路徑
+- **對齊「對未來修訂的紀律」三題**新增雙軸對齊軸
+
+對齊 `core/violation-reflection §2`「LLM 個體不重要、集體記憶才重要」設計方向 — 不以「物理強制 LLM」為解、以「sandbox + log + 集體演化」為解。
+
+### Added — 21 條 core 條款補雙軸標籤 blockquote 段
+
+對 21 條 `core/*.md` 開頭 blockquote group 加三新行：
+- `> **保證強度**：<X>` — 結構強制 / 多 actor 互檢 / 單 actor 自律（混合則標主）
+- `> **檢測時點**：<Y>` — init / runtime / post-upgrade / handoff（多選列出）
+- `> **since**：<Z>` — 引入版本 + 重要演化點
+
+對採用方執行邏輯零影響、純文檔層擴增；提供 user 看 condition 檔開頭即知保證強度的能力（對齊 v0.7.3 北極星「不讓 user 記」+「採用方知道哪些紀律靠誰守」精神）。
+
+### dogfood-driven hardening 第十六循環
+
+| Signal / 議程 | 內容 | 處置 |
+|---|---|---|
+| **multi-perspective 結構師金礦落地** | 雙軸正交矩陣（物理依據 ⊥ 檢測時點）顯化 | README §設計哲學第 5 條 + 21 條條款 blockquote 段 |
+| **multi-perspective 採用方金礦落地（弱保證項清單公開）** | 「依賴 LLM 紀律的條款清單」採用方知情權 | README §設計哲學第 5 條第三子段 |
+| **SSS S3 起手實證延伸** | spec-as-data 結構（v0.8.1 ship）+ 雙軸標籤（v0.8.2 ship）共建設計層升維 | 為 v0.9.0 SSS S3 架構級條款化（diagnose-remediate-protocol.md）做基礎 |
+
+### 採用方影響
+
+| 項目 | 影響 | 處置 |
+|---|---|---|
+| 升版基本動作 | 改 profile.yaml `charter_version: "0.8.1"` → `"0.8.2"` | 改一行 |
+| README + 21 條條款 blockquote 段擴增 | spec 內容擴增、不影響採用方執行邏輯 | 純文檔層擴增、零動作 migration |
+
+→ **既有採用方升 v0.8.1 → v0.8.2**：純改 `charter_version` 一行。
+
+### 連動更新
+
+- 三 preset yaml `charter_version: "0.8.1"` → `"0.8.2"`
+- ADOPTION.md（line 5 / 149 / 336）+ TUTORIAL.md / `.claude/commands/maintainer-load.md` 升 v0.8.2
+- ADOPTION.md §13 / TUTORIAL.md 變更歷史加 v1.10 entry
+- maintainer-load.md 加 v0.8.2 release entry 子段
+
+### SSS S3 v0.8.x 後續議程（剩餘段）
+
+對應 multi-perspective 評估綜合判斷 §3.4「五軸分類」I 軸「立刻可採」剩餘段：
+
+- **v0.8.3 PATCH**：雙軸矩陣 framing 第三段「依賴 LLM 紀律的條款清單」由 lint binary 派生（maintainer-only tool、charter repo CI、不影響採用方）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構（對齊 v0.8.1 doctor-spec §3.7-§3.9 pattern）
+
+### 嚴守向下兼容紀律對齊
+
+| 紀律 | v0.8.2 對齊狀態 |
+|---|---|
+| 純擴增 spec 層 + 文檔層 | ✅（README 新加第 5 條 + 21 條條款 blockquote 段）|
+| 既有條款不破壞 | ✅（21 條 condition 不增不減；架構級概念 12 個維持）|
+| 既有採用方升版動作 | ✅（純改 `charter_version` 一行；無新 ERROR/WARN）|
+| dogfood-driven hardening 連續循環 | ✅（第十四（multi-perspective）+ 第十五（v0.8.1）+ 第十六（v0.8.2）三循環同 24-48 hr 內、對齊 v0.7.4 雙軌節奏「頻繁小擴增 PATCH」）|
+
+對應 v0.7.4 雙軌節奏「**頻繁小擴增 PATCH** + **大方向新加條款用 MINOR**」紀律 — v0.8.2 純 PATCH 範圍、SSS S3 架構級條款化（`diagnose-remediate-protocol.md`）留 v0.9.0 MINOR。
 
 ---
 

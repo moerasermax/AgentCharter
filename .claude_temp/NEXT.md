@@ -394,7 +394,7 @@ framework 永久維持「**純規範**」位階。
 > 3. 不可只在腦中知道做完了、必須回頭來標
 > → 對齊 `working-stack-discipline §1` DRAFT 紀律 + `maintainer-discipline §3.4.3` 內部追蹤層 sync
 
-- **新議程候選 — v0.8.x PATCH 雙軸矩陣 framing（multi-perspective 評估第十四循環、結構師金礦）**（2026-04-30 LIVE capture）：對應 `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md` 結構師金礦 — 顯化 charter 條款的雙軸正交分類：
+- ~~**新議程候選 — v0.8.x PATCH 雙軸矩陣 framing（multi-perspective 評估第十四循環、結構師金礦）**~~ ✅ **v0.8.2 部分完成**（2026-04-30）：第一段 ship — `README.md §設計哲學`新加第 5 條「雙軸座標 — 哪些紀律靠誰守」+ 21 條 `core/*.md` 開頭加 blockquote 三新行（保證強度 / 檢測時點 / since）。**剩 v0.8.3 完成**：第二段「21 條條款 §X 細節 inline marker」（如每段條文標 `（保證強度：X、時點：Y）`）+ 第三段「依賴 LLM 紀律的條款清單」由 lint binary 派生（maintainer-only）。原候選紀錄保留：對應 `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md` 結構師金礦 — 顯化 charter 條款的雙軸正交分類：
   - **物理依據軸**：結構強制 / 多 actor 互檢 / 單 actor 自律
   - **檢測時點軸**：init / runtime / post-upgrade / handoff
   - **目標**：每條 charter 條款補 (物理依據, 檢測時點) 雙標籤、顯化「**弱保證項 = 單 actor 自律格**」（真正需要加固的條款）— 加固路徑優先「升級到多 actor 互檢」、不走 binary（保 vendor-agnostic）
@@ -481,6 +481,22 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.8.2 release（2026-04-30）— 雙軸矩陣 framing 第一段（multi-perspective 結構師金礦落地）
+
+✅ **dogfood-driven hardening 第十六循環**（multi-perspective 第十四循環結構師金礦落地、第二日連續 ship）：
+
+✅ **新增**：
+- `README.md §設計哲學` 新加第 5 條「雙軸座標 — 哪些紀律靠誰守」 — 物理依據軸（強制 / 多 actor 互檢 / 單 actor 自律）+ 檢測時點軸（init / runtime / post-upgrade / handoff）+ 依賴 LLM 紀律的條款清單（弱保證項公開）+ 對齊「對未來修訂的紀律」三題新增雙軸對齊軸
+- 21 條 `core/*.md` 開頭加 blockquote 三新行（保證強度 / 檢測時點 / since）— 採用方執行邏輯零影響、純文檔層擴增
+
+✅ **連動更新**：三 preset yaml `0.8.1` → `0.8.2` + ADOPTION/TUTORIAL/maintainer-load 升版號 + ADOPTION §13 v1.10 + TUTORIAL 變更歷史 v1.10 + CHANGELOG v0.8.2 段 + STATUS Version 軌跡 v0.8.2 row + STATUS frontmatter「當前版本」+ Git tags
+
+✅ **議程位階**：multi-perspective 第十四循環結構師金礦落地 — 雙軸正交矩陣（物理依據 ⊥ 檢測時點）顯化進 charter 條款體系；對齊採用方金礦「essential preset 才是真槓桿」+ 「依賴 LLM 紀律的條款清單」採用方知情權 + 理念守護者金礦「LLM 不可矯正方向性誤讀」設計方向
+
+✅ **嚴守向下兼容**：純擴增 spec 層 + 文檔層、採用方升版只改 `charter_version` 一行；零執行邏輯影響
+
+✅ **後續議程**：v0.8.3 PATCH = 雙軸矩陣 framing 第二段（21 條條款 §X 細節 inline marker）+ 第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec
 
 ### v0.8.1 release（2026-04-30）— SSS S3 起手實證 + dogfood signal #24 升工具層 + #19 順手修
 
