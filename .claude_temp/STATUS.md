@@ -1,8 +1,8 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-05-01（台灣時間，post-v0.9.1 + UPGRADE.md ship snapshot）
-> **當前版本**：v0.9.1 + UPGRADE.md（**doctor Gap 偵測 + 互動式引導 + Doctor 角色概念層 + 升版入口文件**）
-> **Working tree 狀態**：✅ 全部 committed + pushed（`c20b09a`）
+> **更新時間**：2026-05-01（台灣時間，post-v0.9.4 snapshot）
+> **當前版本**：v0.9.4（**checkpoints_handler.sh 整合系列完成 — 橋接層 vs 邏輯層架構確立**）
+> **Working tree 狀態**：✅ 全部 committed + pushed（`9bd0b8b`）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔為 v0.7.5 release 前 snapshot（含深度 sweep）
 > **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` @ `0cf5494` (待打) / `v0.8.2` @ `a2adecf` (待打) / `v0.9.0` (待打)
@@ -13,6 +13,10 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| **v0.9.4 addendum** | `9bd0b8b` | **docs — 橋接層 vs 邏輯層架構說明**：`roles/pm/gemini-cli.md §3.7` 開頭加「設計架構」段（slash command = 橋接層 vendor 特定 / checkpoints_handler.sh = 邏輯層 vendor 中立共用）+ `tools/vendor/commons/checkpoints_handler.sh` header 同步定位說明 |
+| **v0.9.4** | `4d456cc` | **refactor — checkpoints_handler.sh 移至 tools/vendor/commons/**：handler 為 vendor 中立 bash script，從 `tools/vendor/gemini/` 移至 `tools/vendor/commons/`；所有引用路徑同步更新（gemini-cli.md + CHANGELOG/ADOPTION/TUTORIAL）|
+| **v0.9.3** | `2b7efc8` | **PATCH — checkpoints_handler.sh 自動版本偵測 + 升版引導**：`roles/pm/gemini-cli.md §3.7 Step 1`（v1.3→v1.4）三分支版本偵測（MISSING → canonical 自動安裝 / STALE → grep mapping.yaml 偵測 + user 確認後自動覆蓋升級 / CURRENT → 繼續）+ `tools/vendor/gemini/checkpoints_handler.sh` canonical v2.0 新檔（讀 mapping.yaml 取 common_memory_root，fallback management/history/）。設計原則「框架自動引導、不靠 maintainer 說明升版步驟」|
+| **v0.9.2** | `3465677` | **PATCH — PM init checkpoints 後置介紹 + 文檔層補 v0.9.1 sync**（dogfood signal #3 落地）：`roles/pm/gemini-cli.md §3.7`（v1.3）PM init step 8 後置主動介紹 `/checkpoints` 存檔機制 + `.gemini/commands/checkpoints.toml` 標準範本（save/load/status/config 四流程）+ 跨 AI 對應表。外部修正：`~/.gemini/checkpoints_handler.sh` 路徑改讀 mapping.yaml → common_memory_root（dogfood signal #3 同源、vendor 工具應 ⊥ 專案結構）。文檔層補 v0.9.1 docs debt：CHANGELOG/ADOPTION/TUTORIAL |
 | **UPGRADE.md** | `c20b09a` | **docs — 升版入口文件**：PATCH vs MINOR 兩路徑決策表 + PATCH 2 步流程 + MINOR walkthrough 索引表 + maintainer 維護說明。採用方 30 秒看懂走哪條路；PATCH 不需新 walkthrough、maintainer 只改表格一行 |
 | **v0.9.1** | `1d5b7b3` | **PATCH — doctor Gap 偵測 + 互動式引導 + Doctor 角色概念層**（dogfood signal #36 條款化、dbSDK LIVE 公司專案診斷、第十八循環）：`tools/doctor-spec.md §2.1 模式 C`（六步驟互動式 Gap 遷移流程 + Gap 分類表）+ `tools/doctor-spec.md §3.12` W1201-W1205 五 Warning 碼（平行獨語 / handoffs 空 / capsules 空 / institutional-memory 空 / failure_mode_log 缺）+ `tools/init-spec.md Phase 3.5`（agent-commons scaffold 完整預建 + 疑似 AI 工作產物偵測提示）+ `tools/post-upgrade-verify-spec.md §升版後 Doctor 角色建立提示` + `roles/doctor/_spec.md`（System Doctor 角色概念層新檔）。**嚴守向下兼容**：純擴增 tools/spec/roles 層、採用方只需改 `charter_version` 一行 |
 | **v0.9.0** | （待 commit）| **MINOR — 紀律完整性 + AI 自我覺察升維（charter 完成 v0.7.3 北極星雙邊閉環）** — 4 條新加 condition（21 → 25 條 condition、12 → 13 個架構級概念）：(1) `core/individual-learning-loop.md`（**第 13 個架構級概念、接班場景四軸補完的第 4 軸**、user 明示「框架必備」signal #34 直接條款化）— 個體 AI 跨任務 / 跨 session 學習迴圈、雙寫紀律（個體 reflections + 集體 failure_mode_log）+ 讀紀律（init step 0 強制讀過去違反紀錄）+ 跨 session 學習迴圈接班 AI 紀律繼承；(2) `core/diagnose-remediate-protocol.md`（SSS S3 架構級條款化、v0.8.1 起手實證的終局）— spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據）+ commit hook vendor 邀請制加固（signal #33）+ 真實 stdout 證據要求（signal #31）；(3) `core/adoption-lifecycle.md`（5 階段 lifecycle 完整化）— 全新接入 / 升版 / 棄用 /  重新採用 / vendor 升級 path 三路徑 A/B/C；(4) `core/condition-mutability.md`（紀律本體、v0.7.1 frontmatter scaffold 條款化、signal #11）— 三層 mutability + 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層。新範本 `templates/agent-commons/reflection.md.tpl`（charter 既有 6 份 → 7 份、雙寫紀律執行載體）+ 新 preset `tools/profiles/essential.yaml`（signal #28 progressive adoption + signal #26 ROI 真槓桿、3-5 條 core / < 5k init token、漸進升維路徑 essential → minimal → standard → strict）+ 新 spec `tools/uninstall-spec.md`（`/charter-uninstall` 5 phase 棄用流程、保留最後的溫柔精神）+ `core/init-template §3.3.2` 七步驟 → 八步驟（加 step 0 讀過去違反紀錄、signal #32 治本）+ `tools/doctor-spec.md §3.11` 個體學習迴圈合規（W1101/W1102/E1103 四欄 spec-as-data 對齊 v0.8.1 §3.7-§3.9）+ `tools/post-upgrade-verify-spec.md` 模式 B/C 補完（升版 diff + pre-commit sync）+ 三 preset yaml 升 0.8.2 → 0.9.0 + enabled 加 4 條（minimal 12/25、standard/strict 22/25、essential 5/25）。**dogfood-driven hardening 第十七循環**：9 個 dogfood signal 同 release 條款化（#11/#26/#27/#28/#30/#31/#32/#33/#34）、charter 紀律完整性收尾。**multi-perspective 第十四循環四方金礦完整落地**（結構師雙軸正交 + 理念守護者「LLM 不可矯正」方向性誤讀指認 + 工程師採用方層 vs 維護者層分離 + 採用方 essential preset 真槓桿）。**multi-agent 並行 ship 第二次實證**（A condition / B 實作 / C 採用方 + maintainer 整合）。**v0.7.3 北極星雙邊閉環完成**（採用方角度 ✅ 既有 + AI 角度 ✅ v0.9.0 補完）+ **SSS S1「AI 自治協作 + user 授權閘」啟動前置條件齊備**（① + ② ship 完、v0.9.x 真正設計可開動）。**嚴守向下兼容紀律 BREAKING-LITE**（v0.x 階段、條款數 21 → 25、init step 0 強制讀屬功能擴增、有完整 walkthrough `examples/upgrades/v0.8.2-to-v0.9.0.md`、charter walkthrough 系列「6 個升版場景」收齊） |
@@ -246,79 +250,31 @@ project-root/
 
 ## 下次接班起點
 
-### 🔴 重啟前 working-tree snapshot（2026-04-28 post-v0.7.0 release 收尾、待 commit）
+### ✅ v0.9.4 working-tree snapshot（2026-05-01，clean）
 
-> 本 session 完成 **v0.7.0 大批次條款修訂**（公司接入失敗 → 5 個 dogfood signal 一次處理）。auditor 抽驗已通過（ERROR 0 / WARN 3 / INFO 2，W001+W003 已在本檔 + NEXT.md 收尾、W002 已修補）。**待 user 授權後 commit + tag + push**。
-> 接班 AI 第一輪先 `git status` + `git diff` 看實況，再對齊本段。
+> Working tree 全部 committed + pushed（`9bd0b8b`）。v0.9.2〜v0.9.4 為 checkpoints_handler.sh 整合系列（三 PATCH）：v0.9.1 後 session 收尾、v0.9.2 PM init 後置介紹 + docs debt、v0.9.3 自動版本偵測、v0.9.4 移至 commons/ + 橋接層 vs 邏輯層說明。
 
-#### 異動清單（v0.7.0 大批次）
+#### v0.9.2〜v0.9.4 異動摘要
 
-**新檔**：
-| 檔 | 動機 |
-|---|---|
-| `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md` | 公司接入失敗一手資料 audit（7 ERROR + 5 WARN + 4 pattern + 5 signal 對應）— v0.7.0 修訂依據 |
-| `templates/role-invocation-prompt.md.tpl` | （v0.6.1 後 session 累積、v0.7.0 併入）通用骨架 |
+| 版本 | 主要異動檔 | 內容 |
+|---|---|---|
+| v0.9.2 | `roles/pm/gemini-cli.md` §3.7（v1.3）/ CHANGELOG / ADOPTION / TUTORIAL | PM init step 8 後置介紹 `/checkpoints` + `.gemini/commands/checkpoints.toml` 標準範本（4 流程）+ 跨 AI 對應表；外部修正 `~/.gemini/checkpoints_handler.sh` 路徑改讀 mapping.yaml（dogfood signal #3 落地）；文檔層補 v0.9.1 docs debt |
+| v0.9.3 | `roles/pm/gemini-cli.md` §3.7 Step 1（v1.4）/ `tools/vendor/gemini/checkpoints_handler.sh` 新檔 / CHANGELOG / ADOPTION / TUTORIAL | 三分支版本偵測（MISSING/STALE/CURRENT）+ canonical v2.0 handler（讀 mapping.yaml → common_memory_root，fallback management/history/）|
+| v0.9.4 | `tools/vendor/commons/checkpoints_handler.sh`（從 gemini/ 移來）/ `roles/pm/gemini-cli.md` §3.7 開頭架構段 / CHANGELOG / ADOPTION / TUTORIAL | handler 移至 commons/ 明示 vendor 中立；§3.7 加橋接層（slash command）vs 邏輯層（handler）架構說明 |
 
-**核心條款修訂**：
-| 檔 | 修訂 |
-|---|---|
-| `core/charter-config.md §3` | mapping schema 加 namespace 註明（`shared.*` 不是檔案路徑）+ §9 違反處置加一行 |
-| `core/multi-role-tracking.md §3.4.4 + §3.4.5` | init 階段自激活 = F1 + 三項對照表 + v0.3 變更歷史 entry |
-| `core/init-template.md §3.3.2 step 6 + step 7` | Status PROVISIONAL/ACTIVE 二態 + slash command 引用紀律段 + §3.3.5 違反處置加兩行 + v0.7.0 變更歷史 entry |
-| `core/failure-modes.md F6` | sub-pattern「surface-level vs structural-level」+ §5 公司專案 entry + v0.7.0 變更歷史 entry |
-| `tools/doctor-spec.md §2.1 + §3.7 + §8` | minimal 必驗集擴充 + 新增 §3.7 結構頂層 + namespace 校驗（E601〜E605）+ v0.7.0 實作節奏 entry |
-| `tools/init-spec.md §1 + Phase 4 + Phase 4.x + Phase 5 + Phase 5b + §9` | 目標 5 點 + Phase 4 紀律強化 + Phase 4.x slash 引用紀律 + Phase 5 加 §3.7 校驗 + **新增 Phase 5b 邀請第二 context 抽驗** + v0.7.0 實作節奏 entry |
-| `roles/validator/_spec.md §1 + §3.6 + §10` | 職能擴張涵蓋 init 階段抽驗 + 新增 §3.6 段 + v0.2 變更歷史 entry |
-| `roles/auditor/_spec.md §8 + §9` | 加 validator 對稱性反向引用 + v0.2 patch 變更歷史 entry |
+#### 當前狀態一覽
 
-**連動更新**：
-| 檔 | 修訂 |
-|---|---|
-| `tools/profiles/{minimal,standard,strict}.yaml` | charter_version 0.6.1 → 0.7.0 + enable_modes 全部含 F6 |
-| `templates/agent-commons/_role.md.tpl` | 加 Status PROVISIONAL/ACTIVE 二態說明 |
-| `CHANGELOG.md` | v0.7.0 段（大批次紀錄、5 signal 對應表、採用方影響、第五循環說明）|
-| `ADOPTION.md` | line 5 charter v0.7.0 + §13 v1.3 entry（含採用方升 v0.7.0 注意事項）|
-| `TUTORIAL.md` | line 6 charter v0.7.0 + 變更歷史 v1.3 entry |
-| `QUICKSTART.md` | Step 2 prompt 升級（紀律警告 + Phase 5b + PROVISIONAL）+ Step 4 兩段升級（含 PROVISIONAL 紀律）— v0.6.1 後 Step 4 重構也併入 |
-| `.claude/commands/maintainer-load.md` | 當前狀態 v0.6.1 → v0.7.0 + 加 Phase 5b 對稱說明 |
+- **25 條 core 條款** / 1 條 maintainer-only / 4 preset（essential 5 / minimal 12 / standard 22 / strict 22）
+- **13 個架構級概念** / dogfood signal #1〜#36 累積（#36 最新，v0.9.1 完成）
+- **SSS 級議程**：S1（AI 自治協作 + 授權閘）啟動前置條件齊備；S2 lifecycle 設計素材保留；S3 引導式紀律 v0.9.0 架構級落地完成
+- **採用案例**：YC_AIAgentCrew（v0.8.0+，HANDOFF_16 LIVE 完美）/ 公司 dbSDK（v0.9.0+，進行中）/ CryptoBot（原始案例）
 
-**.claude_temp/ 收尾**：
-| 檔 | 修訂 |
-|---|---|
-| `.claude_temp/STATUS.md` | 本檔（v0.7.0 release 收尾 snapshot）|
-| `.claude_temp/NEXT.md` | 已完成段加 v0.7.0 / ⚪ 段移除 #3/#4/#5（已條款化）/ 公司接入段更新狀態 |
+#### 下一步優先議題
 
-#### 觸發脈絡（這個 session 在做什麼）
-
-公司專案接入啟動 → user 拿 QUICKSTART Step 2 範本 prompt 給 Gemini（含 `<YOUR_AXIOM>` / `<SHORT_NAME>` placeholder 未填具體值）→ Gemini 自編 DBSDK + 寫 schema 「指向 dbsdk.md」+ 自簽 PM ACTIVE + 寫死 `C:/Users/YCLIN/.agentcharter/...` 絕對路徑 + 跳過 doctor 驗證即回報「成功」→ user 自驗 6 條 PowerShell 揭露 7 ERROR + 5 WARN 結構性失敗 → 共同決策：砍掉重來 / 不重命名 namespace 走雙重防禦 / v0.7.0 MINOR 大批次 → maintainer + auditor 完成本 release。
-
-關鍵結論（給接班 AI 對齊用）：**v0.7.0 = 採用方半邊「自抽自驗」結構性盲區封閉版本**（Phase 5b + validator §3.6）對稱於 v0.6.0 的 maintainer 半邊（auditor）。完整 audit 紀錄在 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`。
-
-#### auditor 抽驗結果（v0.7.0 release 前 spawn fresh-context sub-agent）
-
-通過 11 / ERROR 0 / WARN 3 / INFO 2：
-- **W001** 已修：STATUS.md / NEXT.md 缺 signal #7/#8 紀錄（本 P6 更新中已補）
-- **W002** ✅ 已修：validator §3.6 抽驗集 #5 用詞補全 `working_stack_discipline.shared.draft_context`
-- **W003** 已修：NEXT.md 公司接入段狀態更新（本 P6 更新中已改）
-- **INFO-1**：signal #6 第二次同類仍未收束、不在 v0.7.0 處理範圍（已記入 NEXT.md ⚪ 留下批次）
-- **INFO-2**：README.md 未動是合理、ADOPTION/TUTORIAL v1.3 entry 升版引導已涵蓋（不阻擋 release）
-
-新 signal #9 候選（auditor 本次發現）：「release 收尾步驟（STATUS / NEXT 更新）放到 commit 之後 = 容易在 release 當下漏」— 已記入 NEXT.md ⚪ 留下批次累積。
-
-#### 公司專案接入後續狀態
-
-- ❌ **第一次接入失敗**（v0.6.1 試）：完整 audit 在 `.claude_temp/COMPANY-ONBOARDING-FAILURE-AUDIT.md`
-- ✅ **公司專案 agent-commons + .gemini/commands 已 user 砍掉**（user 跑 PowerShell `Remove-Item -Recurse -Force agent-commons` + 移除 charter-init.toml）
-- ⏳ **第二次接入準備中**（待 v0.7.0 release 後）：採用 v0.7.0 加固後的 prompt 範本（QUICKSTART Step 2 含 PROVISIONAL + Phase 5b 紀律提示）+ user 親自分階段指揮 + 預先填好領域公理具體值
-- 🟡 **dbsdk 領域公理內容**：user 尚未寫；下次接入前需 user 先給 dbsdk 是什麼產品 + 領域風險 → 寫 dbsdk.md 鐵律草稿
-
-#### 接班指引（關於本 snapshot）
-
-1. 第一輪先 `git status` + `git diff` 看 working tree 實況（本 session 修了 ~15 個檔）
-2. 對齊本段「異動清單（v0.7.0 大批次）」+「auditor 抽驗結果」+「公司專案接入後續狀態」
-3. 若使用者問「我們上次做到哪」→ 一句話答：「v0.7.0 條款修訂完成、auditor 抽驗通過 / WARN 已修 / 待 user 授權 commit + tag + push；公司專案接入失敗已歸納 5 個 signal 條款化、待 v0.7.0 release 後第二次接入嘗試」
-4. **若使用者授權 commit / tag / push** → 走 P5（標準 release 流程）：commit message 結構參照 CHANGELOG v0.7.0 段；tag v0.7.0；push origin main + v0.7.0 tag
-5. **若使用者要第二次接入公司專案** → 不重蹈覆轍，分階段指揮（不要再用單一 prompt 跑完所有事）；先 user 寫 dbsdk.md 鐵律草稿、再用升級後的 QUICKSTART Step 2 prompt（含 Phase 5b 觸發 + PROVISIONAL 紀律）、Phase 5b 抽驗結果為 release 前最後 gate
+1. **BOOTSTRAP.md 入口檔**（🔴 高優先、v0.7.6 議程持續延後）— 初次採用方 30 秒入口；UPGRADE.md 補了升版入口，初次採用入口仍缺
+2. **signal #35 候選累積**（🟡 觀察中）— init-template step 6「自代升 ACTIVE + 自寫 Sign-in Log」紀律 LIVE 仍被違反；1 次觀察，待 ≥3 次或 user 授權跳門檻；候選加固與 signal #33 同軌（commit hook vendor 邀請制）
+3. **v0.8.3 剩餘議程**（🟡 待排）— 雙軸矩陣 framing 第二段（21 條條款 §X inline marker）+ 第三段（lint binary 派生弱保證項清單）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec
+4. **SSS S1 設計深化**（🟢 長期）— 前置條件齊備，需 fresh head session 開始概念 framing 文件
 
 ---
 
@@ -326,18 +282,17 @@ project-root/
 
 ✅ 核心條款覆蓋率盤點 — 全部完成（v0.5.2〜v0.5.6 共 5 條，commit `bfef9b0`）
 ✅ **YC_AIAgentCrew 接入完成（2026-04-28）** — 第二個非 CryptoBot 採用案例
-✅ **大工程批次三段式 release 完成（2026-04-28）** — v0.5.10 (`6dd3eda`) → v0.6.0 (`9493814`) → v0.6.1 (`72caaee`)；含 dogfood-driven hardening 四循環（signal #4 / signal #5 / 邀請制 pattern / auditor 第一次實戰）；全部 push 到 GitHub remote
-✅ **auditor 角色第一次實戰落地（v0.6.1）** — fresh-context sub-agent 跑 cross-reference + spec sync audit 抓出 v0.6.0 文檔層 sync 漏，**v0.6.0 引入 auditor 的設計價值即時驗證**
-✅ **v0.7.0 大批次條款修訂完成（2026-04-28）** — 公司專案接入失敗大批次封閉、5 個 dogfood signal 一次處理、採用方半邊「自抽自驗」結構性盲區封閉（Phase 5b + validator §3.6）對稱於 maintainer 半邊（auditor）；架構級概念第 12 個誕生；**dogfood-driven hardening 第五循環**
+✅ **大工程批次三段式 release 完成（2026-04-28）** — v0.5.10 → v0.6.0 → v0.6.1；dogfood-driven hardening 四循環；全部 push
+✅ **v0.7.0〜v0.9.4 共 18 個版本完成（2026-04-28〜2026-05-01）** — 25 條 condition / 13 個架構級概念 / dogfood signal #1〜#36 / SSS S1/S2/S3 架構級議程啟動 / checkpoints_handler.sh vendor commons 落地
+✅ **v0.9.0 北極星雙邊閉環完成** — 採用方角度（既有）+ AI 角度（individual-learning-loop）對稱補完
+✅ **UPGRADE.md 升版入口文件 ship（2026-05-01）** — 採用方 30 秒決策表
 
 ### 下一階段焦點
 
-1. **🔴 v0.7.0 commit + tag + push**（P5）— 等 user 明示授權後走標準 release 流程
-2. **🔴 公司專案第二次接入** — v0.7.0 release 後；分階段指揮、不重蹈「單一 prompt 跑完所有事」覆轍；先 user 寫 dbsdk.md 鐵律草稿、再用升級後的 QUICKSTART Step 2 prompt
-3. **🟡 dogfood signal #6 候選累積**（v0.7.0 不處理、留下批次）— 若 v0.7.0 release 後再現第三次同類 → 觸發 maintainer-discipline §2.2 表精化評估
-4. **🟡 新 signal #9 候選累積**（auditor 本次發現）— 「release 收尾步驟（STATUS/NEXT）容易漏」；累積 ≥3 次再條款化
-5. **未解 thread**：使用者提到「另一個專案接入很棒!!!」但沒展開哪個專案 / 哪面向 — 下次可詢問
-6. **roles/engineer Gemini vendor spec / Claude PM vendor spec / auditor + validator vendor 層**（A1 公理進一步覆蓋；走 `ai-vendor-onboarding §3` 邀請制）— 視需求
+1. **🔴 BOOTSTRAP.md 入口檔** — 初次採用方入口缺口（v0.7.6 議程）
+2. **🟡 signal #35 累積觀察** — step 6 紀律 LIVE 仍被違反（commit hook 候選）
+3. **🟡 v0.8.3 剩餘** — 雙軸矩陣 framing 第二/三段 + SSS S3 propagate
+4. **🟢 SSS S1 設計深化** — 前置條件齊備，fresh head 可開動
 
 ### 跨 session 接班指引
 
