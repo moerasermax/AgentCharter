@@ -315,6 +315,12 @@ prompt = """
 5. run_shell_command("bash ~/.gemini/checkpoints_handler.sh commit_save <NEXT_N>")
    解析 GIT_HASH
 6. 回報：「✅ HANDOFF_<NEXT_N>.md 存檔完成，git: <GIT_HASH>」
+7. 詢問 user：「今日任務是否已結束？是否將所有 ACTIVE 角色降為 PROVISIONAL？（y 確認交班 / 其他略過）」
+   - user 回應 y → run_shell_command("bash ~/.gemini/checkpoints_handler.sh deactivate_all_active")
+     解析輸出：DEACTIVATED_COUNT / DEACTIVATED 列表 / GIT_HASH
+     DEACTIVATED_COUNT > 0 → 回報：「🔒 交班完成，<N> 個角色已降為 PROVISIONAL（<角色列表>），git: <GIT_HASH>。下次開工請重新授權 ACTIVE。」
+     DEACTIVATED_COUNT = 0 → 回報：「目前無 ACTIVE 角色，無需操作。」
+   - 其他 → 回報：「了解，角色維持現狀。」
 
 ## load 流程
 1. run_shell_command("bash ~/.gemini/checkpoints_handler.sh load")
@@ -437,6 +443,16 @@ run_shell_command("bash ~/.gemini/checkpoints_handler.sh status")
 ---
 
 ## §7 變更歷史
+
+### v1.5 / 2026-05-01（v0.9.6 候選）
+
+**動作**：`checkpoints.toml` save 流程加 **step 7 交班詢問** — save 完成後主動詢問「今日任務是否結束？是否將所有 ACTIVE 角色降為 PROVISIONAL？」；user 回應 y → `run_shell_command("bash ~/.gemini/checkpoints_handler.sh deactivate_all_active")`，解析 DEACTIVATED_COUNT / 角色列表 / GIT_HASH 並回報；其他回應 → 維持現狀。
+
+**觸發**：user LIVE 設計提案 — checkpoints save 後主動詢問交班、讓採用方可用一個動作「上一層鎖」（全員 PROVISIONAL），對齊 `core/multi-role-tracking §3.4`「上岸需 user explicit 授權」反向精神（下岸也需 user explicit 確認）+ `core/handoff-chain.md` 每次 session 末確認職責。
+
+**連動**：`tools/vendor/commons/checkpoints_handler.sh v2.2` — 新增 `deactivate_all_active` action。
+
+**修訂類型**：PATCH — §3.7 TOML 範本 save 流程加 step 7，既有 step 1-6 / 其他段落不變。
 
 ### v1.4 / 2026-05-01（v0.9.3 候選）
 

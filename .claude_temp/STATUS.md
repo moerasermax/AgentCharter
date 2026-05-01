@@ -1,8 +1,8 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-05-01（台灣時間，post-v0.9.5 snapshot）
-> **當前版本**：v0.9.5（**checkpoints_handler commit_save 補 cp 步驟 — 採用端 AI 自主診斷 + 維護者流程閉環實證**）
-> **Working tree 狀態**：✅ 全部 committed + pushed（`caec48d`）
+> **更新時間**：2026-05-01（台灣時間，post-v0.9.6 snapshot）
+> **當前版本**：v0.9.6（**checkpoints save 後交班詢問 + `deactivate_all_active` — user LIVE 設計提案落地**）
+> **Working tree 狀態**：🔄 實作完成，待 commit
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔為 v0.7.5 release 前 snapshot（含深度 sweep）
 > **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` @ `0cf5494` (待打) / `v0.8.2` @ `a2adecf` (待打) / `v0.9.0` (待打)

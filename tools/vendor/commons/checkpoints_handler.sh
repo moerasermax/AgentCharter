@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # AgentCharter — Checkpoints Handler (邏輯層 / Logic Layer)
-# Canonical version: v2.1 (charter v0.9.5+)
+# Canonical version: v2.2 (charter v0.9.6+)
 # Canonical path: tools/vendor/commons/checkpoints_handler.sh
 # Deploy path:    ~/.gemini/checkpoints_handler.sh  (或其他 vendor 對應位置)
 #
@@ -17,6 +17,9 @@
 #   - 採用方自訂邏輯只需 fork 本檔，不需動橋接層
 #
 # ── 變更歷史 ────────────────────────────────────────────────────────────────
+# v2.2 (v0.9.6): add deactivate_all_active action — grep roles/*/_role.md for
+#                status: ACTIVE, replace with PROVISIONAL, git commit
+#                (checkpoint save_and_handoff flow: user-authorized role lockdown)
 # v2.1 (v0.9.5): copy draft to HIST_DIR/HANDOFF_N.md before clearing
 #                (commit_save was committing but never writing the file)
 # v2.0 (v0.9.2): paths read from mapping.yaml (core/charter-config §3)
@@ -149,8 +152,40 @@ case "$ARG" in
         fi
         ;;
 
+    deactivate_all_active)
+        ROLES_DIR="$MGMT_DIR/roles"
+        CHANGED=0
+        if [ -d "$ROLES_DIR" ]; then
+            for role_file in "$ROLES_DIR"/*/_role.md; do
+                if [ -f "$role_file" ] && grep -q "status: ACTIVE" "$role_file"; then
+                    tmp=$(mktemp)
+                    sed 's/status: ACTIVE/status: PROVISIONAL/' "$role_file" > "$tmp" && mv "$tmp" "$role_file"
+                    ROLE_NAME=$(basename "$(dirname "$role_file")")
+                    echo "DEACTIVATED: $ROLE_NAME"
+                    CHANGED=$((CHANGED + 1))
+                fi
+            done
+        fi
+
+        if [ "$CHANGED" -gt 0 ]; then
+            GIT_HASH="skipped"
+            if is_git_repo; then
+                git -C "$PROJ_ROOT" add -A
+                if git -C "$PROJ_ROOT" commit -m "chore: handoff — $CHANGED role(s) deactivated to PROVISIONAL" >/dev/null 2>&1; then
+                    GIT_HASH=$(git -C "$PROJ_ROOT" rev-parse --short HEAD)
+                else
+                    GIT_HASH="no changes"
+                fi
+            fi
+            echo "DEACTIVATED_COUNT:$CHANGED"
+            echo "GIT_HASH:$GIT_HASH"
+        else
+            echo "DEACTIVATED_COUNT:0"
+        fi
+        ;;
+
     *)
-        echo "Usage: checkpoints [save | status | load | config]"
+        echo "Usage: checkpoints [save | status | load | config | deactivate_all_active]"
         echo "Unknown: $ARG"
         ;;
 esac

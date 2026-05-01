@@ -688,6 +688,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 ## 變更歷史
 
+- **v1.15（2026-05-01，charter v0.9.6）** — checkpoints save 後交班詢問 + `deactivate_all_active` PATCH 連動 sync：line 6 charter 對應版本 v0.9.5 → v0.9.6。**升 v0.9.6 注意**：需更新 `checkpoints_handler.sh`（v2.1 → v2.2，`tools/vendor/commons/` 複製至 `~/.gemini/`）+ 重建 `.gemini/commands/checkpoints.toml`（save flow 加 step 7 交班詢問）；採用方升版改 `charter_version: "0.9.5"` → `"0.9.6"` + 兩項更新。詳見 CHANGELOG v0.9.6 段。
 - **v1.14（2026-05-01，charter v0.9.3）** — checkpoints_handler.sh 自動版本偵測 + 升版引導 PATCH 連動 sync：line 6 charter 對應版本 v0.9.2 → v0.9.3。**升 v0.9.3 注意**：純擴增 `roles/pm/gemini-cli.md §3.7 Step 1`（三分支版本偵測：MISSING 自動安裝 / STALE 詢問升版 / CURRENT 繼續）+ `tools/vendor/commons/checkpoints_handler.sh` canonical 新檔；採用方升版只改 `charter_version: "0.9.2"` → `"0.9.3"` 即完成。詳見 CHANGELOG v0.9.3 段。
 - **v1.13（2026-05-01，charter v0.9.2）** — PM init checkpoints 後置介紹 PATCH 連動 sync：line 6 charter 對應版本 v0.9.1 → v0.9.2。**升 v0.9.2 注意**：純擴增 `roles/pm/gemini-cli.md §3.7`（PM init 後置介紹 `/checkpoints` 存檔機制），採用方升版只改 `charter_version: "0.9.1"` → `"0.9.2"` 即完成。詳見 CHANGELOG v0.9.2 段。
 - **v1.12（2026-05-01，charter v0.9.1）** — doctor Gap 偵測 + Doctor 角色概念層 PATCH 連動 sync：line 6 charter 對應版本 v0.9.0 → v0.9.1。**升 v0.9.1 注意**：純擴增 spec/roles 層、零 migration；`UPGRADE.md` 新增（升版入口文件，採用方升版前先看此檔 30 秒決策）；跑 doctor 後新增 W1201-W1205 Gap 偵測 Warning 碼。詳見 CHANGELOG v0.9.1 段。

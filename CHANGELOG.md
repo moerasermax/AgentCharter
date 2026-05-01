@@ -6,7 +6,33 @@
 
 ## [Unreleased]
 
-（空 — v0.9.4 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+（空 — v0.9.6 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+
+---
+
+## [0.9.6] — 2026-05-01
+
+> **PATCH release — checkpoints save 後交班詢問 + `deactivate_all_active`（user LIVE 設計提案：存檔後問一句，全員降 PROVISIONAL 上一層鎖）**。向下兼容，純擴增 handler + TOML；採用方升版只改 `charter_version: "0.9.5"` → `"0.9.6"`。
+
+### Added
+
+- **`tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）**：新增 `deactivate_all_active` action — 掃描 `<common_memory_root>/roles/*/_role.md`，將所有 `status: ACTIVE` 替換為 `PROVISIONAL`，git commit `chore: handoff — N role(s) deactivated to PROVISIONAL`；回報 `DEACTIVATED_COUNT` / 各角色名稱 / `GIT_HASH`。
+
+### Changed
+
+- **`roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）**：`checkpoints.toml` save 流程加 **step 7 交班詢問** — 存檔成功後主動詢問「今日任務是否結束？是否將所有 ACTIVE 角色降為 PROVISIONAL？」；user 回應 y → 呼叫 `deactivate_all_active` 並回報結果；其他回應 → 維持現狀。
+
+**設計對齊**：`core/multi-role-tracking §3.4`「上岸需 user explicit 授權」反向精神（下岸也需 user explicit 確認）+ `core/handoff-chain.md` session 末確認職責原則。橋接層（TOML）負責詢問互動，邏輯層（handler）負責執行降級，兩層職責分離保持不變。
+
+---
+
+## [0.9.5] — 2026-05-01
+
+> **PATCH release — `checkpoints_handler.sh commit_save` 補 cp 步驟（dogfood signal #37：handoffs/ 永遠空白 bug 修正）**。
+
+### Fixed
+
+- **`tools/vendor/commons/checkpoints_handler.sh`（v2.0 → v2.1）**：`commit_save` 在 git commit + clear draft 之前，補 `mkdir -p "$HIST_DIR"` + `cp "$DRAFT_FILE" "$HIST_DIR/HANDOFF_$N.md"`；handler 升版 v2.1（原 v2.0 起存在此 bug）。
 
 ---
 
