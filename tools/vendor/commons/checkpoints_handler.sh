@@ -1,11 +1,25 @@
 #!/usr/bin/env bash
-# AgentCharter — Gemini CLI Checkpoints Handler
-# Canonical version: v2.0 (charter v0.9.2+)
-# Path: ~/.gemini/checkpoints_handler.sh
+# AgentCharter — Checkpoints Handler (邏輯層 / Logic Layer)
+# Canonical version: v2.0 (charter v0.9.4+)
+# Canonical path: tools/vendor/commons/checkpoints_handler.sh
+# Deploy path:    ~/.gemini/checkpoints_handler.sh  (或其他 vendor 對應位置)
 #
-# v2.0 change: paths read from mapping.yaml (core/charter-config §3)
-#              instead of hardcoded management/ (dogfood signal #3 fix)
-# v1.0 origin: CryptoBot management/history/ structure
+# ── 架構定位 ────────────────────────────────────────────────────────────────
+# 本檔是 /checkpoints 機制的【邏輯層】，vendor 中立，所有 AI 廠商共用。
+#
+# Slash command（.gemini/commands/checkpoints.toml 等）是【橋接層】，
+# 職責只有一件事：把使用者動作路由到本檔。
+#   run_shell_command("bash ~/.gemini/checkpoints_handler.sh <action>")
+#
+# 兩層分離的設計含義：
+#   - 橋接層依廠商格式各自實作（Gemini .toml / Claude Code .md / Cursor ...）
+#   - 邏輯層只維護一份；handler 升版，所有廠商自動受益
+#   - 採用方自訂邏輯只需 fork 本檔，不需動橋接層
+#
+# ── 變更歷史 ────────────────────────────────────────────────────────────────
+# v2.0 (v0.9.2): paths read from mapping.yaml (core/charter-config §3)
+#                instead of hardcoded management/ (dogfood signal #3 fix)
+# v1.0 origin:   CryptoBot management/history/ structure
 
 PROJ_ROOT="$PWD"
 # Normalize for bash if on Windows

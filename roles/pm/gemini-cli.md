@@ -218,6 +218,22 @@ prompt = """
 > **位階**：PM 主動介紹的 optional enhancement；採用方可接受或跳過，不影響 init 完成狀態。
 > **對應條款**：`core/working-stack-discipline §1`（DRAFT 外部化 + save 同步 git commit 紀律）。
 
+### 設計架構：橋接層 vs 邏輯層
+
+`/checkpoints` 機制由兩層組成，**不可混淆**：
+
+| 層 | 檔案 | 職責 | 特性 |
+|---|---|---|---|
+| **橋接層**（Slash Command）| `.gemini/commands/checkpoints.toml` | 接收使用者指令 → 呼叫邏輯層 | **Vendor 特定**：Gemini 用 `.toml`、Claude Code 用 `.md`、Cursor 各有格式 |
+| **邏輯層**（Handler）| `tools/vendor/commons/checkpoints_handler.sh` | 路徑解析、HANDOFF 生成、git commit | **Vendor 中立**：純 bash script，所有廠商共用同一份 |
+
+**Slash command 本身沒有商業邏輯** — 它只是一個提示詞橋，把 `save / load / status / config` 動作路由到 `run_shell_command("bash ~/.gemini/checkpoints_handler.sh <action>")`，實際的路徑判斷、檔案操作、git 操作全部在 handler 內執行。
+
+**設計含義**：
+- 未來其他 AI 廠商（Claude Code / Cursor / 其他）想接入 `/checkpoints`，**只需實作各自的橋接層**（按廠商 slash command 格式建立對應檔），後端邏輯層不需重複開發
+- handler 升版（如 v2.0 路徑對齊修正）只需更新 `tools/vendor/commons/checkpoints_handler.sh` 一份，所有廠商自動受益
+- 採用方若想自訂存檔邏輯，只需 fork handler，不需動橋接層
+
 ### 介紹話術（PM 主動對採用方說）
 
 > AgentCharter 框架內建一套跨 session 存檔機制 `/checkpoints`，讓工作進度自動化為
