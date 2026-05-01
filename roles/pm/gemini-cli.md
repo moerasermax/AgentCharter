@@ -1,6 +1,6 @@
 # PM × Gemini CLI — Implementation
 
-> **狀態**：v1.3（v0.9.2 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹）
+> **狀態**：v1.4（v0.9.3 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹；v1.4 加 §3.7 Step 1 版本偵測 + 自動升版）
 > **基於**：`roles/pm/_spec.md`
 > **AI**：Google Gemini CLI（v1.x）
 > **沉澱來源**：CryptoBot S70 PnL 誤判事件後 Gemini PM 親自提交（Round 1）+ 三層結構重整（Round 2）+ 橋接層校正 + YC_AIAgentCrew 2026-04-28 dogfood signal #5 補強
@@ -236,14 +236,47 @@ prompt = """
 
 ### 採用方同意後：AI 執行步驟
 
-#### Step 1：確認 `~/.gemini/checkpoints_handler.sh` 存在
+#### Step 1：確認 `~/.gemini/checkpoints_handler.sh` 存在且為最新版
+
+**1a. 先查是否存在：**
 
 ```
 run_shell_command("test -f ~/.gemini/checkpoints_handler.sh && echo EXISTS || echo MISSING")
 ```
 
-- 若回傳 `EXISTS` → 繼續 Step 2
-- 若回傳 `MISSING` → 告知 user：「需先安裝 `checkpoints_handler.sh` 到 `~/.gemini/`（一次性全局設定）。」提供 script 內容請 user 自行安裝，安裝後 re-verify 再繼續
+- 若回傳 `MISSING` → 跳 1b（安裝流程）
+- 若回傳 `EXISTS` → 跳 1c（版本偵測）
+
+**1b. 安裝（handler 不存在）：**
+
+```
+run_shell_command("test -f ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh && echo CANONICAL_OK || echo CANONICAL_MISSING")
+```
+
+- 若 `CANONICAL_OK` → 自動安裝：
+  ```
+  run_shell_command("cp ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh ~/.gemini/checkpoints_handler.sh && chmod +x ~/.gemini/checkpoints_handler.sh && echo INSTALLED")
+  ```
+  回報：「✅ `checkpoints_handler.sh` 已從 charter canonical 自動安裝完成。」→ 繼續 Step 2
+- 若 `CANONICAL_MISSING` → 告知 user：「需先安裝 `checkpoints_handler.sh` 到 `~/.gemini/`（一次性全局設定）。可從 charter repo `tools/vendor/gemini/checkpoints_handler.sh` 取得。」安裝後 re-verify 再繼續
+
+**1c. 版本偵測（handler 已存在）：**
+
+```
+run_shell_command("grep -q 'mapping.yaml' ~/.gemini/checkpoints_handler.sh && echo CURRENT || echo STALE")
+```
+
+- 若回傳 `CURRENT` → 繼續 Step 2（版本正確，無需升版）
+- 若回傳 `STALE` → 告知 user：
+  「⚠️ 偵測到舊版 `checkpoints_handler.sh`（路徑硬編碼，不讀 `mapping.yaml`）。」
+  詢問是否自動升版：「是否允許從 charter canonical 自動覆蓋升級？(y/n)」
+  - 若 y → 執行：
+    ```
+    run_shell_command("test -f ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh && cp ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh ~/.gemini/checkpoints_handler.sh && chmod +x ~/.gemini/checkpoints_handler.sh && echo UPGRADED || echo CANONICAL_MISSING")
+    ```
+    - 回傳 `UPGRADED` → 回報：「✅ 已自動升級至 v2.0（mapping.yaml 對齊版）。」→ 繼續 Step 2
+    - 回傳 `CANONICAL_MISSING` → 告知「charter canonical 不存在，請手動從 `tools/vendor/gemini/checkpoints_handler.sh` 取得最新版覆蓋。」
+  - 若 n → 告知「了解，保留舊版。舊版僅支援 `management/` 路徑結構（charter v0.4.x 以前），若專案使用 v0.5.0+ 結構需手動升版。」→ 繼續 Step 2
 
 #### Step 2：建立 `.gemini/commands/checkpoints.toml`（依 §3.6 扁平 TOML 規範）
 
@@ -388,6 +421,14 @@ run_shell_command("bash ~/.gemini/checkpoints_handler.sh status")
 ---
 
 ## §7 變更歷史
+
+### v1.4 / 2026-05-01（v0.9.3 候選）
+
+**動作**：擴充 **§3.7 Step 1** 為三分支版本偵測 + 自動升版流程 — MISSING 分支（從 charter canonical 自動安裝）+ STALE 分支（偵測到舊版路徑硬編碼後詢問 user 是否自動覆蓋升級）+ CURRENT 分支（版本正確直接繼續）。
+
+**觸發**：dogfood 場景「user 電腦上已有舊版 handler 要怎麼更新」→ 框架設計原則：「不由 maintainer 跟 user 說，而是框架自動引導」。v1.3 §3.7 僅能偵測 MISSING / EXISTS 兩態，無法辨識版本新舊；新增版本偵測（grep mapping.yaml）解決 STALE 場景。canonical 來源：`tools/vendor/gemini/checkpoints_handler.sh`（charter repo canonical，v0.9.2 加）。
+
+**修訂類型**：PATCH — §3.7 Step 1 擴增，既有 Step 2 / Step 3 / 其他段落不變。
 
 ### v1.3 / 2026-05-01（v0.9.2 候選）
 

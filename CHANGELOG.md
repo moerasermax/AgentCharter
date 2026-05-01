@@ -6,7 +6,21 @@
 
 ## [Unreleased]
 
-（空 — v0.9.2 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+（空 — v0.9.3 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+
+---
+
+## [0.9.3] — 2026-05-01
+
+> **PATCH release — `checkpoints_handler.sh` 自動版本偵測 + 升版引導（dogfood 場景：「舊版已在電腦上，框架要自動引導不是 maintainer 說明」）**。向下兼容，純擴增 `roles/pm/gemini-cli.md §3.7 Step 1`；採用方升版只改 `charter_version: "0.9.2"` → `"0.9.3"`。
+
+### Changed
+
+- **`roles/pm/gemini-cli.md §3.7 Step 1`（v1.3 → v1.4）**：原「MISSING/EXISTS 二態」擴充為三分支版本偵測流程 — MISSING 分支（從 `~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh` canonical 自動安裝）+ STALE 分支（`grep mapping.yaml` 偵測舊版路徑硬編碼、詢問 user 後自動覆蓋升級）+ CURRENT 分支（版本正確直接繼續）。設計原則：框架自動偵測 + 互動式引導，user 不需 maintainer 手動說明升版步驟。
+
+### Added
+
+- **`tools/vendor/gemini/checkpoints_handler.sh`**：charter repo 內 canonical 版本（v2.0）— 供 PM init §3.7 Step 1 自動安裝 / 升版時複製到 `~/.gemini/`；解決「框架工具無 canonical 來源無法自動升版」的設計缺口。
 
 ---
 
