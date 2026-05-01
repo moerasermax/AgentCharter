@@ -426,3 +426,44 @@ head -5 agent-commons/protocols/<axiom>.md
 - structural-anti-fabrication 對齊（含實際 stdout 區塊強制）
 
 **對應 SSS S1「AI 自治協作 + user 授權閘」**：本工具自動化驗證機制是 SSS S1 子集 — 自動驗證後 AI 自提升版完整度報告 → user 授權閘批准下一步 release lifecycle 推進。S1 ship 時可擴本工具加自治模式。
+
+---
+
+## 升版後 Doctor 角色建立提示（v0.9.1 加）
+
+> 設計動機（dogfood signal #36）：doctor 角色功能持續擴增（v0.9.0 §3.11 個體學習迴圈 + v0.9.1 §3.12 Gap 偵測），對需要多 AI 協作的採用方具備高槓桿價值。升版 verify 全綠後，自然是詢問是否建立 doctor 角色的最佳時機 — 使用者剛完成升版、心智帶寬充裕、且剛接觸到新功能說明。
+
+### 提示條件
+
+```
+若 post-upgrade-verify 全綠（0 E、0 W 或全 SKIP）
+且 roles/doctor/_spec.md 存在（v0.9.1 ship 後）
+且 agent-commons/roles/doctor/ 目錄不存在 或 agent-commons/roles/doctor/_role.md 不存在
+→ 輸出 Doctor 角色建立提示
+```
+
+### 提示文本（可自具象化為 slash command output）
+
+```
+✅ 升版驗證全綠！
+
+你的專案目前沒有 Doctor 角色。
+Charter v0.9.1 強化了 /charter-doctor 的能力：
+  • §3.12 Gap 偵測（W1201 平行獨語 / W1202-W1204 形同虛設 / W1205 log 缺失）
+  • 模式 C 互動式 Gap 遷移（六步驟引導、全程確認）
+  • init Phase 3.5 scaffold 預防機制
+
+建立 Doctor 角色後，任意 AI 可執行 /charter-doctor 對專案進行健康檢查與 Gap 修復引導。
+
+是否現在建立 Doctor 角色？(y/n)
+  y → AI 依 roles/doctor/_spec.md 自具象化 /charter-doctor slash command（含 §2.1 三模式）
+  n → 略過（可隨時手動建立：「請依 roles/doctor/_spec.md 自具象化 /charter-doctor」）
+```
+
+### 執行約束
+
+```
+🚫 僅提示、不自動建立（角色建立屬 self-instantiation 流程、需 user 明示）
+✅ user 回 y 後，AI 依 core/init-template.md §3.3 self-instantiation 精神執行
+✅ 提示可跳過（不影響升版完成狀態）
+```

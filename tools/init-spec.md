@@ -78,6 +78,41 @@
    - 啟用 working-stack-discipline 時必含 shared.draft_context + shared.archive
 ```
 
+### Phase 3.5：建立 agent-commons scaffold 完整目錄（v0.9.1 加）
+
+> **設計動機**（dogfood signal #36）：採用方接入後才開始協作，協作產物（sprint 文件 / AI 工作日誌 / 任務膠囊）自然散落在根目錄或 docs/。根因不是 AI 不守紀律，而是**目錄根本不存在 → AI 沒地方放 → 就地建立**。Phase 3.5 在 init 最早期預先建立所有 scaffold 目錄，讓之後的協作產物有「正確位置」可選；空目錄比事後遷移代價低。
+
+```
+1. 建立 <common-memory-root>/handoffs/
+2. 建立 <common-memory-root>/capsules/
+3. 建立 <common-memory-root>/protocols/
+4. 建立 <common-memory-root>/institutional-memory/
+5. 建立 <common-memory-root>/state/
+6. 建立 <common-memory-root>/nextwork.md（空檔，待第一個 AI 填寫「下一步協作」）
+7. 建立 <common-memory-root>/state/failure_mode_log.md（空檔 + frontmatter header）
+   frontmatter header 格式：
+   ---
+   description: 累積 F-mode 命中記錄（append-only）
+   since: <init date>
+   ---
+8. 若偵測到「現有專案已存在內容疑似 AI 工作產物」：
+   - 列出疑似路徑清單
+   - 提示：「偵測到現有 AI 協作產物，建議執行 /charter-doctor --fix 進行 Gap 遷移引導」
+   - ⚠️ 此步驟僅提示、不自動遷移（遷移走模式 C 互動式流程）
+```
+
+「現有 AI 工作產物」偵測模式（Step 8）：
+```
+疑似模式（任一命中即提示）：
+  - 根目錄 / docs/ 內有 *-sync-point-*.md
+  - 根目錄 / docs/ 內有 checkpoint_*.md
+  - 根目錄內有 S\d+-*.md（sprint 任務文件）
+  - 根目錄有 GEMINI.md 但無 protocols/ 目錄（可能是未歸位的 vendor 指引）
+  - docs/checkpoints/ 存在且有 .md 檔（非 charter 標準 checkpoints 格式）
+```
+
+⚠️ Phase 3.5 是**純建立**（不覆蓋、不搬移、不刪除）：若目錄已存在則跳過（idempotent）。
+
 ### Phase 4：建立角色資料夾 + 預留 self-instantiation 位置
 
 對每個 `enabled.<role>: true` 的角色：

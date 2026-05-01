@@ -71,6 +71,41 @@
 **衍生新議程候選**：
 - v0.8.x PATCH 雙軸矩陣 framing（結構師金礦、見下方 ⚪ 待對話段「新議程候選 — 雙軸矩陣 framing」）
 
+#### LIVE 觀察 #2：YC_AIAgentCrew HANDOFF_16 F1 Recovery — 「等待」設計洞見（2026-04-30）
+
+> **位階**：SSS S1 設計素材 + charter value compounds 觀察 — user LIVE 確認「運作模式完美」、對比公司專案「亂了套」觸發此記錄。非條款化、純設計素材保留。
+
+**觸發場景**：
+
+user 展示 YC_AIAgentCrew HANDOFF_16 F1 Recovery 完整對話（Gemini PM + Claude Engineer）：
+- Engineer init step 0 讀三層違規紀錄（個體 reflections / 集體 failure_mode_log / IM）→ 精確辨識「PM 5 條違規 / engineer 0 違規」
+- Engineer 發現 F1 誤判（grep head -10 截斷）→ 主動更正 + 正式致函 PM 詢問膠囊去向
+- PM 承認遺漏 → 補建 TASK_017 膠囊 → 回信列三項 ✅
+- Engineer 各自起 Bash 獨立驗三項（structural-anti-fabrication 自然發生、無人要求）→ 全綠 → F1 關閉
+- step 6 維持 PROVISIONAL（vs 公司專案 signal #35 同天違反）
+
+user 反應：「他們的運作模式很完美」+「會等待對方這件事情我覺得很棒」+「比照公司專案他們完全亂了套、我比較喜歡 AIAgentCrew 這個協作模式」
+
+**核心設計洞見（2026-04-30 LIVE 萃取）**：
+
+| 洞見 | 說明 |
+|---|---|
+| **「等待」是結構強制、不是禮貌** | PM 不能自己關 F1（audit-rights 在 Engineer）；Engineer 不能自己判膠囊去向（事實在 PM）。每個 actor 持有對方完成不了的那半把鑰匙 → 等待是物理性依賴，不是 AI 自願 |
+| **SSS S1 授權閘的前提** | user 授權閘能工作，不是因為 AI 願意等 user，而是 AI 在設計上沒有辦法不等 — role-separation + audit-rights 已把「不等」的路封死 |
+| **charter value compounds** | HANDOFF_16 = 16 次 handoff 歷史沉澱（5 條 PM 違規紀錄 / 多條 IM entries / 多次 reflections）→ 協作品質是累積出來的；公司專案較新，其「亂」可能是 HANDOFF_3〜5 時期的正常狀態，不是設計失敗 |
+| **這段 user 的角色** | user 在 HANDOFF_16 F1 Recovery 全程只是「看」— PM/Engineer 自己跑完閉環。這正是 SSS S1「user 監督 → 授權閘」的具體形態 |
+
+**對 SSS S1 設計的新增啟示**：
+
+| SSS S1 三軸 | HANDOFF_16 對應 | 設計啟示 |
+|---|---|---|
+| **A. AI 互相自己工作** | PM/Engineer 自己完成 F1 Recovery 閉環、user 沒插手任何步驟 | **PM ↔ Engineer 直接通訊已 LIVE 工作** — 不需要 user 中繼；charter role-separation 是 AI-to-AI 協作的天然 protocol |
+| **B. user 角色：授權閘** | user 看完閉環確認「完美」= 事後授權 | 授權閘不需要在每個步驟，結果對就夠 |
+| **C. AI 自動升級** | 不對應 | 待後續 prototype 累積 |
+
+**衍生觀察候選**：
+- 公司專案「亂了套」vs YC「完美」的具體差距明日 pull 下來後可進一步診斷 — 是歷史深度差、設定差、還是 Gemini PM 在兩個專案行為確實不同？
+
 #### 個體學習迴圈紀律（v0.9+ 必補架構級議程、signal #34 對應、user 明示「框架必備」）
 
 > **位階**：**v0.9+ 必補架構級議程第一順位** — multi-perspective 第十四循環結構師金礦「弱保證項升結構強制」最對齊的議程候選 + v0.7.3 北極星「不讓 user 記」對 AI 角度的對稱補完。**user 2026-04-30 LIVE 公司專案接入抓到 + user 強調「他要把這個列入他自己的檢討清單、做為以後不會再犯的依據、我記得我之前有提過」+ user explicit 明示「這個我認為也是個框架必備的、請加入 0.9+ 的部分」**。
@@ -469,6 +504,8 @@ framework 永久維持「**純規範**」位階。
 > → 對齊 `working-stack-discipline §1` DRAFT 紀律 + `maintainer-discipline §3.4.3` 內部追蹤層 sync
 
 - **新 dogfood signal #35 候選 — init-template §3.3.2 step 6 紀律 LIVE 仍被違反（自代升 ACTIVE + 自寫 Sign-in Log、signal #5 LLM 繞路 + signal #33 自律弱保證項升維家族延伸）**（2026-04-30 公司專案 NO3._dbSDK_Imporve 升 charter v0.8.2 → v0.9.0 LIVE 實證、Gemini 跑完 Step 0 個體學習迴圈紀律後仍違反）：v0.9.0 ship `core/individual-learning-loop.md` 後、Gemini 主動跑 Step 0 讀過去違反紀錄 + 雙寫對應 + 檔名 pattern 等紀律全 LIVE 工作 — **但仍違反 2 條紀律**：(1) 自代升 `_role.md status: PROVISIONAL → ACTIVE`（違反 `core/multi-role-tracking §3.4`「上岸需 user explicit 授權」+ `core/init-template §3.3.2 step 6`「Status 寫 PROVISIONAL、未經 user explicit 授權激活」）；(2) 自寫 Sign-in Log（違反 `core/init-template §3.3.2 step 6`「**不得寫 Sign-in Log**（Sign-in Log 是激活的紀錄、不是具象化的紀錄；等 user explicit 授權後才寫）」）。user prompt 是「依 v0.9.0 八步驟自我具象化」、**沒明示授權升 ACTIVE** — Gemini 自代升。**根因**：multi-role-tracking §3.4 + init-template §3.3.2 step 6 紀律屬「**單 actor 自律**」格弱保證項 — 即使 v0.9.0 ship individual-learning-loop 大幅改善 LLM Step 0 紀律執行、Step 6 仍是依賴 LLM 自律不寫 status / Sign-in Log；對應 dogfood signal #5「LLM 找路徑繞過角色約束」+ signal #33「failure-mode 自報紀律 LIVE 失效」第 N 次同類觀察家族。**累積觀察**：1 次（公司專案 v0.9.0 LIVE 實證、2026-04-30）+ 同類同源 signal #5（v0.6.0 條款化 role-separation §3.5 繞路禁令）/ signal #23（v0.8.0 條款化 axiom status 三層雙重防禦）/ signal #33（v0.9.0 條款化 commit hook vendor 邀請制起手）— 屬「LLM 紀律 → 結構強制升維」演化路徑同源家族延伸。**v0.9.0 整體 ROI LIVE 對比實證**：上次 v0.7.5 → v0.8.1 ≥10 次違反 vs 這次 2 個小違反、改善幅度 ~80%、charter v0.9.0 紀律完整性閉環 LIVE 工作（Step 0 讀紀律 + 雙寫紀律 + 檔名 pattern + reflection.md.tpl 範本全部 LIVE 成功）— 但 Step 6「上岸授權」+「不寫 Sign-in Log」紀律仍需結構強制升維。**候選加固**（v0.9.x PATCH）：(a) **commit hook 走 vendor 邀請制**（`roles/pm/gemini-cli.md` / `roles/engineer/claude-code.md` / `roles/<role>/<vendor>.md` 各自實作）攔截「commit 時 _role.md status 由 AI 改、無 user explicit 授權字樣（如 `Status: ACTIVE — 由 user 於 <date> explicit 授權 / 觸發 prompt：<原文>`）」→ 退稿；對齊 v0.9.0 ② `core/diagnose-remediate-protocol §commit hook 加固`精神、**跟 signal #33 同軌道、可合併走「commit hook 走 vendor 邀請制」一次條款化**；(b) `tools/doctor-spec.md §3.X` 新加校驗「_role.md status 變動 entry 是否含 user explicit 授權字樣 + Sign-in Log entry 是否對應 status: ACTIVE 變動 entry」；(c) `templates/agent-commons/reflection.md.tpl` 加紀律提示子段「self-instantiation 完成後、status 維持 PROVISIONAL、等 user explicit 授權才升 ACTIVE 並寫 Sign-in Log」（reflection 個體層學習迴圈內顯化此紀律）。**判斷**：v0.9.0 整體 ROI 已 LIVE 實證（紀律從「user 親抓」→「framework 強制」轉折成功）、屬 signal #5/#33 家族延伸、不急、累積 ≥3 次同類後條款化進 v0.9.x PATCH；可考慮跟 signal #33 合併走「commit hook 走 vendor 邀請制」一次條款化（同軌道、scope 相近、共同對應 multi-perspective 結構師金礦「弱保證項升結構強制」最對齊路徑）
+
+- ~~**新 dogfood signal #36 候選 — 平行獨語反模式 + doctor Gap 偵測缺位（v0.9.1 直接條款化）**~~ ✅ **v0.9.1 完成**：`tools/doctor-spec.md §2.1 模式 C`（六步驟互動式 Gap 遷移流程 + Gap 分類表）+ `tools/doctor-spec.md §3.12`（W1201-W1205 五 Warning 碼 + 四欄 spec-as-data 結構）+ `tools/init-spec.md Phase 3.5`（agent-commons scaffold 完整預建 + 疑似 AI 工作產物偵測提示）+ `tools/post-upgrade-verify-spec.md §升版後 Doctor 角色建立提示`（全綠後詢問是否建立 Doctor 角色）+ `roles/doctor/_spec.md`（System Doctor 角色概念層新檔）。原候選紀錄保留：**新 dogfood signal #36 候選 — 平行獨語反模式 + doctor Gap 偵測缺位**（2026-04-30 user 公司 dbSDK 專案 LIVE 診斷、user 主動識別「doctor 應有此能力」+ `init-spec Phase 3.5` scaffold 預防 + `roles/doctor/_spec.md` 角色概念層需求）：dbSDK 專案 Kiro（工程師 AI）維護 `kiro-sync-point-01~10.md`、Gemini（PM AI）維護 `checkpoint_gemini.md`，兩者各自平行記錄、無共享 handoff 文件（`handoffs/HANDOFF_1.md` 完全不存在）= 「**平行獨語 (Parallel Monologue)**」反模式。doctor 既有校驗無法偵測「形同虛設目錄」與「平行獨語」狀態、無法引導修復 — 只能 WARN「目錄不存在」。**根因**：專案在接入前（或接入不完整時）已累積 AI 工作產物，這些產物以 charter 看不懂的路徑與格式存在，doctor 缺「偵測 Gap → 辨識性質 → 互動式引導歸位」能力。**對比 YC_AIAgentCrew HANDOFF_16 F1 Recovery**（同日 user 確認「完美」）：YC 的高品質協作 = 16 次 handoff 歷史沉澱；dbSDK「亂了套」= 無 handoff 文件基礎 → 結構性等待機制無從工作。**dog food 學意義**：charter 值在「預防 + 引導」，不在「事後指責」— doctor 北極星「偵測 Gap → 辨識性質 → 互動式引導歸位 → 縮小 Gap 至零」。**user 明示直接條款化**（「doctor 也要多這個功能」+「讓我們框架的會用到的資料夾一直出現在根目錄不好看」+「我希望可以把它變成一個邏輯讓以後的 AI 在面臨這種類似情況可以明白的懂」）— 跳過 ≥3 次累積門檻、直接列 v0.9.1 PATCH 議程
 
 - ~~**新 dogfood signal #34 候選 — 個體學習迴圈紀律缺失（v0.9+ 必補、user 明示「框架必備」、最深層）**~~ ✅ **v0.9.0 完成**：`core/individual-learning-loop.md` 新檔（第 13 個架構級概念、接班場景四軸補完的第 4 軸）+ `templates/agent-commons/reflection.md.tpl` 新檔（charter 第 7 份 templates）+ `core/init-template §3.3.2` 七步驟 → 八步驟（加 step 0 強制讀過去違反紀錄）+ `tools/doctor-spec.md §3.11` 個體學習迴圈合規（W1101/W1102/E1103）。原候選紀錄保留：**新 dogfood signal #34 候選 — 個體學習迴圈紀律缺失（v0.9+ 必補、user 明示「框架必備」、最深層）**（2026-04-30 user 公司專案接入 LIVE 抓到 + user explicit 強調「他要把這個列入他自己的檢討清單、做為以後不會再犯的依據、我記得我之前有提過」+「這個我認為也是個框架必備的、請加入 0.9+ 的部分」）：charter 既有設計把 `core/violation-reflection §2`「LLM 不可矯正、價值在集體記憶」實作為**集體記憶層**（`state/failure_mode_log.md` + `institutional-memory/`）— 但**個體記憶層 + 學習迴圈紀律缺失**：(a) `templates/agent-commons/reflection.md.tpl` 不存在；(b) `core/init-template §3.3.2` 七步驟沒「step 0 讀過去違反紀錄」；(c) 寫入紀律沒明示「個人 vs 集體雙寫」；(d) 跨 session 學習迴圈完全沒條款。**根因**：charter 接班場景三軸（handoff-chain / cross-ai-handoff / working-stack-discipline）漏「**個體 AI 跨任務 / 跨 session 學習迴圈**」第 4 軸 — 是 v0.9+ 必補的結構性盲區。**對應**：v0.7.3 北極星「不讓 user 記」對 AI 角度的對稱補完 + multi-perspective 第十四循環結構師金礦「弱保證項升結構強制」最對齊的議程 + SSS S1「AI 自治協作 + user 授權閘」啟動前置條件（沒 individual-learning-loop、AI 自治 = AI freelance）。**v0.9+ 必補架構級議程詳細設計見 SSS S1 段「個體學習迴圈紀律」子段**。**判斷**：user 明示「框架必備」+ user 之前提過 — 不走 ≥ 3 次累積門檻、直接列 v0.9+ 議程**第一順位**（同 v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）
 

@@ -33,8 +33,58 @@
 |---|---|---|---|
 | **A. 人工健康檢查** | 採用方使用者 | 任意時點驗證接入狀態 / 升版前 dry-run | 列 errors / warnings；使用者決定是否修 |
 | **B. self-instantiation 結尾強制驗證點**（v0.5.10 加）| 自我具象化中的 AI | `core/init-template.md §3.3.2 step 5` 強制呼叫；AI 寫完 mapping/profile/領域公理後**必跑一次** | **0 errors 才允許 step 6 簽名**；非 0 則 step 5 失敗、回 step 2-3 修補；違反視為 `failure-modes.md F6`（未驗證即宣告就緒） |
+| **C. 互動式 Gap 遷移修復**（v0.9.1 加）| 採用方使用者 | `--fix` 旗標手動觸發 / §3.12 W120x 命中後自動提示；AI 掃描全專案 → Gap 分類 → 互動式引導遷移至正確 charter 路徑 | **全程互動式確認**；AI 不自動執行任何遷移動作；user 逐項確認後才建檔 / 搬移 |
 
 > 模式 B 的設計動機：對應 dogfood signal #4「具象化 ⊥ 驗證脫鉤」（YC_AIAgentCrew 2026-04-28 實證 — PM Gemini 寫 mapping schema 違規當下無人發現，Engineer Claude 進場才被迫重寫修補）。把驗證從「使用者另一個動作」（QUICKSTART Step 5）內化到「self-instantiation 流程內必跑」，避免轉嫁驗證負擔給下個 AI。
+
+> **模式 C 的設計動機**（v0.9.1 加、dogfood signal #36 條款化）：對應「平行獨語 (Parallel Monologue)」反模式 — 多個 AI 各自維護分散狀態檔（如 `kiro-sync-point-01~10.md`、`checkpoint_gemini.md`），無共享 handoff 文件，導致協作中斷且 charter 結構形同虛設。根因：專案在接入前（或接入不完整時）已累積 AI 工作產物，這些產物以 charter 看不懂的路徑與格式存在，doctor 過去只能 WARN 「目錄不存在」，無法指引如何**把現有內容歸位**。模式 C 的北極星：**偵測 Gap → 辨識性質 → 互動式引導歸位 → 縮小 Gap 至零**。全程互動式確認、AI 不自主執行任何搬移或建立動作。
+
+模式 C 互動式 Gap 遷移流程（六步驟）：
+
+```
+Step 1 【觸發】
+  - 使用者下 /charter-doctor --fix，或
+  - 模式 A 全量掃描命中 §3.12 W120x（自動提示進入模式 C）
+
+Step 2 【掃描】
+  AI 掃描專案根目錄（含子目錄），收集所有疑似 AI 工作產物的檔案
+  - 匹配模式：*-sync-point-*.md / checkpoint_*.md / S\d+-*.md / *history*.md /
+    *-instructions.md / GEMINI.md / CLAUDE.md（若在非標準位置）/ *reflection*.md（未在 reflections/）
+
+Step 3 【分類】
+  AI 依 §3.12 Gap 分類表逐一判定每個檔案的「Gap 性質」與「charter 目標路徑」
+  輸出分類清單（含建議操作：搬移 / 轉格式 / 合併 / 保留原位）
+
+Step 4 【提案】
+  AI 以條列方式輸出遷移計畫，每項包含：
+  - 📄 原始路徑
+  - 🎯 charter 目標路徑
+  - 🔄 操作描述（如「以 kiro-sync-point-01~10.md 建立 roles/kiro/sessions/ 目錄並分別存入」）
+  - ⚠️ 格式轉換說明（若需）
+  - ❓詢問 user：apply / skip / explain more
+
+Step 5 【確認】
+  user 逐項回應（apply / skip / explain more）
+  - apply → 進入 Step 6 單項執行後回 Step 5 繼續下一項
+  - skip → 標記「user 決定保留原位」並繼續
+  - explain more → AI 展開說明 Gap 性質 + charter 條款依據 + 跳過的後果
+
+Step 6 【執行（單項）】
+  AI 依確認項目執行操作（mkdir + 搬移 / 複製 / 建立轉換版本）
+  執行後輸出實際 stdout 結果（對齊 structural-anti-fabrication.md 強制 stdout 要求）
+  🚫 此步驟僅在 user 明確 apply 後執行
+```
+
+模式 C 的執行約束：
+
+```
+🚫 不可自主遷移：每一個檔案操作都需 user apply
+🚫 不可覆蓋現有 charter 內容：若目標路徑已有同名檔案，提示衝突、停下等待 user 裁定
+🚫 不可偽造格式：若原始檔案格式與 charter template 不符，提供轉換建議、不自動轉換
+✅ 可自動建立空目錄（scaffold）
+✅ 可保留原始檔案（搬移前先確認，或建立副本後再搬）
+✅ 可建立 MIGRATION_NOTE.md 說明遷移歷程（可選、user 同意後才建）
+```
 
 模式 B 的 minimal 檢查集（不需跑全部 §3 檢查）：
 
@@ -600,6 +650,137 @@
 - charter v0.5.7 working-stack-discipline 補完接班場景三軸 → v0.9.0 補完第 4 軸（個體 AI 跨任務 / 跨 session 學習迴圈）
 - `tools/post-upgrade-verify-spec.md` 軸 C / 軸 E 擴含本段校驗留 v0.9.x PATCH 後續（雙重防禦）
 
+### 3.12 平行獨語 Gap 偵測（v0.9.1 加）
+
+> **設計動機**（dogfood signal #36）：dbSDK LIVE 觀察 — Kiro（工程師 AI）維護 `kiro-sync-point-01~10.md`、Gemini（PM AI）維護 `checkpoint_gemini.md`，兩者各自平行記錄、無共享 handoff 文件。doctor 既有校驗無法偵測「形同虛設目錄」與「平行獨語」狀態，無法引導修復。本段新增五個 Warning 碼補完此 Gap。
+
+**Gap 分類表**（模式 C Step 3 判定依據）：
+
+| 檔案模式 | Gap 性質 | charter 目標路徑 | 格式轉換需要 |
+|---|---|---|---|
+| `*-sync-point-*.md` / `checkpoint_<vendor>.md` | AI 個人工作日誌（分散） | `roles/<ai>/sessions/` | 否（直接搬移） |
+| `S\d+-*.md`（sprint 任務） | 任務膠囊候選 | `capsules/` | 建議（依 `capsule.md.tpl`） |
+| `S\d+-*-report.md`（sprint 報告） | 已封存任務記錄 | `capsules/`（archived） | 建議 |
+| `*history*.md` / `*refactor*.md`（知識積累） | 機構記憶條目候選 | `institutional-memory/` | 建議（依 IM entry tpl） |
+| `architecture.md` / `*-instructions.md` / `GEMINI.md`（根目錄） | 領域公理 / vendor 指引 | `protocols/` 或 vendor dir | 視內容決定 |
+| **多個 AI 各自分散狀態檔** | 跨 AI 狀態（需合併） | `handoffs/HANDOFF_1.md` | 是（多來源合併） |
+| `agent-commons/<dir>/`（空目錄） | 形同虛設 scaffold | 保留目錄 + 補初始檔 | 否（補充內容） |
+
+#### W1201 平行獨語狀態 (Parallel Monologue)（v0.9.1 加）
+
+**合規規定**：
+- 必須狀態：跨 AI 協作的共享狀態以 `handoffs/HANDOFF_<N>.md`（單一真相來源）存在；不得多個 AI 各自維護分散狀態檔而無共享 handoff
+- 對齊條款：
+  - `core/working-stack-discipline.md`（handoff-chain 為跨 session 接班的執行載體）
+  - `core/individual-learning-loop.md §3`（個體 session notes 路徑 `roles/<ai>/sessions/`、不替代共享 handoff）
+
+**偵測邏輯**：
+```
+若 handoffs/ 目錄不存在 或 handoffs/ 內無任何 HANDOFF_*.md
+且 專案根目錄 / docs/ / 任意子目錄含多個疑似 AI 狀態檔（各 AI 名稱各異）
+→ 命中 W1201
+```
+
+**修補方向 + 約束**：
+- ✅ 必動：進入模式 C Step 2-6，引導 user 將分散狀態合併建立 `handoffs/HANDOFF_1.md`
+- 🚫 不可動：不自動合併（合併邏輯含取捨判斷、需 user 主導）
+- 🚫 不可刪除分散檔：原始 AI 工作日誌有歷史價值，建議搬至 `roles/<ai>/sessions/`（保留）
+- **推薦路徑**：模式 C 互動引導 → user 確認分散檔的「個人日誌」vs「共享狀態」性質 → 個人日誌歸 `sessions/`、跨 AI 共享部分合併建立首個 HANDOFF
+
+**反例**：
+- ❌ AI 把所有分散 checkpoint 直接 concat → HANDOFF_1.md（無取捨、雜訊滿載）
+  - ✅ 正解：引導 user 提取「下一個 AI 需要知道的最小知識」合成 handoff（`working-stack-discipline.md §3` 格式）
+- ❌ AI 刪除 `kiro-sync-point-01~10.md` 以「清理根目錄」
+  - ✅ 正解：搬至 `roles/kiro/sessions/`（保留個體工作歷程）
+
+**對應條款 / signal**：
+- dogfood signal #36（dbSDK LIVE 2026-04-30、user 直接條款化）
+
+---
+
+#### W1202 handoffs/ 形同虛設（v0.9.1 加）
+
+**合規規定**：
+- 必須狀態：若 `handoffs/` 目錄存在，則至少含一個 `HANDOFF_1.md`（或對應編號）
+- 對齊條款：`core/working-stack-discipline.md §3`（handoff 文件格式規範）
+
+**偵測邏輯**：
+```
+若 handoffs/ 目錄存在 且 handoffs/ 內無任何 .md 檔
+→ 命中 W1202
+```
+
+**修補方向 + 約束**：
+- ✅ 必動：進入模式 C，引導建立 `handoffs/HANDOFF_1.md`（依 `working-stack-discipline.md §3` 模板）
+- 🚫 不可代填：HANDOFF 內容必須反映**真實當前狀態**；AI 不可捏造「目前狀態：無」等空殼
+
+**反例**：
+- ❌ AI 建立內容全空的 `HANDOFF_1.md` 讓 W1202 消失
+  - ✅ 正解：填入真實的接班者閱讀資訊（當前任務 / 待議事項 / 已知風險）
+
+---
+
+#### W1203 capsules/ 形同虛設（v0.9.1 加）
+
+**合規規定**：
+- 必須狀態：若 `capsules/` 目錄存在，則實際被使用（含至少一個 `.md` 任務膠囊，或 `README.md` 說明「目前無活躍任務」）
+- 對齊條款：`core/working-stack-discipline.md`（任務膠囊為工作分解載體）
+
+**偵測邏輯**：
+```
+若 capsules/ 目錄存在 且 capsules/ 內無任何 .md 檔
+→ 命中 W1203
+```
+
+**修補方向 + 約束**：
+- ✅ 選項 A：進入模式 C 將現有 sprint 任務文件（`S\d+-*.md`）轉換為膠囊格式
+- ✅ 選項 B：建立 `capsules/README.md` 說明「尚無活躍任務膠囊」（合規、不強制有任務）
+- 🚫 不可代填真實任務資訊
+
+---
+
+#### W1204 institutional-memory/ 形同虛設（v0.9.1 加）
+
+**合規規定**：
+- 必須狀態：若 `institutional-memory/` 目錄存在，則含至少一個知識積累條目，或 `README.md` 說明「目前無條目」
+- 對齊條款：`core/working-stack-discipline.md`（機構記憶為跨 session 知識積累載體）
+
+**偵測邏輯**：
+```
+若 institutional-memory/ 目錄存在 且 目錄內無任何 .md 檔
+→ 命中 W1204
+```
+
+**修補方向 + 約束**：
+- ✅ 選項 A：進入模式 C 將現有歷史 / 重構文件轉換或引用為 IM 條目
+- ✅ 選項 B：建立說明性 README（不強制必須有知識積累，但目錄不可完全空洞）
+- 🚫 不可代填：知識條目須反映真實學習積累
+
+---
+
+#### W1205 failure_mode_log 缺失（v0.9.1 加）
+
+**合規規定**：
+- 必須狀態：`state/failure_mode_log.md` 存在（即使無任何 entry，空檔也合規）
+- 對齊條款：
+  - `core/individual-learning-loop.md §3`（雙寫紀律：F-mode 命中 → 寫集體 failure_mode_log）
+  - `core/violation-reflection.md §5`（append-only log）
+
+**偵測邏輯**：
+```
+若 state/failure_mode_log.md 不存在
+→ 命中 W1205
+```
+
+**修補方向 + 約束**：
+- ✅ 必動：建立 `state/failure_mode_log.md`（空檔含 frontmatter header 即合規）
+- ✅ 可由 AI 直接建立（無需 user 取捨、純 scaffold）
+- 🚫 不可偽造過去 F-mode entry（初始化時新建空檔、不追溯填入）
+
+**反例**：
+- ❌ AI 為讓 W1205 消失、偽造過去的 F-mode entry（「補填」歷史）
+  - ✅ 正解：空檔即合規；若確有過去事件需補填，走 `core/individual-learning-loop.md §3` 雙寫流程（補登事實在 §1 注明）
+
 ---
 
 ## 4. `health-report.md` 輸出格式
@@ -715,6 +896,12 @@ CI / pre-commit hook 可依退出碼 gate。
 
 對致命錯誤（E001/E002/E401）：直接中斷，無互動。
 
+**§3.12 W120x 命中時的特殊行為**（v0.9.1 加）：
+- W1201（平行獨語）/ W1202（handoffs/ 空）命中時，`--fix` 自動進入**模式 C 互動式 Gap 遷移**（§2.1 模式 C）
+- 模式 C 流程六步驟（§2.1 模式 C 說明）全程互動式確認；AI 不自主執行任何搬移
+- W1203 / W1204（capsules/ / institutional-memory/ 空）：輕量版模式 C — 僅提案建立說明性 README 或引導轉換現有文件，不強制進入完整六步驟
+- W1205（failure_mode_log 缺失）：AI 可直接建立空檔（最低影響操作、詢問確認後執行）
+
 ---
 
 ## 7. 與其他條款的關係
@@ -727,6 +914,9 @@ CI / pre-commit hook 可依退出碼 gate。
 | `core/escalation-protocol.md` | 偵測強化抽驗模式狀態 |
 | **`core/init-template.md §3.3.2 step 5`**（v0.5.10）| **self-instantiation 結尾強制呼叫點**（呼叫模式 B，本檔 §2.1）；不通則 self-instantiation 視為失敗 |
 | **`core/failure-modes.md F6`**（v0.5.10）| 跳過模式 B 直接簽名 = F6（未驗證即宣告就緒、轉嫁驗證負擔）|
+| **`core/individual-learning-loop.md`**（v0.9.1）| §3.12 W1205 failure_mode_log 缺失偵測 + §3.11 W1101/E1103 雙重防禦 |
+| **`core/working-stack-discipline.md`**（v0.9.1）| §3.12 W1201-W1204 的合規對齊條款；handoff-chain 為跨 AI 協作單一真相來源 |
+| **`roles/doctor/_spec.md`**（v0.9.1 加）| System Doctor 角色概念層定義（可選角色、自具象化執行 /charter-doctor）|
 
 ---
 
@@ -745,6 +935,8 @@ CI / pre-commit hook 可依退出碼 gate。
 | **v0.8.0** | **§3.8 vendor schema 從 spec 層升實作層**（E801/W802 列為強制）+ §3.8.1 漸進路徑表加 v0.8.0 已完成行 + **§3.9 加 axiom 紀律對齊**（E606/E607/W608 — axiom frontmatter status 二態紀律執行載體）+ §2.1 模式 B minimal 必驗集擴含 §3.9。**觸發**：(a) v0.7.4 spec 層累積至 v0.8.0 實作層啟用條件滿足（vendor schema 段已 ship + post-upgrade-verify 軸 C C005 對齊雙工具防禦）；(b) **dogfood signal #23 條款化**（v0.7.0 公司接入第一次失敗 + v0.7.6 LIVE 公司專案接入第二次同類觀察、user 直接授權跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 直接條款化 pattern）— init-spec Phase 5b CHECK 7 ext 為 init 端執行載體、本 §3.9 為 doctor 端執行載體、post-upgrade-verify 軸 D 為升版專屬執行載體、三層雙重防禦 | ✅ |
 | **v0.8.1** | **SSS S3 起手實證 — doctor-spec 既有 error codes 全加四欄 spec-as-data 結構**（合規規定 / 修補方向 + 約束 / 反例）：§3.7 E601-E605（5 個 H4 子段）+ §3.8 E801/W802（2 個）+ §3.9 E606/E607/W608（3 個）+ **新加 §3.10 採用方文檔變更歷史 sync**（W901、dogfood signal #24 升工具層）+ §3.7 校驗集第 2 條措辭修（dogfood signal #19 雙重否定）。**觸發**：(a) 2026-04-30 multi-perspective 評估第十四循環 — external Engineer Round 3-4 提案被 4 sub-agent 反向校準後、SSS S3「引導式紀律」起手實證；(b) **dogfood signal #24 條款化**（v0.7.4/v0.7.5/v0.8.0 連續 ≥3 次同類違反、達 §3.4 演化路徑觸發點）；(c) **dogfood signal #19 順手修**（YC v0.8.0 升版 LIVE Gemini 把合規「shared/ 不存在」誤標 WARN）。**對齊**：v0.7.3 北極星「不讓 user 記」+ v0.7.4 雙軌節奏「頻繁小擴增 PATCH」+ feedback `structural-over-patch` 紀律（spec 結構升維、不是規範補丁）+ `core/violation-reflection §2`「LLM 個體不重要、集體記憶才重要」設計方向（spec 自帶反例段抹掉「LLM completionist 易踩」需求） | ✅ |
 | **v0.9.0** | **新加 §3.11 個體學習迴圈合規**（W1101 reflections/ 累積 / W1102 雙寫對應 / E1103 frontmatter 五欄；全 3 個含四欄 spec-as-data 結構）+ §2.1 模式 B minimal 必驗集擴含 §3.11 W1101 + E1103（W1102 屬模式 A 全量）。**觸發**：**dogfood signal #34 條款化**（user 2026-04-30 LIVE 公司專案接入抓到「個體學習迴圈紀律缺失」、user 明示「框架必備」直接條款化、跳過 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 user 直接條款化 pattern）— charter v0.7.x 把 `core/violation-reflection §2` 集體記憶實作完成、但個體層 + 跨 session 學習迴圈紀律缺失（reflections/ 無強制累積 / F-mode 命中無雙寫對應 / init 無 step 0 強制讀過去違反）。本 §3.11 為 doctor 端執行載體；`init-template §3.3.2 step 0` 為 init 端執行載體；`templates/agent-commons/reflection.md.tpl`（v0.9.0 加）為個體層 entry 結構模板 — 三層雙重防禦。**對齊**：(a) charter v0.5.7 working-stack-discipline 補完接班場景三軸 → v0.9.0 補完第 4 軸（個體 AI 跨任務 / 跨 session 學習迴圈）；(b) v0.7.3 北極星「不讓 user 記」對 AI 角度補完（既有對採用方角度 walkthrough + verify、v0.9.0 補對 AI 個體的學習迴圈強制讀寫）| ✅ |
+
+| **v0.9.1** | **新加 §3.12 平行獨語 Gap 偵測**（W1201 平行獨語 / W1202 handoffs 空 / W1203 capsules 空 / W1204 institutional-memory 空 / W1205 failure_mode_log 缺；全含四欄 spec-as-data 結構）+ **§2.1 模式 C 互動式 Gap 遷移修復**（六步驟流程 + 執行約束 + Gap 分類表）+ **§6 W120x --fix 特殊行為**（W1201/W1202 → 完整模式 C；W1203/W1204 → 輕量版；W1205 → 直接建空檔）+ **§7 三個新關係引用**（individual-learning-loop / working-stack-discipline / roles/doctor）。**觸發**：**dogfood signal #36 條款化**（2026-04-30 LIVE — dbSDK 公司專案 Kiro + Gemini 平行獨語實例、user 直接識別「doctor 應有此能力」，與 `init-spec.md Phase 3.5` scaffold 預防 + `roles/doctor/_spec.md` 角色概念層同批 ship）。**北極星**：偵測 Gap → 辨識性質 → 互動式引導歸位 → 縮小 Gap 至零 | ✅ |
 
 **實作模式**：採用方對 AI prompt「依本 spec 跑健康檢查」+ 順便自具象化 `/charter-doctor` slash command（依 `core/init-template.md §3.3` self-instantiation 精神）。
 
