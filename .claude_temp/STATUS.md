@@ -1,8 +1,8 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-05-01（台灣時間，post-v0.9.6 snapshot）
-> **當前版本**：v0.9.6（**checkpoints save 後交班詢問 + `deactivate_all_active` — user LIVE 設計提案落地**）
-> **Working tree 狀態**：✅ 全部 committed + pushed（`cc38647`）
+> **更新時間**：2026-05-01（台灣時間，post-v0.9.7 snapshot）
+> **當前版本**：v0.9.7（**`reflection.md.tpl` frontmatter 修正 + placeholder 變體 — signal #38 框架層缺口修補**）
+> **Working tree 狀態**：✅ 全部 committed + pushed（`612e576`）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔為 v0.7.5 release 前 snapshot（含深度 sweep）
 > **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` @ `0cf5494` (待打) / `v0.8.2` @ `a2adecf` (待打) / `v0.9.0` (待打)
@@ -13,6 +13,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| **v0.9.7** | `612e576` | **PATCH — `reflection.md.tpl` frontmatter 修正 + placeholder 變體**：三修合一：(1) frontmatter 從 ` ```yaml``` ` code block 移至檔案頂端（F6 bug 修正，doctor §3.11 E1103 解析器現可正確讀取五欄）；(2) status 欄改為單值預設（`強化抽驗`）+ blockquote 三值擇一語意說明（消除原本三值並列歧義）；(3) 新增 Placeholder 變體段落（`violations: []` 時使用，Interface 聲明即合規，省略 §1-§3 為合法行為）。dogfood signal #38 sub-problems ②③⑤ 修補落地。`reflection.md.tpl` v0.9.0 引入即帶 F6 bug（code block frontmatter）—  v0.9.7 修正 |
 | **v0.9.6** | `cc38647` | **PATCH — checkpoints save 後交班詢問 + deactivate_all_active**：`tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）新增 `deactivate_all_active` action（掃描 roles/*/_role.md，ACTIVE → PROVISIONAL，git commit）+ `roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）TOML save flow 加 step 7 交班詢問（user 回應 y → 呼叫 deactivate_all_active）。設計對齊 `multi-role-tracking §3.4` 反向精神（下岸也需 user explicit 確認）+ `handoff-chain.md` session 末確認職責。user LIVE 設計提案 2026-05-01 直接落地 |
 | **v0.9.5** | `caec48d` | **fix — checkpoints_handler commit_save 補 cp 到 handoffs/**：`commit_save` 只做 git commit + clear draft 但從未 cp DRAFT 為 `HIST_DIR/HANDOFF_N.md`，handoffs/ 永遠空白。補 `mkdir -p + cp`（clear 之前）+ handler 升版 v2.1。dogfood signal #37：採用端 AI（Gemini PM）自主正確診斷根因、user 識別正確維護者流程（修 canonical → push → 採用方 pull），charter value compounds 工具層第三個 LIVE 實證 |
 | **v0.9.4 addendum** | `9bd0b8b` | **docs — 橋接層 vs 邏輯層架構說明**：`roles/pm/gemini-cli.md §3.7` 開頭加「設計架構」段（slash command = 橋接層 vendor 特定 / checkpoints_handler.sh = 邏輯層 vendor 中立共用）+ `tools/vendor/commons/checkpoints_handler.sh` header 同步定位說明 |

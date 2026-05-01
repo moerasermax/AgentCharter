@@ -505,7 +505,7 @@ framework 永久維持「**純規範**」位階。
 
 - ~~**`checkpoints_handler.sh` 路徑對齊 + PM init `/checkpoints` 後置介紹（v0.9.2 PATCH）+ 自動版本偵測升版引導（v0.9.3 PATCH）**~~ ✅ **v0.9.2 + v0.9.3 完成**（2026-05-01）：**v0.9.2**：`tools/vendor/commons/checkpoints_handler.sh` canonical 新檔（讀 mapping.yaml 取 `common_memory_root`，fallback `management/history/`）+ `roles/pm/gemini-cli.md §3.7`（v1.3）PM init step 8 後置介紹 `/checkpoints` + `.gemini/commands/checkpoints.toml` 標準範本。**v0.9.3**：`roles/pm/gemini-cli.md §3.7 Step 1`（v1.4）三分支版本偵測（MISSING → canonical 自動安裝 / STALE → `grep mapping.yaml` 偵測 + user 確認後自動覆蓋升級 / CURRENT → 繼續）— 設計原則「框架自動引導、不靠 maintainer 說明」落地。連動：CHANGELOG v0.9.2/v0.9.3 + ADOPTION/TUTORIAL v1.13/v1.14。原候選紀錄：`~/.gemini/checkpoints_handler.sh` 路徑硬編碼 `management/` 違反 `core/charter-config.md`（不讀 mapping.yaml — dogfood signal #3 同源「vendor 工具應 ⊥ 專案結構、路徑透過 mapping.yaml 抽象」）
 
-- **新 dogfood signal #38 候選 — reflection 路徑 / 格式合規問題：雙 AI 雙樣本 LIVE 實證（2026-05-01 dbSDK 專案）**
+- **dogfood signal #38 — reflection 路徑 / 格式合規問題：雙 AI 雙樣本 LIVE 實證（2026-05-01 dbSDK 專案）**【⚠️ 部分修補 v0.9.7：sub-problems ②③⑤ 已修；① ④ ⑥ 繼續觀察】
 
   **觀察背景**：user 要求 Gemini PM（A 專案）+ Claude Engineer（B 專案）各自補交 reflection，兩個 AI 行為對比揭露三層問題。
 
@@ -531,10 +531,10 @@ framework 永久維持「**純規範**」位階。
   | 問題 | 嚴重度 | 候選修法 |
   |---|---|---|
   | Gemini 路徑自創（`.gemini/self_audit/`）| 高 | `roles/pm/gemini-cli.md` 加 reflection 正確路徑明示；`doctor §3.11` W1101 確認涵蓋「路徑在正確位置」|
-  | Frontmatter 放在 code block 非 `---` 區塊 | 中 | `reflection.md.tpl` 加明示說明「frontmatter 必須為 `---` YAML block，不可包在 code block」|
-  | Status 值不在允許清單 | 中（E1103）| `reflection.md.tpl` 補 status 允許值枚舉；`doctor §3.11 E1103` 校驗加 status 值白名單檢查 |
+  | ✅ Frontmatter 放在 code block 非 `---` 區塊 | 中 → **v0.9.7 修補** | `reflection.md.tpl` frontmatter 移至頂端 raw `---` YAML |
+  | ✅ Status 值不在允許清單 | 中（E1103）→ **v0.9.7 修補** | `reflection.md.tpl` status 改單值預設 + 三值擇一 blockquote 說明 |
   | F-mode 編號跨文件不一致 | 中 | `individual-learning-loop §2` 或 `violation-reflection §1` 加「reflection violations 欄位必須引用 failure_mode_log.md 已登記 ID」cross-reference 紀律 |
-  | 雙 AI 都不遵守五段結構（非退稿型灰色地帶）| 中（設計缺口）| `individual-learning-loop §3.4` 或 `reflection.md.tpl` 補「無違規 placeholder 精簡格式 vs 退稿後五段格式」雙軌說明 |
+  | ✅ 雙 AI 都不遵守五段結構（非退稿型灰色地帶）| 中（設計缺口）→ **v0.9.7 修補** | `reflection.md.tpl` 新加 Placeholder 變體段 + 例外注釋：`violations: []` 省略 §1-§3 合法 |
   | charter clone 版本過舊（模板缺）| 低（升版流程問題）| post-upgrade-verify-spec 軸 A 強化 |
 
   **累積**：2 次雙 AI 樣本（2026-05-01 dbSDK LIVE）。**判斷**：六個問題中，2-5 是框架設計層缺口（`reflection.md.tpl` + `individual-learning-loop` 需澄清），可合併為一個 PATCH 修法；1（路徑自創）與 signal #32/#35 同源繼續觀察；6（clone 版本）留 post-upgrade-verify 軸延伸處理。**待 user 確認**：非退稿型 placeholder 的格式設計方向（#5）是核心設計決定，其他修法依賴此決定。
@@ -646,6 +646,19 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.9.7 release（2026-05-01）— reflection.md.tpl frontmatter 修正 + placeholder 變體
+
+✅ **signal #38 框架層缺口修補**（2026-05-01 session）：
+
+- **修 ①：frontmatter F6 bug**：`reflection.md.tpl` frontmatter 從 ` ```yaml``` ` code block 移至檔案頂端（raw `---` YAML）。F6 = surface vs structural — 看起來對但解析器讀不到。doctor §3.11 E1103 現在可正確掃描五欄。
+- **修 ②：status 歧義**：從 `強化抽驗 / user 裁決待議 / 結案`（三值同時存在）改為 `status: 強化抽驗`（單值預設）+ blockquote 三值擇一說明。消除 AI 可能將三值全部填入或不知道選哪個的歧義。
+- **修 ③：placeholder 變體**：新增「Placeholder 變體（violations: [] 時使用）」段 + 最小合規格式範例。`violations: []` 場景（首次 init 無違規歷史）現有明確格式指引。「不可省略的紀律」段補 placeholder 例外注釋。
+- **概念釐清**：Placeholder = Interface（聲明結構合規）/ Implementation = 填寫內容（實際違規反省）— user LIVE 對比確認後落地。
+
+✅ **連動**：commit `612e576`，pushed。未連動 CHANGELOG/ADOPTION/TUTORIAL（pure templates layer fix，無採用方行為影響，不需文檔層 sync）
+
+---
 
 ### v0.9.6 release（2026-05-01）— checkpoints save 後交班詢問 + deactivate_all_active
 
