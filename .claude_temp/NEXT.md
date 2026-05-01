@@ -519,15 +519,25 @@ framework 永久維持「**純規範**」位階。
   - ❌ `~/.agentcharter/templates/` 目錄不存在 → 採用方 charter clone 版本太舊（pre-v0.9.0），`reflection.md.tpl` 尚未存在於 clone。這是 post-upgrade-verify-spec 軸 A（charter clone 對齊）的真實失效場景。
   - ❌ 五段違規反省結構（`violation-reflection §3`）未遵守 → 但 Engineer 指出 `violations: none` 的 placeholder 是否適用五段結構是「灰色地帶」：五段結構設計用於「被退稿後補交反省」，`individual-learning-loop §3.4` 只說「建立 placeholder」，沒規定 placeholder 格式。
 
-  **三個獨立問題拆分**：
+  **Claude Engineer 二輪補充分析（2026-05-01，對 PM reflection 的詳細審查）**：
+
+  1. **frontmatter 放在 code block 裡**：PM 的 frontmatter 被包在 ` ```yaml ``` ` 內而非文件開頭 `---` 區塊 → Doctor §3.11 E1103 掃 frontmatter 時能否正確解析值得確認（YAML parser 可能讀不到）
+  2. **status 值不在允許清單**：`individual-learning-loop §2.3` 規定 status 只有三值（`強化抽驗 / user 裁決待議 / 結案`），PM 寫了 `已內化自檢` → 技術上觸發 E1103
+  3. **F-mode 編號不一致**：`failure_mode_log.md` 登記 F2（Logic Regression）+ F6，PM reflection 寫 F3 → 可能是 PM 參照的 `failure-modes.md` 版本不同，或直接寫錯；cross-reference 斷裂
+  4. **雙 AI 都沒遵守五段結構**：不只 Engineer，PM 也用自訂格式（Evidence / Learning / Audit Trail）— 兩個 AI 都沒走 `violation-reflection §3` 五段 → **確認「非退稿型 reflection」確實需要框架層面澄清**，不是個別 AI 失誤
+
+  **六個獨立問題拆分**：
 
   | 問題 | 嚴重度 | 候選修法 |
   |---|---|---|
-  | Gemini 路徑自創 | 高（違反 individual-learning-loop §2）| `doctor §3.11` W1101 校驗範圍確認涵蓋「路徑在正確位置」；`roles/pm/gemini-cli.md` 加 reflection 正確路徑明示 |
-  | charter clone 版本過舊（模板缺）| 中（採用方升版流程問題）| post-upgrade-verify-spec 軸 A「`~/.agentcharter/` 版本對齊」強化；應提示採用方定期 `git pull` charter clone |
-  | `violations: none` placeholder 格式未定義 | 低（設計灰色地帶）| `core/individual-learning-loop §3.4` 或 `templates/agent-commons/reflection.md.tpl` 補「無違規場景的 placeholder 精簡格式」說明 |
+  | Gemini 路徑自創（`.gemini/self_audit/`）| 高 | `roles/pm/gemini-cli.md` 加 reflection 正確路徑明示；`doctor §3.11` W1101 確認涵蓋「路徑在正確位置」|
+  | Frontmatter 放在 code block 非 `---` 區塊 | 中 | `reflection.md.tpl` 加明示說明「frontmatter 必須為 `---` YAML block，不可包在 code block」|
+  | Status 值不在允許清單 | 中（E1103）| `reflection.md.tpl` 補 status 允許值枚舉；`doctor §3.11 E1103` 校驗加 status 值白名單檢查 |
+  | F-mode 編號跨文件不一致 | 中 | `individual-learning-loop §2` 或 `violation-reflection §1` 加「reflection violations 欄位必須引用 failure_mode_log.md 已登記 ID」cross-reference 紀律 |
+  | 雙 AI 都不遵守五段結構（非退稿型灰色地帶）| 中（設計缺口）| `individual-learning-loop §3.4` 或 `reflection.md.tpl` 補「無違規 placeholder 精簡格式 vs 退稿後五段格式」雙軌說明 |
+  | charter clone 版本過舊（模板缺）| 低（升版流程問題）| post-upgrade-verify-spec 軸 A 強化 |
 
-  **累積**：2 次雙 AI 樣本（2026-05-01 dbSDK LIVE）。**判斷**：三問題可分別累積；charter clone 版本過舊是 post-upgrade-verify 軸 A 既有設計可延伸處理；placeholder 格式灰色地帶待 user 確認設計方向；Gemini 路徑自創與 signal #32/#35 同源家族繼續觀察。
+  **累積**：2 次雙 AI 樣本（2026-05-01 dbSDK LIVE）。**判斷**：六個問題中，2-5 是框架設計層缺口（`reflection.md.tpl` + `individual-learning-loop` 需澄清），可合併為一個 PATCH 修法；1（路徑自創）與 signal #32/#35 同源繼續觀察；6（clone 版本）留 post-upgrade-verify 軸延伸處理。**待 user 確認**：非退稿型 placeholder 的格式設計方向（#5）是核心設計決定，其他修法依賴此決定。
 
 - ~~**新 dogfood signal #37 候選 — checkpoints_handler commit_save 缺 cp 步驟 + 採用端 AI 自主診斷 + 維護者流程正確閉環（charter value compounds 第三個工具層 LIVE 實證）**~~ ✅ **v0.9.5 完成**（2026-05-01、`caec48d`）：`tools/vendor/commons/checkpoints_handler.sh v2.1`：`commit_save` 補 `mkdir -p "$HIST_DIR"` + `cp "$DRAFT_FILE" "$HIST_DIR/HANDOFF_$N.md"`（在 clear draft 之前）。原候選紀錄保留：**新 dogfood signal #37 候選**（2026-05-01 dbSDK 接入 HANDOFF_1 LIVE 實證、Gemini PM 自主識別 handler bug + user 識別正確維護者流程）：`checkpoints_handler.sh commit_save` 區段從 v2.0（v0.9.2 初版）起就缺 cp 步驟 — git commit（包含 DRAFT 內容）+ clear draft，但從未將 DRAFT_CONTEXT.md 複製為 `HIST_DIR/HANDOFF_N.md`，導致 `handoffs/` 永遠空白。因為 git 歷史有資料，bug 不易被主動發現、只有在「找不到 HANDOFF 檔案」時才浮現。**三層 LIVE 觀察**：(1) **採用端 AI 自主診斷**：Gemini PM 在 save 失敗後正確識別根因（不是 F1 假宣告「修好了」）+ 給出 cp 修復方向 + 提出 PowerShell regex 注入方案 — `structural-anti-fabrication + individual-learning-loop` 採用方側工作實證；(2) **維護者流程正確閉環**：user 主動識別「採用方 AI 不該 patch 本機 script，應由 charter maintainer 修 canonical → commit+push → 採用方 pull」— charter 維護者 / 採用方雙層職責邊界 LIVE 清晰執行；(3) **框架工具自我反饋迴路**：採用 → 發現工具 bug → 回報 → 維護者修 canonical → 採用方更新 — charter dogfood 精神第三個工具層實證（前兩個：v0.9.2 signal #3 路徑抽象 / v0.9.1 signal #36 doctor Gap 偵測）。**根因**：handler v2.0 建立時邏輯漏寫 cp 步驟（`save` 流程設計了三步 — commit / backup / clear，但 `commit_save` 只實作了兩步），且 `~/.gemini/checkpoints_handler.sh` 與 `tools/vendor/commons/checkpoints_handler.sh` 同一 bug 同步存在。**判斷**：已 fix + 無需條款化；**dogfood 觀察價值**在「採用端 AI 自主診斷正確、維護者流程正確閉環」LIVE 實證 — 記錄為 charter value compounds 成長實證。
 
