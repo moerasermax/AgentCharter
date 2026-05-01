@@ -6,7 +6,34 @@
 
 ## [Unreleased]
 
-（空 — v0.9.0 已釋出；下批次 v0.9.x PATCH 議程：v0.9.1 SSS S1「AI 自治協作 + user 授權閘」概念 framing 起手（前置條件 ① + ② 已 ship、可開動真正設計）；v0.8.x 留下議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+（空 — v0.9.2 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+
+---
+
+## [0.9.2] — 2026-05-01
+
+> **PATCH release — PM init `/checkpoints` 後置介紹 + `checkpoints_handler.sh` 路徑對齊（dogfood signal #3 vendor 工具路徑硬編碼落地修正）**。向下兼容，純擴增 `roles/pm/gemini-cli.md`；採用方升版只改 `charter_version: "0.9.1"` → `"0.9.2"`。
+
+### Changed
+
+- **`roles/pm/gemini-cli.md §3.7`（v1.3 新增）**：PM self-instantiation step 8 後置主動介紹 `/checkpoints` 存檔機制 — 介紹話術（跨 session 不失憶 / 跨 AI 接班 / git 自動存檔三好處）+ AI 執行三步驟（確認 `~/.gemini/checkpoints_handler.sh` / 建立 `.gemini/commands/checkpoints.toml` / status 驗收）+ `.gemini/commands/checkpoints.toml` 標準範本（§3.6 扁平 TOML、save/load/status/config 四流程完整 prompt）+ 拒絕 fallback + 跨 AI 對應表
+
+**外部修正（repo 外）**：`~/.gemini/checkpoints_handler.sh` 路徑從硬編碼 `management/` 改為讀 `agent-commons/_config/mapping.yaml → common_memory_root`（`handoffs/` 取代 `history/`；無 mapping.yaml 時 fallback `management/history/` 舊結構）。對齊 `core/charter-config.md` + dogfood signal #3「vendor 工具路徑硬編碼」同源修正。
+
+---
+
+## [0.9.1] — 2026-05-01
+
+> **PATCH release — doctor Gap 偵測 + 互動式引導 + Doctor 角色概念層 + UPGRADE.md（dogfood signal #36 條款化，第十八循環）**。向下兼容，純擴增 tools/spec/roles 層；採用方升版只改 `charter_version: "0.9.0"` → `"0.9.1"`。
+
+### Added
+
+- **`tools/doctor-spec.md §2.1 模式 C`**：六步驟互動式 Gap 遷移流程 + Gap 分類表（平行獨語 / 形同虛設目錄 / 非 charter 格式工作產物 / 正常 charter 結構）— 偵測 Gap → 辨識性質 → 互動式引導歸位
+- **`tools/doctor-spec.md §3.12`**：W1201-W1205 五 Warning 碼（平行獨語 / handoffs 空 / capsules 空 / institutional-memory 空 / failure_mode_log 缺）+ 四欄 spec-as-data 結構對齊 §3.7-§3.10
+- **`tools/init-spec.md Phase 3.5`**：agent-commons scaffold 完整預建 + 疑似 AI 工作產物偵測提示 — init 端防止 Gap 在接入階段發生
+- **`tools/post-upgrade-verify-spec.md §升版後 Doctor 角色建立提示`**：全綠後詢問是否建立 Doctor 角色
+- **`roles/doctor/_spec.md`**：System Doctor 角色概念層新檔 — Gap 偵測 + 引導修復 + 互動式歸位（對應 dogfood signal #36 平行獨語 LIVE 實證 + YC HANDOFF_16 高品質協作對比設計啟示）
+- **`UPGRADE.md`**：升版入口文件 — PATCH vs MINOR 兩路徑 30 秒決策表 + PATCH 2 步流程（pull + 改版號）+ MINOR walkthrough 索引表 + maintainer 維護說明
 
 ---
 

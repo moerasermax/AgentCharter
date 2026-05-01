@@ -1,6 +1,6 @@
 # PM × Gemini CLI — Implementation
 
-> **狀態**：v1.1（v0.6.0 加 §3 繞路執行傾向 row + §3.5 sub-agent 跨界禁令段）
+> **狀態**：v1.3（v0.9.2 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹）
 > **基於**：`roles/pm/_spec.md`
 > **AI**：Google Gemini CLI（v1.x）
 > **沉澱來源**：CryptoBot S70 PnL 誤判事件後 Gemini PM 親自提交（Round 1）+ 三層結構重整（Round 2）+ 橋接層校正 + YC_AIAgentCrew 2026-04-28 dogfood signal #5 補強
@@ -212,6 +212,102 @@ prompt = """
 
 ---
 
+## §3.7 PM Init 後置：`/checkpoints` 存檔機制介紹與落實（v1.3 加）
+
+> **觸發時機**：PM self-instantiation 八步驟全數完成（step 8 回報後）、採用方仍在接入 session 中。
+> **位階**：PM 主動介紹的 optional enhancement；採用方可接受或跳過，不影響 init 完成狀態。
+> **對應條款**：`core/working-stack-discipline §1`（DRAFT 外部化 + save 同步 git commit 紀律）。
+
+### 介紹話術（PM 主動對採用方說）
+
+> AgentCharter 框架內建一套跨 session 存檔機制 `/checkpoints`，讓工作進度自動化為
+> HANDOFF 文件 + git commit，三個指令完成全流程：
+>
+> - `/checkpoints save` — 存檔當前草稿 → 生成 `HANDOFF_N.md` → git commit
+> - `/checkpoints load` — 讀取最新 HANDOFF，接班時 30 秒對齊脈絡
+> - `/checkpoints status` — 顯示草稿大小、最新 HANDOFF 編號、git 狀態
+>
+> **三個好處：**
+> 1. **跨 session 不失憶** — 每次 save 就是一個可恢復的接班點，不怕 context 清空
+> 2. **跨 AI 無縫接班** — 不論是換模型、換廠商、還是我自己下次重新啟動，都從 HANDOFF 繼續
+> 3. **git 版本歷史自動建立** — 不需手動 commit，查帳有跡可循，對齊 `working-stack-discipline` 紀律
+>
+> 只需設立一次，之後每次工作結束執行 `/checkpoints save` 即可。要現在幫你設立嗎？
+
+### 採用方同意後：AI 執行步驟
+
+#### Step 1：確認 `~/.gemini/checkpoints_handler.sh` 存在
+
+```
+run_shell_command("test -f ~/.gemini/checkpoints_handler.sh && echo EXISTS || echo MISSING")
+```
+
+- 若回傳 `EXISTS` → 繼續 Step 2
+- 若回傳 `MISSING` → 告知 user：「需先安裝 `checkpoints_handler.sh` 到 `~/.gemini/`（一次性全局設定）。」提供 script 內容請 user 自行安裝，安裝後 re-verify 再繼續
+
+#### Step 2：建立 `.gemini/commands/checkpoints.toml`（依 §3.6 扁平 TOML 規範）
+
+在專案根目錄 `.gemini/commands/checkpoints.toml` 寫入以下內容：
+
+```toml
+description = "AgentCharter 跨 session 存檔機制 — 用法：/checkpoints [save|load|status|config]"
+
+prompt = """
+執行 AgentCharter /checkpoints 存檔機制。依使用者輸入的動作（save / load / status / config）執行對應流程。若未指定動作，先輸出各動作說明，再詢問要執行哪個。
+
+## save 流程
+1. run_shell_command("bash ~/.gemini/checkpoints_handler.sh save")
+   - 回傳 ERROR:EMPTY_DRAFT → 告知「草稿為空，請先在 DRAFT_CONTEXT.md 寫入工作摘要再存檔」，結束
+   - 解析輸出：NEXT_N（下一個編號）、LATEST_PATH（上一個 HANDOFF 路徑）、DRAFT_PATH（草稿路徑）
+2. read_file(DRAFT_PATH)  取得草稿內容
+3. 依 ~/.agentcharter/templates/agent-commons/handoff.md.tpl 格式，生成 HANDOFF_<NEXT_N>.md
+   必含 7 項（handoff-chain §2）：任務進度 / 待解決問題 / 下一步行動 / 重要決策 / 風險項目 / 檔案狀態 / 接班指引
+4. write_file(<handoffs 目錄>/HANDOFF_<NEXT_N>.md, 生成內容)
+5. run_shell_command("bash ~/.gemini/checkpoints_handler.sh commit_save <NEXT_N>")
+   解析 GIT_HASH
+6. 回報：「✅ HANDOFF_<NEXT_N>.md 存檔完成，git: <GIT_HASH>」
+
+## load 流程
+1. run_shell_command("bash ~/.gemini/checkpoints_handler.sh load")
+   - 回傳 ERROR:NO_HANDOFF → 告知「尚無存檔，請先執行 /checkpoints save」，結束
+   - 解析 PATH
+2. read_file(PATH)
+3. 摘述最新 HANDOFF 給 user（依 handoff-chain §2 必含 7 項逐項說明）
+
+## status 流程
+run_shell_command("bash ~/.gemini/checkpoints_handler.sh status")
+原文回報結果。
+
+## config 流程
+run_shell_command("bash ~/.gemini/checkpoints_handler.sh config")
+原文回報結果。
+"""
+```
+
+#### Step 3：驗收
+
+```
+run_shell_command("bash ~/.gemini/checkpoints_handler.sh status")
+```
+
+預期輸出格式：`STATUS: DRAFT_CONTEXT is empty, Latest HANDOFF: N=0, Git: yes`
+
+驗收通過後回報：「✅ `/checkpoints` 已就緒。下次工作結束前執行 `/checkpoints save` 即完成存檔。」
+
+### 採用方拒絕時
+
+不強迫，不再提。說：「了解，日後需要補安裝可參考 `~/.agentcharter/roles/pm/gemini-cli.md §3.7`。」
+
+### 跨 AI 對應
+
+| AI | 等效機制 | 備註 |
+|---|---|---|
+| Claude Code | `~/.claude/commands/checkpoints.md` | 依 `roles/engineer/claude-code.md §4.1` md schema |
+| Gemini CLI | `.gemini/commands/checkpoints.toml` | **本段落實**，handler 路徑透過 mapping.yaml 抽象 |
+| Cursor | 待邀請 vendor 實作 | 對齊 `core/ai-vendor-onboarding §3` 邀請制 |
+
+---
+
 ## §4 歷史事件沉澱：S70 PnL 誤判事件 ⭐
 
 ### (a) 事件時序
@@ -292,6 +388,17 @@ prompt = """
 ---
 
 ## §7 變更歷史
+
+### v1.3 / 2026-05-01（v0.9.2 候選）
+
+**動作**：新增 **§3.7「PM Init 後置：`/checkpoints` 存檔機制介紹與落實」**段 — 觸發時機（step 8 後）+ 採用方介紹話術 + AI 執行三步驟（確認 handler / 建立 checkpoints.toml / 驗收）+ `.gemini/commands/checkpoints.toml` 標準範本 + 拒絕 fallback + 跨 AI 對應表。
+
+**觸發**：`~/.gemini/checkpoints_handler.sh` 分析揭露兩個問題：(1) 路徑硬編碼 `management/` 違反 `core/charter-config.md`（不讀 mapping.yaml）；(2) PM init 缺「主動介紹存檔機制」紀律。連動修 `checkpoints_handler.sh` 對齊 charter（讀 mapping.yaml → `common_memory_root`，fallback 舊結構）。
+
+**修訂類型**：PATCH — 純擴增、向下兼容（既有 §1〜§3.6 / §4〜§6 不變）。對齊 `core/working-stack-discipline §1` DRAFT 外部化 + save 同步 git commit 紀律。PM init 後置介紹屬 optional enhancement，採用方拒絕不影響 init 完成狀態。
+
+**連動修訂**：
+- `~/.gemini/checkpoints_handler.sh`：路徑宣告改為讀 `mapping.yaml` 取 `common_memory_root`，`handoffs/` 取代 `history/`，`nextwork.md` 取代 `NextWork.md`；無 mapping.yaml 時 fallback `management/history/` 舊路徑（backward compat）
 
 ### v1.2 / 2026-04-28（v0.7.4）
 
