@@ -1,3 +1,11 @@
+---
+date: <YYYY-MM-DD>
+role: <role>
+vendor: <vendor>
+status: 強化抽驗
+violations: [<F-mode 編號逐個列，如 F1, F3 / role-separation §3.5>]
+---
+
 # 違規反省：<TASK_ID>_<F-MODE>_<SHORT_DESC>
 
 > **建立日期**：<YYYY-MM-DD>
@@ -5,19 +13,8 @@
 > **位階**：個體層學習迴圈 entry — 依 `core/individual-learning-loop §2` 雙寫紀律（個體層 ＝ 本檔；集體層 ＝ `state/failure_mode_log.md`）
 > **依據**：<觸發來源 — F-mode 命中 / 抽驗退稿 / user 抓到 / self-instantiation step 0 抓出歷史漏寫補登>
 
----
-
-```yaml
----
-date: <YYYY-MM-DD>
-role: <role>
-vendor: <vendor>
-status: 強化抽驗 / user 裁決待議 / 結案
-violations: [<F-mode 編號逐個列，如 F1, F3 / role-separation §3.5>]
----
-```
-
 > frontmatter 五欄必填，缺欄位 → doctor §3.11 E1103。
+> status 三值擇一：`強化抽驗`（進行中）/ `user 裁決待議`（等 user 決定）/ `結案`（已解決）。
 
 ---
 
@@ -103,6 +100,28 @@ violations: [<F-mode 編號逐個列，如 F1, F3 / role-separation §3.5>]
 每次 self-instantiation **step 0 必讀**自己 reflections/ 最近 5 個 + failure_mode_log + IM。
 不通則 step 1 禁止啟動（依 `core/init-template §3.3.2 step 0`）。
 
+### Placeholder 變體（violations: [] 時使用）
+
+首次 init 無違規歷史、或新 session 合規佔位用。僅需 frontmatter 五欄合規，段落 §1-§3 可省略（Interface 聲明 → 結構合規；Implementation 為空 → 尚無違規歷史可填）。
+
+最小合規 placeholder：
+
+````markdown
+---
+date: <YYYY-MM-DD>
+role: <role>
+vendor: <vendor>
+status: 結案
+violations: []
+---
+
+# 違規反省 placeholder — <role> 初始化合規佔位
+
+> **建立日期**：<YYYY-MM-DD>
+> **角色**：<role>（<vendor>）
+> **依據**：self-instantiation — 首次 init，無違規歷史
+````
+
 ### 為什麼此模板獨立於 `violation-reflection.md` §3 五段格式
 
 - `violation-reflection §3` 五段 = **每事件級**集體記憶結構（vendor-agnostic、跨 session 集體價值）
@@ -113,6 +132,7 @@ violations: [<F-mode 編號逐個列，如 F1, F3 / role-separation §3.5>]
 ### 不可省略的紀律
 
 - §1 至少一個 F-mode 命中段（缺即無此 entry 存在意義）
+  ↳ **例外**：`violations: []` placeholder 變體可省略 §1-§3（見上方 Placeholder 變體說明）
 - §2 至少一條鐵律（未來偵測路徑必含）
 - §3 對應條款引用（charter 條款編號完整、不可空表）
 - frontmatter 五欄齊（doctor §3.11 E1103 致命）
