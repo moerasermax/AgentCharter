@@ -613,6 +613,26 @@ framework 永久維持「**純規範**」位階。
 
 ## 已完成（本 session 累積，從待議移除）
 
+### v0.9.6 release（2026-05-01）— checkpoints save 後交班詢問 + deactivate_all_active
+
+✅ **user LIVE 設計提案直接落地**（2026-05-01 session）：
+
+**觸發脈絡**：Gemini PM 在公司 dbSDK 專案簽入 ACTIVE、user 詢問 PROVISIONAL vs ACTIVE 差異 → 討論觸發兩個子提案：
+- **子提案一**（不重工確認）：init 預設 PROVISIONAL 已是設計，執行問題 = signal #35，繼續觀察累積
+- **子提案二**（本 release 落地）：checkpoints save 後主動詢問「今日任務是否結束？是否交班？」，user 確認後全員降 PROVISIONAL
+
+✅ **`tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）**：
+- 新增 `deactivate_all_active` action — 掃描 `<common_memory_root>/roles/*/_role.md`、`status: ACTIVE` → `PROVISIONAL`、git commit 紀錄
+
+✅ **`roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）**：
+- `checkpoints.toml` save flow 加 step 7 — 存檔後詢問交班意願；y → 呼叫 `deactivate_all_active` + 回報；其他 → 維持現狀
+
+✅ **設計對齊**：`core/multi-role-tracking §3.4`「上岸需 user explicit 授權」反向精神（下岸也需確認）+ `core/handoff-chain.md` session 末確認職責
+
+✅ **連動 sync**：CHANGELOG v0.9.6 + ADOPTION v1.15 + TUTORIAL v1.15 + STATUS v0.9.6（commit `cc38647`，pushed）
+
+---
+
 ### v0.9.0 release（2026-04-30）— 紀律完整性 + AI 自我覺察升維（charter 完成 v0.7.3 北極星雙邊閉環）
 
 ✅ **dogfood-driven hardening 第十七循環**（slim v0.9.0 設計層轉折：v0.x 紀律密度導向 → v0.9 紀律完整性導向）+ **multi-agent 並行 ship 第二次實證**（A condition / B 實作 / C 採用方 + maintainer 整合）：

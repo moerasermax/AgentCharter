@@ -13,6 +13,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| **v0.9.6** | `cc38647` | **PATCH — checkpoints save 後交班詢問 + deactivate_all_active**：`tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）新增 `deactivate_all_active` action（掃描 roles/*/_role.md，ACTIVE → PROVISIONAL，git commit）+ `roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）TOML save flow 加 step 7 交班詢問（user 回應 y → 呼叫 deactivate_all_active）。設計對齊 `multi-role-tracking §3.4` 反向精神（下岸也需 user explicit 確認）+ `handoff-chain.md` session 末確認職責。user LIVE 設計提案 2026-05-01 直接落地 |
 | **v0.9.5** | `caec48d` | **fix — checkpoints_handler commit_save 補 cp 到 handoffs/**：`commit_save` 只做 git commit + clear draft 但從未 cp DRAFT 為 `HIST_DIR/HANDOFF_N.md`，handoffs/ 永遠空白。補 `mkdir -p + cp`（clear 之前）+ handler 升版 v2.1。dogfood signal #37：採用端 AI（Gemini PM）自主正確診斷根因、user 識別正確維護者流程（修 canonical → push → 採用方 pull），charter value compounds 工具層第三個 LIVE 實證 |
 | **v0.9.4 addendum** | `9bd0b8b` | **docs — 橋接層 vs 邏輯層架構說明**：`roles/pm/gemini-cli.md §3.7` 開頭加「設計架構」段（slash command = 橋接層 vendor 特定 / checkpoints_handler.sh = 邏輯層 vendor 中立共用）+ `tools/vendor/commons/checkpoints_handler.sh` header 同步定位說明 |
 | **v0.9.4** | `4d456cc` | **refactor — checkpoints_handler.sh 移至 tools/vendor/commons/**：handler 為 vendor 中立 bash script，從 `tools/vendor/gemini/` 移至 `tools/vendor/commons/`；所有引用路徑同步更新（gemini-cli.md + CHANGELOG/ADOPTION/TUTORIAL）|
@@ -251,24 +252,23 @@ project-root/
 
 ## 下次接班起點
 
-### ✅ v0.9.4 working-tree snapshot（2026-05-01，clean）
+### ✅ v0.9.6 working-tree snapshot（2026-05-01，clean）
 
-> Working tree 全部 committed + pushed（`9bd0b8b`）。v0.9.2〜v0.9.4 為 checkpoints_handler.sh 整合系列（三 PATCH）：v0.9.1 後 session 收尾、v0.9.2 PM init 後置介紹 + docs debt、v0.9.3 自動版本偵測、v0.9.4 移至 commons/ + 橋接層 vs 邏輯層說明。
+> Working tree 全部 committed + pushed（`cc38647` + STATUS snapshot `d38b6de`）。v0.9.5〜v0.9.6 為本 session 兩個 PATCH：v0.9.5 checkpoints_handler commit_save 補 cp bug 修、v0.9.6 checkpoints save 後交班詢問 + deactivate_all_active。
 
-#### v0.9.2〜v0.9.4 異動摘要
+#### v0.9.5〜v0.9.6 異動摘要
 
 | 版本 | 主要異動檔 | 內容 |
 |---|---|---|
-| v0.9.2 | `roles/pm/gemini-cli.md` §3.7（v1.3）/ CHANGELOG / ADOPTION / TUTORIAL | PM init step 8 後置介紹 `/checkpoints` + `.gemini/commands/checkpoints.toml` 標準範本（4 流程）+ 跨 AI 對應表；外部修正 `~/.gemini/checkpoints_handler.sh` 路徑改讀 mapping.yaml（dogfood signal #3 落地）；文檔層補 v0.9.1 docs debt |
-| v0.9.3 | `roles/pm/gemini-cli.md` §3.7 Step 1（v1.4）/ `tools/vendor/gemini/checkpoints_handler.sh` 新檔 / CHANGELOG / ADOPTION / TUTORIAL | 三分支版本偵測（MISSING/STALE/CURRENT）+ canonical v2.0 handler（讀 mapping.yaml → common_memory_root，fallback management/history/）|
-| v0.9.4 | `tools/vendor/commons/checkpoints_handler.sh`（從 gemini/ 移來）/ `roles/pm/gemini-cli.md` §3.7 開頭架構段 / CHANGELOG / ADOPTION / TUTORIAL | handler 移至 commons/ 明示 vendor 中立；§3.7 加橋接層（slash command）vs 邏輯層（handler）架構說明 |
+| v0.9.5 | `tools/vendor/commons/checkpoints_handler.sh`（v2.0 → v2.1）| `commit_save` 補 `mkdir -p + cp DRAFT → HANDOFF_N.md`（v2.0 起 bug：git commit 有但 handoffs/ 永遠空白）；dogfood signal #37 LIVE 實證（採用端 AI 自主診斷根因 + 維護者流程正確閉環）|
+| v0.9.6 | `tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）/ `roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）| handler 加 `deactivate_all_active` action；TOML save flow 加 step 7 交班詢問；user LIVE 設計提案直接落地 |
 
 #### 當前狀態一覽
 
 - **25 條 core 條款** / 1 條 maintainer-only / 4 preset（essential 5 / minimal 12 / standard 22 / strict 22）
 - **13 個架構級概念** / dogfood signal #1〜#37 累積（#37 最新，v0.9.5 完成）
 - **SSS 級議程**：S1（AI 自治協作 + 授權閘）啟動前置條件齊備；S2 lifecycle 設計素材保留；S3 引導式紀律 v0.9.0 架構級落地完成
-- **採用案例**：YC_AIAgentCrew（v0.8.0+，HANDOFF_16 LIVE 完美）/ 公司 dbSDK（v0.9.0+，進行中）/ CryptoBot（原始案例）
+- **採用案例**：YC_AIAgentCrew（v0.8.0+，HANDOFF_16 LIVE 完美）/ 公司 dbSDK（v0.9.6+，進行中）/ CryptoBot（原始案例）
 
 #### 下一步優先議題
 
