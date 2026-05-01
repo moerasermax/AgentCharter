@@ -1,8 +1,8 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-05-01（台灣時間，post-v0.9.4 snapshot）
-> **當前版本**：v0.9.4（**checkpoints_handler.sh 整合系列完成 — 橋接層 vs 邏輯層架構確立**）
-> **Working tree 狀態**：✅ 全部 committed + pushed（`9bd0b8b`）
+> **更新時間**：2026-05-01（台灣時間，post-v0.9.5 snapshot）
+> **當前版本**：v0.9.5（**checkpoints_handler commit_save 補 cp 步驟 — 採用端 AI 自主診斷 + 維護者流程閉環實證**）
+> **Working tree 狀態**：✅ 全部 committed + pushed（`caec48d`）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔為 v0.7.5 release 前 snapshot（含深度 sweep）
 > **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` @ `0cf5494` (待打) / `v0.8.2` @ `a2adecf` (待打) / `v0.9.0` (待打)
@@ -13,6 +13,7 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| **v0.9.5** | `caec48d` | **fix — checkpoints_handler commit_save 補 cp 到 handoffs/**：`commit_save` 只做 git commit + clear draft 但從未 cp DRAFT 為 `HIST_DIR/HANDOFF_N.md`，handoffs/ 永遠空白。補 `mkdir -p + cp`（clear 之前）+ handler 升版 v2.1。dogfood signal #37：採用端 AI（Gemini PM）自主正確診斷根因、user 識別正確維護者流程（修 canonical → push → 採用方 pull），charter value compounds 工具層第三個 LIVE 實證 |
 | **v0.9.4 addendum** | `9bd0b8b` | **docs — 橋接層 vs 邏輯層架構說明**：`roles/pm/gemini-cli.md §3.7` 開頭加「設計架構」段（slash command = 橋接層 vendor 特定 / checkpoints_handler.sh = 邏輯層 vendor 中立共用）+ `tools/vendor/commons/checkpoints_handler.sh` header 同步定位說明 |
 | **v0.9.4** | `4d456cc` | **refactor — checkpoints_handler.sh 移至 tools/vendor/commons/**：handler 為 vendor 中立 bash script，從 `tools/vendor/gemini/` 移至 `tools/vendor/commons/`；所有引用路徑同步更新（gemini-cli.md + CHANGELOG/ADOPTION/TUTORIAL）|
 | **v0.9.3** | `2b7efc8` | **PATCH — checkpoints_handler.sh 自動版本偵測 + 升版引導**：`roles/pm/gemini-cli.md §3.7 Step 1`（v1.3→v1.4）三分支版本偵測（MISSING → canonical 自動安裝 / STALE → grep mapping.yaml 偵測 + user 確認後自動覆蓋升級 / CURRENT → 繼續）+ `tools/vendor/gemini/checkpoints_handler.sh` canonical v2.0 新檔（讀 mapping.yaml 取 common_memory_root，fallback management/history/）。設計原則「框架自動引導、不靠 maintainer 說明升版步驟」|
@@ -265,7 +266,7 @@ project-root/
 #### 當前狀態一覽
 
 - **25 條 core 條款** / 1 條 maintainer-only / 4 preset（essential 5 / minimal 12 / standard 22 / strict 22）
-- **13 個架構級概念** / dogfood signal #1〜#36 累積（#36 最新，v0.9.1 完成）
+- **13 個架構級概念** / dogfood signal #1〜#37 累積（#37 最新，v0.9.5 完成）
 - **SSS 級議程**：S1（AI 自治協作 + 授權閘）啟動前置條件齊備；S2 lifecycle 設計素材保留；S3 引導式紀律 v0.9.0 架構級落地完成
 - **採用案例**：YC_AIAgentCrew（v0.8.0+，HANDOFF_16 LIVE 完美）/ 公司 dbSDK（v0.9.0+，進行中）/ CryptoBot（原始案例）
 
