@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # AgentCharter — Checkpoints Handler (邏輯層 / Logic Layer)
-# Canonical version: v2.0 (charter v0.9.4+)
+# Canonical version: v2.1 (charter v0.9.5+)
 # Canonical path: tools/vendor/commons/checkpoints_handler.sh
 # Deploy path:    ~/.gemini/checkpoints_handler.sh  (或其他 vendor 對應位置)
 #
@@ -17,6 +17,8 @@
 #   - 採用方自訂邏輯只需 fork 本檔，不需動橋接層
 #
 # ── 變更歷史 ────────────────────────────────────────────────────────────────
+# v2.1 (v0.9.5): copy draft to HIST_DIR/HANDOFF_N.md before clearing
+#                (commit_save was committing but never writing the file)
 # v2.0 (v0.9.2): paths read from mapping.yaml (core/charter-config §3)
 #                instead of hardcoded management/ (dogfood signal #3 fix)
 # v1.0 origin:   CryptoBot management/history/ structure
@@ -127,6 +129,10 @@ case "$ARG" in
         else
             GIT_HASH="skipped (Not a git repository)"
         fi
+
+        # Backup Draft to History
+        mkdir -p "$HIST_DIR"
+        cp "$DRAFT_FILE" "$HIST_DIR/HANDOFF_$N.md"
 
         # Clear Draft
         echo "# DRAFT_CONTEXT" > "$DRAFT_FILE"
