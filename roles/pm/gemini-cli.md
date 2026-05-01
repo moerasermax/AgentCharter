@@ -250,12 +250,12 @@ run_shell_command("test -f ~/.gemini/checkpoints_handler.sh && echo EXISTS || ec
 **1b. 安裝（handler 不存在）：**
 
 ```
-run_shell_command("test -f ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh && echo CANONICAL_OK || echo CANONICAL_MISSING")
+run_shell_command("test -f ~/.agentcharter/tools/vendor/commons/checkpoints_handler.sh && echo CANONICAL_OK || echo CANONICAL_MISSING")
 ```
 
 - 若 `CANONICAL_OK` → 自動安裝：
   ```
-  run_shell_command("cp ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh ~/.gemini/checkpoints_handler.sh && chmod +x ~/.gemini/checkpoints_handler.sh && echo INSTALLED")
+  run_shell_command("cp ~/.agentcharter/tools/vendor/commons/checkpoints_handler.sh ~/.gemini/checkpoints_handler.sh && chmod +x ~/.gemini/checkpoints_handler.sh && echo INSTALLED")
   ```
   回報：「✅ `checkpoints_handler.sh` 已從 charter canonical 自動安裝完成。」→ 繼續 Step 2
 - 若 `CANONICAL_MISSING` → 告知 user：「需先安裝 `checkpoints_handler.sh` 到 `~/.gemini/`（一次性全局設定）。可從 charter repo `tools/vendor/gemini/checkpoints_handler.sh` 取得。」安裝後 re-verify 再繼續
@@ -272,7 +272,7 @@ run_shell_command("grep -q 'mapping.yaml' ~/.gemini/checkpoints_handler.sh && ec
   詢問是否自動升版：「是否允許從 charter canonical 自動覆蓋升級？(y/n)」
   - 若 y → 執行：
     ```
-    run_shell_command("test -f ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh && cp ~/.agentcharter/tools/vendor/gemini/checkpoints_handler.sh ~/.gemini/checkpoints_handler.sh && chmod +x ~/.gemini/checkpoints_handler.sh && echo UPGRADED || echo CANONICAL_MISSING")
+    run_shell_command("test -f ~/.agentcharter/tools/vendor/commons/checkpoints_handler.sh && cp ~/.agentcharter/tools/vendor/commons/checkpoints_handler.sh ~/.gemini/checkpoints_handler.sh && chmod +x ~/.gemini/checkpoints_handler.sh && echo UPGRADED || echo CANONICAL_MISSING")
     ```
     - 回傳 `UPGRADED` → 回報：「✅ 已自動升級至 v2.0（mapping.yaml 對齊版）。」→ 繼續 Step 2
     - 回傳 `CANONICAL_MISSING` → 告知「charter canonical 不存在，請手動從 `tools/vendor/gemini/checkpoints_handler.sh` 取得最新版覆蓋。」
