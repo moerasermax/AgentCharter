@@ -538,6 +538,8 @@ framework 永久維持「**純規範**」位階。
     - `examples/external-evaluations/clispike-multi-perspective-eval-2026-04-30.md` §3.2 結構師金礦（雙軸矩陣完整推導）
     - 本檔 SSS S1「LIVE prototype 觀察（2026-04-30 多 sub-agent 評估）」子段（觸發脈絡）
 
+- ~~**UPGRADE.md 升版入口文件**~~ ✅ **2026-05-01 完成**（`c20b09a`）：PATCH vs MINOR 兩路徑決策表 + PATCH 2 步流程（pull + 改版號）+ MINOR walkthrough 索引表 + maintainer 維護說明（PATCH 不需新 walkthrough）。**設計學意義**：採用方不看細節 → 30 秒決策表直觀告知走哪條路；MINOR 流程固定化（拉最新 + walkthrough + verify）、只需維護差異段；PATCH 流程超輕量、不需獨立文件。
+
 - **v0.7.6 BOOTSTRAP.md 入口檔議程備註 — 必含「升版快速執行版」段**（v0.7.5 對話揭露 / 2026-04-29 user 直接抓到）：v0.7.5 ship 的 `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` walkthrough §3 7 步流程對採用方仍偏重（含大量 reference + 條款引用 + 設計學意義段）；對話內 maintainer 即興整理的「**5 步精簡實戰執行版**」（Step 0 前置 / Step 1 toml / Step 2 profile / Step 3 doctor / Step 4 axiom / Step 5 commit + 預估時間 + 驗證點）對採用方體感更佳、但**沒沉澱回文件**。對應 v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」精神不夠到位 → v0.7.6 BOOTSTRAP.md 設計時必含「**升版快速執行版**」結構（採用方端入口、對應 walkthrough §3 但精簡 actionable）；既有 walkthrough §3 保留為「**標準學術版**」、可加 §3a「**快速執行版**」對照 cross-reference。**對應 NEXT 區段 v0.7.x 後續議程的 v0.7.6 BOOTSTRAP**
 
   - **第二輪 user 抓到的同源設計盲區（2026-04-29 升版實戰）**：v0.7.5 walkthrough §3 Step 4「應用 migration」段（4.1 profile.yaml 修補 / 4.2 toml 修補 / 4.3 axiom frontmatter）— **4.1 + 4.3 是「給 user 的 yaml/markdown diff 範例」、不是「給 AI 的 prompt」**（vs 4.2 toml 修補是「給 AI 的 prompt」格式）。user 反問「這邊要自己手改(?，不能用指令嗎 這樣似乎不是無痛」抓到此設計矛盾。**v0.7.6 BOOTSTRAP 設計必修紀律**：所有採用方需要動 schema / 修檔的動作（profile.yaml 改 / mapping.yaml 改 / axiom 加 frontmatter / commit message 模板等）— **必須有對應「給 AI 的 prompt」模板**（user 貼一次 AI 自動完成）；不可只給「user 視角的 diff 範例」（要求 user 親自編輯）。對齊「**user 最少做 1 個動作**」北極星精神 — user 動作 = 貼 prompt、AI 動作 = 修檔。
