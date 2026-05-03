@@ -598,6 +598,8 @@ Step 6 【執行（單項）】
   - ✅ 正解：placeholder 也須符合 frontmatter 五欄 schema、即使 violations: [] 也明示空陣列
 - ❌ AI 把 W1101 解讀為「升版過渡期可豁免」自行跳過修補
   - ✅ 正解：W1101 是 WARN 不是阻擋、但補建是 v0.9.0 升版必動作（升版 walkthrough Step 3 對齊）
+- ❌ AI 把 reflection 寫到 vendor 私有目錄（如 `.gemini/self_audit/` / `.claude/reflections/` / `.cursor/notes/` 等）
+  - ✅ 正解：reflection 必須在 `<common_memory_root>/roles/<role>/reflections/`；vendor 目錄（`.gemini/` / `.claude/` / `.cursor/`）是橋接層、**不是** charter 共享記憶根（`core/common-memory-root §1`）。寫到 vendor 目錄 = W1101 偵測不到（doctor 只掃 common_memory_root 範圍）— 詳見 `roles/pm/gemini-cli.md §3.8`
 
 #### W1102 詳盡引導（v0.9.0 加；雙寫對應軸）
 

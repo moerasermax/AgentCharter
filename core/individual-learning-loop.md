@@ -106,6 +106,8 @@ violations: <F-mode 編號逐個列>
 
 frontmatter 缺欄位 → `doctor-spec §3.11` E1103 致命錯誤。
 
+**violations 欄位跨文件一致性紀律（v0.9.8 加；signal #38 ④）**：`violations` 列出的每個 F-mode 編號必須與 `state/failure_mode_log.md` 已登記的 entry ID 完全一致（格式與值）。不可自編 `failure_mode_log.md` 未登記的 ID（如 log 登記 `F2` 但 reflection 寫 `F3`）→ 跨文件編號不一致視同 `doctor §3.11` W1102 延伸違反（雙寫對應檢查涵蓋此 case）。**修補優先序**：先確認 `failure_mode_log.md` entry 正確（F-mode 定義對齊 `core/failure-modes.md` 編號），再補 reflection；不可反向把 log 改為 reflection 的值。
+
 ### 2.4 命名與位置
 
 | 元素 | 規則 |

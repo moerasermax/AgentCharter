@@ -59,6 +59,7 @@
 | **A001** | `~/.agentcharter` git log 含採用方 profile.yaml `charter_version` 對應 tag / commit | ERROR |
 | **A002** | charter clone `core/*.md` 數量對齊當前 charter version 預期（依 charter `__version__` 寫死或 schema 推算） | WARN |
 | **A003** | `~/.agentcharter` 是否乾淨 git working tree（無 uncommitted 修改 — 防 user 自改 charter 後忘記） | WARN |
+| **A004** | charter clone `templates/agent-commons/` 含當前版本引入的 key templates（version-gated；如 v0.9.0 引入 `reflection.md.tpl`）| WARN |
 
 **對應檢查命令範例**：
 
@@ -69,7 +70,18 @@ git log --oneline | grep -i "v$(yq '.charter_version' agent-commons/_config/prof
 
 # A003
 cd $AGENTCHARTER_HOME && git status --porcelain
+
+# A004（以 v0.9.0 為例）
+ls $AGENTCHARTER_HOME/templates/agent-commons/reflection.md.tpl 2>/dev/null \
+  && echo "A004 PASS" || echo "A004 WARN: reflection.md.tpl missing — charter clone pre-v0.9.0"
 ```
+
+**A004 version-gated template 清單（依 charter 版本累積）**：
+
+| charter 版本 | 引入 template | 缺則 A004 WARN |
+|---|---|---|
+| v0.4.2 | `capsule.md.tpl` / `handoff.md.tpl` / `institutional-memory-entry.md.tpl` / `nextwork.md.tpl` / `domain-axioms.md.tpl` / `_role.md.tpl` | 6 份基礎 templates — 若缺表示 charter clone 嚴重過舊 |
+| v0.9.0 | `reflection.md.tpl` | 個體學習迴圈範本（`core/individual-learning-loop §2` 寫紀律執行載體）|
 
 ### 3.2 軸 B：本專案 schema 對齊
 

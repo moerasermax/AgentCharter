@@ -6,7 +6,35 @@
 
 ## [Unreleased]
 
-（空 — v0.9.6 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ v0.7.6 BOOTSTRAP.md 入口檔 + BREAKING-LITE checklist；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+（空 — v0.9.9 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ BREAKING-LITE checklist；signal #38 ① ④ 繼續觀察（① 累積至 ≥3 次同類後加 doctor W1101 路徑校驗 binary；④ 觀察下一次 F-mode 編號不一致是否再現）；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+
+---
+
+## [0.9.9] — 2026-05-03
+
+> **PATCH release — BOOTSTRAP.md 入口檔（v0.7.6 議程、持續延後至 v0.9.9 落地）**。向下兼容，純新增文件層；採用方升版只改 `charter_version: "0.9.8"` → `"0.9.9"`。對應 dogfood signal #21（框架雙層架構說明入口缺位）。
+
+### Added
+
+- **`BOOTSTRAP.md`（新檔；v1.0）**：框架入口文件 — 兩層架構 ASCII 圖（`~/.agentcharter/` framework 層 vs `agent-commons/` project 層）+ 三個關鍵保證表（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）+ 情境路由（第一次接入 / 升版 / 讀文件）+ 升版快速執行版（PATCH prompt + MINOR 路由）+ preset 決策表 + 文件地圖。所有「執行段」採「給 AI 的 prompt」格式（user 只貼 prompt、AI 執行）— 對齊 NEXT.md v0.7.6 BOOTSTRAP 設計紀律。
+
+---
+
+## [0.9.8] — 2026-05-03
+
+> **PATCH release — signal #38 ①④⑥ 框架層缺口修補（v0.9.7 修補 ②③⑤ 的後半）**。向下兼容，純擴增 spec / condition / template / role 文檔層；採用方升版只改 `charter_version: "0.9.7"` → `"0.9.8"`。
+
+### Changed
+
+- **`roles/pm/gemini-cli.md`（v1.4 → v1.5）**：新加 **§3.8 Violation Reflection 執行 — Gemini PM 具體化** — 正確路徑 vs 錯誤路徑對照表（`agent-commons/roles/pm/reflections/` ✅ / `.gemini/self_audit/` 等 vendor 目錄 ❌）+ 根本原則說明（`.gemini/` 是橋接層非 charter 共享記憶根）+ Gemini CLI 執行步驟（`write_file` 路徑範本）+ 跨 AI 對應表。signal #38 ① 修補（Gemini 路徑自創根因：混淆 vendor 橋接層 vs common_memory_root）。
+
+- **`tools/doctor-spec.md §3.11 W1101`**：反例段新加 anti-pattern — ❌ AI 把 reflection 寫到 vendor 私有目錄（`.gemini/self_audit/` 等）+ ✅ 正解說明（vendor 目錄是橋接層、doctor W1101 只掃 common_memory_root 範圍、寫錯則 W1101 無法偵測）。signal #38 ① 補充偵測說明。
+
+- **`core/individual-learning-loop.md §2.3`**：結構模板段新加 **violations 欄位跨文件一致性紀律** — violations 列出的 F-mode 編號必須與 `failure_mode_log.md` 已登記 entry ID 完全一致；不可自編未登記 ID；修補優先序（先確認 log entry 正確再補 reflection）。signal #38 ④ 修補（F-mode 編號跨文件不一致的根源紀律缺位）。
+
+- **`templates/agent-commons/reflection.md.tpl`**：frontmatter `violations` 行說明文字加「必須引用 failure_mode_log.md 已登記的 F-mode ID，不可自編」提示。signal #38 ④ 範本層防呆。
+
+- **`tools/post-upgrade-verify-spec.md §3.1 軸 A`**：新加 **A004 檢查項** — charter clone `templates/agent-commons/` 含當前版本引入的 key templates（version-gated）+ A004 檢查命令範例（`ls $AGENTCHARTER_HOME/templates/agent-commons/reflection.md.tpl`）+ A004 version-gated template 清單表（v0.4.2 六份基礎 templates + v0.9.0 `reflection.md.tpl`）。signal #38 ⑥ 修補（charter clone 版本過舊時 reflection.md.tpl 缺失、升版後 AI 無 template 可用）。
 
 ---
 

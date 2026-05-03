@@ -3,7 +3,7 @@ date: <YYYY-MM-DD>
 role: <role>
 vendor: <vendor>
 status: 強化抽驗
-violations: [<F-mode 編號逐個列，如 F1, F3 / role-separation §3.5>]
+violations: [<必須引用 failure_mode_log.md 已登記的 F-mode ID，不可自編 — 如 F1, F3 / role-separation §3.5>]
 ---
 
 # 違規反省：<TASK_ID>_<F-MODE>_<SHORT_DESC>

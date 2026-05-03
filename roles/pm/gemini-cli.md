@@ -1,6 +1,6 @@
 # PM × Gemini CLI — Implementation
 
-> **狀態**：v1.4（v0.9.3 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹；v1.4 加 §3.7 Step 1 版本偵測 + 自動升版）
+> **狀態**：v1.5（v0.9.8 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹；v1.4 加 §3.7 Step 1 版本偵測 + 自動升版；v1.5 加 §3.8 reflection 路徑明示 — signal #38 ① 修補）
 > **基於**：`roles/pm/_spec.md`
 > **AI**：Google Gemini CLI（v1.x）
 > **沉澱來源**：CryptoBot S70 PnL 誤判事件後 Gemini PM 親自提交（Round 1）+ 三層結構重整（Round 2）+ 橋接層校正 + YC_AIAgentCrew 2026-04-28 dogfood signal #5 補強
@@ -360,6 +360,51 @@ run_shell_command("bash ~/.gemini/checkpoints_handler.sh status")
 | Claude Code | `~/.claude/commands/checkpoints.md` | 依 `roles/engineer/claude-code.md §4.1` md schema |
 | Gemini CLI | `.gemini/commands/checkpoints.toml` | **本段落實**，handler 路徑透過 mapping.yaml 抽象 |
 | Cursor | 待邀請 vendor 實作 | 對齊 `core/ai-vendor-onboarding §3` 邀請制 |
+
+---
+
+## §3.8 Violation Reflection 執行 — Gemini PM 具體化（v1.5 加；signal #38 ① 修補）
+
+> **位階**：Gemini PM 具體化 `core/individual-learning-loop §2` 雙寫紀律的 vendor-specific 執行細節。
+> **對齊條款**：`core/individual-learning-loop §2`（寫紀律）+ `core/violation-reflection §1-§5`（五段格式）+ `core/common-memory-root §1`（共享記憶根單一性）
+
+### 正確路徑（強制）
+
+| 層 | ✅ 正確路徑 | ❌ 錯誤路徑 |
+|---|---|---|
+| 個體層 reflection | `<common_memory_root>/roles/pm/reflections/<YYYY-MM-DD>_<f-mode>_<short>.md` | `.gemini/self_audit/`、`.gemini/memory/`、任何 `.gemini/` 子目錄 |
+| 集體層 log | `<common_memory_root>/state/failure_mode_log.md` | 任何 vendor 私有目錄 |
+
+**根本原則**：`.gemini/` 是 Gemini CLI 橋接層目錄（slash command 容器）。它**不是** charter `common_memory_root`（`agent-commons/` 或 mapping.yaml 指向根）。寫到 `.gemini/` = 跨 AI 不可見 = 違反 `core/common-memory-root §1` 單一根原則 = `doctor §3.11` W1101 無法偵測（路徑不在掃描範圍內）。
+
+### Gemini CLI 執行步驟（F-mode 命中後）
+
+```
+1. write_file(
+     path="<common_memory_root>/roles/pm/reflections/<YYYY-MM-DD>_<f-mode>_<short>.md",
+     content=<依 ~/.agentcharter/templates/agent-commons/reflection.md.tpl 填寫>
+   )
+
+2. 追加集體層 entry：
+   replace(
+     path="<common_memory_root>/state/failure_mode_log.md",
+     ...  # 追加 F-mode entry
+   )
+
+3. 雙寫完成後在 stdout 明確回報：
+   「✅ 雙寫完成：
+     個體層：<common_memory_root>/roles/pm/reflections/<檔名>
+     集體層：<common_memory_root>/state/failure_mode_log.md
+   」
+```
+
+### 跨 AI 對應
+
+| AI | 橋接層（❌ 不寫 reflection 的地方）| charter 共享記憶根（✅ 寫 reflection 的地方）|
+|---|---|---|
+| Gemini CLI | `.gemini/` | `<common_memory_root>/roles/pm/reflections/` |
+| Claude Code | `.claude/` | 同上 |
+| Cursor | `.cursor/` | 同上 |
 
 ---
 
