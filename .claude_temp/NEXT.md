@@ -505,7 +505,7 @@ framework 永久維持「**純規範**」位階。
 
 - ~~**`checkpoints_handler.sh` 路徑對齊 + PM init `/checkpoints` 後置介紹（v0.9.2 PATCH）+ 自動版本偵測升版引導（v0.9.3 PATCH）**~~ ✅ **v0.9.2 + v0.9.3 完成**（2026-05-01）：**v0.9.2**：`tools/vendor/commons/checkpoints_handler.sh` canonical 新檔（讀 mapping.yaml 取 `common_memory_root`，fallback `management/history/`）+ `roles/pm/gemini-cli.md §3.7`（v1.3）PM init step 8 後置介紹 `/checkpoints` + `.gemini/commands/checkpoints.toml` 標準範本。**v0.9.3**：`roles/pm/gemini-cli.md §3.7 Step 1`（v1.4）三分支版本偵測（MISSING → canonical 自動安裝 / STALE → `grep mapping.yaml` 偵測 + user 確認後自動覆蓋升級 / CURRENT → 繼續）— 設計原則「框架自動引導、不靠 maintainer 說明」落地。連動：CHANGELOG v0.9.2/v0.9.3 + ADOPTION/TUTORIAL v1.13/v1.14。原候選紀錄：`~/.gemini/checkpoints_handler.sh` 路徑硬編碼 `management/` 違反 `core/charter-config.md`（不讀 mapping.yaml — dogfood signal #3 同源「vendor 工具應 ⊥ 專案結構、路徑透過 mapping.yaml 抽象」）
 
-- **dogfood signal #38 — reflection 路徑 / 格式合規問題：雙 AI 雙樣本 LIVE 實證（2026-05-01 dbSDK 專案）**【⚠️ 部分修補 v0.9.7：sub-problems ②③⑤ 已修；① ④ ⑥ 繼續觀察】
+- **dogfood signal #38 — reflection 路徑 / 格式合規問題：雙 AI 雙樣本 LIVE 實證（2026-05-01 dbSDK 專案）**【⚠️ 部分修補 v0.9.7（②③⑤）+ v0.9.8（④⑥ 修補、① 觀察中）；① 累積至 ≥3 次後評估 doctor W1101 路徑 binary check】
 
   **觀察背景**：user 要求 Gemini PM（A 專案）+ Claude Engineer（B 專案）各自補交 reflection，兩個 AI 行為對比揭露三層問題。
 
@@ -578,14 +578,11 @@ framework 永久維持「**純規範**」位階。
 
 - ~~**UPGRADE.md 升版入口文件**~~ ✅ **2026-05-01 完成**（`c20b09a`）：PATCH vs MINOR 兩路徑決策表 + PATCH 2 步流程（pull + 改版號）+ MINOR walkthrough 索引表 + maintainer 維護說明（PATCH 不需新 walkthrough）。**設計學意義**：採用方不看細節 → 30 秒決策表直觀告知走哪條路；MINOR 流程固定化（拉最新 + walkthrough + verify）、只需維護差異段；PATCH 流程超輕量、不需獨立文件。
 
-- **v0.7.6 BOOTSTRAP.md 入口檔議程備註 — 必含「升版快速執行版」段**（v0.7.5 對話揭露 / 2026-04-29 user 直接抓到）：v0.7.5 ship 的 `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` walkthrough §3 7 步流程對採用方仍偏重（含大量 reference + 條款引用 + 設計學意義段）；對話內 maintainer 即興整理的「**5 步精簡實戰執行版**」（Step 0 前置 / Step 1 toml / Step 2 profile / Step 3 doctor / Step 4 axiom / Step 5 commit + 預估時間 + 驗證點）對採用方體感更佳、但**沒沉澱回文件**。對應 v0.7.3 北極星「**charter 引導採用方、不讓 user 記**」精神不夠到位 → v0.7.6 BOOTSTRAP.md 設計時必含「**升版快速執行版**」結構（採用方端入口、對應 walkthrough §3 但精簡 actionable）；既有 walkthrough §3 保留為「**標準學術版**」、可加 §3a「**快速執行版**」對照 cross-reference。**對應 NEXT 區段 v0.7.x 後續議程的 v0.7.6 BOOTSTRAP**
-
-  - **第二輪 user 抓到的同源設計盲區（2026-04-29 升版實戰）**：v0.7.5 walkthrough §3 Step 4「應用 migration」段（4.1 profile.yaml 修補 / 4.2 toml 修補 / 4.3 axiom frontmatter）— **4.1 + 4.3 是「給 user 的 yaml/markdown diff 範例」、不是「給 AI 的 prompt」**（vs 4.2 toml 修補是「給 AI 的 prompt」格式）。user 反問「這邊要自己手改(?，不能用指令嗎 這樣似乎不是無痛」抓到此設計矛盾。**v0.7.6 BOOTSTRAP 設計必修紀律**：所有採用方需要動 schema / 修檔的動作（profile.yaml 改 / mapping.yaml 改 / axiom 加 frontmatter / commit message 模板等）— **必須有對應「給 AI 的 prompt」模板**（user 貼一次 AI 自動完成）；不可只給「user 視角的 diff 範例」（要求 user 親自編輯）。對齊「**user 最少做 1 個動作**」北極星精神 — user 動作 = 貼 prompt、AI 動作 = 修檔。
-  - **同源 dogfood signal**：charter 過去半天 ship 的 v0.7.0〜v0.7.5 多個 release 文件（QUICKSTART / ADOPTION / TUTORIAL / walkthrough）很多段落都犯這個「maintainer 視角寫法」毛病 — 顯化條款細節 vs 顯化採用方執行路徑 兩者落差。v0.7.6 BOOTSTRAP 順帶 sweep 整個採用方文檔層、把「執行類段落」全部對齊「給 AI 的 prompt」格式。**累積觀察**：本次 user 反問是第 1 次直接抓到這類同源 pattern；累積觀察、視 BOOTSTRAP 設計範圍評估是否擴大 sweep 範圍
+- ~~**v0.7.6 BOOTSTRAP.md 入口檔議程**~~ ✅ **v0.9.9 完成**（2026-05-03）：`BOOTSTRAP.md` 新檔（v1.0）— 兩層架構 ASCII 圖 + 三個關鍵保證表（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）+ 情境路由（第一次接入 / 升版 / 讀文件）+ 升版快速執行版（PATCH prompt + MINOR 路由）+ preset 決策表 + 文件地圖。所有「執行段」採「給 AI 的 prompt」格式（對齊 NEXT.md v0.7.6 BOOTSTRAP 設計紀律「所有執行段必給 AI prompt / user 動作 = 貼 prompt、AI 動作 = 修檔」）。dogfood signal #21 缺位修補。原候選紀錄保留：v0.7.5 ship 的 walkthrough §3 7 步流程對採用方偏重；對話內 maintainer 即興整理的精簡版沒沉澱回文件；2026-04-29 user 反問「為什麼要自己手改」+ 「.agentcharter 在 user home 會影響其他專案嗎」兩個問題觸發此議程，v0.9.9 落地
 
 - ~~**新 dogfood signal #19 候選 — doctor §3.7 E602 雙重否定措辭引發 LLM 誤判**~~ ✅ **v0.8.1 完成**（2026-04-30）：`tools/doctor-spec.md §3.7` 校驗集第 2 條改為「期望狀態（合規）vs 違規狀態」對照表 + 紀律提醒（不要把「找不到」誤判為 WARN/ERROR）+ §3.7 E602 詳盡引導反例段加此 anti-pattern 對照。原候選紀錄保留（2026-04-29 YC 升版實證）：YC 升版 Step 3 跑 doctor、Gemini 讀 `tools/doctor-spec.md §3.7` 「`<common_memory_root>/shared/` 目錄存在 → E602 ERROR」措辭、把 YC 實際「shared/ 不存在」（合規狀態）誤判為「⚠️ WARN (Non-Critical) — 未偵測到 management/shared/ 目錄」。實際應該全綠通過。**根因**：spec 用「shared/ 應不存在」雙重否定描述 anti-pattern、Gemini 防禦性編程把「找不到」也標 WARN。**累積**：1 次（YC 升版實證）。**判斷**：屬 v0.7.6 BOOTSTRAP 順手修補的同類議題（doctor spec 對 LLM 友善的措辭明確化）；v0.7.6 議程 順帶 sweep doctor §3.7 + §3.8 對「禁存在 / 應存在」表述加正反例對照；當前先觀察、不條款化
 
-- **新 dogfood signal #21 候選 — charter 對「framework 全域 vs agent-commons 專案私有」雙層架構解釋不夠**（2026-04-29 user 升版完問「.agentcharter 在 user home 會影響其他專案嗎」直接抓到）：charter 文件（README / QUICKSTART / ADOPTION / TUTORIAL）多處提到 `~/.agentcharter/` 路徑、但**沒有清楚架構圖**（雙層 framework + agent-commons）讓 user 一眼看懂兩層隔離設計。user 第一次接觸時會困惑「會不會影響其他專案」。**對齊條款**：`core/common-memory-root.md` + `core/versioning-migration §6` + `core/charter-config.md §2` 都有相關說明、但分散；新 user 找不到全景。**判斷**：屬 v0.7.6 BOOTSTRAP 必修方向 — BOOTSTRAP.md 第一段應有 ASCII 架構圖 + 三個關鍵保證表（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）。**累積**：1 次（YC 升版完問）；屬一見即明痛點、可不必累積到 3 次直接條款化（BOOTSTRAP 設計順手做）
+- ~~**新 dogfood signal #21 候選 — charter 對「framework 全域 vs agent-commons 專案私有」雙層架構解釋不夠**~~ ✅ **v0.9.9 完成**（BOOTSTRAP.md 落地修補）：`BOOTSTRAP.md` ASCII 架構圖 + 三個關鍵保證表。原候選紀錄保留（2026-04-29 user 升版完問「.agentcharter 在 user home 會影響其他專案嗎」直接抓到）：charter 文件多處提到 `~/.agentcharter/` 路徑但沒有清楚架構圖讓 user 一眼看懂兩層隔離設計；v0.9.9 BOOTSTRAP.md 修補此缺位
 
 - **新 dogfood signal #28 候選 — progressive adoption / 採用門檻 framing 缺**（2026-04-30 CliSpike Engineer Claude 外部評估觸發）：Engineer 報「過重 if 你只想要 AI 別瞎掰、抓 3-5 條核心落地就 80% 收益」 + 「適配場景 vs 反適配」二分。**根因**：charter 採用方分層採用紀律沒明示、三個 preset (minimal/standard/strict) 是「設定嚴格度」軸、不是「採用深度」軸。**候選方向**：v0.9.0 essential preset（3-5 條 core、targets 探索期 / 單人 / 快迭代）+ 採用 lifecycle「初始 footprint 超低、漸進深化」設計。詳見 `examples/external-evaluations/clispike-engineer-claude-2026-04-30.md`
 
@@ -649,11 +646,37 @@ framework 永久維持「**純規範**」位階。
 
 ### v0.9.7 release（2026-05-01）— reflection.md.tpl frontmatter 修正 + placeholder 變體
 
+---
+
+### v0.9.9 release（2026-05-03）— BOOTSTRAP.md 入口檔
+
+✅ **v0.7.6 議程落地，dogfood signal #21 修補**（2026-05-03 session）：
+
+`BOOTSTRAP.md` 新檔（v1.0）：兩層架構 ASCII 圖 + 三個關鍵保證（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）+ 情境路由（🆕 第一次接入 / ⬆️ 升版 / 🔍 讀文件）+ 升版快速執行版（PATCH prompt + MINOR 路由）+ preset 決策表 + 文件地圖。所有「執行段」採「給 AI 的 prompt」格式。
+
+✅ **連動**：CHANGELOG v0.9.9 + NEXT.md / STATUS.md 更新
+
+---
+
+### v0.9.8 release（2026-05-03）— signal #38 ①④⑥ 修補
+
+✅ **dogfood signal #38 部分修補（①④⑥）**（2026-05-03 session）：
+
+- **修 ①：Gemini 路徑自創根因**：`roles/pm/gemini-cli.md §3.8` 新加 reflection 路徑明示段（`.gemini/` 是橋接層 ≠ charter common_memory_root）+ Gemini CLI 具體執行步驟；`tools/doctor-spec.md §3.11 W1101` 反例加 vendor 目錄 anti-pattern 說明
+- **修 ④：F-mode 編號跨文件一致性**：`core/individual-learning-loop §2.3` 加 violations 欄位必引用 failure_mode_log.md 已登記 ID 的跨文件一致性紀律；`templates/agent-commons/reflection.md.tpl` violations 行加「不可自編」提示
+- **修 ⑥：charter clone 版本過舊**：`tools/post-upgrade-verify-spec.md §3.1` 新加 A004 檢查項（charter clone templates 存在校驗 + version-gated 清單表）
+
+✅ **連動**：CHANGELOG v0.9.8 + NEXT.md / STATUS.md 更新（① 繼續觀察累積中）
+
+---
+
+### v0.9.7 release（2026-05-01）— reflection.md.tpl frontmatter 修正 + placeholder 變體
+
 ✅ **signal #38 框架層缺口修補**（2026-05-01 session）：
 
-- **修 ①：frontmatter F6 bug**：`reflection.md.tpl` frontmatter 從 ` ```yaml``` ` code block 移至檔案頂端（raw `---` YAML）。F6 = surface vs structural — 看起來對但解析器讀不到。doctor §3.11 E1103 現在可正確掃描五欄。
-- **修 ②：status 歧義**：從 `強化抽驗 / user 裁決待議 / 結案`（三值同時存在）改為 `status: 強化抽驗`（單值預設）+ blockquote 三值擇一說明。消除 AI 可能將三值全部填入或不知道選哪個的歧義。
-- **修 ③：placeholder 變體**：新增「Placeholder 變體（violations: [] 時使用）」段 + 最小合規格式範例。`violations: []` 場景（首次 init 無違規歷史）現有明確格式指引。「不可省略的紀律」段補 placeholder 例外注釋。
+- **修 ②：frontmatter F6 bug**：`reflection.md.tpl` frontmatter 從 ` ```yaml``` ` code block 移至檔案頂端（raw `---` YAML）。F6 = surface vs structural — 看起來對但解析器讀不到。doctor §3.11 E1103 現在可正確掃描五欄。
+- **修 ③：status 歧義**：從 `強化抽驗 / user 裁決待議 / 結案`（三值同時存在）改為 `status: 強化抽驗`（單值預設）+ blockquote 三值擇一說明。消除 AI 可能將三值全部填入或不知道選哪個的歧義。
+- **修 ⑤：placeholder 變體**：新增「Placeholder 變體（violations: [] 時使用）」段 + 最小合規格式範例。`violations: []` 場景（首次 init 無違規歷史）現有明確格式指引。「不可省略的紀律」段補 placeholder 例外注釋。
 - **概念釐清**：Placeholder = Interface（聲明結構合規）/ Implementation = 填寫內容（實際違規反省）— user LIVE 對比確認後落地。
 
 ✅ **連動**：commit `612e576`，pushed。未連動 CHANGELOG/ADOPTION/TUTORIAL（pure templates layer fix，無採用方行為影響，不需文檔層 sync）

@@ -1,8 +1,8 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-05-01（台灣時間，post-v0.9.7 snapshot）
-> **當前版本**：v0.9.7（**`reflection.md.tpl` frontmatter 修正 + placeholder 變體 — signal #38 框架層缺口修補**）
-> **Working tree 狀態**：✅ 全部 committed + pushed（`612e576`）
+> **更新時間**：2026-05-03（台灣時間，post-v0.9.9 snapshot）
+> **當前版本**：v0.9.9（**BOOTSTRAP.md 入口檔 — v0.7.6 議程落地 + signal #38 ①④⑥ 修補（v0.9.8）**）
+> **Working tree 狀態**：⏳ 待 commit（v0.9.8 + v0.9.9 兩個 PATCH）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔為 v0.7.5 release 前 snapshot（含深度 sweep）
 > **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` @ `0cf5494` (待打) / `v0.8.2` @ `a2adecf` (待打) / `v0.9.0` (待打)
@@ -13,6 +13,8 @@
 
 | 版本 | Commit | 主題 |
 |---|---|---|
+| **v0.9.9** | （待 commit）| **PATCH — BOOTSTRAP.md 入口檔（v0.7.6 議程落地）**：新檔 `BOOTSTRAP.md`（v1.0）— 兩層架構 ASCII 圖（framework 層 `~/.agentcharter/` vs project 層 `agent-commons/`）+ 三個關鍵保證表（framework 升級 ≠ 自動升專案 / framework 比專案新 OK / 專案資產完全獨立）+ 情境路由（第一次接入 / 升版 / 讀文件）+ 升版快速執行版（PATCH prompt + MINOR 路由）+ preset 決策表 + 文件地圖。dogfood signal #21 缺位修補。**嚴守向下兼容**：純新增文件層，無 spec / 條款修動 |
+| **v0.9.8** | （待 commit）| **PATCH — signal #38 ①④⑥ 修補**：① `roles/pm/gemini-cli.md §3.8` 新加 reflection 路徑明示（Gemini 路徑自創根因：vendor 橋接層 vs common_memory_root 混淆）+ `tools/doctor-spec.md §3.11 W1101` 反例加 vendor 目錄路徑 anti-pattern；④ `core/individual-learning-loop §2.3` 加 violations 欄位跨文件一致性紀律（must 引用 failure_mode_log.md 已登記 ID）+ `templates/agent-commons/reflection.md.tpl` violations 行加「不可自編」提示；⑥ `tools/post-upgrade-verify-spec.md §3.1` 新加 A004 檢查項（charter clone templates 存在校驗 + version-gated 清單表）。**嚴守向下兼容**：純擴增 role spec / condition / template / tools 文檔層 |
 | **v0.9.7** | `612e576` | **PATCH — `reflection.md.tpl` frontmatter 修正 + placeholder 變體**：三修合一：(1) frontmatter 從 ` ```yaml``` ` code block 移至檔案頂端（F6 bug 修正，doctor §3.11 E1103 解析器現可正確讀取五欄）；(2) status 欄改為單值預設（`強化抽驗`）+ blockquote 三值擇一語意說明（消除原本三值並列歧義）；(3) 新增 Placeholder 變體段落（`violations: []` 時使用，Interface 聲明即合規，省略 §1-§3 為合法行為）。dogfood signal #38 sub-problems ②③⑤ 修補落地。`reflection.md.tpl` v0.9.0 引入即帶 F6 bug（code block frontmatter）—  v0.9.7 修正 |
 | **v0.9.6** | `cc38647` | **PATCH — checkpoints save 後交班詢問 + deactivate_all_active**：`tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）新增 `deactivate_all_active` action（掃描 roles/*/_role.md，ACTIVE → PROVISIONAL，git commit）+ `roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）TOML save flow 加 step 7 交班詢問（user 回應 y → 呼叫 deactivate_all_active）。設計對齊 `multi-role-tracking §3.4` 反向精神（下岸也需 user explicit 確認）+ `handoff-chain.md` session 末確認職責。user LIVE 設計提案 2026-05-01 直接落地 |
 | **v0.9.5** | `caec48d` | **fix — checkpoints_handler commit_save 補 cp 到 handoffs/**：`commit_save` 只做 git commit + clear draft 但從未 cp DRAFT 為 `HIST_DIR/HANDOFF_N.md`，handoffs/ 永遠空白。補 `mkdir -p + cp`（clear 之前）+ handler 升版 v2.1。dogfood signal #37：採用端 AI（Gemini PM）自主正確診斷根因、user 識別正確維護者流程（修 canonical → push → 採用方 pull），charter value compounds 工具層第三個 LIVE 實證 |
@@ -253,30 +255,31 @@ project-root/
 
 ## 下次接班起點
 
-### ✅ v0.9.6 working-tree snapshot（2026-05-01，clean）
+### ⏳ v0.9.8 + v0.9.9 working-tree snapshot（2026-05-03，待 commit）
 
-> Working tree 全部 committed + pushed（`cc38647` + STATUS snapshot `d38b6de`）。v0.9.5〜v0.9.6 為本 session 兩個 PATCH：v0.9.5 checkpoints_handler commit_save 補 cp bug 修、v0.9.6 checkpoints save 後交班詢問 + deactivate_all_active。
+> v0.9.8〜v0.9.9 為本 session 兩個 PATCH：v0.9.8 signal #38 ①④⑥ 修補、v0.9.9 BOOTSTRAP.md 入口檔落地。
 
-#### v0.9.5〜v0.9.6 異動摘要
+#### v0.9.8〜v0.9.9 異動摘要
 
 | 版本 | 主要異動檔 | 內容 |
 |---|---|---|
-| v0.9.5 | `tools/vendor/commons/checkpoints_handler.sh`（v2.0 → v2.1）| `commit_save` 補 `mkdir -p + cp DRAFT → HANDOFF_N.md`（v2.0 起 bug：git commit 有但 handoffs/ 永遠空白）；dogfood signal #37 LIVE 實證（採用端 AI 自主診斷根因 + 維護者流程正確閉環）|
-| v0.9.6 | `tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）/ `roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）| handler 加 `deactivate_all_active` action；TOML save flow 加 step 7 交班詢問；user LIVE 設計提案直接落地 |
+| v0.9.8 | `roles/pm/gemini-cli.md §3.8`（v1.4 → v1.5）/ `tools/doctor-spec.md §3.11 W1101` 反例 / `core/individual-learning-loop §2.3` violations 紀律 / `templates/agent-commons/reflection.md.tpl` violations 行 / `tools/post-upgrade-verify-spec.md §3.1` A004 | signal #38 ①（Gemini 路徑自創根因修補）+ ④（F-mode 跨文件一致性紀律）+ ⑥（charter clone templates 存在校驗）三子問題修補 |
+| v0.9.9 | `BOOTSTRAP.md`（新檔）| v0.7.6 議程落地：兩層架構圖 + 三個關鍵保證 + 情境路由 + 升版快速執行版（全部「給 AI 的 prompt」格式）+ preset 決策表 + 文件地圖 |
 
 #### 當前狀態一覽
 
 - **25 條 core 條款** / 1 條 maintainer-only / 4 preset（essential 5 / minimal 12 / standard 22 / strict 22）
-- **13 個架構級概念** / dogfood signal #1〜#37 累積（#37 最新，v0.9.5 完成）
+- **13 個架構級概念** / dogfood signal #1〜#38 累積（#38 signal ①④⑥ 三子問題已修補）
 - **SSS 級議程**：S1（AI 自治協作 + 授權閘）啟動前置條件齊備；S2 lifecycle 設計素材保留；S3 引導式紀律 v0.9.0 架構級落地完成
-- **採用案例**：YC_AIAgentCrew（v0.8.0+，HANDOFF_16 LIVE 完美）/ 公司 dbSDK（v0.9.6+，進行中）/ CryptoBot（原始案例）
+- **採用案例**：YC_AIAgentCrew（v0.8.0+，HANDOFF_16 LIVE 完美）/ 公司 dbSDK（v0.9.9+，進行中）/ CryptoBot（原始案例）
+- **文件入口**：BOOTSTRAP.md（初次入口）+ QUICKSTART.md（接入流程）+ UPGRADE.md（升版決策）— 三層文件入口完整
 
 #### 下一步優先議題
 
-1. **BOOTSTRAP.md 入口檔**（🔴 高優先、v0.7.6 議程持續延後）— 初次採用方 30 秒入口；UPGRADE.md 補了升版入口，初次採用入口仍缺
-2. **signal #35 候選累積**（🟡 觀察中）— init-template step 6「自代升 ACTIVE + 自寫 Sign-in Log」紀律 LIVE 仍被違反；1 次觀察，待 ≥3 次或 user 授權跳門檻；候選加固與 signal #33 同軌（commit hook vendor 邀請制）
-3. **v0.8.3 剩餘議程**（🟡 待排）— 雙軸矩陣 framing 第二段（21 條條款 §X inline marker）+ 第三段（lint binary 派生弱保證項清單）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec
-4. **SSS S1 設計深化**（🟢 長期）— 前置條件齊備，需 fresh head session 開始概念 framing 文件
+1. **signal #35 候選累積**（🟡 觀察中）— init-template step 6「自代升 ACTIVE + 自寫 Sign-in Log」紀律 LIVE 仍被違反；1 次觀察，待 ≥3 次或 user 授權跳門檻；候選加固與 signal #33 同軌（commit hook vendor 邀請制）
+2. **v0.8.3 剩餘議程**（🟡 待排）— 雙軸矩陣 framing 第二段（21 條條款 §X inline marker）+ 第三段（lint binary 派生弱保證項清單）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec
+3. **SSS S1 設計深化**（🟢 長期）— 前置條件齊備，需 fresh head session 開始概念 framing 文件
+4. **signal #38 ① 繼續觀察**（🟡）— Gemini 路徑自創 1 次觀察；累積 ≥3 次後評估 doctor W1101 加路徑位置 binary check
 
 ---
 
@@ -288,6 +291,7 @@ project-root/
 ✅ **v0.7.0〜v0.9.4 共 18 個版本完成（2026-04-28〜2026-05-01）** — 25 條 condition / 13 個架構級概念 / dogfood signal #1〜#36 / SSS S1/S2/S3 架構級議程啟動 / checkpoints_handler.sh vendor commons 落地
 ✅ **v0.9.0 北極星雙邊閉環完成** — 採用方角度（既有）+ AI 角度（individual-learning-loop）對稱補完
 ✅ **UPGRADE.md 升版入口文件 ship（2026-05-01）** — 採用方 30 秒決策表
+✅ **BOOTSTRAP.md 入口檔 ship（2026-05-03）** — v0.7.6 議程落地（dogfood signal #21 缺位修補）
 
 ### 下一階段焦點
 
