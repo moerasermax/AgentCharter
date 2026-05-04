@@ -620,6 +620,65 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 **v0.5.9 後 charter 承諾向下兼容**（依 [versioning-migration §2.3](./core/versioning-migration.md)）：第一次 init 後得到的 `agent-commons/` 結構是穩定承諾，後續 charter 演進沿用既有結構，不要求採用方重建目錄。
 
+### 8.6 安裝 commit hook（v0.10.0+ 推薦）
+
+> v0.10.0 起 charter 提供 vendor 中立的 commit hook（git 原生 + agent-commons 共用 script）— 對應 [`tools/commit-hook-spec.md`](./tools/commit-hook-spec.md)。
+
+**為何要裝**：
+
+把 6 條同源 dogfood signal（#33 不自報 / #35 自激活 / #42 雙寫漏 / #43 檔名漂浮 / #44 sprint 混 reflection / #45 致 XXX 缺）從「LLM 讀規範自律」升級到「**commit 時 binary 攔截**」。對應 v0.8.2 §設計哲學第 5 條雙軸：「結構強制 > 多 actor 互檢 > 單 actor 自律」最強保證軸。
+
+**校驗點**（H1-H6 詳見 commit-hook-spec.md §3）：
+
+| 校驗 | 嚴格度 | 攔什麼 |
+|---|---|---|
+| H1 _role.md Status 升 ACTIVE 字樣校驗 | reject | AI 自激活 PROVISIONAL → ACTIVE 但無 user explicit 授權字樣 |
+| H2 F-mode 雙寫（commit 提 → log + reflection 必齊） | reject | commit message 提 F-mode 但 failure_mode_log 沒新 entry / reflection 沒新檔 |
+| H3 reflection 檔名 regex | reject | 檔名不匹配 `^\d{4}-\d{2}-\d{2}_<topic>.md$` |
+| H4 reflection 含 sprint 編號邊界 | warn | reflection 內容含 `S\d+`、可能 project state 混入 meta-knowledge |
+| H5 log entry 對應 reflection 雙寫 | reject | failure_mode_log 加 entry 但對應 reflection 缺檔 |
+| H6 cross-AI handoff directive header | warn | HANDOFF 文件起始無「致 XXX」directive header |
+
+**安裝**：
+
+```bash
+# 在採用方專案根目錄跑
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh
+```
+
+**升版**（charter 升 commit-hook-spec 內容後）：
+
+```bash
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
+```
+
+**移除**：
+
+```bash
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --uninstall
+```
+
+**bypass**：
+
+```bash
+git commit --no-verify   # git 既有逃生口；AI 自主繞過 = F1（依 commit-hook-spec §6）
+```
+
+**架構**（vendor 中立、不綁特定 AI）：
+
+```
+~/.agentcharter/tools/vendor/commons/
+  charter-commit-checks.sh        ← canonical 邏輯（charter 維護）
+  install-git-hooks.sh            ← 安裝器
+
+採用方專案/
+  agent-commons/_config/hooks/
+    charter-commit-checks.sh      ← 從 canonical copy（入 git、跟專案分發）
+  .git/hooks/pre-commit           ← thin shim（local-only、3 行）
+```
+
+→ Claude / Gemini / Kiro / Cursor / 人類手動 `git commit` 全部觸發；不寫進任何 vendor 私有目錄（`.claude/hooks/` / `.gemini/hooks/` 等）。
+
 ---
 
 ## 11. Troubleshooting
@@ -688,6 +747,7 @@ git commit -m "chore: bump charter_version <old> → <new>"
 
 ## 變更歷史
 
+- **v1.16（2026-05-05，charter v0.10.0）** — commit hook vendor 中立架構 ship MINOR 連動 sync：§8 進階場景新加 §8.6「安裝 commit hook」（H1-H6 校驗點 + 安裝 / 升版 / 移除 / bypass / 架構說明）。**升 v0.10.0 注意**：(a) 採用方升版主要動作改 profile.yaml `charter_version: "0.9.x"` → `"0.10.0"`；(b) commit hook 是 opt-in（不裝就退化 advisory）— 推薦裝、6 條同源 dogfood signal（#33/#35/#42-#45）binary 攔截升維；(c) 架構是 git 原生 hook + agent-commons 共用 script（vendor 中立 — Claude/Gemini/Kiro/Cursor/人類 commit 全攔）；(d) 不寫進任何 vendor 私有目錄、對齊「ai-vendor-onboarding §1 邀請制原則 + framework 不代寫 vendor 層」精神。**詳細 step-by-step 升版流程見 [`examples/upgrades/v0.9.x-to-v0.10.0.md`](./examples/upgrades/v0.9.x-to-v0.10.0.md)**。詳見 CHANGELOG v0.10.0 段。
 - **v1.15（2026-05-01，charter v0.9.6）** — checkpoints save 後交班詢問 + `deactivate_all_active` PATCH 連動 sync：line 6 charter 對應版本 v0.9.5 → v0.9.6。**升 v0.9.6 注意**：需更新 `checkpoints_handler.sh`（v2.1 → v2.2，`tools/vendor/commons/` 複製至 `~/.gemini/`）+ 重建 `.gemini/commands/checkpoints.toml`（save flow 加 step 7 交班詢問）；採用方升版改 `charter_version: "0.9.5"` → `"0.9.6"` + 兩項更新。詳見 CHANGELOG v0.9.6 段。
 - **v1.14（2026-05-01，charter v0.9.3）** — checkpoints_handler.sh 自動版本偵測 + 升版引導 PATCH 連動 sync：line 6 charter 對應版本 v0.9.2 → v0.9.3。**升 v0.9.3 注意**：純擴增 `roles/pm/gemini-cli.md §3.7 Step 1`（三分支版本偵測：MISSING 自動安裝 / STALE 詢問升版 / CURRENT 繼續）+ `tools/vendor/commons/checkpoints_handler.sh` canonical 新檔；採用方升版只改 `charter_version: "0.9.2"` → `"0.9.3"` 即完成。詳見 CHANGELOG v0.9.3 段。
 - **v1.13（2026-05-01，charter v0.9.2）** — PM init checkpoints 後置介紹 PATCH 連動 sync：line 6 charter 對應版本 v0.9.1 → v0.9.2。**升 v0.9.2 注意**：純擴增 `roles/pm/gemini-cli.md §3.7`（PM init 後置介紹 `/checkpoints` 存檔機制），採用方升版只改 `charter_version: "0.9.1"` → `"0.9.2"` 即完成。詳見 CHANGELOG v0.9.2 段。

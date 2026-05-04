@@ -4,9 +4,9 @@
 
 | 版本號變化 | 路徑 |
 |---|---|
-| 第三位變（`0.9.0` → `0.9.1`）| [PATCH — 2 步搞定](#patch-升版) |
-| 第二位變（`0.8.x` → `0.9.0`）| [MINOR — 走升版流程](#minor--跨版本升版) |
-| 跳很多版（`0.7.x` → `0.9.x`）| [跨版本 — 一樣走 MINOR 流程，一次拉到最新](#minor--跨版本升版) |
+| 第三位變（`0.10.0` → `0.10.1`）| [PATCH — 2 步搞定](#patch-升版) |
+| 第二位變（`0.9.x` → `0.10.0`）| [MINOR — 走升版流程](#minor--跨版本升版) |
+| 跳很多版（`0.7.x` → `0.10.x`）| [跨版本 — 一樣走 MINOR 流程，一次拉到最新](#minor--跨版本升版) |
 
 > 不知道自己是哪個版本？看 `agent-commons/_config/profile.yaml` 的 `charter_version` 欄位。
 
@@ -25,7 +25,7 @@ git -C ~/.agentcharter pull origin main
 編輯 `agent-commons/_config/profile.yaml`：
 
 ```yaml
-charter_version: "0.9.1"   # 改成新版號，其他不動
+charter_version: "0.10.0"   # 改成新版號，其他不動
 ```
 
 完成。不需要跑 doctor，不需要改任何結構。
@@ -47,13 +47,14 @@ git -C ~/.agentcharter pull origin main
 
 | 從哪個版本升 | Walkthrough |
 |---|---|
+| **v0.9.x → v0.10.0**（commit hook ship）| `examples/upgrades/v0.9.x-to-v0.10.0.md` |
 | v0.8.2 → v0.9.0 | `examples/upgrades/v0.8.2-to-v0.9.0.md` |
 | v0.8.1 → v0.8.2 | `examples/upgrades/v0.8.1-to-v0.8.2.md` |
 | v0.8.0 → v0.8.1 | `examples/upgrades/v0.8.0-to-v0.8.1.md` |
 | v0.7.5 → v0.8.0 | `examples/upgrades/v0.7.5-to-v0.8.0.md` |
 | v0.5.9 → v0.7.4（跨多版範例）| `examples/upgrades/yc-aiagentcrew-v0.5.9-to-v0.7.4.md` |
 
-跨多版（例如 v0.7.x → v0.9.0）：找最接近目標版本的 walkthrough 當入口，流程會自動帶你走完。
+跨多版（例如 v0.7.x → v0.10.0）：找最接近目標版本的 walkthrough 當入口，流程會自動帶你走完。
 
 **Step 3 — 跑升版驗證**
 

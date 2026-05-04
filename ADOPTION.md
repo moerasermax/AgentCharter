@@ -153,7 +153,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.9.0"`（或當前最新版）。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.10.0"`（或當前最新版）。
 
 ### T1 接入
 
@@ -178,6 +178,8 @@ init-template.md §3.3 self-instantiation）。
 ```
 
 驗證：依 `tools/doctor-spec.md` prompt AI 跑健康檢查。
+
+**v0.10.0+ 推薦**：init 完成後跑 `bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh` 安裝 commit hook（vendor 中立 binary 攔截、6 條同源 signal #33/#35/#42-#45 結構強制）。詳見 [`tools/commit-hook-spec.md`](./tools/commit-hook-spec.md)。
 
 ### T2 AI 自我具象化（**核心，見 §7**）
 
@@ -360,6 +362,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 
 ## 13. 變更歷史
 
+- **v1.16（2026-05-05，charter v0.10.0）** — commit hook vendor 中立架構 ship MINOR 連動 sync：T1 接入流程加「v0.10.0+ 推薦：跑 install-git-hooks.sh」+ T0 charter_version 範例值升 v0.10.0。**採用方升 v0.10.0 注意事項**：(a) 升版主要動作改 `charter_version: "0.9.x"` → `"0.10.0"`；(b) commit hook 是 opt-in（`bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh`）— 推薦裝、6 條同源 dogfood signal（#33 不自報 / #35 自激活累積 2 次 / #42 雙寫漏 / #43 檔名漂浮 / #44 sprint 混 reflection / #45 致 XXX 缺）binary 攔截升維；(c) 架構是 git 原生 hook + agent-commons 共用 script（vendor 中立 — Claude/Gemini/Kiro/Cursor/人類 commit 全攔）；(d) 不寫進 vendor 私有目錄、對齊「ai-vendor-onboarding §1 邀請制原則 + framework 不代寫 vendor 層」精神；(e) 新加 `core/cross-ai-handoff §3.3` directive header「致 XXX」標準格式（signal #45 條款化、commit-hook H6 校驗載體）。**詳細 step-by-step 升版流程見 [`examples/upgrades/v0.9.x-to-v0.10.0.md`](./examples/upgrades/v0.9.x-to-v0.10.0.md)**。詳見 CHANGELOG v0.10.0 段。
 - **v1.15（2026-05-01，charter v0.9.6）** — checkpoints save 後交班詢問 + `deactivate_all_active` PATCH 連動 sync：`tools/vendor/commons/checkpoints_handler.sh`（v2.1 → v2.2）+ `roles/pm/gemini-cli.md §3.7`（v1.4 → v1.5）TOML save 流程加 step 7 交班詢問。**採用方升 v0.9.6 注意事項**：(a) 升版只改 `charter_version: "0.9.5"` → `"0.9.6"`；(b) 需重新跑 PM init `§3.7` 更新 `.gemini/commands/checkpoints.toml`（save flow 新增 step 7）；(c) 部署新版 `checkpoints_handler.sh v2.2`（從 `tools/vendor/commons/` 複製至 `~/.gemini/`）以啟用 `deactivate_all_active` action。詳見 CHANGELOG v0.9.6 段。
 - **v1.14（2026-05-01，charter v0.9.3）** — checkpoints_handler.sh 自動版本偵測 + 升版引導 PATCH 連動 sync：`roles/pm/gemini-cli.md §3.7 Step 1`（v1.3 → v1.4）三分支版本偵測（MISSING 自動安裝 / STALE 詢問升版 / CURRENT 繼續）+ `tools/vendor/commons/checkpoints_handler.sh` canonical 新檔。**採用方升 v0.9.3 注意事項**：純擴增 vendor spec 層 + 新增 canonical 工具、既有採用方升版只改 profile.yaml `charter_version: "0.9.2"` → `"0.9.3"`；**Gemini PM 採用方重新跑 PM init 時將自動偵測並引導升版舊版 handler**（框架自動引導、無需 maintainer 手動說明）。詳見 CHANGELOG v0.9.3 段。
 - **v1.13（2026-05-01，charter v0.9.2）** — PM init `/checkpoints` 後置介紹 PATCH 連動 sync：`roles/pm/gemini-cli.md §3.7`（v1.3 新增）PM self-instantiation step 8 後置主動介紹存檔機制 + `.gemini/commands/checkpoints.toml` 標準範本。**採用方升 v0.9.2 注意事項**：純擴增 vendor spec 層、既有採用方升版只改 profile.yaml `charter_version: "0.9.1"` → `"0.9.2"`；Gemini PM 採用方下次 PM init 時將自動介紹 `/checkpoints` 機制。詳見 CHANGELOG v0.9.2 段。

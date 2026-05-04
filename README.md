@@ -182,7 +182,7 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `init-template.md` | Role Init Mandate — 四大職責 + 多 AI 具象化 + AI 自我具象化機制（v0.5.10：七步驟含 step 5 schema 驗證強制點 / **v0.7.0：step 6 簽名 Status 必為 PROVISIONAL/ACTIVE 二態 + slash command 引用紀律禁絕對路徑** / **v0.9.0：七步驟 → 八步驟、加 step 0「讀過去違反紀錄」對應個體學習迴圈**）|
 | `ai-vendor-onboarding.md` | **新 vendor / 新角色接入「邀請制」四步驟**（v0.6.0）— 禁 charter 預先寫死 vendor 層；charter 寫概念層 → 邀請 vendor 寫 vendor 層 → 既有 vendor 校正 regression → maintainer 簽收 |
 | `individual-learning-loop.md` | **（v0.9.0 加、第 13 個架構級概念、補完接班場景四軸的第 4 軸）** — 個體 AI 跨任務 / 跨 session 學習迴圈：寫紀律（雙寫個體 `roles/<role>/reflections/` + 集體 `state/failure_mode_log.md`）+ 讀紀律（init step 0 強制讀）+ 跨 session 學習迴圈（接班 AI 紀律繼承） |
-| `diagnose-remediate-protocol.md` | **（v0.9.0 加）SSS S3 架構級條款化** — spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據）+ 弱保證項清單派生 + commit hook vendor 邀請制加固 + 真實 stdout 證據要求（純文字 PASS = violation-reflection §1 假宣告）|
+| `diagnose-remediate-protocol.md` | **（v0.9.0 加）SSS S3 架構級條款化** — spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據）+ 弱保證項清單派生 + commit hook vendor 邀請制加固 + 真實 stdout 證據要求（純文字 PASS = violation-reflection §1 假宣告）；**v0.10.0 §4 從精神 ship 實作層**（git 原生 hook + agent-commons 共用 script、vendor 中立架構）|
 | `adoption-lifecycle.md` | **（v0.9.0 加）5 階段 lifecycle 完整化** — 全新接入 / 升版 / 棄用（含「保留最後的溫柔」精神）/ 重新採用 / vendor 升級 path 三路徑（A 維持現狀 / B 開 issue / C AI 自驅修復對齊 SSS S1 子集） |
 | `condition-mutability.md` | **（v0.9.0 加）condition mutability 紀律本體** — 三層 mutability（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層 |
 
@@ -234,9 +234,14 @@ cd ~/projects/<your-project>
 
 # Step 5: prompt AI 跑 doctor 驗證
 請依 ~/.agentcharter/tools/doctor-spec.md 跑健康檢查。
+
+# Step 6（v0.10.0+ 推薦）: 安裝 commit hook（vendor 中立 binary 攔截）
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh
 ```
 
 > v0.5.9 起 framework **不附 python / npm 等實作工具**（純規範框架）。所有工具動作由 AI 依對應 spec 自具象化（對齊 A1「角色 ⊥ AI」+「framework 不代生成」原則）。
+>
+> **v0.10.0 例外**：`tools/vendor/commons/charter-commit-checks.sh` + `install-git-hooks.sh` 是 reference bash 實作（不違反「不附 binary」精神 — bash script 是 git hook 接口層 + vendor 中立、charter 不能用 AI spec 表達 git pre-commit 觸發語意）。詳見 [`tools/commit-hook-spec.md`](./tools/commit-hook-spec.md)。
 
 詳細指引見 [QUICKSTART.md](./QUICKSTART.md)（5 分鐘小白入門）+ [TUTORIAL.md](./TUTORIAL.md)（reference 工具書）。
 

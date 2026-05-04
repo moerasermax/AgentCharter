@@ -220,6 +220,28 @@ slash command 給未來重用。
 
 ---
 
+### Step 6（v0.10.0+ 推薦）：安裝 commit hook（30 秒）
+
+> v0.10.0 起 charter 提供 vendor 中立的 commit hook（git 原生 + agent-commons 共用 script）— 攔截 6 條紀律違反（_role.md 自激活 / F-mode 雙寫漏 / reflection 檔名 / 雙寫對應 / sprint 編號 warn / handoff directive header warn）。**opt-in、不裝就退化到 advisory 模式**。
+
+在採用方專案根目錄跑：
+
+```bash
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh
+```
+
+預期：
+
+```
+✅ deployed: agent-commons/_config/hooks/charter-commit-checks.sh
+✅ shim installed at .git/hooks/pre-commit
+🎉 charter commit hook 安裝完成
+```
+
+之後每次 `git commit` 自動跑 H1-H6 校驗。詳見 [`tools/commit-hook-spec.md`](./tools/commit-hook-spec.md)。
+
+---
+
 ## 完成 ✅
 
 你現在有：
@@ -227,6 +249,7 @@ slash command 給未來重用。
 - ✅ `agent-commons/` 結構齊全（capsules / handoffs / protocols / institutional-memory / state / roles/{engineer,pm}/）
 - ✅ 領域公理 doctor 通過
 - ✅ 雙 AI 各自有 init slash command 可呼叫
+- ✅ commit hook binary 攔截就緒（若跑 Step 6）
 - ✅ 第一個任務可以開始派發
 
 ---
@@ -272,5 +295,6 @@ PM 對 AI 下指令：
 
 ## 變更歷史
 
+- **v1.2（2026-05-05，charter v0.10.0）** — commit hook vendor 中立架構 ship MINOR 連動 sync：5 步流程加 Step 6（v0.10.0+ 推薦）安裝 commit hook（`bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh`）。**升 v0.10.0 注意**：(a) 既有採用方升版主要動作就是改 profile.yaml `charter_version` → `"0.10.0"`；(b) commit hook 是 opt-in（不裝就退化 advisory）— 推薦裝、6 條同源 dogfood signal（#33/#35/#42-#45）binary 攔截升維；(c) 架構是 git 原生 hook + agent-commons 共用 script（vendor 中立 — Claude/Gemini/Kiro/Cursor/人類 commit 全攔）。**詳細 step-by-step 升版流程見 [`examples/upgrades/v0.9.x-to-v0.10.0.md`](./examples/upgrades/v0.9.x-to-v0.10.0.md)**。詳見 CHANGELOG v0.10.0 段。
 - **v1.1（2026-04-30，charter v0.9.0）** — 紀律完整性 + AI 自我覺察升維 MINOR 連動 sync（dogfood signal #34 LIVE 條款化）：Step 3 preset 表加 essential 一列（v0.9.0 新加、3-5 條 core / < 5k init token、signal #28 progressive adoption + signal #26 ROI 真槓桿）+ 漸進升維路徑說明（essential → minimal → standard → strict）。**升 v0.9.0 注意**：(a) 既有採用方升版主要動作就是改 profile.yaml `charter_version` → `"0.9.0"`；(b) AI self-instantiation 從七步驟升八步驟（加 step 0「讀過去違反紀錄」對應個體學習迴圈 `core/individual-learning-loop §3` 讀紀律）— 既有 slash command 雖仍可用、但 step 0 漏跑 = 命中 F6 surface-level、強烈建議重新具象化；(c) 新範本 `templates/agent-commons/reflection.md.tpl` 為個體層反省範本（雙寫紀律執行載體）；(d) 新 spec `tools/uninstall-spec.md` `/charter-uninstall` 棄用工具設計。**詳細 step-by-step 升版流程（含每步給 AI 的 prompt 範本）見 [`examples/upgrades/v0.8.2-to-v0.9.0.md`](./examples/upgrades/v0.8.2-to-v0.9.0.md)**。詳見 CHANGELOG v0.9.0 段。
 - **v1.0（2026-04-27〜2026-04-30，charter v0.5.7 → v0.8.2）** — 初版 5 步流程（前置 / Clone / 寫領域公理 / 跑 init / AI 自我具象化 / 人工二次確認）+ v0.7.x 累積增補（雙路徑領域公理 / Phase 5b 他抽驗 / step 6 PROVISIONAL/ACTIVE 二態 / vendor schema 規範）+ v0.8.x 累積增補（axiom status fail-fast / Step 2 ↔ Step 3 swap / 雙軸矩陣 framing）。

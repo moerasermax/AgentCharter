@@ -129,4 +129,5 @@ your-project/
 
 ## 變更歷史
 
+- **v1.1（2026-05-05，charter v0.10.0）** — commit hook vendor 中立架構 ship MINOR 連動 sync：保留兩層架構圖 + 三保證 + 快速路由設計、無結構性變動；升版段落仍走 UPGRADE.md（PATCH / MINOR 兩路徑）。
 - **v1.0（2026-05-03，charter v0.9.9）** — 初版入口檔（v0.7.6 議程、持續延後至 v0.9.9 落地）：兩層架構圖 + 三個關鍵保證 + 快速路由 + 升版快速執行版（全部「給 AI 的 prompt」格式）+ 文件地圖 + preset 決策表。對應 dogfood signal #21（雙層架構無清楚入口）+ NEXT.md v0.7.6 BOOTSTRAP 設計紀律（所有執行段必給 AI prompt）。
