@@ -6,7 +6,20 @@
 
 ## [Unreleased]
 
-（空 — v0.9.9 已釋出；下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段（lint binary 派生「依賴 LLM 紀律的條款清單」）+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構 + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ BREAKING-LITE checklist；signal #38 ① ④ 繼續觀察（① 累積至 ≥3 次同類後加 doctor W1101 路徑校驗 binary；④ 觀察下一次 F-mode 編號不一致是否再現）；v1.0 公開化前：LICENSE 決定 + CryptoBot 引用 charter + IRON Pattern 抽到 framework + ShopStack/Codex walkthrough 寫實檔 + v1.0 frozen 紀律精細化）
+下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段 + SSS S3 propagate + commit hook vendor 邀請制 ship + BOOTSTRAP.md signal #39/#40 互動式 prompt 改版；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊
+
+---
+
+## [0.9.10] — 2026-05-04
+
+> **PATCH release — signal #41：新 vendor AI 讀錯 vendor spec 誤認身份（Kiro 讀 claude-code.md LIVE 實證）**。向下兼容，純條款文檔擴增；採用方升版只改 `charter_version: "0.9.9"` → `"0.9.10"`。
+
+### Changed
+
+- **`core/init-template.md §3.3.2`（step 1 + step 4 各加 ⚠️ 紀律說明）**：
+  - step 1 加：`若 <my-vendor>.md 不存在 → 只讀 _spec.md；不可把其他 vendor 的 .md 當作自己的 vendor spec 讀取`（讀錯 = 誤認身份 = F3）
+  - step 4 加：`「若有」= 若存在自己 vendor 的 .md；其他 vendor 執行細節不可代入`
+  - 對應 dogfood signal #41（2026-05-04 公司專案 Kiro 接 Engineer 角色 LIVE — 找不到 kiro.md → fallback 讀 claude-code.md → 輸出「Claude Code 角色模擬」誤認身份）
 
 ---
 
