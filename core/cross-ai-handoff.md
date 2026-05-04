@@ -64,6 +64,43 @@
 | ❌ 把未結案膠囊默認交給接班方關 | 退出方仍對自己工作期內的結案宣告負責；不可甩鍋 |
 | ❌ 把強化抽驗狀態以「我覺得對方修好了」自行解除 | 解除須走 `escalation-protocol.md §5` 流程，跨 AI 接班不是解除事件 |
 
+### 3.3 Directive Header「致 XXX」標準格式（v0.10.0 加；signal #45 條款化）
+
+跨 AI handoff 文件（`<common-memory-root>/handoffs/HANDOFF_<N>.md`）開頭**必含** directive header，明示交辦對象：
+
+```
+---
+致 <角色名稱 / AI vendor>
+
+<具體要請對方做的內容、驗收標準、狀態摘要>
+
+---
+```
+
+範例：
+
+```
+---
+致 Kiro (Engineer)
+
+執行 Sprint S36 - Sandbox 測試腳本整合
+1. 環境清理：移除 Program.cs 硬編碼測試行
+2. 建立 P2_SearchScenarioSuite.cs
+3. 統一 Check<T> 輔助方法
+
+驗收：dotnet run --project CPF.Sandbox validate 全 PASS
+
+---
+```
+
+**動機**（dogfood signal #45）：2026-05-04 dbSDK LIVE 觀察 — user 在同一 session 教 Gemini PM 用「致 XXX」格式、又得教 Kiro 同樣的事；每次接新 vendor 都重教一次 = v0.7.3 北極星「不讓 user 記」直接違反。條款化以後 user 不再需要逐 AI 教。
+
+**校驗**（v0.10.0 加）：
+- `tools/commit-hook-spec.md §3 H6`（warn）— commit 含 handoff 新檔但起始 20 行內無 `^致 [^\s]+` 起始 → console 警告（不擋）
+- v0.10.x+1 累積 ≥ 5 樣本後評估升 reject
+
+**為何不在 §3.1 標準 HANDOFF 增量內**：directive header 是文件**起始格式**、§3.1 是文件**內容項目**；兩者軸不同，分列。
+
 ---
 
 ## 4. 接班方（新 AI）接收職責

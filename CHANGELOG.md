@@ -6,7 +6,46 @@
 
 ## [Unreleased]
 
-下批次 v0.9.x PATCH 議程：v0.8.3 雙軸矩陣第三段 + SSS S3 propagate + commit hook vendor 邀請制 ship + BOOTSTRAP.md signal #39/#40 互動式 prompt 改版；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊
+下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject + 雙軸矩陣第三段 lint binary 派生「依賴 LLM 紀律的條款清單」；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊
+
+---
+
+## [0.10.0] — 2026-05-05
+
+> **MINOR release — commit hook vendor 中立架構 ship + 6 條同源 signal 結構強制升維**。向下兼容（採用方不裝 hook 即退化到 v0.9.x 行為）；採用方升版動作：(a) `agent-commons/_config/profile.yaml` `charter_version: "0.9.10"` → `"0.10.0"`；(b) 跑 `bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh`（推薦、可選）。
+
+### Added
+
+- **`tools/commit-hook-spec.md`（新檔）**：commit hook spec 層 — 6 個校驗點（H1-H6）spec-as-data 四欄結構 + git 原生 hook + agent-commons 共用 script 架構 + bypass 機制 + 與其他條款關係。對應 dogfood signal #33 / #35 / #42 / #43 / #44 / #45 同源「弱保證項升結構強制」家族整合。
+- **`tools/vendor/commons/charter-commit-checks.sh`（新檔，v1.0）**：reference 邏輯實作 — bash 腳本實作 H1-H6 校驗（reject H1/H2/H3/H5、warn H4/H6）+ 從 `mapping.yaml` 讀 `common_memory_root`（vendor 中立）+ `--no-verify` bypass 提示。
+- **`tools/vendor/commons/install-git-hooks.sh`（新檔，v1.0）**：採用方一鍵安裝器 — `install` 裝入 + `--update` 升版 + `--uninstall` 移除 + `--help` 用法。
+
+### Changed
+
+- **`core/diagnose-remediate-protocol.md §4`（v0.9.0 精神 → v0.10.0 實作層）**：v0.9.0 寫的 vendor 邀請制精神升 ship 階段；§4.2 架構從「各 vendor 各自實作 hook」修正為「git 原生 hook + agent-commons 共用 script」（vendor 中立）；§4.3 vendor 邀請制語意修正（vendor 只需呼叫 install-git-hooks.sh、不再各自寫 hook 實作）；§4.4 校驗點覆蓋表（H1-H6）；§4.5 採用方拒絕安裝 fallback；§4.6 commit hook vs doctor 兩層互補。
+- **`core/cross-ai-handoff.md §3.3`（v0.10.0 加）**：directive header「致 XXX」標準格式條款化 — handoff 文件起始格式 + 範例 + 對應 signal #45 動機 + commit-hook-spec H6 校驗（warn 不擋、累積樣本後評估升 reject）。
+- **`tools/profiles/standard.yaml`**：`charter_version: "0.9.0"` → `"0.10.0"`。
+
+### Dogfood signals 收編
+
+- **#33** failure-mode 不自報 → H2/H5 commit hook reject 結構強制（v0.9.0 寫精神、v0.10.0 ship 實作）
+- **#35** PROVISIONAL → ACTIVE 自激活（dbSDK + CryptoBot S71 累積 2 次）→ H1 commit hook reject
+- **#42** individual-learning-loop 雙寫漏對應 → H5 commit hook reject
+- **#43** reflection 檔名漂浮（dbSDK Gemini PROTOCOLS.md → 改名 LIVE 實證）→ H3 commit hook reject
+- **#44** reflection 含 sprint 編號（dbSDK Gemini S36 決策誤入）→ H4 commit hook warn
+- **#45** cross-AI handoff 缺「致 XXX」directive header → H6 commit hook warn + cross-ai-handoff §3.3 條款化
+
+### Architecture decision（v0.7.4 雙軌節奏對齊）
+
+本 release 是 **MINOR**（非 PATCH）— 因新加 spec 檔（`commit-hook-spec.md`） + reference impl（`charter-commit-checks.sh` + `install-git-hooks.sh`） + 1 條既有條款新加子段（`cross-ai-handoff §3.3`）+ 5 條既有條款結構強制升維。對齊 v0.7.4 雙軌節奏「頻繁小擴增 PATCH + 大方向新加條款用 MINOR」精神。
+
+### vendor 中立性實證
+
+vs v0.9.0 原版「.claude/hooks/ / .gemini/hooks/ / .kiro/hooks/ 各 vendor 各自實作」設計，本 release 走 **git 原生 hook + agent-commons 共用 script**：
+- ✅ Claude Code / Gemini CLI / Kiro / Cursor / 人類手動 commit 全部觸發（不綁特定 vendor）
+- ✅ 邏輯入 git（`agent-commons/_config/hooks/`）跟專案分發、charter 升版可傳播
+- ✅ thin shim 一次裝入、charter 升版只需 `--update` 拉新 logic
+- 對應 dogfood signal #41 反方向學習（vendor lock-in 反思）
 
 ---
 

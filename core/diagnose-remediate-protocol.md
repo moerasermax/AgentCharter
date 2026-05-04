@@ -158,42 +158,78 @@ dogfood signal #33（failure-mode 自報失效）：AI 命中 F-mode 後**不主
 
 → 結構強制升維解：**commit 時若 commit message 標 F-mode 命中、`failure_mode_log` 必有對應 entry、`reflections/` 必有對應檔；否則拒絕 commit**。
 
-### 4.2 charter 概念層（本條款 §1）vs vendor 層（各自實作）
+### 4.2 架構：git 原生 hook + agent-commons 共用 script（v0.10.0 修正）
 
-對齊 `ai-vendor-onboarding.md §3` 邀請制四步驟：
+> **v0.9.0 → v0.10.0 修正**：原版「各 vendor 各自實作 hook」會綁死特定 vendor（`.claude/hooks/` 只在 Claude Code commit 時觸發、Gemini / Kiro 直接 commit 不觸發）— 對應 dogfood signal #41 同源（vendor lock-in 反方向）。改走 **git 原生 pre-commit hook + agent-commons 共用 script**：
 
-| 層 | 角色 | 動作 |
+| 層 | 位置 | 用途 |
 |---|---|---|
-| charter 概念層（本條款）| maintainer | 寫紀律：「**commit 時若 AI 標 F-mode 命中、failure_mode_log 必有對應 entry + reflections/ 必有對應檔、否則退稿**」 |
-| vendor 層（claude-code.md / gemini-cli.md / cursor.md）| 各 vendor | 各自實作 commit hook（依自己 vendor 工具能力 — Claude Code 用 hooks / Gemini CLI 用對應機制 / Cursor 用 rules）|
-| maintainer 簽收層 | maintainer | review vendor commit hook 實作是否對齊本條款紀律、簽收 |
+| charter spec 層 | `tools/commit-hook-spec.md` | 定義 H1-H6 校驗紀律 + reject/warn 分級 |
+| charter reference 實作 | `tools/vendor/commons/charter-commit-checks.sh` | canonical 邏輯實作（bash） |
+| charter 安裝器 | `tools/vendor/commons/install-git-hooks.sh` | 採用方一鍵安裝 / 升版 / 解除 |
+| 採用方專案層 | `agent-commons/_config/hooks/charter-commit-checks.sh` | 從 canonical copy（入 git、跟專案走、charter 升版可傳播）|
+| 採用方 git hook | `.git/hooks/pre-commit` | thin shim（3 行、local-only、轉發到上面那個 script）|
 
-→ charter **不寫死任一 vendor 實作**（對齊 v0.5.9「不附 binary」原則 + ai-vendor-onboarding §1 邀請制原則）。
+**核心設計**：
+- 攔截走 git 原生 `pre-commit` hook、不寫進 `.claude/hooks/` / `.gemini/hooks/` 等 vendor 私有目錄 → **vendor 中立**（任何工具或人類執行 `git commit` 都觸發）
+- 實際邏輯放 `agent-commons/_config/hooks/`（**入 git**、跟專案分發、charter 升新檢項可 pull 傳播）
+- `.git/hooks/pre-commit` 是 thin shim（local-only、不入 git、由 install-git-hooks.sh 一次性裝）
 
-### 4.3 邀請制 commit hook 紀律最低要求
+→ charter 仍然**不寫進任何 vendor 私有目錄**（對齊 v0.5.9「不附 binary」原則 + ai-vendor-onboarding §1 邀請制原則）；但提供**跨 vendor 中立的 git 通用層 reference 實作**、不是逼各 vendor 各自重寫。
 
-vendor 實作的 commit hook 必須涵蓋：
+### 4.3 vendor 邀請制（語意修正）
 
-| 校驗點 | 觸發條件 | 對應條款 |
-|---|---|---|
-| F-mode 命中對應 reflection 存在 | commit message / 文件異動 偵測到 F-mode entry | `individual-learning-loop §2` 雙寫紀律 |
-| reflection frontmatter 完整 | 偵測到 reflection 新檔 | `individual-learning-loop §2.3` |
-| 校驗結果有 stdout 證據 | commit 含 verify 報告但無 stdout | 本條款 §2.4 真實 stdout 證據要求 |
-| 擴展空間 | vendor 自選 | vendor 主動權（對齊 `ai-vendor-onboarding §3 step 2`）|
+| 原版（v0.9.0）誤導語意 | 修正後（v0.10.0）正確語意 |
+|---|---|
+| 各 vendor 在 `.<vendor>/hooks/` 各自寫 hook 實作 | 各 vendor 在自家 init 流程順手呼叫 `tools/vendor/commons/install-git-hooks.sh`（一次裝、走 git 原生 + agent-commons 共用 script） |
+| vendor 必須有 hook 能力 | vendor 只需能跑 `git commit`（任何 git client 都能） |
+| hook 實作與 vendor 工具綁死 | hook 實作 vendor 中立、跟 git 走 |
 
-→ vendor 實作的 hook 內容**可以更嚴**（vendor 主動權）、**不可以更鬆**（charter 概念層保底）。
+採用方安裝步驟（charter v0.10.0 起標準流程）：
 
-### 4.4 vendor 拒絕實作的 fallback
+```
+# Step 1: charter-init Phase 4.5 順手裝（推薦） / 採用方手動跑：
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh
+
+# Step 2: charter 升版時 user 跑：
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
+```
+
+### 4.4 校驗點覆蓋（H1-H6）
+
+完整 spec 見 `tools/commit-hook-spec.md §3`：
+
+| 校驗 | 觸發條件 | 嚴格度 | 對應 signal |
+|---|---|---|---|
+| **H1** `_role.md` Status 升 ACTIVE 字樣校驗 | _role.md status 變更 | reject | #35（自激活）|
+| **H2** F-mode 雙寫（commit 提 F-mode → log + reflection 必齊）| commit message 提 F-mode | reject | #33（不自報）|
+| **H3** Reflection 檔名 regex | `roles/<role>/reflections/` 新檔 | reject | #43（檔名漂浮）|
+| **H4** Reflection 含 sprint 編號邊界 | reflection 新檔內容含 `S\d+` | warn | #44（state 混 reflection）|
+| **H5** Log entry 對應 reflection 雙寫 | failure_mode_log 加 entry | reject | #42（雙寫漏對應）|
+| **H6** Cross-AI handoff directive header | handoff 新檔 | warn | #45（致 XXX 缺）|
+
+→ vendor 實作的 hook 內容**可以更嚴**（fork `agent-commons/_config/hooks/charter-commit-checks.sh` 加自家檢項）、**不可以更鬆**（charter 概念層保底）。
+
+### 4.5 採用方拒絕安裝的 fallback
 
 對齊 `ai-vendor-onboarding §0.3`「邀請制原則」+ `versioning-migration §2.3`「不破壞既有採用方」精神：
 
-| vendor 狀況 | fallback |
+| 採用方狀況 | fallback |
 |---|---|
-| vendor 實作 hook 對齊本條款 | ✅ 結構強制升維落地 |
-| vendor 暫未實作 hook | ⚠️ 退化到既有 v0.8.x 紀律（依 `audit-rights` + `violation-reflection §1` 抽驗方意願執行）|
-| vendor 明示 hook 能力盲區 | ⚠️ vendor.md 顯式聲明、由 maintainer 簽收 + 記錄為已知 fallback |
+| 跑 `install-git-hooks.sh` 安裝 | ✅ 結構強制升維落地 — H1-H6 commit 時 binary 攔截 |
+| 不跑安裝 | ⚠️ 退化到既有 v0.8.x 紀律（依 `audit-rights` + `violation-reflection §1` 抽驗方意願執行）+ doctor advisory |
+| 安裝後用 `git commit --no-verify` 繞過 | ⚠️ git 既有逃生口、charter 不阻止；但 AI 自主繞過 = `core/role-separation §3.5` 結構性繞路 = F1（commit-hook-spec §6）|
 
-→ charter 不強制 vendor 必實作 hook（依邀請制原則、vendor 主動權）；但概念層紀律本身對所有 vendor 適用。
+→ charter 不強制採用方必裝（依邀請制原則、user 主動權）；但概念層紀律本身對所有採用方適用。
+
+### 4.6 commit hook vs doctor 兩層互補
+
+| 工具 | 觸發 | 嚴格度 | 適用 |
+|---|---|---|---|
+| `tools/doctor-spec.md`（doctor）| user 手動 / self-instantiation step 5 | advisory（warn 不擋）| 任意時點驗證、升版前 dry-run、commit 前自查 |
+| `tools/commit-hook-spec.md`（hook）| 每次 `git commit` | binary（H1/H2/H3/H5 reject）| commit 時最後一道結構強制攔截 |
+
+→ doctor 是「自驗工具」、hook 是「他律工具」；兩者覆蓋同一紀律集、但檢測時點 + 嚴格度互補。
 
 ---
 

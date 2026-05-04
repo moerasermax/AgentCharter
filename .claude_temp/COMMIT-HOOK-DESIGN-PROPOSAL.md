@@ -23,21 +23,32 @@
 
 ---
 
-## 2. 架構：vendor 邀請制 ≠ framework 代寫
+## 2. 架構：git 原生 hook + agent-commons 共用 script（v0.2 修正）
 
-對齊 `core/ai-vendor-onboarding.md`（v0.6.0）「框架不代寫 vendor 層」紀律：
+> **v0.1 → v0.2 修正**：原版「各 vendor 各自實作 hook」會綁死特定 vendor（`.claude/hooks/` 只有 Claude Code 跑 commit 時觸發、Gemini / Kiro 直接 commit 不會觸發）。改為 **git 原生 hook + agent-commons 共用 script**，跨 vendor 中立。
 
 ```
-charter 層（規範）                vendor 層（實作）
-─────────────────                ────────────────────
-tools/commit-hook-spec.md        .claude/hooks/pre-commit.sh         ← Claude Code
-   定義什麼必檢、何時檢          .gemini/hooks/pre-commit.toml       ← Gemini CLI
-   提供 reference 範例           .cursor/hooks/pre-commit.mdc        ← Cursor
-   不代寫各 vendor 實作          .kiro/hooks/<vendor 自訂>           ← Kiro
-                                 etc.（其他 vendor 邀請制接入）
+charter 層（規範 + reference 實作）           採用方專案層（每專案自帶）
+──────────────────────────────────           ──────────────────────────────────
+tools/commit-hook-spec.md                    agent-commons/_config/hooks/
+   定義 H1-H6 校驗點 + reject/warn 分級        charter-commit-checks.sh    ← clone charter 時拉進
+                                                 （charter ship 後 user pull 自動更新）
+tools/vendor/commons/
+   charter-commit-checks.sh   ← canonical    .git/hooks/pre-commit       ← thin shim、3 行
+   install-git-hooks.sh       ← 安裝器          exec bash agent-commons/_config/hooks/charter-commit-checks.sh "$@"
+                                                 （install-git-hooks.sh 一次性裝入、不入 git）
 ```
 
-charter 提供 **spec + 一個 reference 實作**（建議 claude-code 起手、因 maintainer 主場）；其他 vendor「**邀請制**」自實作，charter 不代寫。
+**核心設計**：
+- 攔截邏輯走 **git 原生 pre-commit hook**（Claude / Gemini / Kiro / 人類手動 commit 全攔，vendor 中立）
+- 實際檢項邏輯放 `agent-commons/_config/hooks/charter-commit-checks.sh`（**入 git、跟專案走、charter 升版可傳播**）
+- `.git/hooks/pre-commit` 是 3 行 thin shim（local-only、不入 git、由 install-git-hooks.sh 裝）
+
+**vendor 邀請制（修正後語意）**：
+- ❌ 原版：各 vendor 寫各自的 hook（`.claude/hooks/` / `.gemini/hooks/` / `.kiro/hooks/`）
+- ✅ 修正版：各 vendor 在 init 流程裡呼叫 `tools/vendor/commons/install-git-hooks.sh` 一次裝入（Claude / Gemini / Kiro / Cursor 各 init 流程順手裝、不再寫各自 hook 版本）
+
+→ 對齊 `ai-vendor-onboarding.md`「框架不代寫 vendor 層」精神：charter 不在 `.claude/` / `.gemini/` 等 vendor 私有目錄寫東西；hook 邏輯走 git 通用層 + agent-commons 共用 script，跨 vendor 中立 + 跟專案分發。
 
 ---
 
