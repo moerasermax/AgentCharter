@@ -539,6 +539,21 @@ framework 永久維持「**純規範**」位階。
 
   **累積**：2 次雙 AI 樣本（2026-05-01 dbSDK LIVE）。**判斷**：六個問題中，2-5 是框架設計層缺口（`reflection.md.tpl` + `individual-learning-loop` 需澄清），可合併為一個 PATCH 修法；1（路徑自創）與 signal #32/#35 同源繼續觀察；6（clone 版本）留 post-upgrade-verify 軸延伸處理。**待 user 確認**：非退稿型 placeholder 的格式設計方向（#5）是核心設計決定，其他修法依賴此決定。
 
+- **新 dogfood signal #40 候選 — 接入 prompt `<placeholder>` 填空設計 UX 差（2026-05-04 CryptoBot init LIVE）**【累積 1 次；候選修法：BOOTSTRAP.md + charter-init.md 改互動式問答收齊參數再跑】
+
+  **觀察背景**：user 看完接入 prompt 後說「`<...>` 要採用方自己填寫，重複的變數很多，不如用互動式提問，先問齊再跑」。
+
+  **根因**：現有 prompt（BOOTSTRAP.md 第一次接入、charter-init.md、QUICKSTART.md Step 3 等）設計為「填空後貼給 AI」格式，`<preset>` / `<axiom-path>` 等變數由 user 手動替換。user 的認知負擔是：(1) 讀懂每個 placeholder 的含義；(2) 決定值；(3) 手動替換。這三步本來都可以讓 AI 互動式問完再跑。
+
+  **候選修法**（v0.9.x PATCH）：
+  - `BOOTSTRAP.md §🆕 第一次接入` prompt：改為「貼給 AI 後，AI 先問你三件事（preset / 域公理路徑 / 是否有既有協議），你回答完 AI 一口氣跑完接入」
+  - `charter-init.md`（slash command）：Phase 0 改互動式問答（已即時修補 CryptoBot 版本）
+  - `QUICKSTART.md Step 3`：同方向評估
+
+  **即時修補**：CryptoBot `.claude/commands/charter-init.md` Phase 0 已加「一次問齊三個變數，收到回答後直接跑 Phase 1-5b，不再中途問人」。
+
+  **累積**：1 次（2026-05-04 CryptoBot init LIVE）。**判斷**：UX 改善、非結構性缺陷；但採用摩擦是 v0.7.3 北極星「不讓 user 記」的直接違反方向。累積至 2 次後 PATCH BOOTSTRAP.md；或與 signal #39 合併作一次 BOOTSTRAP.md 改版。
+
 - **新 dogfood signal #39 候選 — BOOTSTRAP.md「第一次接入」prompt 未處理「既有協議遷移」場景（2026-05-03 CryptoBot 接入 LIVE）**【累積 1 次；候選修法：BOOTSTRAP.md 加「既有協議」分支 prompt】
 
   **觀察背景**：user 要對 CryptoBot 專案重新接入 AgentCharter，專案已有 `management/protocols/Dev_Protocol_IRON.md`（既有鐵律）。maintainer 建議 prompt 時犯兩個錯誤，揭露 BOOTSTRAP.md 設計缺口。
