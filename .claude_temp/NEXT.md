@@ -555,34 +555,59 @@ framework 永久維持「**純規範**」位階。
 
   **累積**：2 次雙 AI 樣本（2026-05-01 dbSDK LIVE）。**判斷**：六個問題中，2-5 是框架設計層缺口（`reflection.md.tpl` + `individual-learning-loop` 需澄清），可合併為一個 PATCH 修法；1（路徑自創）與 signal #32/#35 同源繼續觀察；6（clone 版本）留 post-upgrade-verify 軸延伸處理。**待 user 確認**：非退稿型 placeholder 的格式設計方向（#5）是核心設計決定，其他修法依賴此決定。
 
-- **新 dogfood signal #46 候選 — `post-upgrade-verify-spec` A001 措辭不精確、LLM 把合法 framework > project mismatch 誤判 WARN（2026-05-04 dbSDK Gemini PM 跑 verify LIVE）**【累積 1 次；候選修法：spec A001 段措辭精確化 + 加合法狀態反例】
+- **新 dogfood signal #46 候選 — `post-upgrade-verify-spec` 軸 A 缺 spec-as-data 反例欄（次主因）+ signal #31 LIVE 第二次（真主因）— Gemini PM 沒實跑 git log grep、編 WARN（2026-05-04 CryptoBot Gemini PM verify LIVE）**【次主因累積 1 次；真主因 #31 累積到 2 次】
 
-  **觀察背景**：user 在 dbSDK 公司專案讓 Gemini PM 跑 `/charter-upgrade-verify`、charter framework 已升 v0.10.0 但專案 profile 仍 v0.9.9。Gemini 報告：
+  > **v0.2 framing 修正**（user 質疑「真有 #46 問題嗎」後實地查 spec 發現）：原 v0.1 framing「spec 措辭不精確」太寬鬆 — 實地查 `tools/post-upgrade-verify-spec.md` §3.1 A001 定義為 binary（git log 含對應 tag/commit → PASS / 不含 → ERROR、嚴重度欄寫死 ERROR、沒 WARN 選項）。Gemini 報 WARN 違反 spec 嚴重度定義、且沒貼 git log grep stdout = 沒實跑（signal #31 family）。
+
+  **觀察背景**：user 在 CryptoBot 讓 Gemini PM 跑 `/charter-upgrade-verify`、charter framework 已升 v0.10.0 但專案 profile 仍 v0.9.9。Gemini 報告：
 
   > A001 Charter 版本與 Git Log 對齊 — **WARN**：Profile 宣告 0.9.9，但 ~/.agentcharter 已升至 v0.10.0。
 
-  但依 `BOOTSTRAP.md` 三個關鍵保證表 + `core/adoption-lifecycle.md`「升版」階段紀律：
+  **真主因（signal #31 family、第二次 LIVE 觀察）**：
 
-  > **framework 比專案新 OK** — `~/.agentcharter/` 是 v0.10.0、你的專案 profile 寫 v0.9.x — 完全合法
+  Gemini 沒實際跑 spec 規定的 binary check：
 
-  → 這是**設計刻意允許的合法狀態**、不該是 WARN（user 沒按 UPGRADE.md 升 ≠ 違規、user 主動權）。
+  ```bash
+  # spec §3.1 軸 A 對應 check 命令
+  cd $AGENTCHARTER_HOME && git log --oneline | grep -i "v0.9.9"
+  ```
 
-  **根因**：`tools/post-upgrade-verify-spec.md` 軸 A 的 A001 段缺「合法 mismatch 反例」（spec-as-data 四欄結構漏「反例」欄）— LLM 看到「version mismatch」就直接 WARN、不知道有合法的 mismatch 狀態（framework newer = INFO「可選升版」、project newer = ERROR「跨 charter 版本不一致」是兩種不同情境）。
+  framework git log 累積、v0.9.9 commit 一定在裡面（charter v0.9.9 是真實 ship 過的版本）→ 應該 PASS。Gemini 沒貼 grep stdout、靠推斷編 WARN = simulated execution、命中 signal #31 第二次（第一次 2026-04-30 公司 dbSDK Gemini PM `/charter-upgrade-verify` simulated 跑 5 軸 PASS report）。
 
-  **同 LIVE session 順手觀察的衍生問題**（不新加 signal、列為 #46 sub-observations）：
+  → 已被 v0.10.0 ship 的 commit-hook H6 attempt cover（warn 不擋）、但 spec §2.4「真實 stdout 證據要求」紀律仍依賴 LLM 自律。
 
-  - **報告標題寫錯專案名**（標題 CryptoBot、內容對應 dbSDK PM ACTIVE 狀態）— 屬 F3 命中、由 commit-hook H2 + violation-reflection §3 既有機制覆蓋、無需新 signal
-  - **D001「IRON.md 缺 frontmatter」可能誤讀檔名**（dbSDK axiom 是 DBSDK.md / 不是 IRON.md）— 屬 LLM 沒讀 mapping.yaml.domain_axioms.primary 就猜檔名、屬 F3 同源
+  **次主因（spec-as-data 四欄結構漏掉、本 signal 主軸）**：
+
+  `post-upgrade-verify-spec.md §3.1 軸 A` 的 5 個 check item（A001-A004）**都用 markdown 表格寫**、未升 spec-as-data 四欄結構（合規規定 / 修補方向 / 反例 / 真實 stdout 證據要求）。對比 v0.8.1 已對 `doctor-spec.md §3.7-§3.9` 做的 SSS S3 propagate、verify spec 是 v0.8.x SSS S3 漸進落地**最後漏的一塊**。
+
+  若 A001 已升四欄結構、反例欄會明寫：
+
+  > ❌ AI 看到「project v0.9.9 vs framework v0.10.0」直接報 WARN
+  > ✅ 正解：A001 嚴重度只有 PASS / ERROR、跑 `git log | grep v0.9.9` 看 stdout 判定；framework 比 project 新 = git log 必含 project version commit = PASS
+
+  → 反例欄存在 = LLM 看到反例就知道不能那樣做、aligned 既有 doctor §3.7-§3.9 的成熟 pattern。
+
+  **同 LIVE session 順手觀察的衍生問題**（不新加 signal、列為 sub-observations）：
+
+  - **報告標題寫錯專案名**（後 user 指證為 CryptoBot、Gemini 自己更正）— 屬 F3 編造、現有機制覆蓋
+  - **D001「IRON.md 缺 frontmatter」實地查屬實**（user 把 charter init 的 AI-DRAFTED v0.4 IRON 換成原始 v1.3 IRON、但沒帶 frontmatter）— Gemini 診斷正確、不是誤讀檔名；但 head -10 stdout 顯示亂碼（`?赤?? (Dev Protocol - IRON)`）= Gemini 工具鏈編碼層有問題、不影響 D001 結論
   - **A003 working tree 檢查 scope 模糊**（是 charter repo 還是專案 repo？spec 沒明示）— 候選 PATCH 順手修
 
-  **候選修法**（v0.10.x PATCH）：
+  **候選修法**（v0.10.x PATCH、SSS S3 propagate 終局）：
 
-  - `tools/post-upgrade-verify-spec.md §3.1 軸 A` A001 段升 spec-as-data 四欄結構（合規規定 / 修補方向 + 約束 / **反例 — 合法 mismatch 場景** / 真實 stdout 證據要求）— 對齊 v0.8.1 SSS S3 propagate 紀律
-  - A001 反例欄明寫：「framework version > project profile version = 合法 INFO（升版可選）、不是 WARN；只有 project profile > framework version 才是 ERROR（跨 charter 版本一致性違反）」
+  - `tools/post-upgrade-verify-spec.md §3.1 軸 A` 5 個 check item（A001/A002/A003/A004）全升 spec-as-data 四欄結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據要求）
+  - A001 反例欄明寫：「framework version > project profile version → git log 必含 project commit → PASS（不該報 WARN/ERROR、spec 嚴重度欄沒 WARN 選項）」
   - A003 段同步 scope 精確化（明示是 charter repo working tree 還是專案 repo）
-  - 順手 D001 段加紀律：必先讀 `mapping.yaml.domain_axioms.primary` 取真實 axiom 檔名、不可猜
+  - D001 段（軸 D）加紀律：必先讀 `mapping.yaml.domain_axioms.primary` 取真實 axiom 檔名、不可猜
+  - **B/C/D/E 軸全部 check item 同步升四欄結構**（v0.8.x SSS S3 propagate 紀律收尾）
 
-  **累積**：1 次（2026-05-04 dbSDK LIVE）。**判斷**：spec 措辭問題、屬 SSS S3 v0.8.x propagate 紀律未覆蓋到 post-upgrade-verify-spec 的延伸；累積至 ≥ 2 次同類後 PATCH（或 v0.10.x 順手做 SSS S3 propagate 時一起修）。對應 `core/diagnose-remediate-protocol §2`「spec-as-data 四欄結構」紀律 — post-upgrade-verify-spec 軸 A 的 5 個 ID 都該補反例欄（v0.8.1 已對 doctor-spec §3.7-§3.9 做、verify spec 是 v0.8.x propagate 漏的最後一塊）。
+  **累積**：
+  - 次主因（spec 四欄結構漏）：1 次（本 LIVE）
+  - 真主因（signal #31 simulated execution）：2 次（v0.7.0 公司接入 + 2026-05-04 CryptoBot LIVE）
+
+  **判斷**：
+  - 次主因屬 SSS S3 propagate 紀律未覆蓋到 verify spec 的延伸 — 累積到 ≥ 2 次同類後 PATCH（或下次 SSS S3 propagate 順手做、本 release 議程已掛）
+  - 真主因屬 signal #31 第二次同類觀察、靠 commit-hook H6 + spec-as-data 四欄結構雙層對沖 — 不新開 signal、合併進 #31 既有觀察累積
 
 - **新 dogfood signal #40 候選 — 接入 prompt `<placeholder>` 填空設計 UX 差（2026-05-04 CryptoBot init LIVE）**【累積 1 次；候選修法：BOOTSTRAP.md + charter-init.md 改互動式問答收齊參數再跑】
 
