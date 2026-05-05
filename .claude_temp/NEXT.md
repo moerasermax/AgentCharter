@@ -555,6 +555,35 @@ framework 永久維持「**純規範**」位階。
 
   **累積**：2 次雙 AI 樣本（2026-05-01 dbSDK LIVE）。**判斷**：六個問題中，2-5 是框架設計層缺口（`reflection.md.tpl` + `individual-learning-loop` 需澄清），可合併為一個 PATCH 修法；1（路徑自創）與 signal #32/#35 同源繼續觀察；6（clone 版本）留 post-upgrade-verify 軸延伸處理。**待 user 確認**：非退稿型 placeholder 的格式設計方向（#5）是核心設計決定，其他修法依賴此決定。
 
+- **新 dogfood signal #46 候選 — `post-upgrade-verify-spec` A001 措辭不精確、LLM 把合法 framework > project mismatch 誤判 WARN（2026-05-04 dbSDK Gemini PM 跑 verify LIVE）**【累積 1 次；候選修法：spec A001 段措辭精確化 + 加合法狀態反例】
+
+  **觀察背景**：user 在 dbSDK 公司專案讓 Gemini PM 跑 `/charter-upgrade-verify`、charter framework 已升 v0.10.0 但專案 profile 仍 v0.9.9。Gemini 報告：
+
+  > A001 Charter 版本與 Git Log 對齊 — **WARN**：Profile 宣告 0.9.9，但 ~/.agentcharter 已升至 v0.10.0。
+
+  但依 `BOOTSTRAP.md` 三個關鍵保證表 + `core/adoption-lifecycle.md`「升版」階段紀律：
+
+  > **framework 比專案新 OK** — `~/.agentcharter/` 是 v0.10.0、你的專案 profile 寫 v0.9.x — 完全合法
+
+  → 這是**設計刻意允許的合法狀態**、不該是 WARN（user 沒按 UPGRADE.md 升 ≠ 違規、user 主動權）。
+
+  **根因**：`tools/post-upgrade-verify-spec.md` 軸 A 的 A001 段缺「合法 mismatch 反例」（spec-as-data 四欄結構漏「反例」欄）— LLM 看到「version mismatch」就直接 WARN、不知道有合法的 mismatch 狀態（framework newer = INFO「可選升版」、project newer = ERROR「跨 charter 版本不一致」是兩種不同情境）。
+
+  **同 LIVE session 順手觀察的衍生問題**（不新加 signal、列為 #46 sub-observations）：
+
+  - **報告標題寫錯專案名**（標題 CryptoBot、內容對應 dbSDK PM ACTIVE 狀態）— 屬 F3 命中、由 commit-hook H2 + violation-reflection §3 既有機制覆蓋、無需新 signal
+  - **D001「IRON.md 缺 frontmatter」可能誤讀檔名**（dbSDK axiom 是 DBSDK.md / 不是 IRON.md）— 屬 LLM 沒讀 mapping.yaml.domain_axioms.primary 就猜檔名、屬 F3 同源
+  - **A003 working tree 檢查 scope 模糊**（是 charter repo 還是專案 repo？spec 沒明示）— 候選 PATCH 順手修
+
+  **候選修法**（v0.10.x PATCH）：
+
+  - `tools/post-upgrade-verify-spec.md §3.1 軸 A` A001 段升 spec-as-data 四欄結構（合規規定 / 修補方向 + 約束 / **反例 — 合法 mismatch 場景** / 真實 stdout 證據要求）— 對齊 v0.8.1 SSS S3 propagate 紀律
+  - A001 反例欄明寫：「framework version > project profile version = 合法 INFO（升版可選）、不是 WARN；只有 project profile > framework version 才是 ERROR（跨 charter 版本一致性違反）」
+  - A003 段同步 scope 精確化（明示是 charter repo working tree 還是專案 repo）
+  - 順手 D001 段加紀律：必先讀 `mapping.yaml.domain_axioms.primary` 取真實 axiom 檔名、不可猜
+
+  **累積**：1 次（2026-05-04 dbSDK LIVE）。**判斷**：spec 措辭問題、屬 SSS S3 v0.8.x propagate 紀律未覆蓋到 post-upgrade-verify-spec 的延伸；累積至 ≥ 2 次同類後 PATCH（或 v0.10.x 順手做 SSS S3 propagate 時一起修）。對應 `core/diagnose-remediate-protocol §2`「spec-as-data 四欄結構」紀律 — post-upgrade-verify-spec 軸 A 的 5 個 ID 都該補反例欄（v0.8.1 已對 doctor-spec §3.7-§3.9 做、verify spec 是 v0.8.x propagate 漏的最後一塊）。
+
 - **新 dogfood signal #40 候選 — 接入 prompt `<placeholder>` 填空設計 UX 差（2026-05-04 CryptoBot init LIVE）**【累積 1 次；候選修法：BOOTSTRAP.md + charter-init.md 改互動式問答收齊參數再跑】
 
   **觀察背景**：user 看完接入 prompt 後說「`<...>` 要採用方自己填寫，重複的變數很多，不如用互動式提問，先問齊再跑」。
