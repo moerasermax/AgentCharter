@@ -1,7 +1,23 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-04-28（v0.7.5 release 收尾 — 跨多版本升級指引 + YC walkthrough 後）
-> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）
+> **更新時間**：2026-05-05（v0.10.0 ship 收尾 — commit hook vendor 中立架構 + 6 條同源 signal 結構強制升維 + commons README + 完整文檔層 sync 後）
+> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）
+
+---
+
+## ✅ v0.10.0 已 ship signals（2026-05-05）
+
+| Signal | 議題 | 落地檢項 |
+|---|---|---|
+| **#33** | failure-mode 不自報（命中後不主動補 log + reflection）| H2/H5 reject |
+| **#35** | _role.md PROVISIONAL → ACTIVE 自激活 + Sign-in Log 自寫（累積 2 次：dbSDK + CryptoBot S71）| H1 reject |
+| **#41** | vendor spec 誤讀（Kiro 找不到 kiro.md → fallback 讀 claude-code.md 誤認身份）| v0.9.10 init-template §3.3.2 step 1/4 防呆 |
+| **#42** | individual-learning-loop 雙寫漏對應 | H5 reject |
+| **#43** | reflection 檔名漂浮（dbSDK Gemini PROTOCOLS.md LIVE 實證）| H3 reject |
+| **#44** | reflection 含 sprint 編號（state 混 meta-knowledge、dbSDK Gemini S36 決策誤入）| H4 warn |
+| **#45** | cross-AI handoff 缺「致 XXX」directive header（user 每次教不同 vendor）| H6 warn + cross-ai-handoff §3.3 條款化 |
+
+→ 對應 v0.8.2 §設計哲學第 5 條雙軸「結構強制 > 多 actor 互檢 > 單 actor 自律」最強保證軸；6 條 signal 一次「弱保證項升結構強制」家族整合。
 
 ---
 
