@@ -679,6 +679,8 @@ git commit --no-verify   # git 既有逃生口；AI 自主繞過 = F1（依 comm
 
 → Claude / Gemini / Kiro / Cursor / 人類手動 `git commit` 全部觸發；不寫進任何 vendor 私有目錄（`.claude/hooks/` / `.gemini/hooks/` 等）。
 
+→ `tools/vendor/commons/` 是 charter 的「vendor 中立共用工具集」目錄、累積 3 個小工具（v0.10.0）— 完整介紹見 [`tools/vendor/commons/README.md`](./tools/vendor/commons/README.md)。
+
 ---
 
 ## 11. Troubleshooting

@@ -199,6 +199,8 @@ tools/vendor/commons/
 | `tools/vendor/commons/install-git-hooks.sh` | charter repo（canonical） | 安裝器（裝 thin shim 進 .git/hooks/pre-commit）|
 | `agent-commons/_config/hooks/charter-commit-checks.sh` | 採用方專案內 | 從 canonical copy / 升級時 sync |
 
+→ `tools/vendor/commons/` 是 charter 的「vendor 中立共用工具集」目錄、其他工具同住於此（如 `checkpoints_handler.sh`）。完整目錄導覽見 [`tools/vendor/commons/README.md`](./vendor/commons/README.md)。
+
 採用方安裝步驟：
 
 ```
