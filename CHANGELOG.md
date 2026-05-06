@@ -6,7 +6,32 @@
 
 ## [Unreleased]
 
-下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject + 雙軸矩陣第三段 lint binary 派生「依賴 LLM 紀律的條款清單」；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊
+下批次 v0.10.x PATCH 議程：signal #31 累積 4 次（升議程候選）+ post-upgrade-verify-spec SSS S3 propagate 收尾（軸 A/B/C/D/E 全升 spec-as-data 四欄結構、signal #46 候選） + BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject + 雙軸矩陣第三段 lint binary 派生「依賴 LLM 紀律的條款清單」；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊
+
+---
+
+## [0.10.1] — 2026-05-06
+
+> **PATCH release — Charter version 主動通知（init-template step 0.5 加）**。向下兼容、純擴增既有 step 0 後新加子步驟；採用方升版只改 `charter_version: "0.10.0"` → `"0.10.1"`（或繼續維持 `"0.10.0"`、新 step 0.5 在下次 self-instantiation 自動帶入）。對應 dogfood signal #47（charter 主動通知缺位、2026-05-06 user LIVE 觀察「git pull 後專案沒升、AI 沒主動提醒」）。
+
+### Changed
+
+- **`core/init-template.md §3.3.2`（八步驟 → 「8 + step 0.5」）**：新加 **step 0.5 Charter version 比對 + 主動通知** — AI 在 step 0 讀完歷史違反紀錄後、step 1 讀 charter spec 前，先比對 framework 當前版本（讀 `$CHARTER_DIR/CHANGELOG.md` 第一個 `## [X.Y.Z]` 行）vs 專案宣告版本（`profile.yaml.charter_version`），三分支處理：
+  - `framework == project` → 跳過、繼續 step 1
+  - `framework > project`（合法）→ INFO 提示 user 升版可選、不自動改 profile.yaml（等 user explicit 授權）→ 繼續 step 1（用專案宣告版本的 spec 工作）
+  - `framework < project`（異常）→ ERROR 中止 init、要求 user `git pull` 升 framework
+
+  設計參考 prior art：`roles/pm/gemini-cli.md §3.7 Step 1`（v0.9.3 加）對 `checkpoints_handler.sh` 的三分支版本偵測（MISSING / STALE / CURRENT）— 本 step 把同 pattern propagate 到 charter version 本身。對齊 v0.7.3 北極星「不讓 user 記」延伸到「不讓 user 想到去比對版本」。違反 → 視同 F1。
+
+- **`tools/profiles/standard.yaml`**：`charter_version: "0.10.0"` → `"0.10.1"`。
+
+### Dogfood signals 收編
+
+- **#47** charter 主動通知缺位 → init-template step 0.5 條款化（user 直接條款化、不走累積門檻、對應 v0.5.8 / v0.7.1 / v0.9.0 user 明示直接條款化 pattern）
+
+### 觀察記錄（不在本 release ship）
+
+- **#31** simulated execution LIVE 累積到 **4 次**（v0.7.0 公司接入 / 2026-05-04 早 CryptoBot A001 / 2026-05-04 晚 CryptoBot A003 / 2026-05-06 dbSDK doctor §5）— 升議程候選、留 v0.10.x 後續批次處理
 
 ---
 
