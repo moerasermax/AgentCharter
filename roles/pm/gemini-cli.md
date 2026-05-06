@@ -212,11 +212,16 @@ prompt = """
 
 ---
 
-## §3.7 PM Init 後置：`/checkpoints` 存檔機制介紹與落實（v1.3 加）
+## §3.7 PM Init 後置：`/checkpoints` 存檔機制介紹與落實（v1.3 加 / v1.6 加觸發場景擴展）
 
-> **觸發時機**：PM self-instantiation 八步驟全數完成（step 8 回報後）、採用方仍在接入 session 中。
+> **觸發時機**（v1.6 擴）：以下任一情境觸發本段「介紹話術 + 詢問是否安裝」流程：
+> 1. **PM init 後置**：PM self-instantiation 八步驟全數完成（step 8 回報後）、採用方仍在接入 session 中（v1.3 既有）
+> 2. **user 主動詢問**（v0.10.4 / v1.6 加）：user 提到「checkpoints」/「想裝 checkpoints」/「checkpoints 怎麼用」/「跨 session 存檔」等關鍵詞 → PM 觸發本段、不需 user 自己貼 spec 路徑
+> 3. **user 貼 install prompt**（v1.6 加）：user 貼形如「請依 ~/.agentcharter/roles/pm/gemini-cli.md §3.7 安裝 /checkpoints」的 prompt → PM 直接跑 Step 1-3 流程
+>
 > **位階**：PM 主動介紹的 optional enhancement；採用方可接受或跳過，不影響 init 完成狀態。
 > **對應條款**：`core/working-stack-discipline §1`（DRAFT 外部化 + save 同步 git commit 紀律）。
+> **設計動機**（v1.6 觸發場景擴展）：對齊 v0.7.3 北極星「不讓 user 記」延伸到「不讓 user 記具體 spec 路徑」 — user 想用某個機制、自然語言問 AI 即可、AI 自動找到對應 spec 並引導 install。
 
 ### 設計架構：橋接層 vs 邏輯層
 

@@ -40,63 +40,136 @@ tools/vendor/commons/
 
 ---
 
-## 工具清單
+## 工具清單（採用方視角 — 我想用 X 怎麼裝）
 
-### 1. `checkpoints_handler.sh` — /checkpoints 邏輯層
+### 1. `/checkpoints` — 跨 session 存檔機制（救你 context 清空）
+
+#### 它做什麼
+
+裝這個之後、你的 AI 每次工作結束打 `/checkpoints save`、charter 自動：
+- 把當前草稿（`DRAFT_CONTEXT.md`）轉成 `HANDOFF_<N>.md`
+- git commit 自動 tag
+- 下次接班打 `/checkpoints load` → 30 秒對齊脈絡、不怕 context 清空
+
+#### 三個指令日常使用
+
+| 指令 | 何時用 | 結果 |
+|---|---|---|
+| `/checkpoints save` | 工作結束、要 session 中斷 | 生成 HANDOFF + git commit + clear draft |
+| `/checkpoints load` | 接班 / 新 session 起手 | 讀最新 HANDOFF、30 秒對齊脈絡 |
+| `/checkpoints status` | 想看當前進度 | 顯示草稿大小、最新 HANDOFF 編號、git 狀態 |
+
+#### 安裝（給 Gemini PM 貼這個 prompt）
+
+```
+請依 ~/.agentcharter/roles/pm/gemini-cli.md §3.7 安裝 /checkpoints
+```
+
+或者**直接自然語言問 AI**（v0.10.4 起 Gemini PM 會自動觸發安裝流程）：
+
+```
+我想裝 charter 的 /checkpoints 跨 session 存檔機制
+```
+
+PM 會：
+1. 介紹三指令用法（同上表）
+2. 詢問「需要現在幫你裝嗎？」
+3. 你說「好」→ PM 自動跑三分支偵測（MISSING 安裝 / STALE 升版 / CURRENT 跳過）+ 建 `.gemini/commands/checkpoints.toml`
+4. 完成、不到 1 分鐘
+
+#### 技術細節（給設計者看）
 
 | 屬性 | 內容 |
 |---|---|
-| **版本** | v2.2（charter v0.9.6+） |
-| **對應 spec** | `roles/pm/gemini-cli.md §3.7`（PM /checkpoints save/load 流程） |
+| **版本** | v2.2（charter v0.9.6+）|
 | **canonical 路徑** | `~/.agentcharter/tools/vendor/commons/checkpoints_handler.sh` |
-| **deploy 路徑** | `~/.gemini/checkpoints_handler.sh`（Gemini PM）/ 其他 vendor 對應位置 |
-| **動作** | `save` / `load` / `commit_save` / `deactivate_all_active` |
-| **何時建立** | v0.9.2（dogfood signal #3 條款化、原 management/ 路徑硬編碼修正）|
-
-**用途**：跨 session checkpoint save / load + 強制離線 active role 釋放（save 觸發 deactivate）。
-
-**升版**：透過 PM init `§3.7 Step 1` 三分支版本偵測自動引導（MISSING 自動安裝 / STALE user 確認後升 / CURRENT 跳過）。
+| **deploy 路徑** | `~/.gemini/checkpoints_handler.sh`（Gemini PM 私有目錄）|
+| **對應 spec** | `roles/pm/gemini-cli.md §3.7`（save/load/status/config 流程） |
+| **handler 動作**（內部）| `save` / `load` / `commit_save` / `deactivate_all_active` |
+| **何時建立** | v0.9.2（dogfood signal #3 — 原 management/ 路徑硬編碼修正）|
+| **跨 vendor 預期** | 邏輯層 vendor 中立、橋接層 vendor 特定（Claude Code / Cursor 邀請制接入）|
 
 ---
 
-### 2. `charter-commit-checks.sh` — commit hook H1-H6 邏輯層
+### 2. Commit Hook — 每次 git commit 自動擋紀律違反
 
-| 屬性 | 內容 |
-|---|---|
-| **版本** | v1.0（charter v0.10.0） |
-| **對應 spec** | `tools/commit-hook-spec.md §3`（H1-H6 校驗紀律 + spec-as-data 結構） |
-| **canonical 路徑** | `~/.agentcharter/tools/vendor/commons/charter-commit-checks.sh` |
-| **deploy 路徑** | `<採用方專案>/agent-commons/_config/hooks/charter-commit-checks.sh`（**入 git**、跟專案分發） |
-| **動作** | git pre-commit 觸發、跑 H1/H2/H3/H5 reject + H4/H6 warn |
-| **何時建立** | v0.10.0（dogfood signal #33/#35/#42-#45 同源條款化）|
+#### 它做什麼
 
-**用途**：commit 時 binary 攔截 6 條同源紀律違反（自激活 / 不自報 / 雙寫漏 / 檔名漂浮 / state 混 reflection / handoff 缺 directive header）。
+裝這個之後、**每次 `git commit` charter 自動跑 H1-H7 binary 攔截**、發現紀律違反就擋住、要修補才能 commit、避免有問題的東西進 git 歷史。
 
-**升版**：透過 `install-git-hooks.sh --update` 從 canonical 重 copy。
+#### 7 條 binary 攔截紀律 + 具體例子
 
----
+| 校驗 | 違反例 | 擋了會發生 | 嚴格度 |
+|---|---|---|---|
+| **H1** _role.md Status 升 ACTIVE 沒寫授權字樣 | AI init 完自改 Status: ACTIVE、沒 user 對話痕跡 | commit 被擋 + 要求補「由 user 於 X 日授權」字樣 | reject |
+| **H2** commit 提 F-mode 但 log + reflection 沒雙寫 | commit message 寫「fix F1 假宣告」但 `state/failure_mode_log.md` 沒新 entry | 擋 + 要求補 log entry + reflection 個體層檔 | reject |
+| **H3** reflection 檔名 regex 違反 | 檔名寫 `PROTOCOLS.md` / `reflection-on-s36.md`（沒日期前綴）| 擋 + 改 `2026-05-06_f1_pm_coordination.md` 才能 commit | reject |
+| **H4** reflection 含 sprint 編號 | reflection 內文寫「S36 決策：先做 X」（project state 寫進 meta-knowledge）| warn 不擋、提示搬到 capsule | warn |
+| **H5** failure_mode_log 加 entry 但沒對應 reflection 檔 | 只在集體 log 寫、漏個體 reflection | 擋 + 要求補 reflection 個體層檔 | reject |
+| **H6** handoff 缺「致 XXX」directive header | HANDOFF_5.md 直接列任務、沒 `致 Kiro (Engineer)` 起始 | warn 不擋、提示加 header | warn |
+| **H7** profile.yaml 缺強制必啟欄位（如 F6）| `enable_modes: ["F1","F2","F3","F4","F5"]`（缺 F6）| 擋 + 要求補 F6（v0.10.2 加、schema-driven） | reject |
 
-### 3. `install-git-hooks.sh` — commit hook 安裝器
+→ **白話總結**：裝了 hook 之後、AI 想偷懶（自激活 / 不自報 / 漏雙寫 / 編造）→ commit 直接擋、強制守紀律。
 
-| 屬性 | 內容 |
-|---|---|
-| **版本** | v1.0（charter v0.10.0） |
-| **對應 spec** | `tools/commit-hook-spec.md §5`（採用方安裝步驟） |
-| **canonical 路徑** | `~/.agentcharter/tools/vendor/commons/install-git-hooks.sh` |
-| **deploy 路徑** | 採用方不需要 deploy（直接從 canonical 跑）|
-| **動作** | `install` / `--update` / `--uninstall` / `--help` |
-| **何時建立** | v0.10.0（commit hook ship 配套）|
-
-**用途**：採用方一鍵裝 commit hook（copy `charter-commit-checks.sh` 到專案 + 寫 thin shim 到 `.git/hooks/pre-commit`）。
-
-**用法**：
+#### 安裝（一行 bash 命令）
 
 ```bash
-# 採用方專案根目錄跑
-bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh           # 首次安裝
-bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update  # charter 升版後 sync 邏輯
-bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --uninstall  # 移除
+# 在採用方專案根目錄跑（dbSDK / CryptoBot / 你的專案）
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh
 ```
+
+或對 AI 貼這個 prompt：
+
+```
+我想裝 charter commit hook（H1-H7 binary 攔截）
+```
+
+AI 會跑上面那行 bash + 確認安裝結果。
+
+#### 升版 / 移除
+
+```bash
+# charter pull 拿新版邏輯後同步
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
+
+# 不想用了
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --uninstall
+```
+
+#### 安裝後驗證 — 故意違反看看擋不擋
+
+```bash
+# 故意違反 H3（檔名沒日期前綴）
+mkdir -p agent-commons/roles/engineer/reflections
+echo "test" > agent-commons/roles/engineer/reflections/test.md
+git add agent-commons/roles/engineer/reflections/test.md
+git commit -m "test"
+# 預期：❌ [H3 REJECT] reflection 檔名違反 regex（^\d{4}-\d{2}-\d{2}_<topic>.md$）— 實際：test.md
+```
+
+#### 不裝會怎樣？
+
+不裝 hook 也能用 charter — H1-H7 退化成 spec 紀律 advisory（LLM 跑 doctor / verify 時 scan）、但**不 binary 攔截**。對應 v0.10.0「opt-in 邀請制原則」。
+
+#### 想暫時繞過（緊急情況）？
+
+```bash
+git commit --no-verify -m "..."   # git 既有逃生口、user 知情前提下合法
+```
+
+→ 但 **AI 自主用 --no-verify 繞過 = `core/role-separation §3.5` 結構性繞路 = F1**。
+
+#### 技術細節（給設計者看）
+
+| 屬性 | 內容 |
+|---|---|
+| **canonical 邏輯層** | `~/.agentcharter/tools/vendor/commons/charter-commit-checks.sh`（v1.1 / charter v0.10.2+ 含 H7）|
+| **deploy 邏輯層** | `<project>/agent-commons/_config/hooks/charter-commit-checks.sh`（**入 git**、跟專案分發、charter pull 後 `--update` sync）|
+| **canonical 安裝器** | `~/.agentcharter/tools/vendor/commons/install-git-hooks.sh`（v1.0 / charter v0.10.0+）|
+| **shim 位置** | `<project>/.git/hooks/pre-commit`（local-only、安裝器寫 3 行 thin shim）|
+| **強制必啟集合 schema** | `tools/profiles/_required.yaml`（v0.10.2 加、H7 source of truth）|
+| **對應 spec** | `tools/commit-hook-spec.md §3`（H1-H7 spec-as-data 四欄結構）|
+| **何時建立** | v0.10.0 ship H1-H6 / v0.10.2 加 H7 schema-driven |
 
 ---
 
