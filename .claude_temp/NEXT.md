@@ -555,11 +555,21 @@ framework 永久維持「**純規範**」位階。
 **狀態**：v1.0 公開化前需決定
 **候選**：MIT / Apache 2.0 / 其他
 
-### 6. CryptoBot 改為引用框架
+### 6. CryptoBot 改為引用框架 ✅ **2026-05-06 完成**
 
-**狀態**：待議
-**動作**：CryptoBot 的 DISCIPLINE / IRON 改為 *引用* AgentCharter `core/*`，避免兩處重複維護
-**風險**：大規模重組，建議 v1.0 後做
+**狀態**：✅ 完成 — CryptoBot 反向接入 v0.10.1 + standard preset、DISCIPLINE.md / IRON.md 改為引用 charter `core/*`、`management/` 收編進 `agent-commons/`
+
+**完成內容**：
+- profile.yaml `charter_version: v0.10.1` + preset standard（22/25 啟用）
+- 雙 vendor 接入：PM Gemini + Engineer Claude
+- `/charter-doctor` + `/charter-upgrade-verify` 跑過、全綠
+- 兩處重複維護問題消除（CryptoBot 不再獨立維護 DISCIPLINE/IRON 副本）
+
+**設計學意義**：
+- A3「專案 ⊥ 框架」公理對 charter 自己**原始萃取源頭**的反向迴圈完整閉環（v0.4.2 templates 1:1 從 CryptoBot 萃取 → charter 抽象層成熟 → 反向接入回原專案）
+- charter 抽象層成熟度跨三個截然不同領域（AI agent crew / 內部 SDK / 量化交易）全 standard preset 跑通 = **v1.0 公開化前最後一片拼圖到位**
+
+**風險評估事後校正**：原議程列「**風險**：大規模重組、建議 v1.0 後做」評估保守。實際 v0.10.x ship 後 user 直接接入完成 — 對齊 v0.7.4 雙軌節奏「頻繁小擴增 PATCH」精神、charter 抽象層在 v0.10.x 已成熟到可承載 CryptoBot 反向接入。
 
 ### 7. IRON Pattern 抽到框架
 
