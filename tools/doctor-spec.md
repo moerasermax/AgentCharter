@@ -118,6 +118,16 @@ Step 6 【執行（單項）】
 
 ## 3. 檢查項
 
+> **真實 stdout 證據要求 — 全 §3 適用紀律**（v0.10.3 加；對齊 `core/diagnose-remediate-protocol §2.4` + dogfood signal #31 family ≥ 5 次同類同 session 累積）：
+>
+> 以下所有 check item 的 PASS / WARN / ERROR 結論 **必須附 binary stdout 證據**（如 `ls` / `grep` / `yq` / `git log` 等命令的真實輸出）。**純文字 PASS / FAIL 缺 stdout 視同 `core/violation-reflection §1` 假宣告**、抽驗方有權直接退稿。
+>
+> - **PASS**：必附「實際命令 + stdout 顯示合規狀態」（如 grep 找到對應行、ls 列出檔案、yq 取值正確）
+> - **WARN**：必附「實際命令 + stdout 顯示偏移狀態」+ 修補方向引用
+> - **ERROR**：必附「實際命令 + stdout 顯示違規狀態」+ exit code（如 `git log | grep` 無輸出 = exit 1）
+>
+> 對應 v0.9.0 `core/diagnose-remediate-protocol §2.4` 真實 stdout 證據要求紀律 propagate 到本 spec 全 §3.7-§3.12 既有四欄結構（v0.8.1-v0.9.1 ship）+ §3.7-§3.12 新加 check item 必對齊。執行載體：`tools/commit-hook-spec.md §3 H1-H7`（commit 時 binary 攔截）+ user 抽驗時依 `core/audit-rights §3` SOP。
+
 ### 3.1 結構完整性
 
 | 檢查 | 狀態碼 | 失敗處置 |

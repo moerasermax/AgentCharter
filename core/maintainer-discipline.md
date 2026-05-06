@@ -117,6 +117,38 @@ framework 維護者**修改 charter repo 內** `core/` / `templates/` / `tools/*
 
 對齊 v0.5.9 「framework 不附實作工具」原則 — 所有工具動作由 AI 自具象化，charter repo 不維護 python / npm 等實作通道。
 
+#### 3.1.1 spec / condition 結構合規 lint（v0.10.3 加；maintainer-only binary）
+
+> **動機**：dogfood signal #46 family（spec 缺四欄結構 / 雙軸 blockquote 漏）+ user 2026-05-06 LIVE 提問「**未來升版這些檢查可否自動納入新設計、不然每次都很容易漏掉**」直接觸發。本子段為 §3.1 工具層 spec-driven self-check 的 binary 加固 — auditor 角色 prompt 的人為紀律 → bash binary 自動偵測。
+
+**位置**：`tools/charter-spec-lint.sh`（charter repo canonical、maintainer-only、採用方不裝不跑不影響）
+
+**校驗集**：
+- **L1 — tool spec 四欄結構**：scan `tools/*-spec.md` 每個 `#### XXXX`（E\d+ / W\d+ / H\d+ / [A-E]\d{3+} / REQ-\d+）section、檢查必含「合規規定 / 修補方向 / 反例 / 真實 stdout 證據要求」（接受 spec §3 段首通用 stdout 紀律覆蓋）
+- **L2 — core 雙軸 blockquote**：scan `core/*.md` 開頭 30 行 blockquote、檢查必含「保證強度 / 檢測時點 / since」（v0.8.2 ship 紀律執行載體）
+
+**用法**：
+```bash
+bash tools/charter-spec-lint.sh           # advisory 模式（warn 不擋）
+bash tools/charter-spec-lint.sh --strict  # CI / pre-commit 模式（warn 升 error、exit 1）
+```
+
+**執行紀律**：
+- maintainer 加新 condition / spec / hook 時、ship commit 前**必跑** lint 確認結構合規
+- 0 errors 才 ship（warnings 視內容裁定 — 通常也應 0、warnings 是漸進升維提示）
+- 對應 `tools/commit-hook-spec.md §3 H1-H7` 採用方端 commit hook 的 maintainer-side 對稱（charter 自身過 maintainer-only lint、採用方過 H1-H7）
+
+**對應 dogfood-driven hardening 演化**：
+- v0.5.x 起：spec-driven self-check 由 maintainer 自律（弱保證）
+- v0.6.0：auditor 角色概念化（多 actor 互檢、fresh-context sub-agent）
+- **v0.10.3：lint binary 加固**（結構強制、bash 自動偵測、不依賴 LLM 自律）
+
+**未來擴展紀律**：
+- maintainer 加新 lint check（如 L3 cross-reference 完整性 / L4 signal accumulation tracking）→ 改 `charter-spec-lint.sh` 加新 lint function
+- 對齊 NEXT.md 議程「v0.11.x 雙軸 framing 第四段：lint binary 自動派生『依賴 LLM 紀律的條款清單』」（取代 README 手寫表、schema-driven）
+
+**當前狀態**（v0.10.3 ship）：✅ **L1 + L2 落地**、跑全 charter `0 errors / 0 warnings`（verify-spec 22 + doctor-spec 19 + core 25 conditions 全綠）。
+
 ### 3.2 流程層：CONTRIBUTING.md 補 PR checklist
 
 PR template 加：

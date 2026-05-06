@@ -70,6 +70,54 @@ charter 既有條款體系隱含**雙軸正交分類**（dogfood-driven hardenin
 
 → **設計方向**：弱保證項應持續升級到「多 actor 互檢」或「結構強制」 — charter 11 個 dogfood-driven hardening 循環就是此演化路徑的物理載體（如 v0.7.0 Phase 5b 把 init 階段「自抽自驗」從單 actor 升維到多 actor、v0.8.0 axiom 紀律從「自律」升「結構強制」三層雙重防禦）。
 
+#### 升維軌跡 — 結構強制升維紀錄（v0.10.3 加、雙軸 framing 第三段）
+
+charter 自 v0.5.7 起的演化軌跡 — 把弱保證項持續升維到結構強制 / 多 actor 互檢：
+
+| 弱保證項 | 升維 ship | 升維到 | 對應 dogfood signal |
+|---|---|---|---|
+| F6 surface vs structural（紀律執行）| v0.7.0 → init Phase 5b CHECK 7 | 多 actor 互檢（init 端 fail-fast）| #4（YC + 公司接入）|
+| Self-instantiation 結尾自驗 | v0.5.10 → init-template §3.3.2 step 5 強制 doctor schema 驗證 | 多 actor 互檢（doctor 端） | #4 |
+| Axiom status 二態紀律 | v0.8.0 → init Phase 5b CHECK 7 ext + doctor §3.9 + verify §3.4 三層雙重防禦 | 多 actor 互檢（三層）| #23 |
+| Vendor schema（toml 扁平 / md 純 markdown）| v0.7.4 spec → v0.8.0 實作 → doctor §3.8 E801/W802 | 多 actor 互檢 | #16 |
+| 採用方文檔變更歷史 sync | v0.7.2 文檔層 checklist → v0.8.1 doctor §3.10 W901 | 多 actor 互檢 | #6 / #24 |
+| _role.md PROVISIONAL/ACTIVE 二態 | v0.10.0 → commit-hook H1（reject、user 授權字樣 binary 攔截） | **結構強制**（git pre-commit binary）| #35 |
+| F-mode 雙寫（reflection 個體層 + failure_mode_log 集體層）| v0.10.0 → commit-hook H2 + H5（reject） | **結構強制** | #33 / #42 |
+| Reflection 檔名 regex / sprint 編號邊界 | v0.10.0 → commit-hook H3 reject + H4 warn | **結構強制** + 軟 advisory | #43 / #44 |
+| Cross-AI handoff directive header | v0.10.0 → commit-hook H6 warn + cross-ai-handoff §3.3 | 結構強制（warn）+ 多 actor | #45 |
+| **F6 強制必啟集合（profile.yaml.enable_modes）** | **v0.10.2 → commit-hook H7（schema-driven、`tools/profiles/_required.yaml` source of truth）** | **結構強制**（binary 不可繞）| **#46 / #31 / #52** |
+| Charter version 主動通知（init step 0.5）| v0.10.1 → init-template §3.3.2 step 0.5 三分支 | 多 actor 互檢（init 端 advisory）| #47 |
+| **Spec-as-data 四欄結構 + 真實 stdout 證據要求** | **v0.10.3 → 全 spec sweep（doctor §3 + verify §3.1-§3.5 + diagnose-remediate-protocol §2.4）** | **多 actor 互檢**（spec 提供反例段、降 simulated 率）| **#46 / #31** |
+
+#### 未來升維候選議程
+
+| 弱保證項 | 候選升維路徑 | Ship 議程 |
+|---|---|---|
+| 採用方文檔層 sync 全自動化（變更歷史 / charter_version 對齊全自動）| 升 H8 commit-hook（schema-driven + 採用方 fork 文檔內容完整性）| v0.11.x（user 確認 #6/#24/#30 累積至 ≥ 4 次後）|
+| Spec / condition 結構合規 lint | 寫 maintainer-only `tools/charter-spec-lint.sh`（L1 tool spec 四欄結構 + L2 core/*.md 雙軸 blockquote）| **v0.10.3 ship**（本 release 議程 4）|
+| Spec / condition 結構合規 schema 自動派生 | lint binary 自動掃 frontmatter 派生「依賴 LLM 紀律的條款清單」（取代本表手寫）| v0.11.x（雙軸 framing 第四段）|
+| 個體學習迴圈雙寫雙讀紀律 | 升 commit-hook 多重檢項（H2/H5 已部分 cover）| 觀察累積 |
+| Charter dogfooding 啟動（charter repo 自身過 H1-H7 + maintainer-specific H8/H9）| dogfood 完整 LIVE | v1.x 議程 |
+
+→ **設計學意義**：本表是 charter「**結構強制升維 trajectory**」的單一視覺化載體 — 每次新 ship 對應 row 加一條、長期可看到 charter 從「純 spec 規範 + LLM 自律」漸進到「spec + 結構強制兜底」的演化曲線。對齊 dogfood signal #27「spec-driven 與 LLM 自律 循環依賴」結構性解。
+
+#### Schema-driven 升維設計樣板（v0.10.2 H7 起手）
+
+對於「**值類規範**」（如「profile.yaml 某欄位必含某值」）：v0.10.2 H7 立 prior art —
+
+```
+傳統做法                          schema-driven 做法（H7 起手）
+───────                           ──────
+F7 加 → 改 doctor spec            F7 加 → 改 _required.yaml 一處
+       → 改 verify spec                  → 改 hook 補 5 行 inline check
+       → 改 init spec                    → 採用方 git pull 即傳播
+       → 改 hook 加 H8               
+       → 改 walkthrough         （三層 spec 自動失效時 binary 兜底）
+       → 採用方手動同步             
+```
+
+→ 未來其他「值類規範」（如 `enabled_conditions` 對齊 / `mapping.yaml` 必填欄位 / vendor schema 等）都可走同 pattern propagate、不需要每加一個就改五處 spec / 加新 H 號 binary。對應 user 2026-05-06 LIVE 提問「**以後如果有 F7 這方式一樣可以解決嗎**」結構性解。
+
 #### 對齊「對未來修訂的紀律」三題
 
 每次條款 / spec 修訂時、雙軸矩陣提供額外對齊軸：
