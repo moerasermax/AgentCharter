@@ -6,7 +6,65 @@
 
 ## [Unreleased]
 
-下批次 **v0.10.3 PATCH 議程（純 spec sweep、零採用方動作）**：post-upgrade-verify-spec SSS S3 propagate 終局（軸 A/B/C/D/E 全升 spec-as-data 四欄結構、signal #46 完整修補）+ doctor §3.7-§3.12 順手 sweep + 雙軸矩陣第三段「依賴 LLM 紀律的條款清單」（手寫、lint binary 派生留 v0.11.x）。後續 v0.10.x PATCH：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊。
+下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；雙軸矩陣 framing 第四段（v0.11.x、lint binary 自動派生「依賴 LLM 紀律的條款清單」取代 README 手寫表）；charter dogfooding 啟動候選（v1.x、charter repo 自身過 H1-H7）；v1.0 公開化前：LICENSE + walkthrough 補齊。
+
+---
+
+## [0.10.3] — 2026-05-06
+
+> **PATCH release — 純 spec sweep + maintainer-only lint binary**。**零採用方動作要求**（向下兼容、純文檔 / spec / maintainer 工具層擴增）。採用方升版只改 `agent-commons/_config/profile.yaml` `charter_version: "0.10.2"` → `"0.10.3"`、無其他動作。
+>
+> **設計動機**：對應 user 2026-05-06 LIVE 提問「**升版這些檢查可否自動納入新設計、不然每次都很容易漏掉**」+ dogfood signal #46（≥ 3 次）/ #31（≥ 5 次同類同 session）SSS S3 propagate 終局議程。把 spec 結構合規的依賴從「LLM 自律 + maintainer 自律」升維為「**靜態結構樣板（spec 段首全局紀律）+ 動態結構偵測（lint binary）**」雙層自動化。
+
+### Added
+
+- **`tools/charter-spec-lint.sh`** 新檔（v1.0、maintainer-only binary）：
+  - **L1 — tool spec 四欄結構偵測**：scan `tools/*-spec.md` 每個 `#### XXXX`（E\d+ / W\d+ / H\d+ / [A-E]\d{3+} / REQ-\d+）section、檢查必含「合規規定 / 修補方向 / 反例 / 真實 stdout 證據要求」（接受 spec §3 段首通用 stdout 紀律覆蓋）
+  - **L2 — core 雙軸 blockquote 偵測**：scan `core/*.md` 開頭 30 行 blockquote、檢查必含「保證強度 / 檢測時點 / since」（v0.8.2 ship 紀律執行載體）
+  - **採用方影響**：0 token / 0 動作（maintainer-only、charter repo 端跑）
+  - **未來擴展紀律**：加新 lint check（如 L3 cross-reference 完整性）→ 改 `charter-spec-lint.sh` 加新 lint function
+  - **LIVE 驗證**：跑全 charter `0 errors / 0 warnings`（verify-spec 22 + doctor-spec 19 + core 25 conditions 全綠）
+
+- **`examples/upgrades/v0.10.2-to-v0.10.3.md`** 新檔（純 spec sweep walkthrough、採用方 1 步流程）
+
+### Changed
+
+- **`tools/post-upgrade-verify-spec.md`** v0.9.0 → v0.10.3：**SSS S3 propagate 終局**、§3.1-§3.5 全 5 軸 22 個 check item 升 spec-as-data 四欄結構：
+  - **軸 A（A001-A004、4 items）**：含 dbSDK A001 LIVE 反例（rationale 錯指 framework HEAD commit、不是 v0.9.9 grep 結果）
+  - **軸 B（B001-B005、5 items）**：B002 對應 v0.10.2 H7 binary 攔截 advisory 雙層、含 dbSDK 漏 F6 LIVE 反例
+  - **軸 C（C001-C005、5 items）**：C003 對應 v0.10.0 commit-hook H1 binary 雙層、含 PROVISIONAL 誤判 WARN LIVE 反例
+  - **軸 D（D001-D004、4 items）**：D001 對應 doctor §3.9 E606 advisory 雙層、含 axiom AI-DRAFTED → USER-RATIFIED 紀律
+  - **軸 E（E001-E004、4 items）**：E001 對應 doctor §3.10 W901 advisory 雙層
+  - 共加 ~660 行 spec-as-data 四欄結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據要求）
+
+- **`tools/doctor-spec.md`** v0.9.1 → v0.10.3：§3 校驗項段首加全局「真實 stdout 證據要求 — 全 §3 適用紀律」段（覆蓋 §3.1-§3.12 所有 W/E codes、對齊 `core/diagnose-remediate-protocol §2.4` v0.9.0 ship 精神 propagate）。既有 §3.7-§3.12 19 個 check item 自動受益（不需逐 check 改）。
+
+- **`README.md §設計哲學`** 第 5 條雙軸座標加「**升維軌跡 — 結構強制升維紀錄**」段（雙軸 framing 第三段、手寫）：
+  - 列出 charter v0.5.7 起 11 個 dogfood-driven hardening 循環的「弱保證項升維 trajectory」表（11 條紀律 + ship 版本 + 升維到的層級 + 對應 dogfood signal）
+  - 加「未來升維候選議程」表（H8 採用方文檔 sync 候選 / charter dogfooding v1.x / lint binary 自動派生 v0.11.x）
+  - 加「Schema-driven 升維設計樣板（v0.10.2 H7 起手）」框架（對應 user LIVE 提問「F7 一樣可以解嗎」結構性解）
+
+- **`core/maintainer-discipline.md §3.1`** v0.9.x → v0.10.3：加 §3.1.1「spec / condition 結構合規 lint（v0.10.3 加；maintainer-only binary）」段、規範 `tools/charter-spec-lint.sh` 執行紀律 + 對應 dogfood-driven hardening 演化軌跡。
+
+- **三 preset YAML**（`standard.yaml` / `strict.yaml` / `minimal.yaml` / `essential.yaml`）：`charter_version: "0.10.2"` → `"0.10.3"`
+
+### Dogfood signals 收編
+
+- **#46**（≥ 3 次同類）spec 缺 spec-as-data 四欄結構 → ✅ **完成**（verify §3.1-§3.5 全升四欄、doctor §3 全局紀律段、lint binary 自動偵測）
+- **#31**（≥ 5 次同類同 session）simulated 跑 spec、無真實 stdout、報 stale 資訊 → ✅ **完成**（spec 段首全局紀律段 + 反例段降 simulated 率 + lint binary 結構偵測；commit-hook H7 binary 兜底由 v0.10.2 ship）
+- **user 2026-05-06 LIVE 提問**「升版這些檢查可否自動納入新設計」→ ✅ **完成**（lint binary maintainer-only 自動偵測 + spec-driven schema-driven 升維設計樣板顯化）
+
+### 設計學意義
+
+對應 v0.8.x SSS S3 漸進落地**最後漏的一塊**（NEXT.md 既有議程）+ dogfood signal #27「spec-driven 與 LLM 自律 循環依賴」**結構性解第二段落實**（第一段 v0.9.0 ship `core/diagnose-remediate-protocol`、本 release 把精神 propagate 到所有校驗類 spec）。
+
+charter v0.7.3 北極星「**不讓 user 記**」延伸到「**不讓 maintainer 記**」(對齊 user LIVE 提問訴求) — 規範自動化的元層落地。
+
+### 觀察記錄（不在本 release ship、留後續）
+
+- 雙軸 framing 第四段（lint binary 自動派生「依賴 LLM 紀律的條款清單」、取代 README §設計哲學手寫表）：留 v0.11.x
+- charter dogfooding 啟動（charter repo 自身過 H1-H7 + maintainer-specific H8/H9）：留 v1.x 議程
+- BOOTSTRAP signal #39/#40 互動式 prompt 改版繼續累積
 
 ---
 

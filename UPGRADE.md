@@ -47,6 +47,7 @@ git -C ~/.agentcharter pull origin main
 
 | 從哪個版本升 | Walkthrough |
 |---|---|
+| **v0.10.2 → v0.10.3**（純 spec sweep + maintainer-only lint、零採用方動作）| `examples/upgrades/v0.10.2-to-v0.10.3.md` |
 | **v0.10.1 → v0.10.2**（H7 schema-driven、⚠️ BREAKING-LITE PATCH）| `examples/upgrades/v0.10.1-to-v0.10.2.md` |
 | **v0.9.x → v0.10.0**（commit hook ship）| `examples/upgrades/v0.9.x-to-v0.10.0.md` |
 | v0.8.2 → v0.9.0 | `examples/upgrades/v0.8.2-to-v0.9.0.md` |
