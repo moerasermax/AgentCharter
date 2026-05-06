@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.9.0`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.10.3`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -97,7 +97,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `adoption-lifecycle.md` | **（v0.9.0 加）**5 階段 lifecycle 完整化：全新接入 / 升版 / 棄用（含「保留最後的溫柔」精神）/ 重新採用 / vendor 升級 path 三路徑（A 維持現狀 / B 開 issue / C AI 自驅修復對齊 SSS S1 子集）|
 | `condition-mutability.md` | **（v0.9.0 加）**condition mutability 紀律本體：三層 mutability（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層 |
 
-→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 21 條由 `profile.yaml.enabled.<condition>` 控制（v0.6.0 加 `ai-vendor-onboarding` 後 / v0.9.0 加 4 條後）。
+→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 23 條由 `profile.yaml.enabled.<condition>` 控制（v0.6.0 加 `ai-vendor-onboarding` 後 19 → 21 / v0.9.0 加 4 條後 21 → 23、含 1 條 maintainer-only 預設 false 共 22 條採用方有效）。
 
 ### F. Maintainer-only（1 條，採用方無關）
 

@@ -1,11 +1,11 @@
 # AgentCharter — Current Status
 
-> **更新時間**：2026-05-05（台灣時間，post-v0.10.0 + commons README snapshot）
-> **當前版本**：**v0.10.0**（**MINOR — commit hook vendor 中立架構 ship + 6 條同源 signal 結構強制升維**）
-> **Working tree 狀態**：✅ 已 commit + push（含 `tools/vendor/commons/README.md` v0.10.0 配套）
+> **更新時間**：2026-05-06（台灣時間，post-v0.10.3 ship — SSS S3 propagate 終局 + maintainer-only lint binary）
+> **當前版本**：**v0.10.3**（**PATCH — 純 spec sweep + maintainer-only lint binary**、規範自動化元層落地、零採用方動作要求）
+> **Working tree 狀態**：✅ 已 commit + push（v0.10.3 三 commit `7672070` / `b354abf` / `51d8cd3`）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
-> **最後 checkpoint**：本檔為 v0.10.0 + commons README ship 後 snapshot
-> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` @ `0cf5494` (待打) / `v0.8.2` @ `a2adecf` (待打) / `v0.9.0` ~ `v0.10.0` (待打)
+> **最後 checkpoint**：本檔為 v0.10.3 ship 後 snapshot（dogfood-driven hardening 第十八循環完整收編：v0.10.0 + v0.10.1 + v0.10.2 + v0.10.3 四連 ship）
+> **Git tags**：`v0.5.9` @ `a24c15c` / `pre-v0.6.0-batch` @ `2225659` / `v0.5.10` @ `6dd3eda` / `v0.6.0` @ `9493814` / `v0.6.1` @ `72caaee` / `v0.7.0` @ `bcbf964` / `v0.7.1` @ `c26b5b4` / `v0.7.2` @ `054e6c7` / `v0.7.3` @ `0468570` / `v0.7.4` @ `130638b` / `v0.7.5` (待打) / `v0.8.0` @ `b5866b5` / `v0.8.1` @ `0cf5494` (待打) / `v0.8.2` @ `a2adecf` (待打) / `v0.9.0` ~ `v0.10.3` (待打)
 
 ---
 

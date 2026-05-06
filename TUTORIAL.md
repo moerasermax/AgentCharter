@@ -3,7 +3,7 @@
 > **給誰**：採用 AgentCharter 框架的團隊（人類採用方）
 > **性質**：reference / 工具書（章節獨立、可跳讀）
 > **不是**：線性教學書（如想線性走完 → [QUICKSTART.md](./QUICKSTART.md)）
-> **配對**：本檔對應 charter `v0.9.0`
+> **配對**：本檔對應 charter `v0.10.3`
 
 ## 目錄
 

@@ -1,7 +1,7 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-05-05（v0.10.0 ship 收尾 — commit hook vendor 中立架構 + 6 條同源 signal 結構強制升維 + commons README + 完整文檔層 sync 後）
-> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）
+> **更新時間**：2026-05-06（v0.10.3 ship 收尾 — SSS S3 propagate 終局 + maintainer-only lint binary + 規範自動化元層落地）
+> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）
 
 ---
 
