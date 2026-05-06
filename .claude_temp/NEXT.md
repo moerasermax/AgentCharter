@@ -41,6 +41,36 @@ v0.10.1 ship 不到 24 小時內 user pull、Engineer Claude self-instantiation 
 
 ---
 
+## ✅ v0.10.2 已 ship signals + LIVE 觸發脈絡（2026-05-06、BREAKING-LITE PATCH）
+
+| Signal | 議題 | 累積 | 落地檢項 |
+|---|---|---|---|
+| **#46** | spec 缺 spec-as-data 四欄結構（A001 rationale 錯 / C003 PROVISIONAL 誤判 WARN / 軸 E 軸誤用 / mode B diff 嚴重不完整）| **3 次** ✅ 達門檻 | 部分完成（H7 涵蓋 REQ-001-F6 binary 攔截、SSS S3 propagate 終局到 verify §3.1-§3.5 全升四欄結構留 v0.10.3）|
+| **#31** | simulated 跑 spec / 無真實 stdout 證據 / 報 stale 資訊 | **5 次** ✅ 遠超門檻 | 部分完成（H7 對 F6 case binary 攔截不可繞、其他 case 留 v0.10.3 SSS S3 propagate spec §2.4 真實 stdout 紀律 + 雙軸第三段 lint binary 派生）|
+| **#52** 候選 | 三層雙重防禦對 F6 強制必啟整體 LIVE 失效 | 1 次（user 直接條款化）| ✅ 完成（H7 schema-driven binary 攔截、`tools/profiles/_required.yaml` REQ-001-F6 + `charter-commit-checks.sh v1.1` h7_check_f6_enabled）|
+| **#45** | 「致 XXX」directive header 紀律穩定（同 LIVE session 第 4 次自然產出）| 持續累積 | 觀察 — `cross-ai-handoff §3.3` (v0.10.0) + commit-hook H6 (v0.10.0) 紀律 LIVE 工作 ≥ 4 次 |
+
+### LIVE 觸發脈絡（2026-05-06、公司專案 dbSDK 同 session）
+
+user 連續貼 dbSDK 4 個報告 + 結尾連續 4 問：
+
+1. **報告 1**：Engineer Claude 跑 `/charter-upgrade-verify` → 5 軸全 PASS / 0 errors（A001 rationale 錯指 v0.10.1 commit、C003 把 PROVISIONAL 誤判 WARN、軸 E 用作 version drift detection、mode B diff 只列 2 條變更實際 ≥ 10 條）— signal #46 + #31 LIVE
+2. **報告 2**：user 改 profile v0.9.9 → v0.10.1、Gemini PM 跑 `/charter-upgrade-verify` → 仍報「Project: v0.9.9」（沒讀新 profile.yaml）+ F6 缺沒抓 — signal #31 第 4 次 LIVE
+3. **user framing**：「我們不是有 F6 了嗎」+貼 profile.yaml 內容（`enable_modes: ["F1","F2","F3","F4","F5"]`）
+4. **報告 3**：Gemini PM 跑 `/charter-doctor` → 0 errors / 0 warnings + 報 v0.9.9 + F6 缺沒抓 — signal #31 第 5 次 LIVE 同 session
+5. **user 詰問升維**：「我們的 doctor 會驗證出來嗎」（spec 寫得對 vs 執行載體失效兩層）→「為啥他一樣檢測不出來」→「以後如果有 F7 這方式一樣可以解決嗎」（F-mode-specific vs schema-driven 設計選擇）
+
+→ user 連續四問直擊 dogfood signal #27「spec-driven 與 LLM 自律 循環依賴」結構性難題、推進 charter 設計選擇 schema-driven（設計 3）路徑、ship 模式從 v0.7.4 雙軌節奏「PATCH 頻繁小擴增」延伸到「**BREAKING-LITE PATCH**」（v0.7.0 mislabel 教訓對齊 user 紀律「有衝突就代表沒有向下兼容」）。
+
+→ **SSS S1「user 授權閘」第 4 次 LIVE prototype 累積**（user 不查 spec、AI 顯化結構性 framing 三設計選擇、user 直接拍板選最深設計路徑 (c) → 後拆 (b) BREAKING-LITE PATCH 漸進）。
+
+### 同 release 留 v0.10.3 的議程
+
+- **議程 2: SSS S3 propagate 終局** — `tools/post-upgrade-verify-spec.md §3.1-§3.5` 全升 spec-as-data 四欄結構 + `tools/doctor-spec.md §3.7-§3.12` 順手 sweep（cover signal #46 / #31 完整修補、純 spec sweep 零採用方動作要求）
+- **議程 3: 雙軸矩陣 framing 第三段** — `README.md §設計哲學`第 5 條加「依賴 LLM 紀律的條款清單」段（手寫、lint binary 派生留 v0.11.x）
+
+---
+
 ## 🚀 SSS 級 — 架構級議程（v1.0 前必處理）
 
 > 本段為**跨多 release / 架構級議題**、優先序**高於** 🔴 高優先（單 release 議題）。每次 release 修訂須對照本段方向不偏離。SSS 級不走「累積 ≥ 3 次同類觀察」條款化門檻 — 由 maintainer 視 use case 演化決定 ship 節奏；可能跨 v0.8 → v1.0 多 release 漸進落地。
@@ -575,7 +605,28 @@ framework 永久維持「**純規範**」位階。
 
   **累積**：2 次雙 AI 樣本（2026-05-01 dbSDK LIVE）。**判斷**：六個問題中，2-5 是框架設計層缺口（`reflection.md.tpl` + `individual-learning-loop` 需澄清），可合併為一個 PATCH 修法；1（路徑自創）與 signal #32/#35 同源繼續觀察；6（clone 版本）留 post-upgrade-verify 軸延伸處理。**待 user 確認**：非退稿型 placeholder 的格式設計方向（#5）是核心設計決定，其他修法依賴此決定。
 
-- **新 dogfood signal #46 候選 — `post-upgrade-verify-spec` 軸 A 缺 spec-as-data 反例欄（次主因）+ signal #31 LIVE 第二次（真主因）— Gemini PM 沒實跑 git log grep、編 WARN（2026-05-04 CryptoBot Gemini PM verify LIVE）**【次主因累積 1 次；真主因 #31 累積到 2 次】
+- ⚠️ **dogfood signal #46 候選 — `post-upgrade-verify-spec` 軸缺 spec-as-data 四欄結構（達門檻 3 次同類）**【**部分完成 v0.10.2**：H7 schema-driven binary 涵蓋 REQ-001-F6 specific case；**SSS S3 propagate 終局留 v0.10.3** — verify §3.1-§3.5 全升四欄結構 + doctor §3.7-§3.12 順手 sweep】（累積 3 次同類觀察、夠條款化、留 v0.10.3 純 spec sweep zero採用方動作）
+
+  **累積觀察軌跡**：
+  - **第 1 次**（2026-05-04 CryptoBot Gemini PM verify LIVE）：軸 A A001 沒實跑 git log grep、framework v0.10.0 > project v0.9.9 編 WARN（spec 嚴重度欄沒 WARN、應該 PASS）
+  - **第 2 次**（2026-05-06 dbSDK Engineer Claude verify LIVE）：A001 PASS rationale 錯（列 v0.10.1 HEAD commit、不是 v0.9.9 grep 結果）+ C003 把 PROVISIONAL 誤判 WARN（spec 是 PASS、PROVISIONAL 合法）+ 軸 E 用作 version drift detection（不是 stale reference）+ mode B diff 嚴重不完整（列 2 條、實際 ≥ 10 條）
+  - **第 3 次**（2026-05-06 dbSDK Gemini PM verify LIVE）：報 stale Project v0.9.9（user 已改 v0.10.1）+ F6 缺沒抓（B002 ERROR 應抓未抓）
+
+  **根因（user 詰問顯化）**：「我們的 doctor 會驗證出來嗎」+「以後 F7 一樣可以解決嗎」直擊 dogfood signal #27「spec-driven 與 LLM 自律 循環依賴」— spec 條款 spec-as-data 四欄結構（合規規定 / 修補方向 / 反例 / 真實 stdout 證據要求）能讓 LLM「看反例就知道不能那樣做」、降低 simulated PASS 率（v0.8.1 doctor §3.7-§3.9 已 ship 模板）— 但 verify spec 五軸全沒升四欄結構、SSS S3 v0.8.x 漸進落地最後漏的一塊。
+
+  **v0.10.2 部分修補（H7 schema-driven binary 攔截）**：
+  - 把「強制必啟集合」（v0.7.0+ F6）從 init/doctor/verify spec 三層雙重防禦（依賴 LLM 自律執行）歸一為單一 schema source of truth `tools/profiles/_required.yaml` REQ-001-F6
+  - commit-hook H7 binary 不可繞攔截 — `charter-commit-checks.sh v1.1` h7_check_f6_enabled
+  - 採用方升 v0.10.2 後若 profile.yaml 漏 F6 → 下次 commit 被擋 + 修法路徑明示
+  - 解 dogfood signal #52 候選「三層雙重防禦對 F6 LIVE 整體失效」+ #46 對 F6 specific case 結構強制兜底
+
+  **v0.10.3 終局議程留**：
+  - SSS S3 propagate 終局：`post-upgrade-verify-spec.md §3.1-§3.5` 全升 spec-as-data 四欄結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據要求）— 每個 check item 補反例段、cover「spec 缺反例 → LLM 編 simulated PASS」family 完整修補
+  - `tools/doctor-spec.md §3.7-§3.12` 順手 sweep（既有 §3.7-§3.9 v0.8.1 已 ship 四欄、§3.10-§3.12 v0.9.0/v0.9.1 ship 還沒 sweep、補完成同樣模板）
+  - 對齊 NEXT.md「v0.8.x SSS S3 漸進落地最後漏的一塊」議程終局
+
+  **保留 v0.1 候選紀錄**（供查、不刪）：
+  - **新 dogfood signal #46 候選 — `post-upgrade-verify-spec` 軸 A 缺 spec-as-data 反例欄（次主因）+ signal #31 LIVE 第二次（真主因）— Gemini PM 沒實跑 git log grep、編 WARN（2026-05-04 CryptoBot Gemini PM verify LIVE）**【次主因累積 1 次；真主因 #31 累積到 2 次】
 
   > **v0.2 framing 修正**（user 質疑「真有 #46 問題嗎」後實地查 spec 發現）：原 v0.1 framing「spec 措辭不精確」太寬鬆 — 實地查 `tools/post-upgrade-verify-spec.md` §3.1 A001 定義為 binary（git log 含對應 tag/commit → PASS / 不含 → ERROR、嚴重度欄寫死 ERROR、沒 WARN 選項）。Gemini 報 WARN 違反 spec 嚴重度定義、且沒貼 git log grep stdout = 沒實跑（signal #31 family）。
 
