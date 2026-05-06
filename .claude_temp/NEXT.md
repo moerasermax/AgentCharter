@@ -21,6 +21,26 @@
 
 ---
 
+## ✅ v0.10.1 已 ship signal + LIVE 首次實證（2026-05-06）
+
+| Signal | 議題 | 落地檢項 |
+|---|---|---|
+| **#47** | charter 主動通知缺位（git pull 後專案沒升、AI 沒主動提醒）| `core/init-template §3.3.2 step 0.5`（v0.10.1 ship `d27db6c`）三分支 charter version 比對 + INFO/ERROR 分級 |
+
+### LIVE 首次實證（2026-05-06、公司專案 dbSDK Engineer Claude）
+
+v0.10.1 ship 不到 24 小時內 user pull、Engineer Claude self-instantiation 觸發 step 0.5 三分支 case b（framework v0.10.1 > project v0.9.9）：
+
+- ✅ 嚴重度正確輸出 **INFO**（spec 對齊、不是 ERROR/WARN）
+- ✅ 「我不會自動改 profile.yaml、等你 explicit 授權」逐字對齊 spec line 144-147
+- ✅ 「繼續使用專案宣告 v0.9.9 作為 Spec 基礎以避免 Spec Drift」對齊 spec line 148 設計意圖
+- ✅ 升版指引指向 `$CHARTER_DIR/UPGRADE.md`
+- ✅ 同 session Engineer 自然產出「📨 致 PM」directive header（signal #45 / `cross-ai-handoff §3.3` v0.10.0 落地實證、無需 user 提醒）
+
+→ **v0.10.1 ship 不到 24 小時內首次第三方 LIVE 實證 + 同 LIVE session 雙重首次工作（#47 + #45）**。對齊 v0.7.3 北極星「不讓 user 記」延伸到「不讓 user 想到去比對版本」+ SSS S1「user 授權閘」第三次 LIVE prototype 累積。詳見 STATUS.md §已對外實證 對應 row。
+
+---
+
 ## 🚀 SSS 級 — 架構級議程（v1.0 前必處理）
 
 > 本段為**跨多 release / 架構級議題**、優先序**高於** 🔴 高優先（單 release 議題）。每次 release 修訂須對照本段方向不偏離。SSS 級不走「累積 ≥ 3 次同類觀察」條款化門檻 — 由 maintainer 視 use case 演化決定 ship 節奏；可能跨 v0.8 → v1.0 多 release 漸進落地。
@@ -608,6 +628,47 @@ framework 永久維持「**純規範**」位階。
   **判斷**：
   - 次主因屬 SSS S3 propagate 紀律未覆蓋到 verify spec 的延伸 — 累積到 ≥ 2 次同類後 PATCH（或下次 SSS S3 propagate 順手做、本 release 議程已掛）
   - 真主因屬 signal #31 第二次同類觀察、靠 commit-hook H6 + spec-as-data 四欄結構雙層對沖 — 不新開 signal、合併進 #31 既有觀察累積
+
+- **新 dogfood signal #48 候選 — spec 命令範例假設 Bash/POSIX、PowerShell native 環境失敗（2026-05-06 公司專案 dbSDK v0.10.1 step 0.5 LIVE 首次實證副作用）**【累積 1 次；候選修法：spec 命令例加 cross-platform 註解 / 或改用 vendor-agnostic 解析方式】
+
+  **觀察背景**：v0.10.1 step 0.5 LIVE 首次工作（公司專案 dbSDK Engineer Claude 2026-05-06、見上方 v0.10.1 LIVE 首次實證段）— 三分支判斷邏輯 + INFO/ERROR 分級全部正確、致 PM directive header 自然產出（signal #45 落地）。**但 spec 命令範例本身有 cross-platform 缺陷**：
+
+  `core/init-template.md §3.3.2 step 0.5` line 140 寫：
+  ```
+  - 讀 framework 當前版本：head -20 $CHARTER_DIR/CHANGELOG.md、取第一個 `## [X.Y.Z]` 行
+  ```
+
+  Engineer Claude 在 Windows PowerShell 環境直接跑 `head -n 20` 失敗：
+
+  ```
+  head : 因為此名稱無法識別為 Cmdlet、函數、指令碼檔...
+  CategoryInfo : ObjectNotFound: (head:String) [], CommandNotFoundException
+  ```
+
+  Engineer 自救：fallback 到 `Get-Content -Path $HOME/.agentcharter/CHANGELOG.md -TotalCount 20` ✅，但 stdout 出現 UTF-8 mojibake（中文亂碼如 `??ull` / `?ｇ ?`）— PowerShell `Get-Content` 預設編碼非 UTF-8（依系統 ANSI codepage）。
+
+  **根因**：charter spec 命令範例普遍假設 Bash/POSIX 環境（`head` / `grep` / `cd && git log` 等），沒考慮 Windows PowerShell native 採用方（無 WSL / Git Bash）。對齊 dogfood signal #4「具象化 ⊥ 驗證脫鉤」精神：spec 命令例屬「具象化建議」、AI 自具象化時應依自身執行環境改寫等效命令；但 spec 沒明示此紀律、依賴 LLM 自律處理 cross-platform 差異。
+
+  **影響範圍盤點**（grep `head -` / `grep` / `cat ` 命令例）：
+  - `core/init-template §3.3.2 step 0.5` line 140 `head -20`
+  - `tools/post-upgrade-verify-spec.md` 多處 `git log` / `grep` 命令例（待 grep 統計）
+  - `tools/doctor-spec.md` 多處（待 grep 統計）
+  - `roles/<role>/_spec.md` 各 vendor 段（部分已預期 vendor-specific）
+
+  **候選修法方向**（v0.10.x PATCH、優先序低）：
+  - **(a) 最低工作量**：spec 命令例加平台註解（如 line 140 改寫為 `# Bash: head -20 X ; PowerShell: Get-Content X -TotalCount 20 -Encoding UTF8`）
+  - **(b) 結構升維**：spec 改用 vendor-agnostic 描述（如「讀 X 檔案前 20 行」）+ AI 自具象化時依自身環境選命令（對齊 init-template §3.3 self-instantiation 精神）
+  - **(c) charter 文檔層紀律**：`core/init-template §3.3` 加紀律提示「spec 命令例屬建議、AI 自具象化時須依自身執行環境改寫等效命令」
+  - **(d) PowerShell UTF-8 編碼問題**：屬 vendor / 環境層問題、不在 charter scope；採用方 `roles/engineer/claude-code.md` 可加 Windows 環境 note（vendor 邀請制）
+
+  **累積**：1 次（2026-05-06 公司專案 dbSDK Windows PowerShell native LIVE 實證）。
+
+  **判斷**：
+  - 屬「spec 命令例 cross-platform 缺口」一類、累積 ≥ 2 次同類後 PATCH（或下次 spec 改寫順手做）
+  - **不影響 step 0.5 LIVE 首次實證的成功**（Engineer 自救 + 紀律對齊 spec 設計意圖）— 屬 surface 層問題、不是 structural
+  - 對齊 v0.7.3 北極星「採用方無痛」延伸到 cross-platform 採用方（Windows native / macOS / Linux 一視同仁）
+  - 暫不條款化、觀察中
+  - **延伸候選**：與 #46 候選（spec-as-data 四欄結構 propagate 到 verify spec）合併走「spec 統一 sweep」一次處理（命令例 cross-platform + verify spec 軸 A 四欄結構 + 命令例 vendor-agnostic 化）
 
 - **新 dogfood signal #40 候選 — 接入 prompt `<placeholder>` 填空設計 UX 差（2026-05-04 CryptoBot init LIVE）**【累積 1 次；候選修法：BOOTSTRAP.md + charter-init.md 改互動式問答收齊參數再跑】
 
