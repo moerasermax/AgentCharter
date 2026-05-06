@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # AgentCharter — Commit Hook Checks (邏輯層 / Logic Layer)
-# Canonical version: v1.0 (charter v0.10.0)
+# Canonical version: v1.1 (charter v0.10.2)
 # Canonical path: tools/vendor/commons/charter-commit-checks.sh
 # Deploy path:    agent-commons/_config/hooks/charter-commit-checks.sh
 #                 (per-project, copied/synced via install-git-hooks.sh)
@@ -24,9 +24,14 @@
 # H4 warn    reflection 含 sprint 編號（可能 project state 混入）
 # H5 reject  log 加 entry 但對應 reflection 缺檔
 # H6 warn    handoff 缺「致 XXX」directive header
+# H7 reject  profile.yaml 缺 charter 強制必啟欄位（schema-driven via _required.yaml）
 #
 # ── 變更歷史 ────────────────────────────────────────────────────────────────
 # v1.0 (v0.10.0): 初版 — 6 條同源 signal（#33/#35/#42-#45）binary 攔截
+# v1.1 (v0.10.2): 加 H7 — schema-driven 強制必啟集合 binary 攔截
+#                 對應 dogfood signal #46（≥3 次）+ #31（≥5 次）+ #52 候選（三層
+#                 雙重防禦對 F6 整體 LIVE 失效）— BREAKING-LITE PATCH
+#                 schema source of truth: tools/profiles/_required.yaml
 
 set -e
 
@@ -215,6 +220,58 @@ check_h6() {
     done
 }
 
+# ── H7: 強制必啟集合校驗（schema-driven via _required.yaml）─────────────────
+# Source of truth: $CHARTER_DIR/tools/profiles/_required.yaml（charter 端）
+# 升版紀律：charter 加新 entry → 補對應 inline check function（本段下方）→
+#           採用方 git pull → 下次 commit 自動驗、採用方無需任何動作
+# 觸發：每次 commit 都跑（profile.yaml 不存在則跳過、pre-init 採用方 graceful skip）
+check_h7() {
+    local profile_file="$PROJ_ROOT/$CMR/_config/profile.yaml"
+    if [ ! -f "$profile_file" ]; then
+        return  # Pre-init / 採用方專案 profile.yaml 尚未生成、跳過
+    fi
+
+    # H7 entries — 對應 _required.yaml required_in_profile_yaml 集合
+    h7_check_f6_enabled "$profile_file"
+
+    # 未來 F7 加進來時、charter maintainer 對齊以下範本加 inline check：
+    # h7_check_f7_enabled "$profile_file"
+}
+
+# REQ-001-F6: parameters.failure-modes.enable_modes 必含 F6（v0.7.0+）
+# 對應條款: core/failure-modes §F6 / doctor §3.7 E605 / verify §3.2 B002 / init Phase 5b CHECK 7
+h7_check_f6_enabled() {
+    local profile_file="$1"
+
+    # Extract enable_modes block — supports both inline list 和 multi-line list YAML
+    # Inline:    enable_modes: ["F1", "F2", ..., "F6"]
+    # Multi-line:enable_modes:
+    #              - F1
+    #              - F6
+    local enable_modes_block
+    enable_modes_block=$(awk '
+        /^[[:space:]]*enable_modes[[:space:]]*:/ {
+            in_block=1
+            print
+            if ($0 ~ /\[/) {in_block=0; exit}
+            next
+        }
+        in_block {
+            # Stop at next yaml key (any line starting with non-list non-comment + colon)
+            if ($0 ~ /^[[:space:]]*[a-zA-Z_][a-zA-Z0-9_-]*[[:space:]]*:/) {in_block=0; exit}
+            print
+        }
+    ' "$profile_file")
+
+    # Strip yaml comments so commented-out F6 (e.g., "# F6 added later") doesn't false-pass
+    local enable_modes_clean
+    enable_modes_clean=$(echo "$enable_modes_block" | sed 's/#.*$//')
+
+    if ! echo "$enable_modes_clean" | grep -qE '\bF6\b'; then
+        reject "[H7 REJECT] profile.yaml parameters.failure-modes.enable_modes 缺 F6 — 見 \$CHARTER_DIR/tools/profiles/_required.yaml REQ-001-F6（v0.7.0+ standard/strict 強制必啟、對應 doctor §3.7 E605 / verify §3.2 B002 / init Phase 5b CHECK 7）"
+    fi
+}
+
 # Run all checks
 check_h1
 check_h2
@@ -222,6 +279,7 @@ check_h3
 check_h4
 check_h5
 check_h6
+check_h7
 
 # Summary
 if [ "$WARN_COUNT" -gt 0 ]; then

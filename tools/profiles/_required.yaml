@@ -1,0 +1,98 @@
+# AgentCharter — Strong-Enforcement Schema（強制必啟集合）
+#
+# 位階：與 standard.yaml / strict.yaml / minimal.yaml / essential.yaml 並列、用途互補
+#   - preset yaml 規範採用方「啟用 / 不啟用」選擇空間
+#   - 本檔規範「**不可不啟用**」的核心強制必啟欄位（採用方無權關閉）
+#
+# 設計動機（v0.10.2 ship、BREAKING-LITE PATCH）：
+#   - dogfood signal #46（spec 缺四欄結構、≥ 3 次同類）+ #31（simulated 跑 spec、≥ 5 次同類）
+#     + #52 候選（三層雙重防禦對 F6 整體 LIVE 失效）累積 — 2026-05-06 dbSDK 公司專案
+#     LIVE 抓到 profile.yaml 漏 F6、init-spec / doctor-spec / post-upgrade-verify-spec
+#     三層雙重防禦全部失效（兩個 vendor 跑 doctor + verify 都 simulated PASS）
+#   - charter v0.5.9 純規範框架紀律執行依賴 LLM 自律 → simulated bypass 結構性風險
+#     （對應 dogfood signal #27 候選「spec-driven 與 LLM 自律 循環依賴 reality check」）
+#   - v0.10.0 commit-hook 走 git 原生 binary 攔截 → 結構強制升維起手
+#   - 本檔把「強制必啟集合」從 doctor / init / verify spec 三處重複描述、歸一為單一
+#     source of truth、避免不同 spec 之間 drift（dogfood signal #6 family 同源）
+#
+# 對應條款 / spec：
+#   - core/failure-modes.md §F6（surface vs structural）
+#   - tools/doctor-spec.md §3.7 E605（諷刺循環攔截）
+#   - tools/post-upgrade-verify-spec.md §3.2 B002（升版後 enable_modes 必啟驗）
+#   - tools/init-spec.md Phase 5b CHECK 7 第 4 條（init 端 fail-fast）
+#   - tools/commit-hook-spec.md §3 H7（本檔執行載體）
+#   - core/diagnose-remediate-protocol.md §commit hook 結構強制升維紀律（v0.9.0）
+#
+# H7 邏輯對應：tools/vendor/commons/charter-commit-checks.sh
+#   讀本檔各 entry → 對採用方 profile.yaml 跑 binary check → reject/warn 任一不合
+#
+# 升版紀律（charter maintainer 加新強制必啟欄位、如未來 F7）：
+#   1. 在本檔 required_in_profile_yaml 加新 entry（document intent）
+#   2. 在 charter-commit-checks.sh 加對應 inline check function（5-10 lines bash）
+#   3. ship + 採用方 git pull → 下次 commit 自動驗、採用方無需任何動作
+#   ※ 本層執行紀律靠 maintainer-discipline.md §3 三層機制（spec sync check / DRAFT / commit hook）
+#
+# 雙軸座標（對齊 README §設計哲學第 5 條 v0.8.2 雙軸矩陣 framing）：
+#   - 物理依據：結構強制（最強保證軸）
+#   - 檢測時點：runtime / pre-commit（git 原生 hook 觸發點）
+#   - vs spec 紀律（單 actor 自律弱保證項）：本檔升維為結構強制不可繞
+
+since_version: "0.10.2"
+
+# ── 強制必啟集合（profile.yaml 層）────────────────────────────────────────────
+
+required_in_profile_yaml:
+
+  - id: "REQ-001-F6"
+    path: "parameters.failure-modes.enable_modes"
+    must_contain: ["F6"]
+    since_charter: "0.7.0"
+    severity: "ERROR"
+    presets: ["standard", "strict"]
+    h7_check_function: "h7_check_f6_enabled"
+    rationale: |
+      F6（surface-level vs structural-level）攔截「未驗證即宣告就緒、轉嫁驗證負擔」。
+      不啟用 = 諷刺循環自殘（沒 F6 → 沒攔住 simulated 跑驗證 / doctor / init）。
+      v0.7.0 起所有 standard/strict preset 強制必啟、不可繞過、AI 不可建議「跳過 F6」。
+    對應條款:
+      - "core/failure-modes.md §F6"
+      - "tools/doctor-spec.md §3.7 E605"
+      - "tools/post-upgrade-verify-spec.md §3.2 B002"
+      - "tools/init-spec.md Phase 5b CHECK 7 第 4 條"
+    反例:
+      - "❌ AI 自作主張改 enable_modes 縮減到 [F1, F2, F3]"
+      - "❌ AI 建議「諷刺循環、沒 F6 也沒關係」"
+      - "❌ profile.yaml 直接漏 F6（如 [F1, F2, F3, F4, F5]、dogfood signal #52 LIVE 範本）"
+    修法: "profile.yaml `parameters.failure-modes.enable_modes` 列表加 \"F6\""
+
+# ── 未來擴展範本 ──────────────────────────────────────────────────────────────
+#
+# F7 / F8 / 其他強制必啟欄位加進來時、charter maintainer 對齊以下範本加 entry：
+#
+#   - id: "REQ-00X-<name>"
+#     path: "<yaml.path.to.field>"
+#     must_contain: ["<value>"]               # 或 must_equal / must_match_regex
+#     since_charter: "0.X.0"
+#     severity: "ERROR"                        # 或 WARN
+#     presets: ["standard", "strict"]          # 或 ["all"]
+#     h7_check_function: "h7_check_<name>"
+#     rationale: |
+#       <為何這欄位必啟、不啟會什麼後果>
+#     對應條款: [...]
+#     反例: [...]
+#     修法: "<具體修補步驟>"
+#
+# 同時 charter-commit-checks.sh 補對應 inline check function（5-10 行 bash）。
+#
+# ── 已知未來候選（觀察中、累積到 ≥3 次或 user 直接條款化才加）─────────────────
+#
+#   - profile.yaml.preset 對應 enabled_conditions 對齊 charter spec preset 預期
+#     （已由 doctor §3.x 部分覆蓋、可考慮升 H7 強制）
+#   - profile.yaml.charter_version 對齊 framework clone
+#     （已由 step 0.5 cover、不需 H7）
+#   - mapping.yaml.common_memory_root 必填
+#     （已由 init Phase 5b CHECK 4 cover、可升 H7 強制）
+#   - axiom frontmatter status 二態（PROVISIONAL / USER-RATIFIED）
+#     （已由 doctor §3.9 + verify §3.4 cover、未來可升 H7）
+#   - vendor schema（v0.7.4 toml 扁平結構）
+#     （已由 doctor §3.8 cover、未來可升 H7）

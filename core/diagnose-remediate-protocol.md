@@ -195,20 +195,22 @@ bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh
 bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
 ```
 
-### 4.4 校驗點覆蓋（H1-H6）
+### 4.4 校驗點覆蓋（H1-H7）
 
 完整 spec 見 `tools/commit-hook-spec.md §3`：
 
-| 校驗 | 觸發條件 | 嚴格度 | 對應 signal |
-|---|---|---|---|
-| **H1** `_role.md` Status 升 ACTIVE 字樣校驗 | _role.md status 變更 | reject | #35（自激活）|
-| **H2** F-mode 雙寫（commit 提 F-mode → log + reflection 必齊）| commit message 提 F-mode | reject | #33（不自報）|
-| **H3** Reflection 檔名 regex | `roles/<role>/reflections/` 新檔 | reject | #43（檔名漂浮）|
-| **H4** Reflection 含 sprint 編號邊界 | reflection 新檔內容含 `S\d+` | warn | #44（state 混 reflection）|
-| **H5** Log entry 對應 reflection 雙寫 | failure_mode_log 加 entry | reject | #42（雙寫漏對應）|
-| **H6** Cross-AI handoff directive header | handoff 新檔 | warn | #45（致 XXX 缺）|
+| 校驗 | 觸發條件 | 嚴格度 | since | 對應 signal |
+|---|---|---|---|---|
+| **H1** `_role.md` Status 升 ACTIVE 字樣校驗 | _role.md status 變更 | reject | v0.10.0 | #35（自激活）|
+| **H2** F-mode 雙寫（commit 提 F-mode → log + reflection 必齊）| commit message 提 F-mode | reject | v0.10.0 | #33（不自報）|
+| **H3** Reflection 檔名 regex | `roles/<role>/reflections/` 新檔 | reject | v0.10.0 | #43（檔名漂浮）|
+| **H4** Reflection 含 sprint 編號邊界 | reflection 新檔內容含 `S\d+` | warn | v0.10.0 | #44（state 混 reflection）|
+| **H5** Log entry 對應 reflection 雙寫 | failure_mode_log 加 entry | reject | v0.10.0 | #42（雙寫漏對應）|
+| **H6** Cross-AI handoff directive header | handoff 新檔 | warn | v0.10.0 | #45（致 XXX 缺）|
+| **H7** profile.yaml 強制必啟集合（schema-driven via `tools/profiles/_required.yaml`） | 每次 commit | reject | **v0.10.2** | #46 / #31 / #52（三層雙重防禦對 F6 LIVE 失效）|
 
 → vendor 實作的 hook 內容**可以更嚴**（fork `agent-commons/_config/hooks/charter-commit-checks.sh` 加自家檢項）、**不可以更鬆**（charter 概念層保底）。
+→ **H7 schema 升維紀律**（v0.10.2 加）：charter 加新強制必啟欄位 → 改 `_required.yaml` + 補對應 hook inline check function（5-10 行 bash）→ 採用方 git pull 即傳播，不需再加 H8/H9。設計動機：把 spec 三層雙重防禦（init/doctor/verify）+ commit hook 整合為單一 schema source of truth、避免 spec drift。
 
 ### 4.5 採用方拒絕安裝的 fallback
 
@@ -216,7 +218,7 @@ bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
 
 | 採用方狀況 | fallback |
 |---|---|
-| 跑 `install-git-hooks.sh` 安裝 | ✅ 結構強制升維落地 — H1-H6 commit 時 binary 攔截 |
+| 跑 `install-git-hooks.sh` 安裝 | ✅ 結構強制升維落地 — H1-H7 commit 時 binary 攔截 |
 | 不跑安裝 | ⚠️ 退化到既有 v0.8.x 紀律（依 `audit-rights` + `violation-reflection §1` 抽驗方意願執行）+ doctor advisory |
 | 安裝後用 `git commit --no-verify` 繞過 | ⚠️ git 既有逃生口、charter 不阻止；但 AI 自主繞過 = `core/role-separation §3.5` 結構性繞路 = F1（commit-hook-spec §6）|
 
@@ -256,14 +258,17 @@ bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
 |---|---|---|---|
 | **#27** | 2026-04-29 | spec-driven 循環依賴 reality check（multi-perspective 結構師金礦指認）| §0.1 循環依賴對應 + §1 條文 |
 | **#30** | 2026-04-30 LIVE | LLM 砍 fork 內容（不對齊 charter ground truth）| §2.1 欄 1 合規規定（寫死 ground truth）+ §2.3 欄 3 反例段 |
-| **#31** | 2026-04-30 LIVE | simulated slash command（非真實 stdout 而宣告 PASS）| §2.4 真實 stdout 證據要求 |
+| **#31** | 2026-04-30 ~ 2026-05-06 LIVE（≥ 5 次同類）| simulated slash command（非真實 stdout 而宣告 PASS、累積爆量到 5 次同類同 session）| §2.4 真實 stdout 證據要求 + §4 H7 binary 結構強制兜底（spec 紀律 LLM simulated 仍可繞過、H7 binary 不可繞）|
 | **#32** | 2026-04-30 LIVE | LLM 不查 templates（不查 charter 既有資源）| §2.1 欄 2 修補方向（推薦路徑指向 charter 資源）+ `individual-learning-loop §3` step 0 互補 |
 | **#33** | 2026-04-30 LIVE | failure-mode 自報失效（不主動補 reflection）| §4 vendor 邀請制 commit hook 加固 |
+| **#46** | 2026-05-04 ~ 2026-05-06 LIVE（≥ 3 次同類）| spec 缺 spec-as-data 四欄結構（軸 A/C 等 LLM 防禦性編程把合法狀態誤標 WARN、把 v0.9.9 commit 沒 grep 直接報錯等）| §2.1-§2.3 spec-as-data 四欄結構強化 + 後續 v0.10.3 propagate 終局到 verify §3.1-§3.5 全軸（議程 ship 中）|
+| **#52** | 2026-05-06 LIVE（user 直接條款化）| 三層雙重防禦對 F6 強制必啟整體 LIVE 失效（init / doctor / verify spec 三段全部寫得對、執行端兩個 vendor 連續 simulated PASS、F6 缺都沒抓、user 親手抓）| §4 H7 schema-driven binary 攔截（v0.10.2 ship、`tools/profiles/_required.yaml` REQ-001-F6）— 從「LLM 自律執行 spec」升「binary 不可繞」結構強制最赤裸落地 |
 
 未來再撞到同類觀察時：
 
 - 若 vendor commit hook 已實作 → 應被自動偵測
-- 若仍漏 → 評估升級條款（如 §4 從邀請制升強制 + 加 maintainer 簽收門檻）
+- 若 H7 schema 已涵蓋（如未來 F7） → charter 改 `_required.yaml` 加 entry + 補對應 inline check → 採用方 git pull 即傳播
+- 若仍漏 → 評估升級條款（如 §4 從邀請制升強制 + 加 maintainer 簽收門檻、或 H7 schema 擴 enabled_conditions / mapping / axiom 等其他強制必啟集合）
 
 ---
 
@@ -276,3 +281,13 @@ bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
 **設計學意義**：charter「**spec-driven 紀律 + AI 自跑工具**」表面閉環、實際循環依賴 LLM 自律 — 本條款把 spec 從「**靜態文檔**」升維為「**機器可讀的引導式紀律資料**」。配合 v0.9.0 同 release 的 ① individual-learning-loop（個體學習迴圈雙寫 + step 0 強制讀）+ ③ adoption-lifecycle（lifecycle 完整化）+ ④ condition-mutability（紀律本體），charter 完成「**紀律完整性 + AI 自我覺察升維**」轉折。
 
 對應 dogfood signal #27 / #30 / #31 / #32 / #33 五個 signal 同 release 條款化、屬 charter dogfood-driven hardening 第十七循環核心收編。
+
+### v0.2（v0.10.2 加）
+
+§4.4 校驗點覆蓋擴 H1-H6 → H1-H7、加 H7 schema-driven 強制必啟集合（`tools/profiles/_required.yaml` schema source of truth、`tools/commit-hook-spec.md §3 H7` spec、`tools/vendor/commons/charter-commit-checks.sh v1.1` 實作）。§6 dogfood signal 表加 #46（≥ 3 次）+ #52（user 直接條款化）兩條、更新 #31 累積到 ≥ 5 次同類同 session。
+
+**觸發**：2026-05-06 公司專案 dbSDK LIVE — Engineer Claude verify + Gemini PM doctor 同 session 連續 simulated PASS、profile.yaml 漏 F6 都沒抓、user 親手抓 + 詰問「我們的 doctor 會檢測出來嗎」。
+
+**設計學意義**：v0.9.0 本條款 §4 以「vendor 邀請制 commit hook 候選加固」框定升維方向、v0.10.0 ship H1-H6（六條同源 signal #33/#35/#42-#45 從自律升結構強制）、v0.10.2 H7 把同設計樣板擴展到 spec 強制必啟集合層 — 從「LLM 讀 spec 自跑」升「binary 讀 schema 不可繞」。同時把 init/doctor/verify spec 三層雙重防禦從「三處重複描述、各自 LLM 執行」歸一為「單一 schema source of truth + binary 兜底」、解 dogfood signal #6 family（spec 之間 sync drift）+ #27（spec-driven 與 LLM 自律 循環依賴）結構性難題。
+
+**未來擴展紀律**：charter 加新強制必啟欄位（如未來 F7 / enabled_conditions 對齊 / mapping 必填欄位等）→ 改 `_required.yaml` 加 entry + 補對應 hook inline check（5-10 行 bash）→ 採用方 git pull 即傳播、不需再加 H8/H9。設計上保持 schema-driven 單一擴展點、避免 hook 數爆炸。
