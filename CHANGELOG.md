@@ -6,7 +6,57 @@
 
 ## [Unreleased]
 
-下批次 v0.10.x PATCH 議程：signal #31 累積 4 次（升議程候選）+ post-upgrade-verify-spec SSS S3 propagate 收尾（軸 A/B/C/D/E 全升 spec-as-data 四欄結構、signal #46 候選） + BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject + 雙軸矩陣第三段 lint binary 派生「依賴 LLM 紀律的條款清單」；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊
+下批次 **v0.10.3 PATCH 議程（純 spec sweep、零採用方動作）**：post-upgrade-verify-spec SSS S3 propagate 終局（軸 A/B/C/D/E 全升 spec-as-data 四欄結構、signal #46 完整修補）+ doctor §3.7-§3.12 順手 sweep + 雙軸矩陣第三段「依賴 LLM 紀律的條款清單」（手寫、lint binary 派生留 v0.11.x）。後續 v0.10.x PATCH：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；v1.0 公開化前：LICENSE + walkthrough 補齊。
+
+---
+
+## [0.10.2] — 2026-05-06
+
+> **BREAKING-LITE PATCH** — 加 H7 schema-driven 強制必啟集合 binary 攔截。對齊 v0.7.0 mislabel 教訓 + user 歷史紀律「有衝突就代表沒有向下兼容」（v0.7.3 北極星 framing）。採用方升版動作：
+>
+> 1. `git pull ~/.agentcharter` 拿新 `_required.yaml` + 升級後 charter-commit-checks.sh v1.1 邏輯
+> 2. `bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update` 同步 deploy script
+> 3. **檢查 profile.yaml 對齊 `_required.yaml`**：當前 v0.10.2 ship REQ-001-F6 — `parameters.failure-modes.enable_modes` 必含 `F6`（v0.7.0+ standard/strict 強制必啟、之前若漏 F6 此次 commit 會被 H7 擋）
+> 4. `agent-commons/_config/profile.yaml` `charter_version: "0.10.1"` → `"0.10.2"`
+> 5. 詳見 `examples/upgrades/v0.10.1-to-v0.10.2.md` walkthrough
+
+### Added
+
+- **`tools/profiles/_required.yaml`** 新檔（schema source of truth、強制必啟集合定義）：
+  - 與 standard/strict/minimal/essential.yaml 並列、用途互補：preset yaml 規範「啟用 / 不啟用」選擇空間、本檔規範「**不可不啟用**」的核心強制必啟欄位（採用方無權關閉）
+  - 當前 ship：**REQ-001-F6**（`parameters.failure-modes.enable_modes` 必含 `F6`、v0.7.0+ standard/strict 強制必啟）
+  - 設計：未來 F7 / F8 / 其他強制必啟欄位 → 改本檔加 entry + 補對應 hook inline check（5-10 行 bash）→ 採用方 `git pull` 即傳播、**不需再加 H8/H9 binary**（schema-driven 單一擴展點、避免 hook 數爆炸）
+
+- **`tools/vendor/commons/charter-commit-checks.sh` v1.0 → v1.1**：加 `check_h7` + `h7_check_f6_enabled` inline check function。每次 commit 觸發；profile.yaml 不存在則 graceful skip（pre-init 採用方）。awk 解析 enable_modes block（支援 inline + multi-line YAML 兩種格式）+ sed strip 註解（防 `# F6 added later` 偽 PASS）。LIVE 4 案例測試全綠：inline no-F6 reject / inline with-F6 pass / multi-line no-F6 reject / F6-in-comment reject（anti false-pass 加固）。
+
+- **`examples/upgrades/v0.10.1-to-v0.10.2.md`** 新檔（BREAKING-LITE PATCH walkthrough）— 含 5 步流程 + H7 LIVE 攔截示範 + dbSDK case study（補 F6 修法）+ 升版前後對比（spec 三層雙重防禦 → H7 binary 兜底）。
+
+### Changed
+
+- **`tools/commit-hook-spec.md`** v0.10.0 → v0.10.2：加 §3 H7 spec 段（spec-as-data 四欄結構、對齊 H1-H6 模式）+ §1 校驗集擴 H1-H6 → H1-H7 + §2.1 架構圖加 `_required.yaml` 層 + §4 嚴格度演化階段加 Phase 1.5 + §5 reference 實作加 `_required.yaml` 行 + §7 與其他條款的關係擴 H7 cross-reference + §8 採用方升版指南加 v0.10.2 BREAKING-LITE PATCH 行 + §9 變更歷史 v0.10.2 entry。
+
+- **`core/diagnose-remediate-protocol.md`** v0.1 → v0.2：§4.4 校驗點覆蓋擴 H1-H6 → H1-H7 + §4.5 fallback 表 H1-H6 → H1-H7 + §6 dogfood signal 表加 #46（≥ 3 次）+ #52（user 直接條款化）+ 更新 #31 累積到 ≥ 5 次同類同 session + §7 變更歷史加 v0.2 entry（含未來擴展紀律：F7/F8 → 改 _required.yaml + 補 inline check、不再加新 H 號 binary）。
+
+- **`tools/profiles/standard.yaml`**：`charter_version: "0.10.1"` → `"0.10.2"`
+- **`tools/profiles/strict.yaml`**：`charter_version: "0.9.0"` → `"0.10.2"`（順手補齊、v0.9.x〜v0.10.1 漏升）
+- **`tools/profiles/minimal.yaml`**：`charter_version: "0.9.0"` → `"0.10.2"`（順手補齊、v0.9.x〜v0.10.1 漏升）
+- **`tools/profiles/essential.yaml`**：`charter_version: "0.9.0"` → `"0.10.2"`（順手補齊、v0.9.x〜v0.10.1 漏升）
+
+### Dogfood signals 收編
+
+- **#52** 候選 — 三層雙重防禦對 F6 強制必啟整體 LIVE 失效（2026-05-06 公司專案 dbSDK LIVE — Engineer Claude verify + Gemini PM doctor 同 session 連續 simulated PASS、F6 缺都沒抓、user 親手抓 + 詰問「我們的 doctor 會驗證出來嗎」+「以後 F7 一樣可以解嗎」、user 直接條款化、不走累積門檻 — 同 v0.5.8 / v0.7.1 / v0.7.4 / v0.9.0 user 明示直接條款化 pattern）→ H7 schema-driven binary 攔截 ✅ **完成**
+- **#46**（≥ 3 次同類）spec 缺 spec-as-data 四欄結構 → **部分完成**（H7 涵蓋 REQ-001-F6 specific case binary 攔截、SSS S3 propagate 終局 verify §3.1-§3.5 全升四欄結構留 v0.10.3）
+- **#31**（≥ 5 次同類同 session）simulated 跑 spec、無真實 stdout、報 stale 資訊 → **部分完成**（H7 對 F6 case binary 不可繞、其他 case 留 v0.10.3 SSS S3 propagate spec §2.4 真實 stdout 紀律）
+- **#45**（持續累積）「致 XXX」directive header 紀律穩定（同 LIVE session 第 4 次自然產出、`cross-ai-handoff §3.3` v0.10.0 + commit-hook H6 v0.10.0 條款化的 LIVE 紀律穩定不衰減）→ 觀察持續、無新動作
+
+### 設計學意義
+
+對應 **v0.8.2 §設計哲學第 5 條「弱保證項升結構強制」最赤裸 LIVE 實證** + **dogfood signal #27「spec-driven 與 LLM 自律 循環依賴」結構性解** + **v0.7.3 北極星「不讓 user 記」延伸到「強制必啟集合不讓 user 記憶哪幾條必啟」**。設計 framing：把 spec 三層雙重防禦（init/doctor/verify、依賴 LLM 自律執行）+ commit-hook 整合為「**單一 schema source of truth + binary 兜底**」。schema-driven 紀律保留 v0.5.9 純規範框架精神（spec 仍是 source of truth、binary 只是 enforcement layer、不寫死任何紀律）+ 對齊 v0.10.0 commit-hook vendor 中立架構 propagate 模式。
+
+### 觀察記錄（不在本 release ship、留 v0.10.3）
+
+- **SSS S3 propagate 終局**：post-upgrade-verify-spec §3.1-§3.5 全升 spec-as-data 四欄結構 + doctor §3.7-§3.12 順手 sweep — 純 spec sweep、零採用方動作要求
+- **雙軸矩陣 framing 第三段**：README §設計哲學第 5 條加「依賴 LLM 紀律的條款清單」段（手寫、lint binary 派生留 v0.11.x）
 
 ---
 

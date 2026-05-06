@@ -15,7 +15,7 @@
 #   採用方走 progressive adoption，先驗 charter ROI，再逐級加紀律密度
 
 version: "0.4.0"
-charter_version: "0.9.0"
+charter_version: "0.10.2"
 preset: essential
 
 # === B1 粒度：條款啟用 ===
