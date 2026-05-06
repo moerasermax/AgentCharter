@@ -41,6 +41,43 @@ v0.10.1 ship 不到 24 小時內 user pull、Engineer Claude self-instantiation 
 
 ---
 
+## ✅ v0.10.3 已 ship signals + LIVE 觸發脈絡（2026-05-06、純 spec sweep + maintainer-only lint binary）
+
+| Signal | 議題 | 累積 | 落地檢項 |
+|---|---|---|---|
+| **#46** | spec 缺 spec-as-data 四欄結構（v0.10.2 部分修補 → v0.10.3 終局完整修補）| ≥ 3 次同類 | ✅ **完成** — verify §3.1-§3.5 全 5 軸 22 個 check item 升四欄結構 + doctor §3 全局紀律段 + lint binary L1 偵測 |
+| **#31** | simulated 跑 spec、無真實 stdout、報 stale 資訊（v0.10.2 部分修補 → v0.10.3 propagate 完整）| ≥ 5 次同類同 session | ✅ **完成** — spec 段首全局紀律段 + 反例段降 simulated 率 + lint binary 結構偵測；v0.10.2 commit-hook H7 binary 兜底 |
+| **user LIVE 提問**「升版這些檢查可否自動納入新設計」| 結構性議題 | 1 次（user 直接條款化）| ✅ **完成** — lint binary maintainer-only 自動偵測 + spec-driven schema-driven 升維設計樣板（README 雙軸第三段升維軌跡表）|
+
+### LIVE 觸發脈絡（2026-05-06、user LIVE 提問升維）
+
+v0.10.2 ship 後 user LIVE 提問：
+
+1. **「以後如果有 F7 這方式一樣可以解決嗎」**（結構性議題、F-mode-specific vs schema-driven 設計選擇）→ AI 顯化三設計選擇、user 選最深 (c) 設計 3（schema-driven 通用）
+2. **「升版這些檢查可否自動納入新設計、不然每次都很容易漏掉」**（升維元層議題）→ AI 顯化兩自動化路徑（schema-driven 值類規範 + lint binary 結構類規範）+ 三 ship 路徑（v0.10.3/v0.10.4/v0.10.5 漸進）
+3. user 選 **(c) 一次併包 ship**、確認 token 影響可承受、選 **(A) 完整四欄結構**
+
+→ **SSS S1「user 授權閘」第 5 次 LIVE prototype 累積**：
+- user 不查 spec、不深入 design 細節
+- AI 顯化結構性 framing（含 token cost 估算）
+- user 拍板 ship 路徑 + 設計選擇
+- 對齊 v0.7.3 北極星「不讓 user 記」延伸到「不讓 user 深入 design 細節」
+
+→ **規範自動化的元層落地**（v0.7.3 北極星延伸）：
+- 對 user 角度（v0.7.x ship 完成）：walkthrough + verify 工具 + spec-as-data
+- 對 AI 角度（v0.9.0 ship 完成）：個體學習迴圈 + step 0 強制讀
+- 對 **maintainer 角度（v0.10.3 ship 完成）**：lint binary + spec 段首全局紀律段 + 升維軌跡表
+
+→ **dogfood-driven hardening 第十八循環完整收編**（v0.10.0 + v0.10.1 + v0.10.2 + v0.10.3 四連 ship、規範自動化元層完整落地、SSS S3 漸進落地終局）。
+
+### 留 v0.11.x 議程
+
+- **雙軸 framing 第四段**：lint binary 自動派生「依賴 LLM 紀律的條款清單」、取代 README §設計哲學手寫表（schema-driven 升維最深一段）
+- **H8 commit-hook 候選**：採用方文檔層 sync 全自動化（dogfood signal #6/#24 升維、user 確認累積至 ≥ 4 次）
+- **charter dogfooding 啟動**：留 v1.x（charter repo 自身過 H1-H7 + maintainer-specific H8/H9）
+
+---
+
 ## ✅ v0.10.2 已 ship signals + LIVE 觸發脈絡（2026-05-06、BREAKING-LITE PATCH）
 
 | Signal | 議題 | 累積 | 落地檢項 |
