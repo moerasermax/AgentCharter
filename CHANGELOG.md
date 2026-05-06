@@ -10,6 +10,61 @@
 
 ---
 
+## [0.10.4] — 2026-05-06
+
+> **PATCH release — Vendor 介紹 charter 工具紀律 charter common 化**。**零採用方動作要求**（向下兼容、純文檔 / 條款層擴增）。採用方升版只改 `agent-commons/_config/profile.yaml` `charter_version: "0.10.3"` → `"0.10.4"`、無其他動作。
+>
+> **設計動機**：對應 user 2026-05-06 LIVE 提問結構性議題：「**那你應該要幫我把文件更新成一看就知道要用哪個指令給 AI 他就會幫我安裝吧、好比說我問他 checkpoints 她就幫我介紹然後問說 需要現在幫你安裝 xxx 嗎**」+ LIVE 補充「**我看了會想用、但我不知道該怎麼安裝、所以去查文件**」。對齊 v0.7.3 北極星「**不讓 user 記**」延伸到「**不讓 user 為了用一個工具還要查 charter 文件**」。
+
+### Added
+
+- **`core/ai-vendor-onboarding.md §3.5`** 新加段「**Vendor 介紹 charter 工具紀律**」(charter common 條款化、所有 vendor 自然繼承)：
+  - **§3.5.1 觸發場景**：vendor 主動發現 / user 主動問 / user 貼 install prompt
+  - **§3.5.2 紀律**：三段流程（介紹用法 + 例子 / 主動詢問「要現在幫你裝嗎？」/ user 同意直接跑）
+  - **§3.5.3 反例**：dogfood signal #53 LIVE 範本（dbSDK Engineer Claude「如果您希望」被動描述 vs 主動詢問版本對比）
+  - **§3.5.4 配套**：vendor 不查工具 spec 自編描述（dogfood signal #54、signal #32 family 延伸到「介紹工具」場景、紀律「介紹前必先 ReadFile 對應 spec」）
+  - **§3.5.5 對應 dogfood signal**：#53 + #54
+  - **§3.5.6 對齊既有條款**：對應 PM gemini-cli §3.7 / init-template §3.3 / individual-learning-loop §3 step 0 讀紀律 / violation-reflection §1
+  - **§3.5.7 vendor 落地對應**：Gemini PM ✅ v0.10.4、Claude Engineer / Cursor / Kiro 待邀請接入
+
+- **`tools/vendor/commons/README.md` 工具清單段重寫**（user-facing onboarding 化）：
+  - 「採用方視角 — 我想用 X 怎麼裝」副標
+  - 兩個工具 user-facing 段（checkpoints / commit hook、合併 install-git-hooks + charter-commit-checks）
+  - 每個工具：白話描述 + 具體例子 + 一鍵安裝 prompt（給 AI 貼）+ 技術細節分離
+  - commit hook 7 條紀律（H1-H7）改成「具體違反例 + 擋了會發生什麼」（如「reflection 檔名沒對 regex（如 PROTOCOLS.md）→ commit 被擋、改 2026-05-06_f1_xxx.md 才能 commit」）
+  - 加「安裝後驗證 — 故意違反看看擋不擋」段（user-friendly LIVE 測試）
+  - 加「不裝會怎樣？」+「想暫時繞過？」段（覆蓋 v0.10.0 opt-in 邀請制 + bypass 紀律）
+
+### Changed
+
+- **`roles/pm/gemini-cli.md §3.7`** v1.5 → v1.6：
+  - 觸發場景擴展：原 v1.3 只 PM init 後置觸發 → 加觸發 2（user 主動詢問「checkpoints」/「想裝」/「跨 session 存檔」等關鍵詞）+ 觸發 3（user 貼 install prompt 直接跑 Step 1-3）
+  - 位階變化（v0.10.4 起）：本段為 `core/ai-vendor-onboarding §3.5` charter common 紀律的 **PM-specific 實作落地**（從 PM 紀律升 charter common、所有 vendor 繼承）
+
+- **三 preset YAML**（`standard.yaml` / `strict.yaml` / `minimal.yaml` / `essential.yaml`）：`charter_version: "0.10.3"` → `"0.10.4"`
+
+### Dogfood signals 收編
+
+- **#53**（user 直接條款化、不走累積門檻、user LIVE 明示「**我希望可以直接趕緊 ship、因為我現在就會使用、可以快速驗證**」）：vendor 介紹 charter 工具被動「如果您希望」描述、user 不知怎麼裝、要去查文件 → ✅ **完成**（charter common §3.5 紀律、三段流程強制 + 禁被動表述）
+- **#54**（同 LIVE session 衍生）：vendor 不查工具 spec 自編描述（Engineer Claude 把 install-git-hooks.sh 跟 checkpoints 安裝混淆）→ ✅ **完成**（§3.5.4 配套紀律、介紹前必先 ReadFile 對應 spec、對齊 dogfood signal #32 family 延伸）
+
+### 設計學意義
+
+charter v0.7.3 北極星「**不讓 user 記**」演化軌跡 — v0.10.x 系列完整化：
+- v0.7.x 對採用方角度：walkthrough + verify + spec-as-data
+- v0.9.0 對 AI 角度：個體學習迴圈 + step 0 強制讀
+- v0.10.3 對 maintainer 角度：lint binary + spec 段首全局紀律段
+- **v0.10.4 對 user-facing AI 行為角度**：vendor 介紹 charter 工具紀律（本 release）
+
+→ 對齊 charter「**規範自動化的元層**」延伸 — 不只 maintainer 不必記、user 不必記、AI 也不必每次重新編述、紀律寫進 charter common 條款讓所有 vendor 自然繼承。
+
+### 觀察記錄（不在本 release ship、留後續）
+
+- Engineer Claude / Cursor / Kiro 等其他 vendor 對齊 §3.5 紀律的 vendor-specific 落地：留後續 vendor 接入時補（依邀請制原則）
+- 介紹工具紀律 binary 攔截升維（lint binary 偵測「vendor 介紹工具用『如果您希望』被動表述」）：留 v0.11.x（屬「LLM 自律 → 結構強制」升維家族）
+
+---
+
 ## [0.10.3] — 2026-05-06
 
 > **PATCH release — 純 spec sweep + maintainer-only lint binary**。**零採用方動作要求**（向下兼容、純文檔 / spec / maintainer 工具層擴增）。採用方升版只改 `agent-commons/_config/profile.yaml` `charter_version: "0.10.2"` → `"0.10.3"`、無其他動作。

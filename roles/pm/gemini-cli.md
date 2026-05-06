@@ -222,6 +222,8 @@ prompt = """
 > **位階**：PM 主動介紹的 optional enhancement；採用方可接受或跳過，不影響 init 完成狀態。
 > **對應條款**：`core/working-stack-discipline §1`（DRAFT 外部化 + save 同步 git commit 紀律）。
 > **設計動機**（v1.6 觸發場景擴展）：對齊 v0.7.3 北極星「不讓 user 記」延伸到「不讓 user 記具體 spec 路徑」 — user 想用某個機制、自然語言問 AI 即可、AI 自動找到對應 spec 並引導 install。
+>
+> **位階變化**（v0.10.4 起）：本段為 `core/ai-vendor-onboarding §3.5`「Vendor 介紹 charter 工具紀律」charter common 紀律的 PM-specific 實作落地。本段 Step 1-3 對齊 §3.5 三段流程（介紹用法 + 主動詢問「要現在幫你裝嗎？」+ user 同意直接跑）。任何 vendor（Engineer / Auditor / Cursor / Kiro 等）在「介紹 charter 工具」場景下、亦對齊 §3.5 紀律、依各 vendor spec 自實作落地。
 
 ### 設計架構：橋接層 vs 邏輯層
 

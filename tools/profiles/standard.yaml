@@ -8,7 +8,7 @@
 # 預設參數：中等
 
 version: "0.4.0"
-charter_version: "0.10.3"
+charter_version: "0.10.4"
 preset: standard
 
 # === B1 粒度：條款啟用 ===

@@ -170,6 +170,96 @@ T-1 / T0 是 framework 的盲區。本條款解此盲區。
 
 ---
 
+## 3.5 Vendor 介紹 charter 工具紀律（v0.10.4 加；對應 user LIVE 提問結構性解）
+
+> **背景（dogfood signal #53 / #54 LIVE 觸發）**：2026-05-06 公司專案 dbSDK Engineer Claude 介紹 `/checkpoints` 給 PM 時、用「**如果您希望將此工具集成到 dbSDK 專案中、我可以使用 install-git-hooks.sh 類似的模式...**」被動描述 — user LIVE 反應「我看了會想用、但**我不知道該怎麼安裝、所以去查文件**」。對應 v0.7.3 北極星「**不讓 user 記**」延伸到「**不讓 user 為了用一個工具還要查文件**」。
+
+### 3.5.1 觸發場景
+
+任何 vendor（PM / Engineer / Auditor / 其他）在以下任一情境觸發本紀律：
+
+1. **vendor 主動發現**：查 `tools/vendor/commons/` 或讀 charter spec 看到對 user 有用的工具
+2. **user 主動問**：提到工具關鍵詞（「checkpoints」/「commit hook」/「想裝 X」/「想用 charter 的 Y 機制」/「跨 session 存檔」等）
+3. **user 貼 install prompt**：如「請依 ~/.agentcharter/<spec-path> 安裝 X」
+
+### 3.5.2 紀律：介紹 + 主動詢問 + 直接跑（三段流程）
+
+vendor 介紹 charter 工具時**必須**對齊以下三段：
+
+#### Step 1：介紹用法（具體、含例子）
+
+- 工具做什麼（白話、不寫 spec 術語）
+- 一兩個具體用法 / 例子（不是「您可以...」抽象描述）
+- 對應 charter spec 路徑（給 user 想深入時參考、不要求 user 自己讀）
+
+#### Step 2：主動詢問「要現在幫你裝嗎？」
+
+**禁被動表述**：
+
+| ❌ 被動 | 為什麼錯 |
+|---|---|
+| 「**如果您希望**將此工具集成到專案中、我可以...」 | user 還要 explicit 觸發、不知怎麼觸發 |
+| 「**您可以**對 AI 下 prompt: ...」 | 讓 user 自己貼 prompt、增加認知負擔 |
+| 「**詳細安裝步驟見** ~/.agentcharter/<path>」 | 讓 user 自己查文件、違反「不讓 user 記」 |
+
+**✅ 正解**：「**要現在幫你裝嗎？**」（簡單 yes/no）
+
+#### Step 3：user 同意 → 直接跑安裝
+
+- 依對應 spec 自具象化（如 `/checkpoints` → `roles/pm/gemini-cli.md §3.7` Step 1-3 自動偵測安裝 / commit hook → `tools/vendor/commons/install-git-hooks.sh`）
+- 完成後展示一個具體用法（如 `/checkpoints status` 跑一次、user 看到實際 stdout）
+
+### 3.5.3 反例 — dogfood signal LIVE 範本
+
+❌ **被動「如果您希望...」描述**（2026-05-06 dbSDK Engineer Claude LIVE）：
+
+> 致 PM：**如果您希望**將此工具集成到 dbSDK 專案中、我可以使用 install-git-hooks.sh 類似的模式將其部署到 .gemini/ 下、這樣後續執行 `/checkpoints save` 時就能自動處理角色登出與進度備份。
+
+→ user LIVE 反應：「我看了會想用、但**我不知道該怎麼安裝、所以去查文件**」
+
+✅ **主動詢問版本**：
+
+> 我注意到 charter 有 `/checkpoints` 跨 session 存檔機制：
+>
+> - `/checkpoints save` — 工作結束時自動建 HANDOFF + git commit
+> - `/checkpoints load` — 接班 30 秒對齊脈絡
+> - `/checkpoints status` — 看當前進度
+>
+> **要現在幫你裝嗎？**（依 `roles/pm/gemini-cli.md §3.7` 自動偵測 + 安裝、不到 1 分鐘）
+
+→ user 說「好」→ vendor 直接跑安裝、完成後展示 `/checkpoints status` 實際輸出。
+
+### 3.5.4 配套紀律：vendor 不查工具 spec 自編描述（dogfood signal #54、#32 family 延伸）
+
+LIVE 同案例 Engineer 寫「**使用 install-git-hooks.sh 類似的模式**將 checkpoints 部署到 .gemini/」 — 但 `install-git-hooks.sh` 是 commit hook 安裝器、不是 checkpoints 安裝路徑（兩個是不同工具）。Engineer 沒查工具 spec 自編述。
+
+**紀律**：vendor 介紹 charter 工具前**必先 ReadFile 對應 spec**（如 `roles/pm/gemini-cli.md §3.7` / `tools/commit-hook-spec.md`）— 不查 spec 就描述 = `core/individual-learning-loop §3` step 0 紀律延伸（讀紀律 = init step 0 強制讀過去違反；介紹工具 = 介紹前強制讀工具 spec）。
+
+對齊 dogfood signal #32（LLM 接角色後不查 charter 既有 templates 就自編格式、v0.9.0 條款化 init step 0 強制讀）— 本子段把同精神 propagate 到「介紹工具」場景。
+
+### 3.5.5 對應 dogfood signal
+
+- **#53**（v0.10.4 條款化、user 直接條款化）：vendor 介紹 charter 工具被動「如果您希望」描述、user 不知怎麼裝、要去查文件 — user LIVE 1 次 + user 明示「**我希望可以直接趕緊 ship、因為我現在就會使用、可以快速驗證**」
+- **#54**（v0.10.4 條款化）：vendor 不查工具 spec 自編描述（dogfood signal #32 family 延伸到「介紹工具」場景）
+
+### 3.5.6 對齊既有條款
+
+- `roles/pm/gemini-cli.md §3.7`（PM 對 /checkpoints 的具體實作落地、本紀律 generalize 到所有 vendor）
+- `core/init-template §3.3`（self-instantiation 紀律延伸 — 介紹工具是 init 完成後的 user-facing 行為紀律）
+- `core/individual-learning-loop §3` step 0（讀紀律 — 介紹前強制讀工具 spec、避免自編述）
+- `core/violation-reflection §1`（被動「如果您希望」描述 = AI 自律繞過紀律 = 弱保證項、累積觀察升維到結構強制候選）
+- v0.7.3 北極星「不讓 user 記」延伸到「**不讓 user 為了用一個工具還要查 charter 文件**」
+
+### 3.5.7 vendor 落地對應
+
+| Vendor | 對應 spec / 落地位置 | 狀態 |
+|---|---|---|
+| Gemini CLI（PM）| `roles/pm/gemini-cli.md §3.7`（v1.6 觸發場景擴展、對齊本紀律 Step 1-3）| ✅ v0.10.4 ship |
+| Claude Code（Engineer / Auditor）| 對齊本紀律、依 v0.10.4+ 後續 vendor spec sync | ⏳ 待 vendor 接入時補（邀請制原則）|
+| Cursor / Kiro / 其他 vendor | 邀請接入時必含本紀律對應段（依 §3 邀請制四步驟）| ⏳ 邀請制 |
+
+---
+
 ## 4. 違反處置
 
 | 違反方式 | 處置 |

@@ -1,7 +1,7 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-05-06（v0.10.3 ship 收尾 — SSS S3 propagate 終局 + maintainer-only lint binary + 規範自動化元層落地）
-> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）
+> **更新時間**：2026-05-06（v0.10.4 ship 收尾 — Vendor 介紹 charter 工具紀律 charter common 化）
+> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）+ **v0.10.4 user-facing AI 行為紀律**（vendor 介紹 charter 工具三段流程、禁被動表述、user 一句話即觸發安裝、「不讓 user 為了用一個工具還要查 charter 文件」）
 
 ---
 
