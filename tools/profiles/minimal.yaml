@@ -9,7 +9,7 @@
 # 預設參數：寬鬆
 
 version: "0.4.0"
-charter_version: "0.10.4"
+charter_version: "0.10.5"
 preset: minimal
 
 # === B1 粒度：條款啟用 ===

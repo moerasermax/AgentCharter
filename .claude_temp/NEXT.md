@@ -1,7 +1,7 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-05-06（v0.10.4 ship 收尾 — Vendor 介紹 charter 工具紀律 charter common 化）
-> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）+ **v0.10.4 user-facing AI 行為紀律**（vendor 介紹 charter 工具三段流程、禁被動表述、user 一句話即觸發安裝、「不讓 user 為了用一個工具還要查 charter 文件」）
+> **更新時間**：2026-05-10（v0.10.5 ship 收尾 — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
+> **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）+ **v0.10.4 user-facing AI 行為紀律**（vendor 介紹 charter 工具三段流程、禁被動表述、user 一句話即觸發安裝、「不讓 user 為了用一個工具還要查 charter 文件」）+ **v0.10.5 vendor 預設行為層紀律**（Gemini `generalist` 自動分包繞 PM 卡控、PM init 必提醒、dogfood signal #5 根因深化、#5 + #41 + #55 family 留 v0.11.0 MINOR 升 core 條款層評估）
 
 ---
 
@@ -768,6 +768,34 @@ framework 永久維持「**純規範**」位階。
   - 暫不條款化、觀察中
   - **延伸候選**：與 #46 候選（spec-as-data 四欄結構 propagate 到 verify spec）合併走「spec 統一 sweep」一次處理（命令例 cross-platform + verify spec 軸 A 四欄結構 + 命令例 vendor-agnostic 化）
 
+- ✅ **dogfood signal #55 — Gemini CLI 預設 `generalist` 自動分包繞 PM 卡控（2026-05-07 CryptoBot 反向接入後 user LIVE 重大發現）**【**v0.10.5 條款化完成**（2026-05-10 ship）：`roles/pm/gemini-cli.md §3.5.5` PM init 必提醒；**留 follow-up 議程**：§3.2 派發機制重構 + vendor 預設行為層升 core 條款】
+
+  **LIVE 觸發脈絡**：CryptoBot 反向接入 v0.10.1 standard（2026-05-06）後、user LIVE 親自發現「Gemini PM 持續越矩」真主因 — Gemini CLI 預設 `generalist` agent 自動分包任務、繞過 PM 角色卡控。user 原話（2026-05-07）：「**Agents 的 generalist 會一直自動去分包任務、導致我們的卡控流程會被他自己分包任務這一塊偷偷的繞過、如今把它關掉整個框架就順起來了、`/agents disable generalist`**」。user 直接條款化（同 v0.5.8 / v0.7.1 / v0.7.4 / v0.9.0 / v0.10.4 pattern）+ 明示 scope「**在每次 pm-init 特別去提醒這件事就好**」。
+
+  **設計學意義**：
+  - **dogfood signal #5 根因深化**：v0.6.0 條款化以為治本「LLM 主動繞路」、實際 **Gemini CLI vendor 預設行為層**才是真主因 — PM 不需「自己想繞」就被自動分包
+  - **dogfood signal #5 + #41 + #55 same family**「vendor 預設行為層 vs charter 紀律」結構性張力 — 新架構級概念候選第 14 個
+  - **對應 v0.8.2 §設計哲學第 5 條「弱保證項升結構強制」家族新類型**（vendor onboarding 預設行為紀律、既有 3 軸：條款層 / 多 actor 互檢 / commit-hook binary 之外的第 4 軸）
+  - **CryptoBot 反向接入即時受益實證**：v0.10.5 ship 後 CryptoBot 升版即得到 PM init 必提醒紀律 — A3 公理對「自己的根」反向迴圈完整閉環的第一個 dogfood signal 共生案例
+
+  **v0.10.5 ship 完成項**（user scope 限定）：
+  - `roles/pm/gemini-cli.md §3.5.5` 新加段（PM init 必提醒採用方執行 `/agents disable generalist`）
+  - 採用方回應後處置表（✅ disable / ❌ 拒絕）+ self_audit 額外項
+  - `pm-init.toml` 自具象化要求
+  - 三 preset yaml charter_version `0.10.4` → `0.10.5`
+  - CHANGELOG v0.10.5 entry
+
+  **Follow-up 議程（留累積觀察）**：
+
+  | 議程 | 觸發條件 | 修法方向 |
+  |---|---|---|
+  | **§3.2 派發機制重構** | 累積 ≥ 2 次「PM disable generalist 後派發失效」LIVE 觀察 | §3.2 line 52 寫死 `invoke_agent(agent_name="generalist")` 與 §3.5.5 disable 紀律衝突 → 改用 explicit cross-AI handoff（對齊 `core/cross-ai-handoff §3` 路徑） |
+  | **vendor 預設行為層升 core 條款** | dogfood signal #5 + #41 + #55 same family、累積已 3 次 | 新加 `core/vendor-default-behavior-discipline.md`（25 → 26 條 / 13 → 14 個架構級概念第 14 個）— 留 v0.11.0 MINOR 評估、需 fresh-head session 設計 |
+  | **CryptoBot v0.10.5 升版受益觀察** | CryptoBot 升 v0.10.5 後 PM init 行為觀察 | 觀察 PM 是否自動發 reminder + 採用方執行 disable 後 PM 是否仍能正常派發（驗證 §3.2 衝突的實際嚴重度）|
+  | **跨 vendor 預設行為盤點** | 任一 vendor 新接入時 | 邀請 vendor 盤點預設啟用的 sub-agent / fallback / auto-completion 等繞 charter 卡控的內建行為（vendor 邀請制 v0.6.0 §3 延伸） |
+
+  **累積**：1 次 LIVE（2026-05-07 CryptoBot 反向接入後）= 已條款化（user 直接條款化 pattern）
+
 - **新 dogfood signal #40 候選 — 接入 prompt `<placeholder>` 填空設計 UX 差（2026-05-04 CryptoBot init LIVE）**【累積 1 次；候選修法：BOOTSTRAP.md + charter-init.md 改互動式問答收齊參數再跑】
 
   **觀察背景**：user 看完接入 prompt 後說「`<...>` 要採用方自己填寫，重複的變數很多，不如用互動式提問，先問齊再跑」。
@@ -901,6 +929,37 @@ framework 永久維持「**純規範**」位階。
 ---
 
 ## 已完成（本 session 累積，從待議移除）
+
+### v0.10.5 release（2026-05-10）— Gemini CLI 預設 generalist 自動分包處置（dogfood signal #55 條款化）
+
+✅ **dogfood signal #55 條款化**（user 直接條款化 pattern、累積 1 次 LIVE 跳累積門檻）：
+
+**LIVE 觸發脈絡**：
+- CryptoBot 反向接入 v0.10.1 standard（2026-05-06）後、user LIVE 親自發現「Gemini PM 持續越矩」真主因
+- user 原話（2026-05-07）：「**Agents 的 generalist 會一直自動去分包任務、導致我們的卡控流程會被他自己分包任務這一塊偷偷的繞過、如今把它關掉整個框架就順起來了、`/agents disable generalist`**」
+- user 明示 scope「在每次 pm-init 特別去提醒這件事就好」— 直接條款化、scope 限定 PM init reminder
+
+**Ship 內容**：
+- `roles/pm/gemini-cli.md §3.5.5`（v1.6 → v1.7）新加段「Gemini CLI 預設 `generalist` 自動分包處置 — PM init 必提醒」
+- 紀律：PM self-instantiation 開始時必對採用方主動發 reminder（在 `core/init-template §3.3.2` step 1 自我介紹之前）
+- 採用方回應後處置表（✅ disable / ❌ 拒絕）
+- `pm-init.toml` 自具象化要求（prompt 必含上述提醒）
+- §3.2 派發任務既有實作衝突明示 follow-up（v0.10.5 不修、累積 ≥ 2 次 LIVE 觀察評估重構）
+- 三 preset yaml charter_version `0.10.4` → `0.10.5`
+- CHANGELOG v0.10.5 entry
+
+**設計層意義**：
+- **dogfood signal #5 根因深化**：v0.6.0 條款化以為治本「LLM 主動繞路」、實際 **Gemini CLI vendor 預設行為層**才是真主因 — PM 不需「自己想繞」就被自動分包
+- **dogfood signal #5 + #41 + #55 same family**：「vendor 預設行為層 vs charter 紀律」結構性張力、新架構級概念候選第 14 個（留 v0.11.0 MINOR 評估）
+- **對應 v0.8.2 §設計哲學第 5 條「弱保證項升結構強制」家族新類型**（vendor onboarding 預設行為紀律、第 4 軸）
+- **SSS S1「user 授權閘」第 7 次 LIVE prototype 累積**：user LIVE 發現 → 明示 scope → AI 顯化 framing 三選項 + §3.2 衝突 → user 拍板 🅱️ 直接條款化 PATCH ship
+- **CryptoBot 反向接入即時受益**：v0.10.5 ship 後 CryptoBot 升版即得到 PM init 必提醒紀律
+
+**Follow-up 議程（留累積觀察）**：
+- §3.2 派發機制重構（cross-AI handoff 取代 sub-agent 派發、累積 ≥ 2 次 LIVE 觀察）
+- vendor 預設行為層紀律升 core 條款（#5 + #41 + #55 升 family、v0.11.0 MINOR 評估）
+
+---
 
 ### v0.9.7 release（2026-05-01）— reflection.md.tpl frontmatter 修正 + placeholder 變體
 

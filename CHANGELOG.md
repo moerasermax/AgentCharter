@@ -6,7 +6,37 @@
 
 ## [Unreleased]
 
-下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；雙軸矩陣 framing 第四段（v0.11.x、lint binary 自動派生「依賴 LLM 紀律的條款清單」取代 README 手寫表）；charter dogfooding 啟動候選（v1.x、charter repo 自身過 H1-H7）；v1.0 公開化前：LICENSE + walkthrough 補齊。
+下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；signal #55 §3.2 派發機制重構候選（accumulate ≥ 2 次「PM disable generalist 後派發失效」LIVE 觀察 → 重構 §3.2 改用 cross-AI handoff）；雙軸矩陣 framing 第四段（v0.11.x、lint binary 自動派生「依賴 LLM 紀律的條款清單」取代 README 手寫表）；vendor 預設行為層紀律是否升 core 條款層（dogfood signal #5 + #41 + #55 same family、新架構級概念候選第 14 個、留 v0.11.0 MINOR）；charter dogfooding 啟動候選（v1.x、charter repo 自身過 H1-H7）；v1.0 公開化前：LICENSE + walkthrough 補齊。
+
+---
+
+## [0.10.5] — 2026-05-10
+
+> **PATCH release — Gemini CLI 預設 `generalist` 自動分包處置（dogfood signal #55 條款化）**。**零採用方動作要求**（向下兼容、純 vendor spec 擴增）。採用方升版只改 `agent-commons/_config/profile.yaml` `charter_version: "0.10.4"` → `"0.10.5"`、無其他動作。
+>
+> **設計動機**：對應 user 2026-05-07 LIVE 重大發現（CryptoBot 反向接入 v0.10.1 standard 後）— 「**若使用 Gemini 當 PM 會一直被越矩的原因找到了、因為 Agents 的 generalist 會一直自動去分包任務、導致我們的卡控流程會被他自己分包任務這一塊偷偷的繞過、如今把它關掉整個框架就順起來了、`/agents disable generalist`**」。對應 v0.6.0 dogfood signal #5「LLM 找路徑繞過角色約束」**根因深化** — 之前條款化以為治本「LLM 主動繞路」、實際 Gemini CLI **vendor 預設行為層**才是真主因。對應 v0.8.2 §設計哲學第 5 條「弱保證項升結構強制」家族新類型（vendor onboarding 預設行為紀律、既有 3 軸：條款層 / 多 actor 互檢 / commit-hook binary 之外的第 4 軸）。
+
+### Added
+
+- **`roles/pm/gemini-cli.md §3.5.5`**（v1.6 → v1.7）新加段「**Gemini CLI 預設 `generalist` 自動分包處置 — PM init 必提醒**」：
+  - **動機段**：dogfood signal #55 LIVE 實證、根因深化框架（vendor 預設行為層 vs LLM 主動繞路）、對齊 v0.8.2 弱保證項升結構強制家族新類型
+  - **紀律**：PM self-instantiation 開始時必對採用方主動發 reminder（在 `core/init-template §3.3.2` step 1 自我介紹之前）— 提醒採用方執行 `/agents disable generalist` slash command 對齊 `role-separation §3.5` 卡控紀律
+  - **採用方回應後處置表**：✅ 已 disable / 願意 disable → 繼續 init / ❌ 拒絕 → 紀錄已知風險 + self_audit 額外項
+  - **`pm-init.toml` 自具象化要求**：自具象化時 prompt 必含上述提醒
+  - **§3.2 派發任務既有實作的設計衝突 follow-up 段**：明示 v0.10.5 不修 §3.2 line 52 寫死 `invoke_agent(agent_name="generalist")` 與本段 disable 紀律的衝突（user 明示「提醒就好」、scope 限定）+ 列累積觀察候選議程
+
+### Changed
+
+- **`tools/profiles/{essential,minimal,standard,strict}.yaml`** charter_version `0.10.4` → `0.10.5`
+
+### dogfood signal 條款化
+
+- **#55 條款化**（user 直接條款化 pattern、累積 1 次 LIVE 跳累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 / v0.9.0 / v0.10.4）：Gemini CLI 預設 `generalist` agent 自動分包繞過 PM 卡控
+
+### Follow-up（留累積觀察議程）
+
+- **§3.2 派發機制重構**：現行寫死 `invoke_agent(agent_name="generalist")`、與 v0.10.5 disable 紀律衝突 — 累積 ≥ 2 次「PM disable generalist 後派發失效」LIVE 觀察 → 重構為 cross-AI handoff 派發路徑（對齊 `core/cross-ai-handoff §3`）
+- **vendor 預設行為層紀律升 core 條款**：dogfood signal #5（v0.6.0）+ #41（v0.9.10）+ #55（v0.10.5）同 family — 新架構級概念候選第 14 個「vendor onboarding 預設行為紀律」、留 v0.11.0 MINOR 評估
 
 ---
 
