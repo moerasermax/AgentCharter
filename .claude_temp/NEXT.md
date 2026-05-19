@@ -1,6 +1,7 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-05-10（v0.10.5 ship 收尾 — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
+> **更新時間**：2026-05-19（dogfood signal #56 + #57 候選新增 — CryptoBot Gemini → Claude PM cross-AI handoff LIVE：#56 Claude PM 過度保守自加 charter 沒明文紀律「PM 不主動 commit」/ #57 v0.6.0 ai-vendor-onboarding 邀請制條款第二個 vendor × role LIVE 實證 進行中）
+> **前次更新**：2026-05-10（v0.10.5 ship 收尾 — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
 > **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）+ **v0.10.4 user-facing AI 行為紀律**（vendor 介紹 charter 工具三段流程、禁被動表述、user 一句話即觸發安裝、「不讓 user 為了用一個工具還要查 charter 文件」）+ **v0.10.5 vendor 預設行為層紀律**（Gemini `generalist` 自動分包繞 PM 卡控、PM init 必提醒、dogfood signal #5 根因深化、#5 + #41 + #55 family 留 v0.11.0 MINOR 升 core 條款層評估）
 
 ---
@@ -795,6 +796,72 @@ framework 永久維持「**純規範**」位階。
   | **跨 vendor 預設行為盤點** | 任一 vendor 新接入時 | 邀請 vendor 盤點預設啟用的 sub-agent / fallback / auto-completion 等繞 charter 卡控的內建行為（vendor 邀請制 v0.6.0 §3 延伸） |
 
   **累積**：1 次 LIVE（2026-05-07 CryptoBot 反向接入後）= 已條款化（user 直接條款化 pattern）
+
+- **新 dogfood signal #56 候選 — Claude PM 第一次接班過度保守自加 charter 沒明文紀律「PM 不主動 commit」（2026-05-18 CryptoBot Gemini → Claude PM cross-AI handoff LIVE、首次觀察）**【累積 1 次；候選修法：v0.11.x PATCH `core/role-separation` 或 `core/multi-role-tracking` 加反向段「過度保守同樣是 F-mode」/ 累積 ≥ 3 次同類後條款化】
+
+  **LIVE 觸發脈絡**：CryptoBot PM 從 Gemini CLI cross-AI handoff 給 Claude Code（2026-05-18、user 原話「受不了 Gemini 了」、走 path B「採用方內直接 self-instantiation、charter 事後 dogfood 收編」、見 signal #57）。Claude PM 走 `init-template §3.3.2` 八步驟自具象化（charter 沒 `roles/pm/claude-code.md`、讀 `roles/pm/_spec.md` 概念層 + `roles/pm/gemini-cli.md` 結構參考）、在 step 6 簽名後產出「v2 verdict 第 3 條紀律提醒」：
+
+  > step 6 簽名後 _role.md 改動仍 untracked、需走 commit 留痕 channel（PM 不主動 commit、待 user 簽核或 Engineer 代寫）
+
+  **maintainer grep 驗證**（charter 全 repo `core/` + `tools/` + `roles/`）：**無此明文紀律**。最接近的條款是 `core/role-separation §越界場景`：「PM 嘗試 commit **程式碼** / 提交程式碼差異 → Engineer 退稿」— 關鍵字「**程式碼**」指 src/ / tests/ / 可執行設定；`_role.md` 屬 `agent-commons/roles/pm/` 角色私有區、不在 src/、`roles/pm/_spec.md §2` 權力槽位明示 PM 對 capsule / HANDOFF / protocols / nextwork 有任務契約撰寫權、`_role.md` 屬 PM 自己負責的產出物。
+
+  **根因推測**：Claude PM 可能的延伸路徑 — (a) 把 role-separation「PM 不 commit 程式碼」泛化成「PM 不 commit 任何東西」；(b) 對齊 `audit-rights`「結案默認待抽驗」精神類推到 `_role.md` 簽名也該等抽驗；(c) v0.10.0 commit-hook H1 binary 攔截存在讓 PM 對動 `_role.md` 過度敏感。
+
+  **Signal family 對照**（弱保證項升結構強制家族**反向變體**）：
+  | Family signal | 既有方向 | #56 表現 |
+  |---|---|---|
+  | #5（v0.6.0、LLM completionist 繞紀律）| **繞紀律** | 反向：**自加紀律** |
+  | #32（v0.9.0、LLM 不查 templates 自編格式）| 不讀 spec | 反向：**讀對 spec 但推論過頭** |
+  | #41（v0.9.10、Kiro fallback 讀 claude-code.md 誤認身份）| 讀錯 vendor | 同類：**讀對但延伸過頭** |
+
+  **候選修法方向**（v0.11.x PATCH、累積 ≥ 3 次後）：
+  - (a) `core/role-separation §越界場景` 加反向段「PM 過度保守同樣是違規 — 不得自加 charter 沒明文紀律」+ 對應 anti-pattern 反例
+  - (b) `core/multi-role-tracking §3.4` 加段「身份穩定承諾不延伸到拒絕 commit 自己負責的產出物」
+  - (c) charter 新加條款 `core/structural-conservatism-discipline.md`（自加紀律也是 F-mode、charter 沒明文 = 允許）— v0.11.0 MINOR 評估、需 fresh-head session 設計
+  - (d) `templates/agent-commons/_role.md.tpl` step 6 簽名段加紀律提示「commit sign-in 動作不需等 user 授權；status 維持 PROVISIONAL 即可（H1 binary 攔的是 status 改動、不是 commit 行為）」
+
+  **user 即時處置**（本 session LIVE）：explicit 授權 Claude PM「可以 commit `_role.md` sign-in 動作（只要 status 維持 PROVISIONAL）+ 可以 commit 自己寫的 capsule / handoff / nextwork / reflections」、不阻擋本次接班推進。
+
+  **累積**：1 次 LIVE（2026-05-18 CryptoBot Gemini PM → Claude PM cross-AI handoff、首次觀察）。**判斷**：屬「弱保證項升結構強制」家族**反向**新變體（#5/#32/#41 反向）；單次觀察、charter 沒明文 = 允許、不阻擋接班；累積 ≥ 3 次同類同方向（如其他採用方 Claude / Engineer 接班時過度保守、或同 PM 第二次接班再犯）後 PATCH。對齊 v0.7.3 北極星「不讓 user 記」延伸 — 「**不讓 AI 自己過度推論成記住 charter 沒寫的紀律**」。
+
+- **新 dogfood signal #57 候選 — CryptoBot Claude PM 接班 = v0.6.0 ai-vendor-onboarding 邀請制條款第二個 vendor × role LIVE 實證（2026-05-18 起、進行中）**【累積 1 次（進行中）；候選收編：接班完成 + Layer 1-3 沉澱穩定後、萃取 Claude PM self-instantiation 結果為 `roles/pm/claude-code.md` v1.0 PR 回 charter、ship v0.10.6 PATCH 或併 v0.11.0】
+
+  **LIVE 觸發脈絡**：CryptoBot 反向接入 v0.10.1 standard（2026-05-06、signal #55 LIVE 觀察源）後、user 2026-05-18 LIVE 決定換 PM（原話「受不了 Gemini 了」）。charter 對 PM 角色當前 vendor coverage：`roles/pm/gemini-cli.md` ✅（v0.6.0 首個 vendor × role onboarding case）/ `roles/pm/claude-code.md` ❌（**gap**）。Claude vendor 在 charter 內已 onboard 過 Engineer 角色（`roles/engineer/claude-code.md`）— 但 Claude × PM 組合是新的 vendor × role 矩陣項。
+
+  **設計選擇**（maintainer 顯化、user 拍板 path B）：
+  | 路徑 | 動作 | trade-off |
+  |---|---|---|
+  | A. charter 先 ship `roles/pm/claude-code.md`、CryptoBot 再切 PM | 邀請 Claude session 在 charter repo 寫 spec → Gemini PM 校正 regression → maintainer 簽收 ship → CryptoBot 升 charter version → 走 cross-AI handoff | 乾淨但慢、要 Gemini 校正 regression 違反 user「受不了 Gemini」 |
+  | **B. CryptoBot 內直接 self-instantiation、charter 事後 dogfood 收編** ✅ user 選 | Gemini PM 寫退出 HANDOFF → user 授權閘 → Claude session 讀 `roles/pm/_spec.md` 自具象化 PM 角色 → 接班過程萃取成 `roles/pm/claude-code.md` v1.0 PR | 快、對齊 v0.5.1 self-instantiation 原則 + v0.6.0 邀請制反向 |
+
+  **v0.6.0 邀請制四步驟對照**：
+  | Step | charter §3 規定 | 本次 LIVE 路徑 |
+  |---|---|---|
+  | 1. charter 寫概念層 | charter 不知 vendor、先寫 AI 中立 spec | ✅ 沿用既有 `roles/pm/_spec.md` |
+  | 2. 邀請 vendor 寫 vendor 層 | charter 不代寫 | Claude PM self-instantiation 期間自然產生（接班完成後萃取） |
+  | 3. 既有 vendor 校正 regression | Gemini PM 確認新版 spec 沒破壞自己 | ⏳ 留 charter 收編時觸發 |
+  | 4. maintainer 簽收 | maintainer 抽驗 PR | ⏳ 留 charter 收編時觸發 |
+
+  **設計學意義**：
+  - **v0.6.0 ai-vendor-onboarding 條款第二個 vendor × role onboarding LIVE case**（第一個是 v0.6.0 Gemini PM 接入時的 Round 1 + Round 2）
+  - **charter value compounds dogfood**：CryptoBot 反向接入後（signal #55）立即觸發 vendor × role 矩陣補完（PM 角度 vendor coverage：Gemini ✅ → Claude ⏳）
+  - **path B dogfood 收編 pattern 第一次完整 LIVE**：對齊 v0.5.1 self-instantiation 原則的反向延伸 — 「採用方先自具象化、charter 事後萃取」對齊 v0.4.2 templates 從 CryptoBot 1:1 萃取的 pattern（同源精神跨 4 版本演化、charter 自身演化遵循自己定義的 dogfood 路徑）
+  - **SSS S1「user 授權閘」LIVE prototype 第 8 次累積**：user LIVE 提決定（換 PM）→ maintainer 顯化兩條路徑 + trade-off → user 拍板 B → maintainer 給可貼 prompt → user 執行；user 不查 spec、不深入 vendor 接入細節
+  - **同 session 衍生 signal #56**（Claude PM 過度保守自加紀律）— vendor × role 接入時 LLM 行為特性 LIVE 觀察新類型
+
+  **接班過程觀察**（持續更新）：
+  - 2026-05-18 Claude PM step 6 簽名完成 + v2 verdict 三條紀律提醒（第 3 條揭露 signal #56）
+  - 2026-05-18 第一個任務交接（DOGE-USDT Trend Following 優化）：user 親寫 §1-§8 七章交接文件 + maintainer 加結構性 framing 三層落地 prompt wrapper（Layer 1 = `agent-commons/protocols/QUANT-OPTIMIZATION.md` 七原則 + 紅旗清單 + charter core 同構性對映表沉澱 / Layer 2 = capsule / Layer 3 = reflection 缺角六條補強）→ Claude PM v3 verdict 守 `evidence-first §3.3` + `structural-anti-fabrication` 拒接 placeholder 未填內容 → 補貼完整原文後啟動 Layer 1-3 沉澱
+  - **待後續觀察**：Layer 1-3 落地品質 / Claude PM 行為穩定度 / DOGE-TF 三步任務（Step 1 交叉驗證 → Step 2 Walk-Forward → Step 3 改造策略）推進
+
+  **candidate 收編議程**（接班完成 + Layer 1-3 沉澱穩定後）：
+  1. 萃取 Claude PM self-instantiation 結果 → `roles/pm/claude-code.md` v1.0 草稿（含 self-instantiation 八步驟具現化、vendor 特性 note、與 `roles/pm/gemini-cli.md` 對照差異）
+  2. Gemini PM 校正 regression（依 `ai-vendor-onboarding §3` step 3、即使 user「受不了 Gemini」仍需走完此步驟 — charter 紀律 ⊥ 採用方主觀偏好）
+  3. maintainer 抽驗 + ship 為 v0.10.6 PATCH（或合併進 v0.11.0）
+  4. `tools/profiles/*.yaml` 不需新欄位（vendor 是 self-instantiation 時動態選擇、非 preset 開關）
+  5. CHANGELOG + ADOPTION + TUTORIAL + maintainer-load 連動 sync（依 `core/maintainer-discipline §3.4` 文檔層 sync checklist）
+
+  **累積**：1 次 LIVE（進行中、2026-05-18 起 CryptoBot session）。**判斷**：屬 v0.6.0 `ai-vendor-onboarding` 條款執行載體 LIVE 第二實證、收編是 dogfood 路徑、不急；同 session 衍生 signal #56 LIVE 觀察可一起記錄；接班完成 + Layer 1-3 落地後 maintainer 視品質決定 ship 收編 PR 時機。對齊 v0.7.3 北極星「**charter 抽象層成熟度跨 vendor × role 矩陣**」延伸 — 第 4 個非 CryptoBot 採用案例（vendor 角度）累積。
 
 - **新 dogfood signal #40 候選 — 接入 prompt `<placeholder>` 填空設計 UX 差（2026-05-04 CryptoBot init LIVE）**【累積 1 次；候選修法：BOOTSTRAP.md + charter-init.md 改互動式問答收齊參數再跑】
 
