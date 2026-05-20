@@ -1,7 +1,8 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-05-19（dogfood signal #56 + #57 候選新增 — CryptoBot Gemini → Claude PM cross-AI handoff LIVE：#56 Claude PM 過度保守自加 charter 沒明文紀律「PM 不主動 commit」/ #57 v0.6.0 ai-vendor-onboarding 邀請制條款第二個 vendor × role LIVE 實證 進行中）
-> **前次更新**：2026-05-10（v0.10.5 ship 收尾 — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
+> **更新時間**：2026-05-20（dogfood signal #58 候選新增 — Claude vendor skill abstraction 紀律對齊不完整、v0.9.3 Gemini handler mapping.yaml 抽象化升維未 propagate Claude 端 / CryptoBot 跨軌污染 LIVE）
+> **前次更新**：2026-05-19（dogfood signal #56 + #57 候選新增 — CryptoBot Gemini → Claude PM cross-AI handoff LIVE：#56 Claude PM 過度保守自加 charter 沒明文紀律「PM 不主動 commit」/ #57 v0.6.0 ai-vendor-onboarding 邀請制條款第二個 vendor × role LIVE 實證 進行中）
+> **前前次更新**：2026-05-10（v0.10.5 ship 收尾 — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
 > **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）+ **v0.10.4 user-facing AI 行為紀律**（vendor 介紹 charter 工具三段流程、禁被動表述、user 一句話即觸發安裝、「不讓 user 為了用一個工具還要查 charter 文件」）+ **v0.10.5 vendor 預設行為層紀律**（Gemini `generalist` 自動分包繞 PM 卡控、PM init 必提醒、dogfood signal #5 根因深化、#5 + #41 + #55 family 留 v0.11.0 MINOR 升 core 條款層評估）
 
 ---
@@ -796,6 +797,45 @@ framework 永久維持「**純規範**」位階。
   | **跨 vendor 預設行為盤點** | 任一 vendor 新接入時 | 邀請 vendor 盤點預設啟用的 sub-agent / fallback / auto-completion 等繞 charter 卡控的內建行為（vendor 邀請制 v0.6.0 §3 延伸） |
 
   **累積**：1 次 LIVE（2026-05-07 CryptoBot 反向接入後）= 已條款化（user 直接條款化 pattern）
+
+- **新 dogfood signal #58 候選 — Claude vendor skill abstraction 紀律對齊不完整（v0.9.3 Gemini handler mapping.yaml 抽象化升維未 propagate Claude 端）/ CryptoBot 跨軌污染 LIVE（2026-05-20 CryptoBot session）**【累積 1 次 LIVE；候選修法：v0.10.6 PATCH propagate v0.9.3 Gemini handler 升維 + slash command header 動態化 + charter 提供 `install-user-skills.sh` 一鍵安裝 / v0.11.0 MINOR 評估 H8 軌道污染攔截】
+
+  **LIVE 觸發脈絡**（2026-05-20、signal #57 path B dogfood 接續觀察）：CryptoBot Claude PM session 跨軌污染 LIVE — user 反問「**從你接手到現在 你都沒有甚麼是要記錄的嗎 我們更版那麼多次**」→ Claude PM 進入恐慌補救模式 → `ls management/` 看到 `history/archive/` 空目錄 → Write `management/DRAFT_CONTEXT.md` 194 行 retro → `bash ~/.claude/scripts/checkpoints.sh dispatch save` → script 走 management 軌 → Write `management/history/HANDOFF_1.md` 136 行 → user 反問「**為啥你是要去 management**」中斷揭露雙軌污染。CryptoBot 實際走 `agent-commons/` 軌（有 HANDOFF_10〜13 + CURRENT_BRIEF.md + IM L1〜L13）、`management/` 是空殼（Saint 系列風格、本專案不該觸碰）。
+
+  **兩層根因**：
+
+  | Layer | 缺陷 | 對應條款 |
+  |---|---|---|
+  | **A. 設計層**（charter 維護者責任）| `~/.claude/scripts/checkpoints.sh` line 17-28 用 directory existence test 偵測軌道、silent fallback `management/`、**未走 `mapping.yaml.common_memory_root` 抽象**；slash command header `~/.claude/commands/checkpoints.md` line 5-7 寫死 Saint 系列 `management/protocols/Dev_Protocol_DISCIPLINE.md §6.5` / `management/agent_protocols/PM_Operational_Manual.md §1.3` / `management/history/HANDOFF_14.md` 跨專案誤導 reference | `core/charter-config` mapping.yaml 抽象 + `ai-vendor-onboarding §3` 邀請制紀律 — vendor skill 應對齊 charter 抽象、不該有 silent fallback；對齊 dogfood signal #3「user 全域 skill 路徑硬編碼」治本紀律 |
+  | **B. 行為層**（Claude PM 責任）| 跳過軌道驗證（沒先跑 `dispatch status` / `dispatch config`）、看到 `management/` 字眼直接認定軌道、寫雙軌污染 | signal #56 family 同類 — 過度延伸推論、不查 spec / config 即動作；對應 `core/evidence-first §3.3` 反捏造 + signal #32 family「LLM 不查 templates 自編格式」延伸（讀對 spec 但**動作前不驗證 environment state**） |
+
+  **Signal family 對照**：
+  | Family signal | 同源關係 |
+  |---|---|
+  | #3（v0.9.x、user 全域 skill 路徑硬編碼）| **直系延伸** — v0.9.3 Gemini handler 升維讀 mapping.yaml 抽象、未 propagate Claude 端、Claude 端只升 surface-level「directory test fallback」、不是治本 |
+  | #41（v0.9.10、Kiro fallback 讀 claude-code.md 誤認身份）| 同類 — 讀對但延伸過頭 |
+  | #56（v0.11.x 候選、Claude PM 過度保守自加紀律）| **同類 LIVE 第二次** — Claude PM 跳過 spec / config 驗證即動作；signal #56 + #58 同 session 累積 = Claude PM 行為層 family **單一 session 內第二次觀察**、跟 signal #5 LLM 繞紀律家族構成 Claude vendor 行為層雙向擾動 |
+
+  **破洞觀察**：
+  - Claude PM 跨軌污染**繞過 charter v0.10.0 commit-hook H1-H7 全部攔截** — hook 只看 `_role.md` / failure-mode / reflection / 致 XXX 等、**不看 layout 跨軌污染**
+  - 對齊 v0.8.2 §設計哲學第 5 條「弱保證項升結構強制」新類型 — 軌道偵測層 binary 攔截 candidate（H8 候選）
+  - **silent fallback 等於對採用方撒謊**（採用方以為工具有走 charter 紀律、實際偷偷走另一條軌）— 對齊 v0.7.3 北極星「不讓 user 記」反向（讓 user 以為對齊了實際沒對齊、比沒對齊還糟）
+  - mapping.yaml `version: 0.5.0` schema 已含 `common_memory_root` + `shared.draft_context` + `shared.handoffs` + `shared.archive` 全部 charter v0.10+ 抽象 entry、handler 端只需讀 yaml 即正確路徑、**charter 端 schema 完整、執行端落後 1 vendor**
+
+  **修法方向**（v0.10.6 PATCH 或 v0.11.0 MINOR）：
+  - **(a) propagate v0.9.3 Gemini handler 升維到 Claude 端**：`~/.claude/scripts/checkpoints.sh` 改讀 `mapping.yaml.common_memory_root` + `shared.draft_context` + `shared.handoffs` + `shared.archive` 抽象、**移除 silent fallback `management/` 行為**（mapping.yaml 缺失 → ERROR、不是 silent fallback）
+  - **(b) slash command header 動態化**：`~/.claude/commands/checkpoints.md` line 5-7 從 `mapping.yaml` 動態讀 protocol path、不寫死 Saint 系列；對應方案 — slash command 跑時先 `cat agent-commons/_config/mapping.yaml | grep protocols` 顯示當前專案協議 reference
+  - **(c) charter 提供 `tools/vendor/commons/install-user-skills.sh`**：vendor-中立、跟 `install-git-hooks.sh` 同 pattern、一鍵安裝對齊 Claude / Gemini / Cursor / Kiro 所有 vendor user-global skill；採用方升 charter 版本時 user-skill 自動 propagate（解決「Gemini 升維、Claude 落後」this kind of 不對齊問題）
+  - **(d) commit-hook H8 候選**：軌道污染攔截 — commit 時掃描 staged files 是否含跨軌路徑（採用方走 `agent-commons/` 軌時不該 commit `management/` 任何檔案、反之亦然）；對應雙軸座標「結構強制」軸新類型、留 v0.11.0 MINOR 評估
+  - **(e) signal #56 + #58 同 family 條款化加固**：`core/role-separation` 或 `core/multi-role-tracking` 加段「**動作前必先驗證 environment state**（跑 dispatch status / config 確認軌道、不得跳過驗證直接動作）」+ 對應 anti-pattern 反例
+
+  **LIVE 撤回觀察 follow-up**（等 user CryptoBot 端完成後補實證）：
+  - user CryptoBot 端撤回（`rm management/DRAFT_CONTEXT.md` + `management/history/HANDOFF_1.md`、若已 commit 則 `git rm` + 撤回 commit）
+  - Claude PM 重寫 194 行 retro 到 `agent-commons/DRAFT_CONTEXT.md`
+  - `dispatch save` 走 `agent-commons` 軌（latest=13、next=14、寫 `agent-commons/handoffs/HANDOFF_14.md`）
+  - 撤回作業完成後本 entry 補一段「LIVE 撤回實證 + Claude PM 重寫到正確軌道 + dispatch 軌道偵測 LIVE 工作」
+
+  **累積**：1 次 LIVE（2026-05-20 CryptoBot session）+ signal #3 family（≥ 4 次同類延伸）+ signal #56 family（≥ 2 次同類同 session）。**判斷**：屬「**弱保證項升結構強制**」+「**vendor skill abstraction 紀律對齊**」雙重 family、累積 ≥ 1 次跨 family 同源、**提早 v0.10.6 PATCH 評估**（propagate v0.9.3 升維 + slash command 動態化 + install-user-skills.sh）；H8 軌道污染攔截 + signal #56 + #58 同 family 條款化加固留 v0.11.0 MINOR 評估。對齊 v0.7.3 北極星「不讓 user 記」延伸 — **「不讓 user 需要記憶 vendor skill 是不是抽象化對齊了」+「不讓 silent fallback 對採用方提供虛假紀律遵守」**。
 
 - **新 dogfood signal #56 候選 — Claude PM 第一次接班過度保守自加 charter 沒明文紀律「PM 不主動 commit」（2026-05-18 CryptoBot Gemini → Claude PM cross-AI handoff LIVE、首次觀察）**【累積 1 次；候選修法：v0.11.x PATCH `core/role-separation` 或 `core/multi-role-tracking` 加反向段「過度保守同樣是 F-mode」/ 累積 ≥ 3 次同類後條款化】
 
