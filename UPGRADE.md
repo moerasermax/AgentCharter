@@ -47,6 +47,9 @@ git -C ~/.agentcharter pull origin main
 
 | 從哪個版本升 | Walkthrough |
 |---|---|
+| **v0.10.5 → v0.10.6**（Claude PM v1.0 接入 + Gemini PM v1.8 best-of-breed 收斂、零採用方動作）| 無 walkthrough（純 charter_version 改一行、新 vendor spec 自動可用）|
+| **v0.10.4 → v0.10.5**（Gemini PM generalist disable 提醒、零採用方動作）| 無 walkthrough（純 charter_version 改一行）|
+| **v0.10.3 → v0.10.4**（vendor 介紹 charter 工具紀律、零採用方動作）| 無 walkthrough（純 charter_version 改一行）|
 | **v0.10.2 → v0.10.3**（純 spec sweep + maintainer-only lint、零採用方動作）| `examples/upgrades/v0.10.2-to-v0.10.3.md` |
 | **v0.10.1 → v0.10.2**（H7 schema-driven、⚠️ BREAKING-LITE PATCH）| `examples/upgrades/v0.10.1-to-v0.10.2.md` |
 | **v0.9.x → v0.10.0**（commit hook ship）| `examples/upgrades/v0.9.x-to-v0.10.0.md` |
