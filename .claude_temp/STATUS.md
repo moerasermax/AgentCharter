@@ -1,7 +1,7 @@
 # AgentCharter — Current Status
 
 > **更新時間**：2026-05-10（台灣時間，post-v0.10.5 ship — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
-> **當前版本**：**v0.10.5**（**PATCH — Gemini CLI 預設 `generalist` 自動分包處置 / dogfood signal #55 LIVE 條款化**、對齊 v0.6.0 dogfood signal #5 根因深化框架（vendor 預設行為層 vs LLM 主動繞路）、零採用方動作要求）
+> **當前版本**：**v0.10.6**（**PATCH — Claude PM v1.0 接入 + Gemini PM v1.8 best-of-breed 收斂升級**、path B dogfood 收編 pattern 第一次完整 LIVE 實證、dogfood signal #59 條款化候選登記、零採用方動作要求）
 > **Working tree 狀態**：✅ 已 commit + push（v0.10.4 ship）
 > **GitHub**：https://github.com/moerasermax/AgentCharter（private）
 > **最後 checkpoint**：本檔為 v0.10.3 ship 後 snapshot（dogfood-driven hardening 第十八循環完整收編：v0.10.0 + v0.10.1 + v0.10.2 + v0.10.3 四連 ship）
@@ -301,7 +301,8 @@ project-root/
 #### 當前狀態一覽
 
 - **25 條 core 條款** / 1 條 maintainer-only / 4 preset（essential 5 / minimal 12 / standard 22 / strict 22）
-- **13 個架構級概念** / dogfood signal #1〜#55 累積（#55 v0.10.5 條款化 — Gemini CLI 預設 generalist 自動分包；#5 + #41 + #55 same family「vendor 預設行為層 vs charter 紀律」候選升 core 條款層 v0.11.0 MINOR 評估）
+- **13 個架構級概念** / dogfood signal #1〜#59 累積（#55 v0.10.5 條款化、**#59 v0.10.6 條款化候選**「ai-vendor-onboarding §3 step 3 first-mover baseline 假設失效、需升「雙向 best-of-breed 收斂」、v0.11.0 MINOR 評估」；#5 + #41 + #55 + #58 same family「vendor 預設行為層 vs charter 紀律」候選升 core 條款層 v0.11.0 MINOR 評估、與 #59 並列為架構級概念第 14 個候選兩條軸）
+- **PM 角色 vendor coverage**：Gemini ✅ v1.8 + Claude ✅ v1.0（**v0.10.6 雙 vendor 完整**、path B dogfood 收編 pattern 第一次完整 LIVE 實證）
 - **SSS 級議程**：S1（AI 自治協作 + 授權閘）啟動前置條件齊備；S2 lifecycle 設計素材保留；S3 引導式紀律 v0.9.0 架構級落地完成
 - **採用案例**：YC_AIAgentCrew（v0.8.0+，HANDOFF_16 LIVE 完美）/ 公司 dbSDK（v0.10.1+，step 0.5 + signal #45 雙重首次實證 LIVE）/ **CryptoBot**（**v0.10.1 反向接入完成 2026-05-06、standard 雙 vendor、A3 公理反向實證最完整迴圈、§6 議程結案、v1.0 最後一片拼圖**）
 - **文件入口**：BOOTSTRAP.md（初次入口）+ QUICKSTART.md（接入流程）+ UPGRADE.md（升版決策）— 三層文件入口完整

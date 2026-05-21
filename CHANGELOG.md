@@ -6,7 +6,59 @@
 
 ## [Unreleased]
 
-下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；signal #55 §3.2 派發機制重構候選（accumulate ≥ 2 次「PM disable generalist 後派發失效」LIVE 觀察 → 重構 §3.2 改用 cross-AI handoff）；雙軸矩陣 framing 第四段（v0.11.x、lint binary 自動派生「依賴 LLM 紀律的條款清單」取代 README 手寫表）；vendor 預設行為層紀律是否升 core 條款層（dogfood signal #5 + #41 + #55 same family、新架構級概念候選第 14 個、留 v0.11.0 MINOR）；charter dogfooding 啟動候選（v1.x、charter repo 自身過 H1-H7）；v1.0 公開化前：LICENSE + walkthrough 補齊。
+下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；signal #55 §3.2 派發機制重構候選（accumulate ≥ 2 次「PM disable generalist 後派發失效」LIVE 觀察 → 重構 §3.2 改用 cross-AI handoff）；雙軸矩陣 framing 第四段（v0.11.x、lint binary 自動派生「依賴 LLM 紀律的條款清單」取代 README 手寫表）；vendor 預設行為層紀律是否升 core 條款層（dogfood signal #5 + #41 + #55 + #58 same family、新架構級概念候選第 14 個、留 v0.11.0 MINOR）；**`ai-vendor-onboarding §3 step 3` 條款演化「雙向 best-of-breed 收斂」**（dogfood signal #59 LIVE 實證、留 v0.11.0 MINOR 評估）；charter dogfooding 啟動候選（v1.x、charter repo 自身過 H1-H7）；v1.0 公開化前：LICENSE + walkthrough 補齊。
+
+---
+
+## [0.10.6] — 2026-05-21
+
+> **PATCH release — Claude PM v1.0 接入 + Gemini PM v1.8 best-of-breed 收斂升級**（path B dogfood 收編 pattern 第一次完整 LIVE）。**零採用方動作要求**（向下兼容、純 vendor spec 新增 + 既有 vendor spec 擴增）。採用方升版只改 `agent-commons/_config/profile.yaml` `charter_version: "0.10.5"` → `"0.10.6"`、無其他動作。
+>
+> **設計動機**：對應 v0.6.0 `core/ai-vendor-onboarding §3 step 2` 第二個 vendor × role onboarding LIVE 實證（第一個是 v0.6.0 Gemini PM 接入）+ user LIVE 2026-05-19 主觀偏好評估「Claude 當 PM 強」啟動 path B dogfood 收編。同時觸發 dogfood signal #59 LIVE — `ai-vendor-onboarding §3 step 3` 原設計隱含「first-mover baseline」假設、第二個 vendor（Claude PM v1.0）優於第一個（Gemini PM v1.7）時失效 → user explicit 授權走 maintainer 代修反向 regression（Gemini PM v1.7 → v1.8 對齊 Claude PM v1.0 已條款化的優質紀律）。對齊 v0.7.3 北極星「**培養魚塭、不討魚**」精神 + SSS S2.4 候選議程「跨 vendor 知識聚合 + 互為養分 + 收斂 best-of-breed」LIVE 實證第 1 次完整落地。
+
+### Added
+
+- **新檔 `roles/pm/claude-code.md` v1.0**（481 行、三層結構：核心概念 / Claude 實作 / 跨 AI 對應）：
+  - §1 工具能力清單（13 row、含 Claude Code 特有 `TaskCreate` / `AskUserQuestion` / `Monitor`）
+  - §2 PM 職責 3.1-3.5 Claude 實作（含「commit -F 前 head -3 必驗 subject」採用方專案 IM 對應紀律）
+  - §3 已知能力盲區 6 row（含 Claude 特化兩 row：「Over-Conservative Self-Rule」+「dual-mode context cross-mode forgetting」）
+  - §3.5 sub-agent / 代理跨界禁令（Claude `Agent` tool 對應段、引用 `roles/engineer/claude-code.md §6`）
+  - §3.6 .md schema 規範（引用 `roles/engineer/claude-code.md §4.1` 不重複）
+  - §3.7 PM Init 後置存檔機制（兩路徑：charter `/checkpoints` 或採用方自訂）
+  - §3.8 Violation Reflection 執行 Claude 具體化（含採用方 commit-hook 互動紀律 + 正確 vs 錯誤路徑表 + 跨 AI 對應）
+  - §4 歷史事件沉澱：dual-mode context cross-mode forgetting（vendor-neutral 抽象）
+  - §5 模式協議實作（Claude `UserPromptSubmit` hook 強整合）
+  - §6 跨 AI 交接建議（四區塊能力快照）
+  - §7 Vendor 接入回顧含 signal #56 + #58 LIVE 反例（不美化、不隱藏）+ 結構性 takeaway（給未來 Claude PM 接入時讀）
+
+- **`roles/pm/gemini-cli.md` v1.7 → v1.8**（best-of-breed 收斂升級、對齊 Claude PM v1.0 已條款化的優質紀律）：
+  - §1 加 2 row（**結構化任務追蹤** + **User interactive prompt** 跨 AI 對應）
+  - §3 加「**dual-mode context cross-mode forgetting**」row（Claude PM LIVE 抽象化、機制 universal、Gemini context window 較小可能更易踩）
+  - 新加 §7「**Vendor 接入回顧**」獨立段 — 抽象化 v0.5 接入 Round 1+2+Claude 校正 LIVE 歷史 + signal #5 / #55 LIVE 反例自報 + 結構性 takeaway（給未來 Gemini PM 接入時讀）
+  - 既有 §7「變更歷史」升為 §8（章節編號平移）
+
+### Changed
+
+- **`roles/pm/_spec.md §7` 對應 AI 表 update**：
+  - Claude Code `claude-code.md.placeholder`（⏳）→ `claude-code.md`（✅ v1.0、2026-05-21 提交）
+  - Gemini CLI ✅ v1.0 → ✅ v1.8（v1.x 多輪 PATCH、v1.8 含 v0.10.6 best-of-breed 收斂升級）
+
+- **`tools/profiles/{essential,minimal,standard,strict}.yaml`** charter_version `0.10.5` → `0.10.6`
+
+### dogfood signal 條款化
+
+- **#59 候選登記**（user LIVE 觀察 2026-05-21）：`core/ai-vendor-onboarding §3 step 3` 原設計隱含「first-mover baseline」假設、第二個 vendor 優於第一個時失效；本 release LIVE 走 user explicit 授權 maintainer 代修反向 regression。**v0.11.0 MINOR 議程候選**：條款演化、step 3 升級「雙向 best-of-breed 收斂」紀律 / 或新加 `core/cross-vendor-best-of-breed.md`（架構級概念第 14 個候選）。
+
+- **path B dogfood 收編 pattern 第一次完整 LIVE 實證**：CryptoBot 反向接入 v0.10.1 → Claude PM 接班 → self-instantiation → 萃取產物 `roles/pm/claude-code.md` v1.0 → maintainer step 4 簽收 + ship（同 v0.10.6 release）。對應 v0.5.1 self-instantiation 原則的反向延伸（採用方先自具象化、charter 事後萃取）、對齊 v0.4.2 templates 從 CryptoBot 1:1 萃取的 pattern 跨 4 版本同源精神。
+
+### Follow-up（留 v0.11.0 議程）
+
+- **signal #59 條款演化**：`ai-vendor-onboarding §3 step 3` 升級「雙向 best-of-breed 收斂」紀律（含 maintainer 代修 exception 路徑明文化）
+- **path B dogfood 收編 pattern 條款化**：架構級概念第 14 個候選（採用方先具象化、charter 事後萃取 vs 邀請制原版的雙路徑並存）
+
+### 累積跳門檻紀錄
+
+- user explicit 授權走 (b) maintainer 代修 Gemini PM v1.8（user 2026-05-21 LIVE「希望讓 Gemini PM 整合 Claude PM 優質的地方」）— 違反 v0.6.0 邀請制 letter「charter 不代寫 vendor spec」、但對齊 best-of-breed 收斂 spirit；同 v0.5.8 / v0.7.1 / v0.7.4 / v0.9.0 / v0.10.4 / v0.10.5 user 直接條款化 pattern
 
 ---
 

@@ -120,8 +120,8 @@ PM 對任何「**已完成 / 已關閉 / 已落實 / 已校準 / 已更新**」�
 
 | AI | 檔案 | 狀態 |
 |---|---|---|
-| Gemini CLI | `gemini-cli.md` | ✅ v1.0（2026-04-27 提交，含 S70 沉澱）|
-| Claude Code | `claude-code.md.placeholder`（待提交）| ⏳ |
+| Gemini CLI | `gemini-cli.md` | ✅ v1.8（2026-04-27 提交、v1.x 多輪 PATCH、v1.8 含 v0.10.6 best-of-breed 收斂升級）|
+| Claude Code | `claude-code.md` | ✅ v1.0（2026-05-21 提交、含 path B dogfood 收編 pattern LIVE 實證）|
 | Cursor | `cursor.md.placeholder`（待提交）| ⏳ |
 
 新 AI 加入時須走 `core/ai-vendor-onboarding.md §3` 邀請制四步驟，提交對應 `<vendor>.md`，含：

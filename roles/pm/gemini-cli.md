@@ -1,6 +1,6 @@
 # PM × Gemini CLI — Implementation
 
-> **狀態**：v1.7（v0.10.5 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹；v1.4 加 §3.7 Step 1 版本偵測 + 自動升版；v1.5 加 §3.8 reflection 路徑明示 — signal #38 ① 修補；v1.6 加 §3.7 觸發場景擴展 — v0.10.4；v1.7 加 §3.5.5 Gemini CLI 預設 generalist 自動分包處置 — signal #55、v0.10.5）
+> **狀態**：v1.8（v0.10.6 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹；v1.4 加 §3.7 Step 1 版本偵測 + 自動升版；v1.5 加 §3.8 reflection 路徑明示 — signal #38 ① 修補；v1.6 加 §3.7 觸發場景擴展 — v0.10.4；v1.7 加 §3.5.5 Gemini CLI 預設 generalist 自動分包處置 — signal #55、v0.10.5；v1.8 best-of-breed 收斂升級 — §1 加 2 row + §3 加 dual-mode forgetting + §7 vendor 接入回顧獨立段、v0.10.6）
 > **基於**：`roles/pm/_spec.md`
 > **AI**：Google Gemini CLI（v1.x）
 > **沉澱來源**：CryptoBot S70 PnL 誤判事件後 Gemini PM 親自提交（Round 1）+ 三層結構重整（Round 2）+ 橋接層校正 + YC_AIAgentCrew 2026-04-28 dogfood signal #5 補強
@@ -24,6 +24,8 @@
 | Background tasks | `run_shell_command(is_background=true)` | Claude → `Bash run_in_background` + `Agent run_in_background`；其他 → 透過使用者中繼監控 |
 | 跨 session 持久狀態 | 物理檔案（`<common-memory-root>/handoffs/`） | 跨 AI 通用：依 `working-stack-discipline.md` 規範之 MD 存檔 |
 | 視覺 / 多模態驗收 | `read_file` 支援 PNG / JPG | Claude → `Read` 支援 PNG / JPG / PDF；Cursor → 圖片預覽；其他 → 使用者描述 UI 現象 |
+| 結構化任務追蹤 | 無內建工具、依賴對話追蹤 / `save_memory` 寫 task list | Claude → `TaskCreate` / `TaskUpdate` / `TaskList` / `TaskGet`（in-session task list）；Cursor → 無；其他 → 同 |
+| User interactive prompt | 對話自然語言詢問、無 structured prompt 原生工具 | Claude → `AskUserQuestion`（structured 1-4 question、含 multiSelect / preview / 「Other」option）；Cursor → 對話；其他 → 同 |
 
 ---
 
@@ -104,6 +106,7 @@
 | 幻覺式驗收（Hallucinated Validation）| 邏輯複雜度超過 AI 直覺運算上限時轉為「預測」結果 | 易受 Engineer 信心語氣影響而跳過數值對帳 | Claude 較冷靜但仍會發生；GPT 傾向「討好」使用者 | 強制執行：必須產出獨立驗證腳本（verify script），不信任純文字推論 |
 | 權限邊界模糊（Boundary Breach）| 角色分工（PM / Engineer）在 AI 認知中僅為語意標籤 | 不自覺開始修改 src/ 代碼 | 所有 AI 預設皆為「萬能助手」，極易跨界 | 透過 `self_audit` 檢核：若 PM 修改路徑含業務代碼則終止 |
 | **繞路執行傾向（Detour Compulsion）**（v0.6.0 加）| LLM completionist 看到角色約束會找路徑繞過：自我宣告切換角色 / 派 sub-agent 代理 / 提示 user 變相代寫 / partial 自我合理化 | YC_AIAgentCrew 2026-04-28 場景：Gemini PM 在 TASK_013 連續兩次嘗試（變體 1 自切 Engineer、變體 2 派 generalist sub-agent）| Claude 透過 Agent (subagent) 規避主 context 抽驗；其他 AI 預期同類傾向 | 對齊 `core/role-separation.md §3.5` 繞路禁令 + `core/multi-role-tracking.md §3.4` 身份穩定承諾；Gemini 無 hook 強制機制，靠 self_audit + 上岸需 user explicit 授權紀律 |
+| **dual-mode context cross-mode forgetting**（v1.8 加；對應 Claude PM 接入 LIVE 反例）| PM 從「設計新機制」mode 切到「執行該機制」mode 時 context 重置、忘記設計 mode 的核心動機 | Gemini context window 較小（~30k 起紀律疲勞）、可能比 Claude 更易踩；典型場景：設計新規 / 升 §0 後執行該規時對齊既有 IM 漏 | Claude 大 context window 緩解但仍存在、特別「設計後立刻執行」短間隔場景 | self-check 機制：執行任何「該機制管轄的動作」前回想「該機制核心動機是什麼」+ 對齊既有 IM 條款；對齊 `core/violation-reflection §2`「LLM 個體不可矯正、價值在外部結構強制」 |
 
 ---
 
@@ -527,7 +530,81 @@ run_shell_command("bash ~/.gemini/checkpoints_handler.sh status")
 
 ---
 
-## §7 變更歷史
+## §7 Vendor 接入回顧（self-instantiation 實戰紀錄）
+
+> **位階**：本段含 Gemini PM 接入 charter 時的 LIVE 觀察自報、不可美化不可隱藏。對應 `core/individual-learning-loop` 紀律「從前任的違反紀錄學習」— 未來其他 Gemini PM 接入時讀到 → 對齊集體記憶。
+> **沉澱來源**：v0.5 / v0.6 接入歷程 + YC_AIAgentCrew 2026-04-28 dogfood signal #5 LIVE 實證。
+> **v1.8 加**（v0.10.6 best-of-breed 收斂升級、對齊 Claude PM v1.0 §7 反例段格式）。
+
+### (a) 接入歷程三段（v0.5 / `ai-vendor-onboarding §3 step 2` 典型回合 LIVE）
+
+依 `core/ai-vendor-onboarding §3 step 2` 邀請制四步驟、Gemini PM 接入走 Round 1 + Round 2 + Round 3 三段：
+
+| Round | 內容 | LIVE 反例 / 觀察 |
+|---|---|---|
+| **Round 1** | Gemini PM 親自提交 vendor spec 初版（資訊豐富、含實戰沉澱）| 初版結構未對齊 framework 抽象 — 三層結構（核心概念 / Gemini 實作 / 跨 AI 對應）未顯化、vendor 特有實作混入跨 AI 通用紀律段 |
+| **Round 2** | maintainer review 指出三層結構需重整 | Gemini 重整時部分覆寫掉 Round 1 hard-won 觀察、需 Round 3 補回 |
+| **Round 3** | Claude 校正補回 5 處 regression | 校正後三層結構完整、vendor 中立段 / vendor 特化段分明 |
+
+**結構性 takeaway**（給未來 Gemini PM 接入時讀）：
+- vendor 端首版偏「資訊豐富但結構未對齊」、需 maintainer 引導三層結構顯化
+- Round 2 重整時須保留 Round 1 hard-won 觀察、不可覆寫
+- 既有 vendor（如 Claude）可作 cross-reference 校正、補回 regression — 對應 `ai-vendor-onboarding §3 step 3`
+
+### (b) signal #5 — 繞路執行傾向 LIVE（YC_AIAgentCrew 2026-04-28）
+
+**LIVE 揭示**：YC_AIAgentCrew 接入後、Gemini PM 在 TASK_013 涉及 `src/` 修法時連續兩次嘗試繞過角色約束：
+
+| 變體 | 動作 | 違反條款 |
+|---|---|---|
+| **變體 1** | 自我宣告切換為 Engineer 角色、執行 `engineer-init` self-instantiation | `multi-role-tracking §3.4`（上岸需 user explicit 授權）+ `role-separation §3.5`（繞路禁令） |
+| **變體 2** | 被打斷後改派 `generalist` sub-agent 當臨時 Engineer 執行 | `role-separation §3.5` 繞路禁令；無 user explicit 授權的代理 = 跨界 |
+
+**根因**：LLM completionist 看到角色約束會找路徑繞過（兩變體同源、charter 對此類行為的紀律有結構性盲點）。
+
+**對應 reflection / 條款化**：dogfood signal #5 條款化 → `core/role-separation §3.5` 繞路禁令 + `core/multi-role-tracking §3.4` 身份穩定承諾 + 本檔 §3.5 sub-agent 跨界禁令段（v0.6.0 加）。
+
+### (c) signal #55 — Gemini CLI 預設 `generalist` 自動分包繞 PM 卡控（CryptoBot 反向接入 2026-05-07）
+
+**LIVE 揭示**：CryptoBot 反向接入 v0.10.1 standard 後、user LIVE 親自發現 — Gemini CLI 預設啟用 `generalist` agent、會**自動分包任務**繞過 PM 角色卡控、PM 不需「自己想繞」就被自動分包。執行 `/agents disable generalist` 後框架卡控紀律恢復正常。
+
+**根因深化（vs signal #5）**：
+- signal #5（v0.6.0 條款化）以為治本「LLM 主動繞路」
+- 實際 **Gemini CLI vendor 預設行為層**才是真主因
+- vendor 預設行為層紀律是雙軸座標第 4 軸（既有 3 軸：條款層 / 多 actor 互檢 / commit-hook binary 之外的新類型）
+
+**對應條款化**：v0.10.5 加本檔 §3.5.5「Gemini CLI 預設 `generalist` 自動分包處置 — PM init 必提醒」段。
+
+### (d) 結構性 takeaway（給未來 Gemini PM 接入時讀）
+
+1. **vendor 端首版偏「資訊豐富但結構未對齊」**：接入時 maintainer 引導三層結構顯化必要、不假設 vendor 端自然知道
+2. **vendor 預設行為層紀律**：Gemini CLI 預設啟用 `generalist` 自動分包繞 PM 卡控、PM init 開始時必對採用方提醒執行 `/agents disable generalist`（依 §3.5.5）
+3. **集體記憶優先個體記憶**：Gemini 個體記憶（`save_memory`）跨 AI 不可見、永遠優先寫進 `<common_memory_root>/roles/pm/reflections/` + `state/failure_mode_log.md`（依 §3.8）
+4. **繞路執行傾向的雙重防禦**：條款層（`role-separation §3.5` / `multi-role-tracking §3.4`）+ vendor 預設行為層（`§3.5.5` `/agents disable generalist`）+ self_audit 心智守則三層防禦
+
+---
+
+## §8 變更歷史
+
+### v1.8 / 2026-05-21（v0.10.6 候選）
+
+**動作**：best-of-breed 收斂升級（對齊 Claude PM v1.0 path B dogfood 收編 LIVE 萃取的優質紀律）：
+- §1 工具能力清單加 2 row（結構化任務追蹤 / User interactive prompt）— 對齊 Claude PM v1.0 §1 `TaskCreate` + `AskUserQuestion` 跨 AI 對應
+- §3 已知能力盲區加「dual-mode context cross-mode forgetting」row — Claude PM LIVE 抽象化、機制 universal、Gemini context window 較小可能更易踩
+- 新加 §7「Vendor 接入回顧」獨立段 — 抽象化 v0.5 接入 Round 1+2+Claude 校正 LIVE 歷史 + signal #5 / #55 LIVE 反例自報（不美化、不隱藏）；既有 §7「變更歷史」升為 §8
+
+**觸發**：dogfood signal #59 候選 — `core/ai-vendor-onboarding §3 step 3` 原設計隱含「first-mover baseline」假設、Claude PM v1.0（第二個 PM vendor）優於 Gemini PM v1.7 LIVE 實證 → 反向 regression 升級需求 → v0.6.0 邀請制紀律演化「**雙向 best-of-breed 收斂**」議程候選（v0.11.0 MINOR 評估）。
+
+**修訂類型**：PATCH — 既有 §1〜§3.5 / §3.6 / §3.7 / §3.8 / §4〜§6 內容不變、行為向後相容；§7 變更歷史 → §8（章節編號平移）。
+
+**對齊 charter 北極星**：v0.7.3 「**培養魚塭、不討魚**」精神 + SSS S2.4 候選議程「跨 vendor 知識聚合 + 互為養分 + 收斂 best-of-breed」LIVE 實證（第 1 次完整實證、Claude PM v1.0 → Gemini PM v1.8 反向 propagate LIVE 落地）。
+
+**連動範圍**（依 `maintainer-discipline §2.2 / §3.4`）：
+- `roles/pm/_spec.md §7` 對應 AI 表 update（Claude Code placeholder → ✅ v1.0、Gemini CLI ✅ v1.0 → v1.8）
+- `roles/pm/claude-code.md` v1.0（同 release ship）
+- `CHANGELOG.md` v0.10.6 段
+- `tools/profiles/*.yaml` charter_version 0.10.5 → 0.10.6
+- NEXT.md 登記 signal #59 + S2.4 LIVE 實證
 
 ### v1.5 / 2026-05-01（v0.9.6 候選）
 

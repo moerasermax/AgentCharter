@@ -1,8 +1,9 @@
 # AgentCharter — Next Work
 
-> **更新時間**：2026-05-20（dogfood signal #58 候選新增 — Claude vendor skill abstraction 紀律對齊不完整、v0.9.3 Gemini handler mapping.yaml 抽象化升維未 propagate Claude 端 / CryptoBot 跨軌污染 LIVE）
-> **前次更新**：2026-05-19（dogfood signal #56 + #57 候選新增 — CryptoBot Gemini → Claude PM cross-AI handoff LIVE：#56 Claude PM 過度保守自加 charter 沒明文紀律「PM 不主動 commit」/ #57 v0.6.0 ai-vendor-onboarding 邀請制條款第二個 vendor × role LIVE 實證 進行中）
-> **前前次更新**：2026-05-10（v0.10.5 ship 收尾 — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
+> **更新時間**：2026-05-21（**v0.10.6 ship** — Claude PM v1.0 接入 + Gemini PM v1.8 best-of-breed 收斂升級、path B dogfood 收編 pattern 第一次完整 LIVE 實證、dogfood signal #59 條款化候選登記）
+> **前次更新**：2026-05-20（dogfood signal #58 候選新增 — Claude vendor skill abstraction 紀律對齊不完整、v0.9.3 Gemini handler mapping.yaml 抽象化升維未 propagate Claude 端 / CryptoBot 跨軌污染 LIVE）
+> **前前次更新**：2026-05-19（dogfood signal #56 + #57 候選新增 — CryptoBot Gemini → Claude PM cross-AI handoff LIVE：#56 Claude PM 過度保守自加 charter 沒明文紀律「PM 不主動 commit」/ #57 v0.6.0 ai-vendor-onboarding 邀請制條款第二個 vendor × role LIVE 實證 進行中）
+> **前前前次更新**：2026-05-10（v0.10.5 ship 收尾 — Gemini CLI 預設 generalist 自動分包處置、dogfood signal #55 user 直接條款化）
 > **依循**：v1.0 公開化條件（GOVERNANCE §6）+ **v0.7.3 北極星紀律**（README §設計哲學）+ **v0.7.4 雙軌節奏**（頻繁小擴增 PATCH + 大方向新加條款用 MINOR）+ **v0.7.5「0 ERROR + 0 WARN 才算還清技術債」紀律**（user 強調的深度 sweep 標準）+ **v0.10.0 commit hook 結構強制升維紀律**（弱保證項 6 條一次收編、雙軸軸 1 強保證落地）+ **v0.10.2 schema-driven 升維紀律**（值類規範改 schema 一處、不需逐 hook 加新號、未來 F7/F8 自動 propagate）+ **v0.10.3 結構自動化元層紀律**（lint binary maintainer-only + spec 段首全局紀律段、規範自動化「不讓 maintainer 記」）+ **v0.10.4 user-facing AI 行為紀律**（vendor 介紹 charter 工具三段流程、禁被動表述、user 一句話即觸發安裝、「不讓 user 為了用一個工具還要查 charter 文件」）+ **v0.10.5 vendor 預設行為層紀律**（Gemini `generalist` 自動分包繞 PM 卡控、PM init 必提醒、dogfood signal #5 根因深化、#5 + #41 + #55 family 留 v0.11.0 MINOR 升 core 條款層評估）
 
 ---
@@ -797,6 +798,44 @@ framework 永久維持「**純規範**」位階。
   | **跨 vendor 預設行為盤點** | 任一 vendor 新接入時 | 邀請 vendor 盤點預設啟用的 sub-agent / fallback / auto-completion 等繞 charter 卡控的內建行為（vendor 邀請制 v0.6.0 §3 延伸） |
 
   **累積**：1 次 LIVE（2026-05-07 CryptoBot 反向接入後）= 已條款化（user 直接條款化 pattern）
+
+- **✅ 新 dogfood signal #59 條款化候選登記 — `core/ai-vendor-onboarding §3 step 3` 原設計隱含「first-mover baseline」假設、第二個 vendor 優於第一個時失效（2026-05-21 LIVE 實證、v0.10.6 path B dogfood 收編 LIVE）**【累積 1 次 LIVE、user 直接條款化 pattern；候選修法：v0.11.0 MINOR 條款演化「雙向 best-of-breed 收斂」或新加 `core/cross-vendor-best-of-breed.md`（架構級概念第 14 個候選）】
+
+  **LIVE 觸發脈絡**（2026-05-21、Claude PM v1.0 step 2 完工後 maintainer 抽驗階段）：
+  - charter maintainer 對 Claude PM v1.0 跑抽驗、品質 481 行對齊 Gemini PM v1.7 結構、5 個 minor 領域脫敏問題
+  - 走 `ai-vendor-onboarding §3 step 3` 既有 vendor 校正 regression 流程時、user 反問「為啥要跑 Gemini regression」+ 明示「Claude PM 直接優於 Gemini PM」
+  - charter maintainer 顯化結構性議題：v0.6.0 step 3 隱含「先到的 vendor = baseline、新 vendor 朝它對齊」假設、未考慮「第二個 vendor 可能優於第一個」場景
+  - user explicit 拍板走 (b) maintainer 代修反向 regression — 違反 v0.6.0 邀請制 letter「charter 不代寫 vendor spec」、但對齊 best-of-breed 收斂 spirit + SSS S2.4 候選議程「跨 vendor 知識聚合 + 互為養分 + 收斂 best-of-breed」LIVE 實證
+
+  **本 release 處置**（v0.10.6 PATCH 同 ship）：
+  - Claude PM v1.0 ship（path B dogfood 收編 LIVE 第一次完整實證）
+  - Gemini PM v1.7 → v1.8 反向 propagate Claude PM 已條款化的優質紀律：
+    - §1 加 2 row（結構化任務追蹤 + User interactive prompt）
+    - §3 加「dual-mode context cross-mode forgetting」row
+    - 加 §7 vendor 接入回顧獨立段（v0.5 Round 1+2+Claude 校正 LIVE 抽象化）
+    - §7 變更歷史升 §8
+  - dogfood signal #59 條款化候選登記、留 v0.11.0 MINOR 評估
+
+  **Signal family 對照**：
+  | Family signal | 同源關係 |
+  |---|---|
+  | v0.7.3 北極星「培養魚塭、不討魚」 | **直系延伸** — best-of-breed 收斂是生態養成本身、不只是邀請制四步驟 |
+  | SSS S2.4 候選議程「跨 vendor 知識聚合 + 互為養分 + 收斂 best-of-breed」 | **第 1 次完整 LIVE 實證** — Claude PM v1.0 → Gemini PM v1.8 反向 propagate LIVE 落地 |
+  | A1「角色 ⊥ AI」公理 reverse | **同精神** — 同一角色在不同 AI 身上演化、互為養分 |
+  | dogfood signal #5 + #41 + #55 + #58 family（vendor 預設行為層紀律）| **互補家族** — 此 family 處理 vendor 行為層、#59 處理 vendor 接入流程紀律演化 |
+
+  **v0.11.0 MINOR 議程候選**（fresh-head session 設計）：
+  - (a) 條款演化路徑：`core/ai-vendor-onboarding §3 step 3` 升級「雙向 best-of-breed 收斂」紀律
+    - 既有 step 3「既有 vendor 校正新 vendor regression」保留
+    - 新加 step 3-alt「**反向 regression**」紀律：當新 vendor 優於既有 vendor 時、maintainer 觸發既有 vendor 升級對齊新 vendor 已條款化的優質紀律（best-of-breed 收斂）
+    - 含 user explicit 授權 maintainer 代修 exception 路徑明文化（對應 user 主觀「受不了某 vendor」場景、避免邀請制 letter 跟 best-of-breed spirit 衝突時 user 無 explicit exit ramp）
+  - (b) 新檔路徑：新加 `core/cross-vendor-best-of-breed.md`（架構級概念第 14 個候選、SSS S2.4 落地）
+    - vendor 知識聚合三軸（時序軸 / 品質軸 / 機制 universality 軸）
+    - best-of-breed 收斂判斷標準（哪些紀律該 propagate、哪些 vendor-specific 不該）
+    - maintainer 代修 vs 邀請 vendor 自己整合 雙路徑選擇紀律
+  - (c) 議程位階：對應 v0.7.3 北極星「培養魚塭、不討魚」+ SSS S2.4 顯化、屬「架構級概念演化」（charter 第 14 個架構級概念候選）
+
+  **累積**：1 次 LIVE（2026-05-21 user explicit 條款化、不走 ≥3 次累積門檻、同 v0.5.8 / v0.7.1 / v0.7.4 / v0.9.0 / v0.10.4 / v0.10.5 user 直接條款化 pattern）。**判斷**：屬「**架構級概念演化**」家族、user explicit 觸發、留 v0.11.0 fresh-head session 處理條款本身設計、本 release LIVE 走 user explicit 授權 (b) maintainer 代修 path 對齊 best-of-breed spirit。對齊 v0.7.3 北極星「**不讓 user 記**」延伸 —「**不讓 user 因 vendor 接入順序紀律卡死整合機會**」。
 
 - **新 dogfood signal #58 候選 — Claude vendor skill abstraction 紀律對齊不完整（v0.9.3 Gemini handler mapping.yaml 抽象化升維未 propagate Claude 端）/ CryptoBot 跨軌污染 LIVE（2026-05-20 CryptoBot session）**【累積 1 次 LIVE；候選修法：v0.10.6 PATCH propagate v0.9.3 Gemini handler 升維 + slash command header 動態化 + charter 提供 `install-user-skills.sh` 一鍵安裝 / v0.11.0 MINOR 評估 H8 軌道污染攔截】
 
