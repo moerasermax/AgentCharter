@@ -233,6 +233,8 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `diagnose-remediate-protocol.md` | **（v0.9.0 加）SSS S3 架構級條款化** — spec-as-data 結構（合規規定 / 修補方向 + 約束 / 反例 / 真實 stdout 證據）+ 弱保證項清單派生 + commit hook vendor 邀請制加固 + 真實 stdout 證據要求（純文字 PASS = violation-reflection §1 假宣告）；**v0.10.0 §4 從精神 ship 實作層**（git 原生 hook + agent-commons 共用 script、vendor 中立架構）|
 | `adoption-lifecycle.md` | **（v0.9.0 加）5 階段 lifecycle 完整化** — 全新接入 / 升版 / 棄用（含「保留最後的溫柔」精神）/ 重新採用 / vendor 升級 path 三路徑（A 維持現狀 / B 開 issue / C AI 自驅修復對齊 SSS S1 子集） |
 | `condition-mutability.md` | **（v0.9.0 加）condition mutability 紀律本體** — 三層 mutability（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層 |
+| `vendor-lifecycle.md` | **（v0.12.0 加、第 14 個架構級概念）** Vendor 預設行為 / 失效 / 換手紀律 — 收編 dogfood signal #5/#41/#55/#58/#59/#60 family（vendor 主動繞路 / fallback 誤讀身份 / generalist 自動分包 / 失效棄用如 Gemini CLI 2026-06-18 對 Pro/Ultra/free 斷線 / cross-vendor best-of-breed 收斂 / 跨 vendor 紀律 propagate） |
+| `init-spec-schema.md` | **（v0.12.0 加、第 15 個架構級概念）** Canonical Init Spec + Vendor Adapter pattern — 解決跨 vendor 行為碎片化（dbSDK PM AI 報告實證、三 vendor pm-init 量化差異 604/11842/1645 bytes）；charter 端寫 canonical init-spec（vendor-neutral 6 段 required sections）+ 各 vendor 透過 adapter 模板轉成自己格式的 slash command |
 
 ---
 
@@ -247,9 +249,9 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 **採用方角色**（採用方視具體場景啟用）：
 
 - `roles/engineer/_spec.md` + `roles/engineer/claude-code.md` — Engineer 概念層 + Claude Code 工程師實作（v0.1 reference impl）
-- `roles/pm/_spec.md` + `roles/pm/{antigravity-cli,gemini-cli,claude-code}.md` + **`roles/pm/init-spec.md`**（v0.12.0 加、canonical init spec、SSS S2.5）— PM 概念層 + 三 vendor 實作（Antigravity v1.1 / Gemini v1.9 LEGACY / Claude v1.0）+ canonical init layer
-- **`core/init-spec-schema.md`** + **`templates/vendor-adapters/*.tpl`**（v0.12.0 加、SSS S2.5 Canonical Init Spec + Vendor Adapter pattern、架構級概念第 15 個）— 解決跨 vendor 行為碎片化
-- **`core/vendor-lifecycle.md`**（v0.12.0 加、架構級概念第 14 個）— Vendor 預設行為 / 失效 / 換手紀律、收編 dogfood signal #5/#41/#55/#58/#59/#60 family
+- `roles/pm/_spec.md` + `roles/pm/{antigravity-cli,gemini-cli,claude-code}.md` + `roles/pm/init-spec.md`（v0.12.0 加 canonical init spec）— PM 概念層 + 三 vendor 實作（Antigravity v1.1 / Gemini v1.9 LEGACY / Claude v1.0）+ canonical init layer
+- `roles/engineer/init-spec.md`（v0.12.0 加 canonical init spec）— Engineer canonical init、6 段 required sections 對齊 `core/init-spec-schema.md`
+- `templates/vendor-adapters/*.tpl`（v0.12.0 加 3 個 vendor adapter）— gemini-cli / claude-code / antigravity 三個 adapter 模板、把 canonical 6 段轉成 vendor 對應 slash command 格式
 - `roles/validator/_spec.md` — 抽驗權專職載體；漸進接管 PM 抽驗職責（v0.6.0 概念層 / **v0.7.0 §3.6 擴 init 階段抽驗 — 採用方半邊 Phase 5b 載體**）；vendor 層待邀請制流程
 
 **Maintainer-only 角色**（採用方無關，charter repo 自身維護用）：

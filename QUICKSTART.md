@@ -138,10 +138,10 @@ AI 跑完 → 產出 `agent-commons/` 結構 + `.claude/commands/charter-init.md
 
 | Preset | 條款啟用 | 適用 | init token |
 |---|---|---|---|
-| **`essential`**（v0.9.0 加） | 3-5 / 23 | 探索期 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本 | **< 5k** |
-| `minimal` | 10 / 23 | 探索型 / 單人 + 1 AI / 短期實驗（含 individual-learning-loop = true）| ~ 12k |
-| **`standard`** | **22 / 23** | **一般雙 AI 協作** | ~ 30k |
-| `strict` | 22 / 23 | 嚴格合規 / 高風險（金融 / 醫療 / 軍工） | ~ 35k |
+| **`essential`**（v0.9.0 加） | 5 / 25 | 探索期 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本 | **< 5k** |
+| `minimal` | 12 / 25 | 探索型 / 單人 + 1 AI / 短期實驗（含 individual-learning-loop = true）| ~ 12k |
+| **`standard`** | **24 / 25** | **一般雙 AI 協作**（v0.12.0 後含 vendor-lifecycle + init-spec-schema）| ~ 32k |
+| `strict` | 24 / 25 | 嚴格合規 / 高風險（金融 / 醫療 / 軍工） | ~ 37k |
 
 > 💡 **v0.9.0 加 essential preset**（dogfood signal #28 progressive adoption + signal #26 init token cost / ROI 真槓桿）— 只啟用最硬層 3-5 條核心防線（structural-anti-fabrication / audit-rights / evidence-first / failure-modes / role-separation）+ 配置最寬鬆。**漸進升維路徑**：essential（探索期）→ minimal（雙 AI 但短期）→ standard（一般協作）→ strict（嚴格合規）。任何時候都可改 `profile.yaml.preset` 升級、不需重建 agent-commons/。
 
