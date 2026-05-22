@@ -100,9 +100,45 @@ v1.0 公開化後，本承諾成為 charter 對採用方的**永久承諾**：
 
 #### 2.3.4 v0.x 階段的彈性
 
-v0.x 階段（當前）條款仍在演化，**容許破壞性變動**（如 v0.5.0 從 `.agentcharter/` 改為 `agent-commons/_config/`）。本承諾自 v0.5.9 引入，**從本版起**對所有後續變動生效。
+v0.x 階段（當前）條款仍在演化，**容許破壞性變動**（如 v0.5.0 從 `.agentcharter/` 改為 `agent-commons/_config/`、v0.12.0 從 `agent-commons/` 改為 `agents-commons/`、詳見 §2.3.5）。本承諾自 v0.5.9 引入，**從本版起**對所有後續變動生效（v0.5.9〜v0.11.x 嚴守、v0.12.0 BREAKING-MEDIUM rename 為例外、依 §2.3.5 補償紀律）。
 
-→ 已採用 v0.5.0 之後（agent-commons 結構穩定後）的專案，後續升版保證向下兼容。
+→ 已採用 v0.5.0 之後（agent-commons 結構穩定後）的專案，後續升版保證向下兼容（v0.12.0 rename 例外、提供 migration script 補償）。
+
+#### 2.3.5 v0.12.0 BREAKING-MEDIUM rename（agent-commons → agents-commons、v0.5.9 承諾例外處置）
+
+> **觸發**：2026-05-22 user LIVE 提出命名語意修正 — `agent-commons/`（單數 agent）→ `agents-commons/`（複數 agents、貼近「多 agents 共用之 commons」語意）。對齊 charter 設計初衷「跨 AI 協作 = 多 agents」+ dbSDK 採用方端 LIVE 觀察。
+
+##### 對既有 v0.5.9 承諾的衝突釋疑
+
+| 項 | 評估 |
+|---|---|
+| **§2.3.1 字面承諾** 「v0.5.0 之後永不破壞既有採用方」 | ⚠️ **違反 letter**（v0.12.0 改既有採用方目錄名）|
+| **§2.3.4 v0.x 階段彈性** 「容許破壞性變動」 | ✅ 對齊（當前仍 v0.x）|
+| **「不對既有採用方產生太大痛點」精神** | ✅ 對齊（提供 migration script、採用方跑 2-3 個指令完成）|
+| **v1.0+ 永久承諾** | ✅ 對齊 — 自 v0.12.0 起 `agents-commons/` 結構為 v1.0+ 永久承諾、不再 rename |
+
+##### 補償紀律（讓痛點極低）
+
+提供 `tools/vendor/commons/migrate-to-agents-commons.sh` 一鍵 migration script — 採用方實際升版動作：
+
+```bash
+git -C ~/.agentcharter pull origin main
+bash ~/.agentcharter/tools/vendor/commons/migrate-to-agents-commons.sh
+bash ~/.agentcharter/tools/vendor/commons/install-git-hooks.sh --update
+# 對 vendor AI 下 prompt：「請依 charter v0.12.0 重新具象化 /pm-init / /engineer-init 等」
+# 編 agents-commons/_config/profile.yaml: charter_version: "0.12.0"
+```
+
+→ 採用方實際痛點：跑 **2-3 個指令** = 與 v0.10.2 BREAKING-LITE PATCH 痛點等級。
+
+詳見：
+- `core/common-memory-root §10` BREAKING-MEDIUM rename 紀律段
+- `tools/doctor-spec §3.14` W1401 偵測未遷移 + 自動引導
+- `examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md` 採用方完整 walkthrough（v0.12.0 3 in 1：Antigravity vendor + Canonical Init Spec + agents-commons rename）
+
+##### v1.0+ 新承諾
+
+自 v0.12.0 起、`agents-commons/` 結構為 v1.0+ **永久承諾、不再 rename**。v0.5.9 承諾自此版起 hold 至 v2.0+。
 
 ---
 
@@ -354,6 +390,23 @@ charter_version: "0.5.5"   # 採用的 charter 版本
 ---
 
 ## 10. 變更歷史
+
+### v0.4（自 v0.12.0 起）
+
+**動作**：§2.3 加 §2.3.5「v0.12.0 BREAKING-MEDIUM rename（agent-commons → agents-commons、v0.5.9 承諾例外處置）」段 — 3 子段：(1) 對 v0.5.9 既有承諾的衝突釋疑表 / (2) 補償紀律（一鍵 migration script + 採用方實際 5 步流程）/ (3) v1.0+ 新承諾。
+
+**觸發**：2026-05-22 user LIVE 提出命名語意修正、對齊 charter 設計初衷「跨 AI 協作 = 多 agents」。
+
+**修訂類型**：BREAKING-MEDIUM（v0.x 階段彈性 + 提供 migration script 補償）— v0.12.0 3 in 1 ship 一部分。
+
+**連動範圍**（同 v0.12.0 release）：
+- `core/common-memory-root §10` BREAKING-MEDIUM rename 紀律段
+- `tools/vendor/commons/migrate-to-agents-commons.sh` 新檔
+- `tools/doctor-spec §3.14` W1401 偵測未遷移
+- `templates/agent-commons/` 目錄 rename → `templates/agents-commons/`
+- 4 個 preset YAML charter_version `0.11.0` → `0.12.0`
+- `CHANGELOG.md` v0.12.0 段
+- `examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md` 採用方完整 walkthrough
 
 ### v0.3（自 v0.8.0 起）
 

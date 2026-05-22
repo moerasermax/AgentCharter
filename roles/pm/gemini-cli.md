@@ -1,6 +1,7 @@
 # PM × Gemini CLI — Implementation
 
-> **狀態**：v1.8（v0.10.6 候選；v1.2 加 §3.6 toml schema；v1.3 加 §3.7 checkpoints 後置介紹；v1.4 加 §3.7 Step 1 版本偵測 + 自動升版；v1.5 加 §3.8 reflection 路徑明示 — signal #38 ① 修補；v1.6 加 §3.7 觸發場景擴展 — v0.10.4；v1.7 加 §3.5.5 Gemini CLI 預設 generalist 自動分包處置 — signal #55、v0.10.5；v1.8 best-of-breed 收斂升級 — §1 加 2 row + §3 加 dual-mode forgetting + §7 vendor 接入回顧獨立段、v0.10.6）
+> **狀態**：v1.9（v0.11.0 候選 LEGACY 標記；v1.0~v1.8 為 v0.5~v0.10.6 累積 — 詳見 §8 變更歷史）
+> **vendor_status**（v0.11.0 加）：**LEGACY_AUTO_IMPORTED** — Gemini CLI 2026-06-18 對 Google AI Pro / Ultra / 個人免費版斷線（Google 2026-05-19 宣布、移轉 Antigravity CLI）；OSS / Enterprise / 付費 API key tier **仍可繼續使用本 spec**。Antigravity CLI 可透過 `agy plugin import gemini` 導入 plugin metadata、但**舊 `.gemini/commands/*.toml` 指令在 Antigravity 直接不可用**、需手動轉為 SKILL.md。**新接入請走 `roles/pm/antigravity-cli.md`**；既有 Gemini PM 採用方依 `examples/upgrades/v0.10.6-to-v0.11.0-antigravity-migration.md` 走遷移流程。對應 dogfood signal #60 LIVE 觸發。
 > **基於**：`roles/pm/_spec.md`
 > **AI**：Google Gemini CLI（v1.x）
 > **沉澱來源**：CryptoBot S70 PnL 誤判事件後 Gemini PM 親自提交（Round 1）+ 三層結構重整（Round 2）+ 橋接層校正 + YC_AIAgentCrew 2026-04-28 dogfood signal #5 補強
@@ -584,7 +585,58 @@ run_shell_command("bash ~/.gemini/checkpoints_handler.sh status")
 
 ---
 
+## §9 採用方遷移指引（v0.11.0 LEGACY 加 / dogfood signal #60 LIVE）
+
+> **狀態**：本段為 v0.11.0 加、對應 Gemini CLI 棄用 LIVE 事件（Google 2026-05-19 宣布 Antigravity CLI 取代、2026-06-18 對 Pro/Ultra/free 斷線）。本檔 vendor_status 標 LEGACY_AUTO_IMPORTED、不刪內容、保留歷史 audit trail。
+
+### 9.1 採用方分 tier 處置
+
+| 你的 Gemini CLI 帳號 tier | 6/18 後 | 建議動作 |
+|---|---|---|
+| **免費 / Google AI Pro / Ultra** | 🔴 Gemini CLI 斷線 | **必須 6/18 前遷移 Antigravity CLI**、依 `examples/upgrades/v0.10.6-to-v0.11.0-antigravity-migration.md` walkthrough |
+| **Gemini Code Assist Standard / Enterprise** | ✅ 繼續 | 不必動、本 spec 仍 ACTIVE、可繼續引用 |
+| **付費 Gemini API key（個人 / 組織）** | ✅ 繼續 | 不必動、本 spec 仍 ACTIVE |
+| **OSS Apache 2.0 repo（社群維護）** | ✅ 繼續 | 不必動 |
+
+### 9.2 遷移路徑（對應免費 / Pro / Ultra tier）
+
+依 walkthrough 走、採用方實際動作：
+
+1. 裝 Antigravity CLI（`agy` binary）
+2. `agy plugin import gemini`（import plugin metadata、但舊 toml 指令在 Antigravity 不可用）
+3. **手動轉換** `.gemini/commands/*.toml` → `~/.gemini/skills/<name>/SKILL.md`（依 `roles/pm/antigravity-cli.md §3.6` Skills schema 規範、**子目錄結構** + frontmatter `name:` 必填）
+4. MCP remote server `url` → `serverUrl` rename（不改會 silent fail）
+5. 升 `agents-commons/_config/profile.yaml` `charter_version: "0.11.0"`
+6. PM init 重跑 + 雙驗收（`agy doctor` + `/charter-doctor`）
+
+### 9.3 LEGACY 紀律：本 spec 不刪、不過時
+
+依 `core/working-stack-discipline §1` 精神 + charter `core/violation-reflection §2`「集體記憶才重要」紀律 — 本 spec 保留**完整歷史 audit trail**（v1.0〜v1.8 變更歷史 / §7 Vendor 接入回顧 / S70 PnL 誤判事件根因分析）— 未來其他 vendor / 場景平移時可 reference。
+
+對應 charter v0.10.x 系列「不刪 = 培養魚塘」精神（`uninstall-spec`「保留最後的溫柔」延伸）— vendor 棄用是時運、charter 紀律延續性靠 spec 不死。
+
+### 9.4 對應條款引用
+
+- `core/versioning-migration §3` 升版流程（v0.11.0 BREAKING-LITE 對應 tier-specific 強制 / 選擇性升）
+- `core/violation-reflection §2`（集體記憶優先、LEGACY spec 保留紀律）
+- `roles/pm/antigravity-cli.md`（新 vendor spec、path A AI-DRAFTED-FROM-GEMINI-V1.8 + 同日 LIVE 第二輪校正）
+- `examples/upgrades/v0.10.6-to-v0.11.0-antigravity-migration.md`（採用方遷移 walkthrough）
+
+---
+
 ## §8 變更歷史
+
+### v1.9 / 2026-05-22（v0.11.0 候選）
+
+**動作**：對應 Gemini CLI 棄用 LIVE 事件 — 本檔 vendor_status 升 LEGACY_AUTO_IMPORTED：
+
+- frontmatter 加 vendor_status 段（顯化 tier-specific status + Antigravity import 路徑 + 新接入引導去 antigravity-cli.md）
+- 新加 §9「採用方遷移指引（v0.11.0 LEGACY）」段（分 tier 處置表 + 遷移路徑 + LEGACY 紀律精神 + 對應條款引用）
+- 既有 §1〜§7 / §8 既有 v1.0〜v1.8 entry **不刪、不修**（對齊 §9.3 LEGACY 紀律「集體記憶才重要」+「不刪 = 培養魚塘」精神）
+
+**觸發**：dogfood signal #60 LIVE — Gemini CLI 棄用觸發 charter v0.11.0 Antigravity vendor 接入；本檔不死、保留歷史 audit trail。
+
+**修訂類型**：MINOR — vendor lifecycle status change（與 `antigravity-cli.md` v1.1 新檔同步、整 release 歸 MINOR、依 `versioning-migration §2.2` 新 vendor 加入 = MINOR）
 
 ### v1.8 / 2026-05-21（v0.10.6 候選）
 

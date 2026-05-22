@@ -795,6 +795,102 @@ Step 6 【執行（單項）】
 
 ---
 
+### §3.13 Vendor adapter 一致性校驗（v0.12.0 加 / SSS S2.5 Canonical Init Spec Layer）
+
+> **背景**：charter v0.12.0 ship `core/init-spec-schema.md` + `templates/vendor-adapters/*.tpl`。本段為 doctor 端執行載體、偵測 vendor self-instantiated slash command 是否對齊 canonical init-spec + 透過 adapter 轉換。
+
+#### W1301 跨 vendor pm-init 深度偏差（v0.12.0 加；dbSDK PM AI 報告 2026-05-22）
+
+**合規規定**：
+- 同採用方專案內、若多個 vendor 各自有 pm-init slash command，其內容深度（檔案大小 / 6 段 required sections 覆蓋度）**MUST 對齊 canonical `roles/pm/init-spec.md`**
+- 對齊條款：`core/init-spec-schema §1`
+
+**偵測邏輯**：
+```
+若 同採用方專案內有 ≥ 2 個 pm-init 對應 vendor command
+且 任二者檔案大小差距 > 5x（如 dbSDK 報告 604 bytes vs 11842 bytes）
+或 任一者缺 canonical 6 段 required sections（Step 0-5）
+→ 命中 W1301
+```
+
+**修補方向 + 約束**：
+- ✅ 重新自具象化深度不足的 vendor command
+- 🚫 不可直接複製貼上其他 vendor 的 command
+
+**反例**：
+- ❌ Antigravity SKILL.md 引用過時路徑但 Gemini CLI .toml 已升新路徑
+  - ✅ 正解：兩者都從 canonical 透過 adapter 重生
+
+#### E1302 vendor command 引用過時路徑（v0.12.0 加；dbSDK Antigravity SKILL.md LIVE 實證）
+
+**合規規定**：
+- vendor slash command 內引用的 charter 路徑 **MUST 對齊當前 charter 結構**
+
+**偵測邏輯**：
+```
+若 vendor command 內含過時路徑模式：
+  - 引用 management/<sub>/  → charter v0.5.0+ 已遷至 agent-commons/ / v0.12.0+ agents-commons/
+  - 引用 .agentcharter/<sub>/  → charter v0.5.0+ 已合併至 _config/
+  - 引用其他專案名（如 CryptoBot）但本專案非該專案
+→ 命中 E1302
+```
+
+**修補方向**：
+- ✅ 重新自具象化 vendor command（透過 adapter）
+
+**對應 signal**：
+- dbSDK PM AI 報告 2026-05-22 LIVE 實證
+
+---
+
+### §3.14 agents-commons rename migration 偵測（v0.12.0 加；dogfood signal #60 family）
+
+> **背景**：charter v0.12.0 BREAKING-MEDIUM rename `agent-commons/` → `agents-commons/`（依 `core/common-memory-root §10` + `core/versioning-migration §2.3.5`）。本段為 doctor 端執行載體、偵測既有採用方升 v0.12.0 後是否漏跑 `migrate-to-agents-commons.sh`。
+
+#### W1401 agents-commons migration 未完成（v0.12.0 加；dogfood signal #60 family）
+
+**合規規定**：
+- 必須狀態（升 v0.12.0+ 後）：`<common_memory_root>/` 目錄名為 `agents-commons/` 且 `mapping.yaml.common_memory_root` 值對齊
+- 對齊條款：
+  - `core/common-memory-root §10`
+  - `core/versioning-migration §2.3.5`
+  - `core/charter-config §3`
+
+**偵測邏輯**：
+```
+若 mapping.yaml.common_memory_root = "agents-commons/"
+且 agents-commons/ 目錄不存在
+且 agent-commons/ 目錄存在
+→ 命中 W1401（migration script 漏跑、mapping 已升但目錄未遷）
+
+或
+
+若 profile.yaml.charter_version >= "0.12.0"
+且 agent-commons/ 目錄存在
+且 agents-commons/ 目錄不存在
+→ 命中 W1401（charter_version 升 v0.12.0 但完全未跑 migration）
+```
+
+**修補方向 + 約束**：
+- ✅ 必動：跑 `bash ~/.agentcharter/tools/vendor/commons/migrate-to-agents-commons.sh`（三 phase 互動式）
+- ✅ 跑完後 doctor 重跑：W1401 應 cleared
+- 🚫 不可手動 `mv agent-commons agents-commons`（會破壞 git rename detection）
+- 🚫 不可只改 mapping.yaml 不跑 script
+- 🚫 不可從 charter_version v0.12.0 退回 v0.11.x 規避遷移
+
+**反例**：
+- ❌ AI 偵測到 W1401 → 直接 `mv agent-commons agents-commons` 規避 migration script
+  - ✅ 正解：跑 migration script 三 phase
+- ❌ AI 看到 W1401 → 改 mapping.yaml 把 `common_memory_root` 改回 `agent-commons/` 「修補」
+  - ✅ 正解：跑 migration script 完成升維、不退回
+
+**對應條款 / signal**：
+- dogfood signal #60 family（vendor 失效 / 換手 + agents-commons rename 同源）
+- `core/common-memory-root §10`、`core/versioning-migration §2.3.5`、`core/vendor-lifecycle §4`
+- 採用方完整 walkthrough：`examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md`
+
+---
+
 ## 4. `health-report.md` 輸出格式
 
 依 `structural-anti-fabrication.md` 強制：含實際 stdout 區塊，非純文字結論。

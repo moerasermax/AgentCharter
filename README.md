@@ -247,7 +247,9 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 **採用方角色**（採用方視具體場景啟用）：
 
 - `roles/engineer/_spec.md` + `roles/engineer/claude-code.md` — Engineer 概念層 + Claude Code 工程師實作（v0.1 reference impl）
-- `roles/pm/_spec.md` + `roles/pm/gemini-cli.md` — PM 概念層（v0.6.0 加 §3.3/§3.4 漸進 deprecate 抽驗）+ Gemini CLI PM 實作（v1.1，含 §3.5 sub-agent 跨界禁令）
+- `roles/pm/_spec.md` + `roles/pm/{antigravity-cli,gemini-cli,claude-code}.md` + **`roles/pm/init-spec.md`**（v0.12.0 加、canonical init spec、SSS S2.5）— PM 概念層 + 三 vendor 實作（Antigravity v1.1 / Gemini v1.9 LEGACY / Claude v1.0）+ canonical init layer
+- **`core/init-spec-schema.md`** + **`templates/vendor-adapters/*.tpl`**（v0.12.0 加、SSS S2.5 Canonical Init Spec + Vendor Adapter pattern、架構級概念第 15 個）— 解決跨 vendor 行為碎片化
+- **`core/vendor-lifecycle.md`**（v0.12.0 加、架構級概念第 14 個）— Vendor 預設行為 / 失效 / 換手紀律、收編 dogfood signal #5/#41/#55/#58/#59/#60 family
 - `roles/validator/_spec.md` — 抽驗權專職載體；漸進接管 PM 抽驗職責（v0.6.0 概念層 / **v0.7.0 §3.6 擴 init 階段抽驗 — 採用方半邊 Phase 5b 載體**）；vendor 層待邀請制流程
 
 **Maintainer-only 角色**（採用方無關，charter repo 自身維護用）：

@@ -1,10 +1,10 @@
 # Common Memory Root（共同記憶根目錄）
 
-> **狀態**：v0.4.1
+> **狀態**：v0.5（v0.12.0 BREAKING-MEDIUM rename — 預設目錄名 `agent-commons/` → `agents-commons/`、語意更貼近「**agents** 共用之 commons」、含 migration script 對既有採用方提供自動遷移）
 > **位階**：core 通用條款。**架構級約定** — 採用 AgentCharter 的專案必須遵守。
 > **保證強度**：結構強制（架構級前提、單一根目錄為採用識別）
 > **檢測時點**：init
-> **since**：v0.4.1
+> **since**：v0.4.1（v0.12.0 預設名 rename）
 
 ---
 
@@ -12,9 +12,10 @@
 
 任何採用 AgentCharter 的專案，**多 AI 協作的所有共享資產**（任務膠囊、HANDOFF 鏈、協議文件、Institutional Memory、各角色私有區）必須位於**單一根目錄**之下。該根目錄稱為 **Common Memory Root**（共同記憶根目錄）。
 
-**預設名稱**：`agent-commons/`
+**預設名稱**：`agents-commons/`（v0.12.0+；v0.4.1〜v0.11.x 為 `agent-commons/`、依 §10 BREAKING-MEDIUM rename 紀律提供 migration script 自動遷移）
 
-> 看到專案根目錄有 `agent-commons/` ＝ 採用 AgentCharter，其內為多 AI 對齊的單一真相位置。
+> 看到專案根目錄有 `agents-commons/` ＝ 採用 AgentCharter v0.12.0+、其內為多 AI 對齊的單一真相位置。
+> 看到 `agent-commons/`（無 s）= 採用 AgentCharter v0.11.x↓、依 §10 提供 migration script 自動遷移至 `agents-commons/`。
 
 ---
 
@@ -31,7 +32,7 @@
 對齊的價值：
 
 - **物理 anchor**：跨 AI / 跨 session 的單一真相位置
-- **採用識別**：看到 `agent-commons/` 即知此專案採用 AgentCharter
+- **採用識別**：看到 `agents-commons/`（v0.12.0+）或 `agent-commons/`（v0.11.x↓）即知此專案採用 AgentCharter
 - **工具可預設啟動**：無 mapping.yaml 時亦可用預設路徑運作
 - **跨 AI 認知一致**：任何 AI 都知道「對齊脈絡」要去哪裡讀
 
@@ -41,7 +42,7 @@
 
 ```
 <project>/
-└── agent-commons/                       ← Common Memory Root
+└── agents-commons/                      ← Common Memory Root（v0.12.0 起預設名；v0.11.x↓ 為 agent-commons/）
     ├── _config/                         ← 框架配置層（v0.5.0 合併自原 .agentcharter/）
     │   ├── profile.yaml                 ← 條款啟用配置
     │   ├── mapping.yaml                 ← 路徑對映（內部子槽位）
@@ -70,7 +71,9 @@
 
 ### 4.1 預設
 
-新採用框架的專案：**直接建 `agent-commons/` 即可上線**，無需配置。
+新採用框架的專案：**直接建 `agents-commons/` 即可上線**（v0.12.0+），無需配置。
+
+> v0.11.x↓ 採用方仍可用 `agent-commons/`、依 §10 BREAKING-MEDIUM rename 提供 migration script 升級。
 
 ### 4.2 既有專案的覆寫（向後相容）
 
@@ -101,7 +104,7 @@ project/
 
 ```
 project/
-└── agent-commons/                  # 或其他單一名稱
+└── agents-commons/                 # 或其他單一名稱（v0.12.0 預設、v0.11.x↓ 為 agent-commons/）
     ├── capsules/
     ├── handoffs/
     ├── protocols/
@@ -116,7 +119,7 @@ project/
 
 每個 AI 角色 init 時的**第一動作**：
 
-1. 解析 `mapping.yaml.common_memory_root`（缺則用預設 `agent-commons/`）
+1. 解析 `mapping.yaml.common_memory_root`（缺則用預設 `agents-commons/`、v0.12.0+；v0.11.x↓ project 用 `agent-commons/`）
 2. 確認該目錄存在（依 `evidence-first.md`，用 `ls -la` 證實）
 3. 進入該目錄上下文（後續所有讀寫以此為基準）
 
@@ -178,7 +181,7 @@ project/
 
 ### 8.3 templates 對應
 
-依 `templates/agent-commons/` 下的 `*.md.tpl` 範本初始化各槽位內容：
+依 `templates/agents-commons/`（v0.12.0 目錄 rename、原 `templates/agent-commons/`） 下的 `*.md.tpl` 範本初始化各槽位內容：
 
 | 槽位 | Template |
 |---|---|
@@ -197,7 +200,93 @@ project/
 
 | 場景 | 結果 |
 |---|---|
-| 名稱不同（agent-commons / management / governance）| 工具讀 mapping 即可定位，無實質損失 |
+| 名稱不同（agents-commons / agent-commons / management / governance）| 工具讀 mapping 即可定位，無實質損失 |
 | 散在多處 | 跨 AI 對齊失敗，framework 整體失效 |
 
 → 名稱是「方言」，分散是「協議裂解」。前者可寬，後者必嚴。
+
+---
+
+## 10. v0.12.0 BREAKING-MEDIUM rename 紀律（`agent-commons/` → `agents-commons/`）
+
+> **觸發**：2026-05-22 user LIVE 在 v0.11.0 ship 過程中提出命名語意修正 — 原 `agent-commons/`（單數 agent）→ `agents-commons/`（複數 agents）更貼近語意「**多 agents 共用之 commons**」。對齊 charter 設計初衷「跨 AI 協作 = 多 agents」+ dbSDK 採用方端 LIVE 觀察。
+>
+> **位階**：BREAKING-MEDIUM（依 `core/versioning-migration §2`）— 不到 BREAKING（v0.x 階段允許）+ 不只 PATCH（採用方目錄需 rename）。
+
+### 10.1 對既有 v0.5.9 承諾的處理
+
+`core/versioning-migration §2.3`（v0.5.9 引入）「agent-commons 結構穩定性承諾」明文：
+> v0.5.9 起對所有後續變動生效；已採用 v0.5.0 之後的專案後續升版保證向下兼容
+
+→ **本變更技術上違反 v0.5.9 承諾的 letter**、但 spirit 仍對齊：
+
+| 項 | 處理 |
+|---|---|
+| 字面承諾「v0.5.9 起對所有後續變動生效」 | ⚠️ 違反（v0.12.0 改了既有採用方目錄名）|
+| 精神承諾「不對既有採用方產生太大痛點」 | ✅ 對齊（提供 migration script、採用方跑 2-3 個指令即完成）|
+| `core/versioning-migration §2.3.4` v0.x 階段彈性條款 | ✅ 對齊（當前仍 v0.x、明文「容許破壞性變動」）|
+| v1.0+ 永久承諾 | ✅ 對齊 — 自 v0.12.0 起 `agents-commons/` 結構為 v1.0+ 永久承諾、不再 rename |
+
+### 10.2 採用方升版動作
+
+提供 `tools/vendor/commons/migrate-to-agents-commons.sh` 一鍵 migration script（三 phase 互動式、依 `tools/uninstall-spec` 紀律精神）：
+
+```bash
+# 採用方升 v0.12.0 跑：
+bash ~/.agentcharter/tools/vendor/commons/migrate-to-agents-commons.sh
+```
+
+Script 動作：
+1. **Phase 1 dry-run**：grep `agent-commons` 顯示影響清單 + `git mv` 預覽
+2. **Phase 2 確認**：git status 必乾淨 + 三次 user 確認（同 uninstall-spec 紀律）
+3. **Phase 3 動作**：
+   - `git mv agent-commons agents-commons`
+   - sed `mapping.yaml.common_memory_root` 值
+   - sed 採用方專案內文檔 `agent-commons/` → `agents-commons/`（排除 `.git/` / CHANGELOG / 歷史 walkthroughs）
+   - 提示重跑 self-instantiation（vendor slash command 內路徑更新）
+   - 提示重跑 `install-git-hooks.sh --update`（commit hook deploy target 更新）
+
+採用方實際痛點：跑 **2-3 個指令**（migration script + install-hooks + 重 self-instantiate）= 與 v0.10.2 BREAKING-LITE PATCH 痛點等級。
+
+### 10.3 doctor 偵測未遷移
+
+`tools/doctor-spec §3.14` 加 W1401「mapping.yaml `common_memory_root` 已是 `agents-commons/` 但目錄仍是 `agent-commons/`」自動偵測引導 — 漏跑 migration script 會自動提示。
+
+### 10.4 charter 內歷史 audit trail 凍結原則
+
+- CHANGELOG.md 過去 entry（v0.11.x↓）— **不改**、保留 `agent-commons/` 歷史敘事（對齊 F3 不捏造歷史）
+- 9 個歷史 walkthroughs（`examples/upgrades/v0.7.5-to-v0.8.0.md` ... `v0.10.6-to-v0.11.0-antigravity-migration.md`）— **不改**
+- `.claude_temp/` 既有 entry — **不改**
+- `examples/cryptobot/mapping.md` — **不改**
+
+v0.12.0 起新 entry 用 `agents-commons/`、舊 entry 保留 `agent-commons/` + 加交叉引用「v0.12.0 BREAKING rename 詳見 §10」。
+
+---
+
+## 11. 變更歷史
+
+### v0.5（自 v0.12.0 起）
+
+**動作**：BREAKING-MEDIUM rename 預設名稱 `agent-commons/` → `agents-commons/`：
+- frontmatter 狀態 v0.4.1 → v0.5 + 加 rename 摘要 + since 加 v0.12.0 預設名 rename 註
+- §1 條文 + §2 / §3 / §4 / §5 / §8.3 / §9 預設名稱全 sweep（除歷史敘事保留）
+- 新加 §10「v0.12.0 BREAKING-MEDIUM rename 紀律」段
+- 新加 §11 變更歷史段
+
+**觸發**：2026-05-22 user LIVE 提出命名語意修正 — 對齊 charter 設計初衷「跨 AI 協作 = 多 agents」+ dbSDK PM AI 跨 vendor 報告 LIVE 觀察。
+
+**修訂類型**：BREAKING-MEDIUM（依 `versioning-migration §2`）— 既有採用方需跑 migration script、對齊「提供自動遷移工具讓痛點低」精神。
+
+**連動範圍**（同 v0.12.0 release）：
+- `core/charter-config §3` mapping.yaml schema 預設值改
+- `core/versioning-migration §2.3.5`（新加段）
+- `tools/vendor/commons/migrate-to-agents-commons.sh` 新檔
+- `tools/doctor-spec §3.14`（W1401 偵測未遷移）
+- `templates/agent-commons/` 目錄 rename → `templates/agents-commons/`
+- 4 個 preset YAML charter_version `0.11.0` → `0.12.0`
+- `CHANGELOG.md` v0.12.0 段
+- `examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md` 採用方完整 walkthrough
+
+### v0.4.1（初版）
+
+定義 Common Memory Root 架構級約定、預設名稱 `agent-commons/`、不可分散原則、跨 AI 共讀規範、命名規則。**v0.12.0 仍 hold「不可分散」+「跨 AI 共讀」核心架構紀律**、只 rename 預設目錄名。

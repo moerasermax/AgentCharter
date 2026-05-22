@@ -33,7 +33,7 @@
 
 ```
 project-root/
-└── agent-commons/                ← 採用識別（依 common-memory-root.md）
+└── agents-commons/               ← 採用識別（依 common-memory-root.md、v0.12.0 預設名；v0.11.x↓ 為 agent-commons/）
     ├── _config/                  ← 配置層（v0.5 合併自原 .agentcharter/）
     │   ├── profile.yaml
     │   ├── mapping.yaml
@@ -47,9 +47,10 @@ project-root/
 
 任何 AI 工具進入專案後，依以下順序定位 common-memory-root：
 
-1. 看 `agent-commons/_config/profile.yaml` 是否存在 → 是 → root = `agent-commons/`
-2. 掃專案根，找符合 `<dir>/_config/profile.yaml` 的目錄 → 第一個命中即視為 root（適用既有專案覆寫名稱）
-3. 都無 → 報錯「無法定位共同記憶根目錄」
+1. 看 `agents-commons/_config/profile.yaml` 是否存在 → 是 → root = `agents-commons/`（v0.12.0+）
+2. 看 `agent-commons/_config/profile.yaml` 是否存在 → 是 → root = `agent-commons/`（v0.11.x↓ 未 migrate；若 mapping.yaml `common_memory_root: agents-commons/` 已升但目錄未遷 → doctor §3.14 W1401 提示跑 migration script）
+3. 掃專案根，找符合 `<dir>/_config/profile.yaml` 的目錄 → 第一個命中即視為 root（適用既有專案覆寫名稱）
+4. 都無 → 報錯「無法定位共同記憶根目錄」
 
 ---
 
@@ -78,12 +79,12 @@ project-root/
 ```yaml
 version: "0.5.0"                         # mapping schema 版本
 
-# === Common Memory Root（v0.4.1 必填）===
+# === Common Memory Root（v0.4.1 必填 / v0.12.0 預設名 rename）===
 # 採用 AgentCharter 的專案的「共同記憶根目錄」。
-# 預設名稱：agent-commons/
+# 預設名稱：agents-commons/（v0.12.0 BREAKING-MEDIUM rename；v0.11.x↓ 為 agent-commons/）
 # 既有專案可覆寫成自己的名稱（如 CryptoBot 的 management/），但內容必須在單一根下。
-# 違反「不可分散」原則 → 結構違規退稿。詳見 core/common-memory-root.md。
-common_memory_root: agent-commons/       # 必填，相對於專案根的單一目錄
+# 違反「不可分散」原則 → 結構違規退稿。詳見 core/common-memory-root.md（含 §10 v0.12.0 rename 紀律）。
+common_memory_root: agents-commons/      # 必填，相對於專案根的單一目錄（v0.12.0+ 預設）
 
 # === 路徑對映：相對於 common_memory_root 的子路徑 ===
 # 不存在的槽位可省略；省略 = 該槽位在本專案不存在
@@ -130,7 +131,7 @@ state:
 | 欄位 | 必填？ | 說明 |
 |---|---|---|
 | `version` | ✅ | 對齊本檔 schema 版本，不可省 |
-| **`common_memory_root`** | ✅ | **v0.4.1 必填**。預設 `agent-commons/`；可覆寫為其他單一目錄名（依 `core/common-memory-root.md`）。**禁止分散** |
+| **`common_memory_root`** | ✅ | **v0.4.1 必填、v0.12.0 預設名 rename**。預設 `agents-commons/`（v0.12.0+；v0.11.x↓ 為 `agent-commons/`）；可覆寫為其他單一目錄名（依 `core/common-memory-root.md`）。**禁止分散**。既有採用方升 v0.12.0 跑 `migrate-to-agents-commons.sh` migration script（依 `versioning-migration §2.3.5`） |
 | `shared.capsules` | 條件 | 啟用 audit-rights / completion-delivery 時必填 |
 | `shared.handoffs` | 條件 | 啟用 handoff-chain 時必填 |
 | `shared.protocols` | 條件 | 啟用 evidence-first / role-separation 時必填 |

@@ -47,6 +47,8 @@ git -C ~/.agentcharter pull origin main
 
 | 從哪個版本升 | Walkthrough |
 |---|---|
+| **v0.10.6 → v0.12.0**（🔥 **3 in 1**：Antigravity vendor + Canonical Init Spec Layer + agents-commons rename、⚠️ **BREAKING-MEDIUM** 所有採用方需跑 migration script）| `examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md` |
+| **v0.10.6 → v0.11.0**（Antigravity vendor only、不含 rename / canonical layer、stable midpoint）| `examples/upgrades/v0.10.6-to-v0.11.0-antigravity-migration.md` |
 | **v0.10.5 → v0.10.6**（Claude PM v1.0 接入 + Gemini PM v1.8 best-of-breed 收斂、零採用方動作）| 無 walkthrough（純 charter_version 改一行、新 vendor spec 自動可用）|
 | **v0.10.4 → v0.10.5**（Gemini PM generalist disable 提醒、零採用方動作）| 無 walkthrough（純 charter_version 改一行）|
 | **v0.10.3 → v0.10.4**（vendor 介紹 charter 工具紀律、零採用方動作）| 無 walkthrough（純 charter_version 改一行）|
@@ -64,6 +66,49 @@ git -C ~/.agentcharter pull origin main
 **Step 3 — 跑升版驗證**
 
 對 AI 說：「請依 `tools/post-upgrade-verify-spec.md` 跑升版驗證」
+
+---
+
+---
+
+## ⚠️ v0.12.0 重大事件提示 — 3 in 1 BREAKING-MEDIUM ship
+
+charter v0.12.0 一次合併三個 ship 項：
+
+| Ship 項 | dogfood signal | 對應條款 |
+|---|---|---|
+| **(1) Antigravity CLI vendor 接入** | #60 LIVE | `roles/pm/antigravity-cli.md` v1.1 + `vendor-lifecycle §4` 失效 / 換手紀律 |
+| **(2) Canonical Init Spec Layer**（SSS S2.5）| #61 LIVE（dbSDK PM AI 報告）| `core/init-spec-schema.md` 新檔（架構級概念第 15 個）+ `roles/<role>/init-spec.md` + `templates/vendor-adapters/*.tpl` |
+| **(3) agents-commons rename**（BREAKING-MEDIUM）| user LIVE 提出 | `core/common-memory-root §10` + `core/vendor-lifecycle.md` 新檔（架構級概念第 14 個）+ `migrate-to-agents-commons.sh` migration script |
+
+**判斷你是否要動**：
+
+| 你的狀態 | 動作 |
+|---|---|
+| Gemini CLI 免費 / Pro / Ultra | 🔴 **6/18 前必須跑** v0.10.6-to-v0.12.0 walkthrough |
+| Enterprise / 付費 API key / OSS / 不用 Gemini CLI | ⚠️ **agents-commons rename 必動**（跑 migration script）+ Canonical Init Spec Layer 重 self-instantiate 推薦 |
+
+詳見 `examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md` 完整 walkthrough。
+
+---
+
+## ⚠️ v0.11.0 重大事件提示 — Gemini CLI 棄用（2026-06-18 對 Pro/Ultra/free 斷線）
+
+Google 2026-05-19 在 I/O 2026 宣布 **Gemini CLI 將由 Antigravity CLI 取代**：
+
+- **2026-06-18**：Gemini CLI 對 **Google AI Pro / Ultra / 個人免費** tier 停止服務
+- **Enterprise / 付費 API key / OSS** tier 不受影響、可繼續用 Gemini CLI
+- charter v0.11.0 ship 新 vendor spec `roles/pm/antigravity-cli.md` v1.1（path A AI-DRAFTED-FROM-GEMINI-V1.8 + 同日 LIVE 第二輪校正）+ 標 `roles/pm/gemini-cli.md` vendor_status: LEGACY_AUTO_IMPORTED（不刪、保留歷史 audit trail）
+
+**判斷你是否要動**：
+
+| 你的 Gemini CLI tier | 動作 |
+|---|---|
+| 免費 / Pro / Ultra | 🔴 **必須 6/18 前跑 `examples/upgrades/v0.10.6-to-v0.11.0-antigravity-migration.md`** |
+| Enterprise / 付費 API key / OSS | ✅ 不必動、charter v0.10.6 spec 仍 work；可選擇性升 v0.11.0 拿 Antigravity 新功能 |
+| 不用 Gemini CLI（只用 Claude Code 等） | ✅ 完全不受影響 |
+
+對應 dogfood signal #60 LIVE 觸發、`core/ai-vendor-onboarding §3 step 2` 邀請制 path A LIVE 第二次應用實證。
 
 ---
 

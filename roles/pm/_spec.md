@@ -120,7 +120,8 @@ PM 對任何「**已完成 / 已關閉 / 已落實 / 已校準 / 已更新**」�
 
 | AI | 檔案 | 狀態 |
 |---|---|---|
-| Gemini CLI | `gemini-cli.md` | ✅ v1.8（2026-04-27 提交、v1.x 多輪 PATCH、v1.8 含 v0.10.6 best-of-breed 收斂升級）|
+| **Antigravity CLI** | `antigravity-cli.md` | ✅ v1.1（2026-05-22 提交、**path A AI-DRAFTED-FROM-GEMINI-V1.8 + 同日 LIVE 第二輪校正**、Gemini CLI 棄用 LIVE 觸發、Skills 子目錄結構 `~/.gemini/skills/<name>/SKILL.md` + frontmatter `name:` 必填、待 Antigravity 真實 PM AI 完整接入校正升 SIGNED）|
+| Gemini CLI（**LEGACY_AUTO_IMPORTED**）| `gemini-cli.md` | ✅ v1.9（2026-04-27 提交、v1.x 多輪 PATCH、v1.8 含 v0.10.6 best-of-breed 收斂、v1.9 v0.11.0 標 LEGACY_AUTO_IMPORTED；**v0.11.0 起 vendor_status: LEGACY**：Antigravity 可透過 `agy plugin import gemini` import 既有 `.gemini/commands/*.toml`（但官方說只 import plugin metadata、舊 toml 指令在 Antigravity 直接不可用、需手動轉 SKILL.md）；OSS / Enterprise / 付費 API key tier 仍可繼續使用、新接入請走 antigravity-cli.md）|
 | Claude Code | `claude-code.md` | ✅ v1.0（2026-05-21 提交、含 path B dogfood 收編 pattern LIVE 實證）|
 | Cursor | `cursor.md.placeholder`（待提交）| ⏳ |
 

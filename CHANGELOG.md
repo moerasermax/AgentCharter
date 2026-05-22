@@ -10,6 +10,142 @@
 
 ---
 
+## [0.12.0] — 2026-05-22
+
+> **MINOR release — 3 in 1 BREAKING-MEDIUM**：(1) **Vendor Lifecycle 紀律**收編（架構級概念第 14 個、`core/vendor-lifecycle.md` 新檔、#5 / #41 / #55 / #58 / #59 / #60 family 同 release 收編）+ (2) **Canonical Init Spec Layer**（架構級概念第 15 個、`core/init-spec-schema.md` 新檔 + 2 個 init-spec.md + 4 個 vendor adapter templates、SSS S2.5 議程 ship、dogfood signal #61 條款化）+ (3) **agents-commons rename** BREAKING-MEDIUM（`agent-commons/` → `agents-commons/`、提供 `migrate-to-agents-commons.sh` 一鍵 migration script、`core/common-memory-root §10` rename 紀律本體 + `core/versioning-migration §2.3.5` 對 v0.5.9 既有承諾衝突釋疑）。
+>
+> **設計動機**：v0.11.0 ship 同時觸發三個議題 — (a) Antigravity vendor 接入（v0.11.0 phase 1）+ (b) user LIVE 提出「agents-commons」命名語意修正 + (c) dbSDK PM AI 跨 vendor 報告揭露 Canonical Init Spec Layer 缺口。user explicit 授權「3 in 1 ship」、charter v0.12.0 一次完成三個議程。**架構級概念 13 → 15**（增加第 14 vendor-lifecycle + 第 15 init-spec-schema）+ **條款數 25 → 27**。
+>
+> **對齊 v0.7.3 北極星紀律**：v0.12.0「3 in 1」對應「**對未來修訂的紀律**」三題：
+> - 是否讓**回鍋開發者**體驗加分？✅（agents-commons 語意更準、Canonical Init Spec Layer 跨 vendor 統一、Antigravity vendor 接入長期保 active）
+> - 是否讓**小白接入**門檻降低？✅（canonical / adapter 兩層分離、新 vendor 接入更簡單；agents-commons 命名語意更直觀）
+> - 是否解決**新的重複溝通**？✅（dbSDK PM AI 報告 §4 提案的「跨 vendor 行為碎片化」=「重複溝通」核心議題、SSS S2.5 ship 收編）
+
+### Added
+
+- **新檔 `core/vendor-lifecycle.md` v0.1**（架構級概念第 14 個本體、收編 #5/#41/#55/#58/#59/#60 family）：
+  - §2 Vendor 預設行為紀律（#5 + #55）
+  - §3 Vendor 識別紀律（#41）
+  - §4 Vendor 失效 / 換手紀律（#60、含 LIVE 校正升 SIGNED 紀律）
+  - §5 跨 vendor best-of-breed 收斂紀律（#59、path B dogfood 收編 pattern）
+  - §6 跨 vendor 紀律 propagate 紀律（#58）
+
+- **新檔 `core/init-spec-schema.md` v0.1**（架構級概念第 15 個本體、SSS S2.5 Canonical Init Spec + Vendor Adapter pattern）：
+  - §2 6 段 required sections（Step 0 Pre-Init / Step 1 Load / Step 2 Mental Anchors / Step 3 Environment Snapshot / Step 4 Audit State / Step 5 Ready Report）
+  - §3 Vendor Adapter Layer（charter framework 端維護的 adapter 模板紀律）
+  - §4 違反處置（對齊 doctor §3.13 W1301 / E1302）
+
+- **新檔 `roles/pm/init-spec.md` v1.0**（PM canonical init、依 init-spec-schema 6 段、從 dbSDK Claude Code pm-init.md 11.8KB 萃取為 vendor-neutral）
+- **新檔 `roles/engineer/init-spec.md` v1.0**（Engineer canonical init、5 職責 + 10 心智守則對齊）
+
+- **新檔 `templates/vendor-adapters/{README.md, gemini-cli.toml.tpl, claude-code.md.tpl, antigravity.skill.tpl}`**（4 個 vendor adapter 模板）
+
+- **新檔 `tools/vendor/commons/migrate-to-agents-commons.sh` v1.0**（三 phase 互動式 migration script：Phase 1 dry-run / Phase 2 確認 / Phase 3 動作）
+
+- **新檔 `examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md`**（採用方完整 walkthrough、3 in 1 流程、11 step + 6 常見問題）
+
+### Changed
+
+- **`core/common-memory-root.md` v0.4.1 → v0.5**（rename 紀律本體）：
+  - frontmatter + §1 預設名稱 `agent-commons/` → `agents-commons/`
+  - §2 / §3 / §4 / §5 / §8.3 / §9 預設名稱全 sweep（除歷史敘事保留）
+  - 新加 §10「v0.12.0 BREAKING-MEDIUM rename 紀律」段
+  - 新加 §11 變更歷史段
+
+- **`core/versioning-migration.md` v0.3 → v0.4**：
+  - §2.3 加 §2.3.5「v0.12.0 BREAKING-MEDIUM rename（v0.5.9 承諾例外處置）」段
+  - §10 變更歷史加 v0.4 entry
+
+- **`core/charter-config.md` v0.5.0**（mapping.yaml schema 預設值改）：
+  - §2 ASCII tree `agent-commons/` → `agents-commons/`
+  - §3 mapping schema 預設值改 `common_memory_root: agents-commons/`
+  - §3 Schema 細節表 common_memory_root row 加 v0.12.0 註
+
+- **`tools/doctor-spec.md`** 加 §3.13（W1301 跨 vendor pm-init 深度偏差 / E1302 vendor command 引用過時路徑）+ §3.14（W1401 agents-commons rename migration 未完成偵測）
+
+- **`UPGRADE.md`** 加 v0.10.6 → v0.12.0 row + 顯著警告段（v0.12.0 3 in 1 ship 概述 + tier 判斷表）
+
+- **`tools/profiles/{essential,minimal,standard,strict}.yaml`** charter_version `0.11.0` → `0.12.0`
+
+### dogfood signal 條款化
+
+- **#5 / #41 / #55 / #58 / #59 / #60 family 升 core 條款層**：六個 signal 同 release 收編為架構級概念第 14 個 `core/vendor-lifecycle.md`、charter 紀律演化「**散在多條款 → 單一架構級概念**」LIVE 實證
+- **#61 條款化（dbSDK PM AI 報告觸發、SSS S2.5）**：架構級概念第 15 個 `core/init-spec-schema.md` ship、解決「跨 vendor 行為碎片化」核心議題（dbSDK 三 vendor pm-init 量化差異 604/11842/1645 bytes、缺 canonical init spec layer）
+
+### Follow-up（留 v0.13.0 議程）
+
+- **antigravity-cli.md path A → SIGNED 升級**：累積 ≥ 80% segment LIVE 校正後升 SIGNED
+- **Cursor / Kiro / Codex 等 vendor 接入**：依 `core/ai-vendor-onboarding §3` 邀請制 + `templates/vendor-adapters/` 加新 adapter
+- **Antigravity disable 指令名 LIVE 校正**（§3.5.5 path A 預估 `/agents disable generalist`、待真實校正）
+- **multi-perspective 第十四循環新類型紀律化**：採用方 vendor AI 對 charter 行使結構性反向觀察是否升 charter 規範
+
+### 累積跳門檻紀錄
+
+- user explicit 授權 2026-05-22 LIVE 走 **3 in 1 ship**（Antigravity + canonical layer + agents-commons rename）+ maintainer path A AI-DRAFTED + #60 family 升 core 條款層 + agents-commons rename 違反 v0.5.9 letter 承諾（但對齊 spirit、提供 migration script 補償）。觸發理由：Gemini CLI 6/18 棄用截止 + dbSDK PM AI 報告 SSS S2.5 議程 + user LIVE 命名修正三議題同時觸發。
+
+---
+
+## [0.11.0] — 2026-05-22
+
+> **MINOR release — Antigravity CLI vendor 接入（path A AI-DRAFTED-FROM-GEMINI-V1.8 + 同日 LIVE 第二輪校正）+ Gemini CLI vendor 標 LEGACY_AUTO_IMPORTED**。**⚠️ 對 Gemini CLI 免費 / Pro / Ultra tier 採用方為強制升級**（2026-06-18 前必須遷移、Google 2026-05-19 宣布 Gemini CLI 棄用）；OSS / Enterprise / 付費 API key tier 為選擇性升級（向下兼容、Gemini CLI 仍可繼續）。
+>
+> **設計動機**：對應 dogfood signal #60 LIVE 觸發 — Gemini CLI 棄用事件（Google I/O 2026 宣布 Antigravity CLI 取代、2026-06-18 對 Pro/Ultra/free 斷線）抵達 charter v0.10.6 ship 後不到 24 小時、觸發 charter v0.11.0 Antigravity vendor path A AI-DRAFTED 接入 + 同日 dbSDK PM AI 報告 LIVE 第二輪校正升 path A LIVE-CALIBRATED。對齊 v0.7.3 北極星「**培養魚塘、不討魚**」精神 + `core/ai-vendor-onboarding §3 step 2` 邀請制 path A LIVE 第二次應用實證。
+>
+> **時運實證**：charter v0.10.6（2026-05-21 ship）剛 ship Claude PM v1.0 + Gemini PM v1.8 best-of-breed 收斂、**ship 不到 24 小時 Gemini CLI 棄用消息抵達** = **A1「角色 ⊥ AI」公理的時運實證**。即使 Gemini 消失、PM 角色不死（Claude PM 接班 + Antigravity vendor 接入兩條保險）。
+
+### Added
+
+- **新檔 `roles/pm/antigravity-cli.md` v1.1**（path A AI-DRAFTED-FROM-GEMINI-V1.8 + 同日 LIVE 第二輪校正、八段結構對稱 Gemini CLI v1.8）：
+  - §0 兩軸分解（**vendor tool ⊥ underlying model**、Antigravity 為 multi-model vendor、charter A1 公理進一步分解）
+  - §1 工具能力清單 14 row（含 Antigravity 新增 4 row：Skills primitive / Plugin hooks / async multi-agent orchestration / Multi-model `/model` 切換 + MCP `serverUrl` rename）
+  - §3 已知能力盲區 6 row（加新 row「vendor tool ⊥ underlying model 雙軸混淆」signal #60 family）
+  - §3.5.5 Antigravity 預設 sub-agent 行為處置 PM init 必提醒（path A 預估指令名、待 LIVE 校正）
+  - §3.6 Skills Markdown schema 規範（**LIVE 第二輪校正 2026-05-22**：`~/.gemini/skills/<name>/SKILL.md` 子目錄結構 + frontmatter `name:` 必填、舊 toml 指令在 Antigravity 不可用必須手動轉換）
+  - §3.7 `/checkpoints` 介紹與落實 + §3.8 Violation Reflection 路徑紀律
+  - §4 歷史事件沉澱 + (b) vendor 失效時運事件（dogfood signal #60 LIVE）
+  - §7 Vendor 接入回顧 path A AI-DRAFTED 自述 + LIVE 校正紀錄表
+
+- **新檔 `examples/upgrades/v0.10.6-to-v0.11.0-antigravity-migration.md`**（採用方完整 walkthrough、10 step + 6 常見問題）：
+  - Step 0 tier 自我判斷表
+  - Step 1-4 拉 charter + 裝 `agy` + auth + `agy plugin import gemini`
+  - Step 5 🔥 **手動轉換** `.gemini/commands/*.toml` → `~/.gemini/skills/<name>/SKILL.md`（子目錄結構、LIVE 第二輪校正）
+  - Step 6 MCP url → serverUrl rename
+  - Step 7-9 升 charter_version + PM init 重跑 + 雙驗收
+
+### Changed
+
+- **`roles/pm/gemini-cli.md` v1.8 → v1.9**（vendor_status 升 LEGACY_AUTO_IMPORTED、純擴增不刪內容）：
+  - frontmatter 加 vendor_status 段
+  - 新加 §9「採用方遷移指引（v0.11.0 LEGACY）」段
+  - 既有 §1〜§7 / §8 既有 v1.0〜v1.8 entry **不刪、不修**
+
+- **`roles/pm/_spec.md §7` 對應 AI 表 update**：
+  - 新加 Antigravity CLI row（`antigravity-cli.md` v1.1 / path A AI-DRAFTED-FROM-GEMINI-V1.8 + 同日 LIVE 第二輪校正）
+  - Gemini CLI row 標 LEGACY_AUTO_IMPORTED + 引導去 antigravity-cli.md
+
+- **`UPGRADE.md`** 加新 row（v0.10.6 → v0.11.0）+ 新段「v0.11.0 重大事件提示 — Gemini CLI 棄用」
+
+- **`tools/profiles/{essential,minimal,standard,strict}.yaml`** charter_version `0.10.6` → `0.11.0`
+
+### dogfood signal 條款化
+
+- **#60 條款化候選登記**（user 直接條款化 pattern）：**Gemini CLI 棄用事件 LIVE 觸發 vendor 換手紀律議程**。同 family（#5 / #41 / #55 / #58 / #59）共構成「**vendor 預設行為 / 失效 / 換手紀律**」**架構級概念第 14 個候選**、留 v0.12.0 評估升 `core/vendor-lifecycle.md` 條款。
+
+- **path A AI-DRAFTED → path A LIVE-CALIBRATED v2 演化（同日 ship）**：v1.0 ship 同日（2026-05-22）採用方 dbSDK PM AI 跨 vendor 報告（`.claude_temp/DBSDK-CROSS-VENDOR-SLASH-COMMAND-REPORT-2026-05-22.md`）親讀 SKILL.md 實檔回報兩處 path A 預估錯誤 → maintainer 立刻校正：(1) Skills 路徑 `~/.gemini/skills/<name>/SKILL.md` 子目錄結構（vs path A 預估 `.agents/skills/`）+ (2) frontmatter `name:` 必填（vs path A 預估禁 name）。**邀請制 §3 step 2 LIVE 工作實證** — 真實 vendor AI 回報校正、charter 同日 ship 收回。
+
+### Follow-up（留 v0.12.0 議程）
+
+- **signal #60 family 升 core 條款層**：v0.12.0 評估新增 `core/vendor-lifecycle.md`（架構級概念第 14 個）
+- **antigravity-cli.md path A → SIGNED 升級**：累積 ≥ 80% segment LIVE 校正後升 SIGNED
+- **SSS S2.5 Canonical Init Spec Layer ship**（dbSDK PM AI 報告 §4 提案、v0.12.0 ship）
+- **agents-commons rename**（v0.12.0 BREAKING-MEDIUM、合併 SSS S2.5 ship）
+
+### 累積跳門檻紀錄
+
+- user explicit 授權 2026-05-22 LIVE 走 maintainer path A AI-DRAFTED 直接 ship、繞 `core/ai-vendor-onboarding §3 step 2` 邀請制等真實 vendor 提交流程。觸發理由：Gemini CLI 6/18 棄用截止、charter 必須在截止前 ship vendor 換手路徑。
+
+---
+
 ## [0.10.6] — 2026-05-21
 
 > **PATCH release — Claude PM v1.0 接入 + Gemini PM v1.8 best-of-breed 收斂升級**（path B dogfood 收編 pattern 第一次完整 LIVE）。**零採用方動作要求**（向下兼容、純 vendor spec 新增 + 既有 vendor spec 擴增）。採用方升版只改 `agent-commons/_config/profile.yaml` `charter_version: "0.10.5"` → `"0.10.6"`、無其他動作。
