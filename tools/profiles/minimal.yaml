@@ -4,8 +4,8 @@
 # 設計：只啟用最核心防線，配置從寬，搬遷成本最低。
 #
 # 條款啟用：12 / 25（maintainer-discipline 採用方無關 / ai-vendor-onboarding 預設關，minimal 場景單 AI 單角色不需要 /
-#                       v0.9.0 加 4 條：individual-learning-loop=true（user 明示框架必備）、其他 3 條（diagnose-remediate-protocol /
-#                       adoption-lifecycle / condition-mutability）minimal 預設 false、升 standard 起 true）
+#                       v0.9.0 加 4 條：individual-learning-loop=true（user 明示框架必備）、其他 3 條 minimal 預設 false /
+#                       v0.12.0 加 2 條（vendor-lifecycle / init-spec-schema）minimal 預設 false、單 AI 場景不需跨 vendor 紀律密度）
 # 預設參數：寬鬆
 
 version: "0.4.0"
@@ -41,6 +41,10 @@ enabled:
   diagnose-remediate-protocol: false   # v0.9.0 加 — spec-as-data + 真實 stdout 證據要求；minimal 預設 false（探索期 LLM 自律可接受、升 standard 改 true）
   adoption-lifecycle: false            # v0.9.0 加 — 5 階段 lifecycle 紀律；minimal 場景單人快迭代、棄用直接刪即可；升 standard 改 true 走完整 lifecycle
   condition-mutability: false          # v0.9.0 加 — 三層 mutability 紀律 + 3-strike 刪除協議；minimal 場景 charter 自身可全改、不需此紀律密度
+
+  # === v0.12.0 加 2 條條款 ===
+  vendor-lifecycle: false              # v0.12.0 加 — Vendor 預設行為 / 失效 / 換手紀律；minimal 單 AI 場景不需此紀律密度、升 standard 起 true
+  init-spec-schema: false              # v0.12.0 加 — Canonical Init Spec + Vendor Adapter pattern；minimal 單 vendor 場景不需跨 vendor 一致性、升 standard 起 true
 
 # === B3 粒度：條款參數（寬鬆）===
 parameters:

@@ -4,7 +4,7 @@
 # 設計：只啟用最硬層 5 條核心防線、配置最寬鬆、token 成本 < 5k init
 # 對應 dogfood signal #28（progressive adoption） + #26（init token cost / ROI）
 #
-# 條款啟用：5 / 25（最硬 5 條 — 結構性反捏造 + 抽驗權 + 失敗模式 + 角色互鎖 + 實證先行；其他 18 採用方相關全停 + maintainer-only 1 條停 + 架構級前提 2 條免設）
+# 條款啟用：5 / 25（v0.12.0 母數 = 27 - 2 架構級前提；最硬 5 條 — 結構性反捏造 + 抽驗權 + 失敗模式 + 角色互鎖 + 實證先行；其他 20 採用方相關全停 + maintainer-only 1 條停 + 架構級前提 2 條免設）
 # 預設參數：最寬鬆（F-mode 只啟最常見、不啟強化抽驗門檻、不要求 stdout 嚴格）
 #
 # vs minimal：minimal 含 init-template / domain-axiom-slot / versioning-migration / working-stack-discipline 等基礎接班 + 升版條款（11+ 啟用）；
@@ -45,6 +45,11 @@ enabled:
   diagnose-remediate-protocol: false   # 不要求 spec-as-data + 真實 stdout 證據要求（標準至 standard 才強制）
   adoption-lifecycle: false            # 不要求 5 階段 lifecycle（單 session 場景、棄用直接刪即可）
   condition-mutability: false          # 不要求三層 mutability 紀律（探索期專案 charter 自身可全改）
+
+  # === v0.12.0 加 2 條條款 ===
+  vendor-lifecycle: false              # v0.12.0 加 — essential 單 AI 場景不需跨 vendor 紀律密度
+  init-spec-schema: false              # v0.12.0 加 — essential 不啟 init-template、自然不需 canonical init spec layer
+
   maintainer-discipline: false         # 位階特殊 — 對採用方無關，僅 framework 維護者啟用
 
 # === B3 粒度：條款參數（最寬鬆）===

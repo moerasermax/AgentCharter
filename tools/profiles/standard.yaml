@@ -3,8 +3,8 @@
 # 適用：一般雙 AI 協作專案（CryptoBot 級別）。
 # 設計：全核心條款啟用，參數中等嚴格，適合多數正式專案。
 #
-# 條款啟用：22 / 25（全啟用 — maintainer-discipline 是 maintainer-only，採用方預設關 / 架構級前提 2 條免設 enabled /
-#                       v0.9.0 加 4 條全 true：individual-learning-loop / diagnose-remediate-protocol / adoption-lifecycle / condition-mutability）
+# 條款啟用：24 / 25（全啟用 — maintainer-discipline 是 maintainer-only，採用方預設關 / 架構級前提 2 條免設 enabled /
+#                       v0.9.0 加 4 條全 true / v0.12.0 加 2 條全 true：vendor-lifecycle / init-spec-schema）
 # 預設參數：中等
 
 version: "0.4.0"
@@ -38,6 +38,10 @@ enabled:
   diagnose-remediate-protocol: true  # v0.9.0 加 — spec-as-data + 真實 stdout 證據要求 + commit hook vendor 邀請制（SSS S3 架構級條款化）
   adoption-lifecycle: true           # v0.9.0 加 — 5 階段 lifecycle（全新接入 / 升版 / 棄用 / 重新採用 / vendor 升級三路徑）
   condition-mutability: true         # v0.9.0 加 — 三層 mutability 紀律（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation
+
+  # === v0.12.0 加 2 條條款（standard 全 true）===
+  vendor-lifecycle: true             # v0.12.0 加 — 架構級概念第 14 個、Vendor 預設行為 / 失效 / 換手紀律、收編 dogfood signal #5/#41/#55/#58/#59/#60 family
+  init-spec-schema: true             # v0.12.0 加 — 架構級概念第 15 個、Canonical Init Spec + Vendor Adapter pattern、跨 vendor 行為一致性（SSS S2.5）
 
 # === B3 粒度：條款參數（中等）===
 parameters:

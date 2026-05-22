@@ -18,7 +18,7 @@ AgentCharter 是一套多 AI 協作規範框架 — 解決「**Claude 和 Gemini
 
 ```
 ~/.agentcharter/                ← ① framework 層（規範集，一次 clone，所有專案共用）
-  core/          條款（25 條紀律規範）
+  core/          條款（27 條紀律規範）
   tools/         spec（init / doctor / upgrade-verify 等工具設計）
   templates/     範本（capsule / handoff / reflection 等）
   roles/         角色 spec（engineer / pm / auditor / doctor）

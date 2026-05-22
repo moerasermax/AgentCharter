@@ -25,7 +25,7 @@ git -C ~/.agentcharter pull origin main
 編輯 `agent-commons/_config/profile.yaml`：
 
 ```yaml
-charter_version: "0.10.0"   # 改成新版號，其他不動
+charter_version: "0.12.0"   # 改成新版號，其他不動
 ```
 
 完成。不需要跑 doctor，不需要改任何結構。

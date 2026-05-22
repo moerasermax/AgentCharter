@@ -13,7 +13,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 把「PM / Engineer / Reviewer」這類職能**從 AI 廠商解綁**：任何 AI（Claude / Gemini / Codex / GPT / 你下個用的 LLM）都能扮演任何角色，協議跨 AI 一致。
 
-**框架本體 = 25 條 core 條款 + 7 份 templates**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
+**框架本體 = 27 條 core 條款 + 7 份 templates + 3 個 vendor adapter 模板**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
 
 **採用識別**：專案根有 `agent-commons/` 目錄 = 用了本框架。
 
@@ -44,9 +44,9 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 ---
 
-## 3. 25 條 core 條款（按概念分組）
+## 3. 27 條 core 條款（按概念分組）
 
-> **採用方視角**：A 組〜E 組共 24 條對應 `profile.yaml.enabled` 開關（含 2 條架構級前提無開關 + 22 條由 enabled 控制）；F 組 1 條為 **maintainer-only**（採用方無關，三 preset 預設 `false`）。下方分組依此排序。
+> **採用方視角**：A 組〜E 組共 26 條對應 `profile.yaml.enabled` 開關（含 2 條架構級前提無開關 + 24 條由 enabled 控制）；F 組 1 條為 **maintainer-only**（採用方無關，四 preset 預設 `false`）。下方分組依此排序。
 
 ### A. 角色與職權（4 條）
 
@@ -75,7 +75,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `output-mode-protocol.md` | eco / verbose 雙段式 + 自動升級條件 |
 | `completion-delivery.md` | 完工 VCP 必含 Directive Header / 雙保險 / 期望錨點 / 失敗解讀表 |
 
-### D. 交接 / 跨 AI（6 條）
+### D. 交接 / 跨 AI（8 條）
 
 | 條款 | 一句話 |
 |---|---|
@@ -85,6 +85,8 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `init-template.md` | Role Init Mandate：四職責（召喚/校準/簽名/守門）+ 多 AI 自我具象化（v0.5.10：六步驟 → 七步驟，加 step 5 schema 驗證；**v0.7.0**：step 6 簽名 Status 必為 `PROVISIONAL`/`ACTIVE` 二態 + slash command 引用紀律禁絕對路徑；**v0.9.0**：七步驟 → 八步驟、加 step 0「讀過去違反紀錄」對應個體學習迴圈）|
 | `ai-vendor-onboarding.md` | **新 vendor / 新角色接入「邀請制」四步驟**（v0.6.0）：禁 charter 預先寫死 vendor 層，由真實接觸累積差異 |
 | `individual-learning-loop.md` | **（v0.9.0 加、第 13 個架構級概念、補完接班場景四軸的第 4 軸）**個體 AI 跨任務 / 跨 session 學習迴圈：寫紀律（雙寫個體 `roles/<role>/reflections/` + 集體 `state/failure_mode_log.md`）+ 讀紀律（init step 0 強制讀）+ 跨 session 學習迴圈（接班 AI 紀律繼承）|
+| `vendor-lifecycle.md` | **（v0.12.0 加、第 14 個架構級概念）**Vendor 預設行為 / 失效 / 換手紀律：收編 dogfood signal #5/#41/#55/#58/#59/#60 family — vendor 預設行為違背 charter 卡控 / vendor fallback 誤讀身份 / vendor 失效棄用（如 Gemini CLI 2026-06-18 對 Pro/Ultra/free 斷線）/ 跨 vendor best-of-breed 收斂 / 跨 vendor 紀律 propagate |
+| `init-spec-schema.md` | **（v0.12.0 加、第 15 個架構級概念）**Canonical Init Spec + Vendor Adapter pattern：解決跨 vendor 行為碎片化（dbSDK PM AI 報告實證、三 vendor pm-init 量化差異 604/11842/1645 bytes）— charter 端寫 canonical init-spec（vendor-neutral 6 段 required sections）+ 各 vendor 透過 adapter 模板轉成自己格式的 slash command |
 
 ### E. 架構 / 配置 / 版本（6 條，含 2 條架構級前提）
 
@@ -97,7 +99,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 | `adoption-lifecycle.md` | **（v0.9.0 加）**5 階段 lifecycle 完整化：全新接入 / 升版 / 棄用（含「保留最後的溫柔」精神）/ 重新採用 / vendor 升級 path 三路徑（A 維持現狀 / B 開 issue / C AI 自驅修復對齊 SSS S1 子集）|
 | `condition-mutability.md` | **（v0.9.0 加）**condition mutability 紀律本體：三層 mutability（IMMUTABLE-by-AI / APPEND-ONLY / FULL-MUTABLE）+ 3-strike 刪除協議 + user-initiated consolidation + AI 修訂權限分層 |
 
-→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 23 條由 `profile.yaml.enabled.<condition>` 控制（v0.6.0 加 `ai-vendor-onboarding` 後 19 → 21 / v0.9.0 加 4 條後 21 → 23、含 1 條 maintainer-only 預設 false 共 22 條採用方有效）。
+→ 架構級前提（`common-memory-root` + `charter-config`）採用即啟用，不設開關。其餘 25 條由 `profile.yaml.enabled.<condition>` 控制（v0.6.0 加 `ai-vendor-onboarding` 後 19 → 21 / v0.9.0 加 4 條後 21 → 23 / **v0.12.0 加 2 條後 23 → 25**、含 1 條 maintainer-only 預設 false 共 24 條採用方有效）。
 
 ### F. Maintainer-only（1 條，採用方無關）
 
@@ -136,12 +138,12 @@ project-root/
 
 | Preset | enabled 條款數 | 適用 |
 |---|---|---|
-| `essential.yaml`（v0.9.0 加）| 3-5 / 23 | 探索期 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本（< 5k init token）|
-| `minimal.yaml` | 10 / 23 | 探索型 / 單人 + 1 AI / 短期實驗（含 individual-learning-loop = true）|
-| `standard.yaml` | 22 / 23（中等參數） | 一般雙 AI 協作（v0.9.0 後含 4 條新加 condition）|
-| `strict.yaml` | 22 / 23（嚴格上限） | 嚴格合規 / 高風險領域（金融 / 醫療 / 軍工） |
+| `essential.yaml`（v0.9.0 加）| 5 / 25 | 探索期 / 單人 / 快迭代 / 想要 AI 別瞎掰但不想要全套儀式成本（< 5k init token）|
+| `minimal.yaml` | 12 / 25 | 探索型 / 單人 + 1 AI / 短期實驗（含 individual-learning-loop = true）|
+| `standard.yaml` | 24 / 25（中等參數） | 一般雙 AI 協作（v0.9.0 後含 4 條新加 / v0.12.0 後含 vendor-lifecycle + init-spec-schema）|
+| `strict.yaml` | 24 / 25（嚴格上限） | 嚴格合規 / 高風險領域（金融 / 醫療 / 軍工） |
 
-> 註：母數 23 = 25 條 core 條款 - 2 條架構級前提（不設 enabled 開關）。1 條 maintainer-only（`maintainer-discipline`）四 preset 皆預設 `false` — 採用方無關。
+> 註：母數 25 = 27 條 core 條款 - 2 條架構級前提（不設 enabled 開關）。1 條 maintainer-only（`maintainer-discipline`）四 preset 皆預設 `false` — 採用方無關。
 >
 > v0.9.0 加 essential preset 對應 dogfood signal #28 progressive adoption + #26 init token cost / ROI 真槓桿；minimal 加 individual-learning-loop = true 對應 user 明示「框架必備」（signal #34）。
 
@@ -153,7 +155,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.10.0"`（或當前最新版）。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.12.0"`（或當前最新版）。
 
 ### T1 接入
 

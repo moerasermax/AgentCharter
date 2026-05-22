@@ -3,8 +3,8 @@
 # 適用：嚴格合規 / 多團隊 / 高風險領域（金融、醫療、軍工、生產系統）。
 # 設計：全條款啟用 + 最嚴格參數 + 禁用所有寬鬆條款。
 #
-# 條款啟用：22 / 25（maintainer-discipline 是 maintainer-only / 架構級前提 2 條免設 enabled /
-#                       v0.9.0 加 4 條全 true：individual-learning-loop / diagnose-remediate-protocol / adoption-lifecycle / condition-mutability）
+# 條款啟用：24 / 25（maintainer-discipline 是 maintainer-only / 架構級前提 2 條免設 enabled /
+#                       v0.9.0 加 4 條全 true / v0.12.0 加 2 條全 true：vendor-lifecycle / init-spec-schema）
 # 預設參數：嚴格上限
 
 version: "0.4.0"
@@ -38,6 +38,10 @@ enabled:
   diagnose-remediate-protocol: true  # v0.9.0 加 — spec-as-data + 真實 stdout 證據要求 + commit hook vendor 邀請制；strict 場景每 PASS 必附 binary stdout、純文字視同 F1
   adoption-lifecycle: true           # v0.9.0 加 — 5 階段 lifecycle 全紀律啟用（含棄用 archive 報告 + vendor 升級三路徑強制走授權閘）
   condition-mutability: true         # v0.9.0 加 — 三層 mutability 紀律 + 3-strike 刪除協議；strict 場景 IMMUTABLE-by-AI 比例最高、user 親決所有條款修訂
+
+  # === v0.12.0 加 2 條條款（strict 全 true）===
+  vendor-lifecycle: true             # v0.12.0 加 — Vendor 預設行為 / 失效 / 換手紀律；strict 場景必啟、vendor 棄用 / 預設行為違規一律按條款處置
+  init-spec-schema: true             # v0.12.0 加 — Canonical Init Spec + Vendor Adapter pattern；strict 場景必啟、跨 vendor pm-init 深度偏差超閾值即觸發 W1301
 
 # === B3 粒度：條款參數（嚴格）===
 parameters:

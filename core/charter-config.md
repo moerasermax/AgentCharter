@@ -229,6 +229,8 @@ v0.4 暫不支援，需要時 PR 升級 schema。
 | `ai-vendor-onboarding` | `init-template`, `role-separation`, `cross-ai-handoff`, `maintainer-discipline`（v0.6.0 加；採用方加新 vendor / 新角色時須遵守）|
 | `role-separation` | `common-memory-root`（`roles/<role>/` 目錄須在此根下）|
 | **`init-template`**（v0.7.0 後相依擴增）| `multi-role-tracking`（§3.4.4 init 階段自激活 = F1）+ `audit-rights`（Phase 5b 採用方半邊「他抽」屬性源頭）|
+| **`vendor-lifecycle`**（v0.12.0 加）| `ai-vendor-onboarding`（邀請制是 vendor 接入基礎）+ `cross-ai-handoff`（vendor 換手協議）+ `versioning-migration`（vendor 失效升版）+ `role-separation`（角色互鎖前提）|
+| **`init-spec-schema`**（v0.12.0 加）| `init-template`（self-instantiation 流程入口）+ `ai-vendor-onboarding`（邀請制延伸）+ `role-separation`（角色概念層基礎）+ `vendor-lifecycle`（跨 vendor 紀律 propagate）|
 | **所有條款** | **`common-memory-root`**（v0.4.1 起為架構級前提）|
 
 `/charter-doctor` 在啟動時檢查相依完整性，缺漏即 warn。
