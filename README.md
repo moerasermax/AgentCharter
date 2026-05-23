@@ -248,10 +248,10 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 
 **採用方角色**（採用方視具體場景啟用）：
 
-- `roles/engineer/_spec.md` + `roles/engineer/claude-code.md` — Engineer 概念層 + Claude Code 工程師實作（v0.1 reference impl）
+- `roles/engineer/_spec.md` + `roles/engineer/{claude-code,codex}.md` — Engineer 概念層 + 兩 vendor 實作（Claude Code v0.1 / **Codex Desktop v0.1（v0.13.0 邀請制接入完成）**）
 - `roles/pm/_spec.md` + `roles/pm/{antigravity-cli,gemini-cli,claude-code}.md` + `roles/pm/init-spec.md`（v0.12.0 加 canonical init spec）— PM 概念層 + 三 vendor 實作（Antigravity v1.1 / Gemini v1.9 LEGACY / Claude v1.0）+ canonical init layer
 - `roles/engineer/init-spec.md`（v0.12.0 加 canonical init spec）— Engineer canonical init、6 段 required sections 對齊 `core/init-spec-schema.md`
-- `templates/vendor-adapters/*.tpl`（v0.12.0 加 3 個 vendor adapter）— gemini-cli / claude-code / antigravity 三個 adapter 模板、把 canonical 6 段轉成 vendor 對應 slash command 格式
+- `templates/vendor-adapters/*.tpl`（v0.12.0 加 3 個 + **v0.13.0 加 codex.skill.tpl 共 4 個 vendor adapter**）— gemini-cli / claude-code / antigravity / codex 四個 adapter 模板、把 canonical 6 段轉成 vendor 對應 slash command 格式
 - `roles/validator/_spec.md` — 抽驗權專職載體；漸進接管 PM 抽驗職責（v0.6.0 概念層 / **v0.7.0 §3.6 擴 init 階段抽驗 — 採用方半邊 Phase 5b 載體**）；vendor 層待邀請制流程
 
 **Maintainer-only 角色**（採用方無關，charter repo 自身維護用）：

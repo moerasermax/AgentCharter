@@ -3,7 +3,7 @@
 > **給誰**：採用 AgentCharter 框架的團隊（人類採用方）
 > **性質**：reference / 工具書（章節獨立、可跳讀）
 > **不是**：線性教學書（如想線性走完 → [QUICKSTART.md](./QUICKSTART.md)）
-> **配對**：本檔對應 charter `v0.10.6`
+> **配對**：本檔對應 charter `v0.13.0`
 
 ## 目錄
 
@@ -748,6 +748,8 @@ git commit --no-verify   # git 既有逃生口；AI 自主繞過 = F1（依 comm
 ---
 
 ## 變更歷史
+
+- **v1.24（2026-05-23，charter v0.13.0）** — Engineer × Codex Desktop vendor 接入完成 MINOR 連動 sync（邀請制四步驟走完）。**零採用方動作要求**（純 vendor coverage 擴增）— 升版只改 profile.yaml `charter_version: "0.12.0"` → `"0.13.0"`、無其他動作。**核心改動**：(a) 新檔 `roles/engineer/codex.md` v0.1（Codex Desktop self-instantiation 自評產出、7 段結構齊備、anti-#41 教科書級實證 — 不宣稱 `.codex/commands/` native slash command、改用 Codex Skill schema）；(b) 新檔 `templates/vendor-adapters/codex.skill.tpl` v1.0（Codex Skill target `~/.codex/skills/<role>-init/SKILL.md`）；(c) `roles/engineer/_spec.md §7` 對應 AI 表加 Codex Desktop row。**採用方接入影響**：Engineer 角色 vendor coverage 從 Claude Code 單一擴為 Claude Code + Codex Desktop 雙 vendor — self-instantiation 時接 Engineer 的 AI 可選兩 vendor 任一。**設計學意義**：v0.12.0 canonical / adapter pattern 首次新 vendor 接入測試 LIVE 驗證、Codex 一輪即過 step 4 簽收。詳見 CHANGELOG v0.13.0 段。
 
 - **v1.23（2026-05-22，charter v0.12.0）** — 🔥 **3 in 1 BREAKING-MEDIUM ship**：(1) Antigravity vendor 接入（Gemini 棄用救命）+ (2) Canonical Init Spec Layer（SSS S2.5、架構級概念第 15 個）+ (3) agents-commons rename（BREAKING-MEDIUM）。**升 v0.12.0 注意**：(a) Gemini CLI 免費/Pro/Ultra tier — 6/18 前必須遷移；Enterprise/付費 API key/OSS — agents-commons rename 必動；(b) 跑 `migrate-to-agents-commons.sh` 一鍵 migration script（三 phase 互動式）；(c) 重 self-instantiate vendor slash command 對齊 canonical / adapter 兩層分離；(d) 升 `agents-commons/_config/profile.yaml` `charter_version: "0.12.0"`。**新加架構級概念第 14 + 15 個**：`core/vendor-lifecycle.md`（vendor 預設行為 / 失效 / 換手紀律、收編 #5/#41/#55/#58/#59/#60 family）+ `core/init-spec-schema.md`（Canonical Init Spec + Vendor Adapter pattern、解決「跨 vendor 行為碎片化」缺口）。**詳細 step-by-step 升版流程見 [`examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md`](./examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md)**。詳見 CHANGELOG v0.12.0 段。
 

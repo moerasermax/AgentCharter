@@ -2,7 +2,7 @@
 
 > **受眾**：即將採用 AgentCharter 的團隊（人類 PO + AI 工程師 / PM / 其他角色）
 > **AI 優先**：本檔自含足夠 context，AI 讀完即可啟動 self-instantiation 與採用流程
-> **版本對齊**：本檔對應 charter `v0.10.6`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
+> **版本對齊**：本檔對應 charter `v0.13.0`（依 [versioning-migration.md](./core/versioning-migration.md) §1）
 > **本檔不做**：不重複 [core/](./core/) 全文。每段引用具體條款 §段，需要全文時自行 follow。
 
 ---
@@ -13,7 +13,7 @@ AgentCharter 是「**多 AI 協作的角色協議框架**」。
 
 把「PM / Engineer / Reviewer」這類職能**從 AI 廠商解綁**：任何 AI（Claude / Gemini / Codex / GPT / 你下個用的 LLM）都能扮演任何角色，協議跨 AI 一致。
 
-**框架本體 = 27 條 core 條款 + 7 份 templates + 3 個 vendor adapter 模板**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
+**框架本體 = 27 條 core 條款 + 7 份 templates + 4 個 vendor adapter 模板**（其中 1 條 `maintainer-discipline` 是 framework 維護者用，採用方不必啟用）。不需要工具就能採用（手動建目錄 + AI 自律即可）。
 
 **採用識別**：專案根有 `agent-commons/` 目錄 = 用了本框架。
 
@@ -155,7 +155,7 @@ project-root/
 
 ### T0 採用決策
 
-讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.12.0"`（或當前最新版）。
+讀 [README.md](./README.md) → 選 preset → 在 profile.yaml 固定 `charter_version: "0.13.0"`（或當前最新版）。
 
 ### T1 接入
 
@@ -329,7 +329,7 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 | 工具（charter-init / charter-doctor）| [tools/](./tools/) |
 | 模板（capsule / handoff / IM / nextwork / domain-axioms / _role）| [templates/agent-commons/](./templates/agent-commons/) |
 | 角色職能定義 | [roles/<role>/_spec.md](./roles/) |
-| AI 廠商實作版（vendor spec）| [roles/<role>/<ai-vendor>.md](./roles/)（當前僅 Claude Engineer 完整）|
+| AI 廠商實作版（vendor spec）| [roles/<role>/<ai-vendor>.md](./roles/)（Engineer：Claude Code v0.1 + **Codex Desktop v0.1（v0.13.0 加）**；PM：Antigravity v1.1 / Gemini v1.9 LEGACY / Claude v1.0）|
 | 三個 preset 模板 | [tools/profiles/](./tools/profiles/)（minimal / standard / strict）|
 | 工具 spec（未實作）| [tools/{scan,init,doctor}-spec.md](./tools/) |
 | 真實採用案例 | [examples/cryptobot/mapping.md](./examples/cryptobot/mapping.md) |
@@ -363,6 +363,8 @@ Engineer 提交 VCP（含 stdout 原文，依 structural-anti-fabrication）→ 
 ---
 
 ## 13. 變更歷史
+
+- **v1.24（2026-05-23，charter v0.13.0）** — Engineer × Codex Desktop vendor 接入完成 MINOR 連動 sync（邀請制四步驟走完）。**零採用方動作要求**（純 vendor coverage 擴增、Engineer 從 1 vendor 擴為 2 vendor）— 升版只改 profile.yaml `charter_version: "0.12.0"` → `"0.13.0"`、無其他動作。**核心改動**：(a) 新檔 `roles/engineer/codex.md` v0.1（Codex Desktop self-instantiation 自評產出、7 段結構齊備、anti-`dogfood signal #41` 教科書級實證 — 拒絕宣稱 `.codex/commands/` 不存在的 native slash command 機制、改用 Codex Skill schema、附本機反證）；(b) 新檔 `templates/vendor-adapters/codex.skill.tpl` v1.0（Codex Skill `~/.codex/skills/<role>-init/SKILL.md` target、Step 0-5 canonical 邏輯保留 + Step 5+ vendor-specific extensions）；(c) `roles/engineer/_spec.md §7` 對應 AI 表加 Codex Desktop row + 「新 AI 加入時須提交」清單加 vendor-lifecycle 預設行為自防 + sub-agent 跨界禁令兩項；(d) 4 個 preset YAML charter_version `0.12.0` → `0.13.0`。**採用方接入影響**：Engineer 角色 vendor coverage 從 Claude Code 單一擴為 Claude Code + Codex Desktop 雙 vendor — `core/init-template §3.3` self-instantiation 時接 Engineer 的 AI 可選 Claude Code 或 Codex Desktop 任一、依採用方環境配置。**設計動機**：v0.12.0 Canonical Init Spec + Vendor Adapter pattern ship 後第一個新 vendor 接入測試 — 驗證 canonical / adapter 兩層分離 + 邀請制四步驟 + vendor-lifecycle 紀律的整體 workability、Codex 一輪即過 step 4 簽收（無 regression）。**對應 v0.12.0 Follow-up 第二項「Cursor / Kiro / Codex 等 vendor 接入」第一個 LIVE ship**。詳見 CHANGELOG v0.13.0 段。
 
 - **v1.23（2026-05-22，charter v0.12.0）** — 🔥 **3 in 1 BREAKING-MEDIUM ship**（dogfood signal #5/#41/#55/#58/#59/#60 family 升 core 條款 + #61 SSS S2.5 條款化）。**對採用方影響**：(1) Gemini CLI 免費/Pro/Ultra tier — **6/18 前必須跑 v0.10.6-to-v0.12.0 walkthrough**；Enterprise/付費 API key/OSS — agents-commons rename 必動；(2) **agents-commons rename**（BREAKING-MEDIUM）— `agent-commons/` → `agents-commons/`、所有採用方必跑 `migrate-to-agents-commons.sh` migration script；(3) **Canonical Init Spec Layer 重 self-instantiate 推薦**（依 canonical / adapter 兩層分離、跨 vendor 行為統一）。**升版內容**：(a) 新檔 `core/vendor-lifecycle.md`（架構級概念第 14 個、收編 6 個 dogfood signal）+ `core/init-spec-schema.md`（架構級概念第 15 個、SSS S2.5）+ `roles/pm/init-spec.md` + `roles/engineer/init-spec.md` + 4 個 `templates/vendor-adapters/*.tpl` + `tools/vendor/commons/migrate-to-agents-commons.sh`（migration script）；(b) `core/common-memory-root.md` v0.4.1 → v0.5（新加 §10 rename 紀律 + §11 變更歷史）；(c) `core/versioning-migration.md` 加 §2.3.5（v0.5.9 承諾衝突釋疑）；(d) `tools/doctor-spec` 加 §3.13（W1301/E1302）+ §3.14（W1401）；(e) UPGRADE.md 加 v0.10.6 → v0.12.0 row + 警告段；(f) 4 個 preset YAML charter_version `0.11.0` → `0.12.0`。**架構級概念 13 → 15**（增加 vendor-lifecycle + init-spec-schema）+ **條款數 25 → 27**。**設計學意義**：對齊 v0.7.3 北極星「對未來修訂的紀律」三題 — agents-commons 命名語意更直觀 / canonical layer 跨 vendor 行為統一（dbSDK 三 vendor pm-init 差異 604/11842/1645 bytes 統一化）/ vendor-lifecycle 把 6 個 signal 散在多條款收編為單一架構級概念。**詳細 step-by-step 升版流程見 [`examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md`](./examples/upgrades/v0.10.6-to-v0.12.0-antigravity-canonical-rename.md)**。詳見 CHANGELOG v0.12.0 段。
 

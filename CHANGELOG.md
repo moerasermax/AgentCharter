@@ -6,7 +6,66 @@
 
 ## [Unreleased]
 
-下批次 v0.10.x PATCH 議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；signal #55 §3.2 派發機制重構候選（accumulate ≥ 2 次「PM disable generalist 後派發失效」LIVE 觀察 → 重構 §3.2 改用 cross-AI handoff）；雙軸矩陣 framing 第四段（v0.11.x、lint binary 自動派生「依賴 LLM 紀律的條款清單」取代 README 手寫表）；vendor 預設行為層紀律是否升 core 條款層（dogfood signal #5 + #41 + #55 + #58 same family、新架構級概念候選第 14 個、留 v0.11.0 MINOR）；**`ai-vendor-onboarding §3 step 3` 條款演化「雙向 best-of-breed 收斂」**（dogfood signal #59 LIVE 實證、留 v0.11.0 MINOR 評估）；charter dogfooding 啟動候選（v1.x、charter repo 自身過 H1-H7）；v1.0 公開化前：LICENSE + walkthrough 補齊。
+下批次議程：BOOTSTRAP.md signal #39/#40 互動式 prompt 改版 + commit hook H4/H6 累積 ≥5 樣本後評估升 reject；signal #38 ① ④ 繼續觀察；signal #55 §3.2 派發機制重構候選（accumulate ≥ 2 次「PM disable generalist 後派發失效」LIVE 觀察 → 重構 §3.2 改用 cross-AI handoff）；雙軸矩陣 framing 第四段（lint binary 自動派生「依賴 LLM 紀律的條款清單」取代 README 手寫表）；charter dogfooding 啟動候選（v1.x、charter repo 自身過 H1-H7）；v1.0 公開化前：LICENSE + walkthrough 補齊。新 dogfood signal 候選：#62 global skill version drift（Codex Desktop `~/.codex/skills/<name>/SKILL.md` 是 user-global、採用方多 charter 版本專案共用同一份 skill 漂移風險、#58 vendor skill abstraction family 延伸、累積觀察）。
+
+---
+
+## [0.13.0] — 2026-05-23
+
+> **MINOR release — Engineer × Codex Desktop vendor 接入完成（邀請制四步驟走完）**：依 `core/ai-vendor-onboarding §3` 完整四步驟（charter 寫概念層 → 邀請 Codex 寫 vendor 層 → Claude Code 既有 vendor 校正 regression → maintainer 三層簽收）落地、Engineer 角色 vendor coverage 從 1（Claude Code）→ 2（+ Codex Desktop）。對應 v0.12.0 Follow-up 第二項「Cursor / Kiro / Codex 等 vendor 接入」第一個 LIVE ship。
+>
+> **設計動機**：v0.12.0 Canonical Init Spec + Vendor Adapter pattern ship 後第一個新 vendor 接入測試 — 驗證 canonical / adapter 兩層分離 + 邀請制四步驟 + vendor-lifecycle 紀律的整體 workability。Codex 在自評時 anti-`dogfood signal #41` 教科書級實證（拒絕宣稱 `.codex/commands/` 不存在的 native slash command 機制、改用 Codex Skill schema、附本機 `~/.codex/commands` 不存在反證）— charter v0.12.0 vendor-lifecycle §3 vendor 識別紀律首次跨 vendor 邀請場景 LIVE 工作。
+>
+> **對齊 v0.7.3 北極星紀律**：
+> - 是否讓**回鍋開發者**體驗加分？✅（Engineer 角色不再 vendor-lock 到 Claude Code、Codex Desktop 用戶可直接接入）
+> - 是否讓**小白接入**門檻降低？✅（v0.12.0 canonical / adapter pattern 在第一個新 vendor 接入時驗證 workability、Codex 一輪即過 step 4 簽收）
+> - 是否解決**新的重複溝通**？✅（之前 Codex 用戶要扮 Engineer 沒有 vendor spec 可參考、現在有）
+>
+> **採用方零動作要求**：既有 Claude Code Engineer / Gemini PM / Antigravity PM 採用方完全不受影響、只升 `charter_version` 一行。
+
+### Added
+
+- **新檔 `roles/engineer/codex.md` v0.1**（Codex Desktop Engineer vendor 層 spec、由 OpenAI Codex Desktop 親自 self-instantiation + 自評產出）：
+  - §1 工具能力清單（10 row + 5 blind-spot row、附 `codex features list` 與本機 `~/.codex` 結構實測為據）
+  - §2 五職責執行細節（接收任務 / 執行修法 / 交付 VCP / 抽驗 PM 結案 / 維護工程紀律、PowerShell 命令例）
+  - §3 對 PM 雙向抽驗具體手段（6 row 表 mapping PM 宣告 → Codex 抽驗命令）
+  - §4 Codex init command / Skill schema 規範（對齊 `roles/engineer/claude-code.md §4.1` 結構、Codex Skill `SKILL.md` schema + frontmatter + checklist + 違反處置）
+  - §5 vendor 預設行為層紀律（7 row 表自防 multi-agent / plugins / hooks / approval rules / ambient suggestions / resume / silent fallback、對齊 `core/vendor-lifecycle.md` v0.12.0）
+  - §6 Sub-agent 跨界禁令（5 row、對齊 `core/role-separation §3.5`）
+  - §7 跨 AI 對應段（11 row 表 Claude Code Engineer vs Codex Desktop Engineer 同職責執行差異）
+
+- **新檔 `templates/vendor-adapters/codex.skill.tpl` v1.0**（Codex Skill vendor adapter 模板、`~/.codex/skills/<role>-init/SKILL.md` target）：
+  - 對齊 `templates/vendor-adapters/README.md §3` 五條 adapter 紀律（只做格式轉換 / 保留 6 段順序 / vendor-specific 擴展走 Step 5+ / vendor schema 對齊 / 單向性）
+  - Step 0-5 canonical 邏輯保留 + Step 5+ Vendor-specific extensions（Skill 不是 native slash command 提醒 + sub-agent 跨界禁令 + vendor 預設行為自防）
+
+### Changed
+
+- **`roles/engineer/_spec.md §7` 對應 AI 表**：
+  - Claude Code row 標 ✅ v0.1（v0.5）
+  - 新加 Codex Desktop row ✅ v0.1（v0.13.0 邀請制接入完成）
+  - 「新 AI 加入時須提交」清單加 vendor-lifecycle 預設行為自防 + sub-agent 跨界禁令兩項
+
+- **`tools/profiles/{essential,minimal,standard,strict}.yaml`** charter_version `0.12.0` → `0.13.0`（無 enabled 變更、vendor coverage 擴增不影響 condition 數）
+
+### 邀請制四步驟 LIVE 軌跡（依 `core/ai-vendor-onboarding §3`）
+
+| Step | 動作 | 完成方 | 工件 |
+|---|---|---|---|
+| 1 | 概念層 `_spec.md` 已存在（v0.5 既有）| charter maintainer | `roles/engineer/_spec.md` |
+| 2 | Codex 寫 vendor 層 + adapter 模板 | Codex Desktop（self-instantiation）| `roles/engineer/codex.md` + `templates/vendor-adapters/codex.skill.tpl` |
+| 3 | 既有 vendor 校正 regression | Claude Code（charter maintainer 雙重視角）| 抽驗報告：7 個結構整體性檢項全綠 + 6 個 regression 抽驗點全綠、無 regression |
+| 4 | 三層結構簽收 + 文檔層 sync | charter maintainer | 本 v0.13.0 release |
+
+### dogfood signal 條款化
+
+- **無新 signal 條款化**（v0.13.0 純執行 v0.12.0 既有紀律 — ai-vendor-onboarding §3 + vendor-lifecycle.md + init-spec-schema.md 三條款的整合 LIVE 工作測試）
+
+### Follow-up（留 v0.13.x / v0.14.0 議程）
+
+- **dogfood signal #62 候選**：Codex Desktop global skill version drift（`~/.codex/skills/<name>/SKILL.md` 是 user-global、採用方多 charter 版本專案共用同一份 skill 漂移風險、`dogfood signal #58 vendor skill abstraction` family 延伸、累積 ≥ 2 次 LIVE 同類觀察後評估）
+- **Codex adapter Step 3 cross-platform sweep**：當前 `codex.skill.tpl` Step 3 命令例混 Windows PowerShell（`Get-Content` / `Get-ChildItem`）、其他平台需轉譯、`dogfood signal #48` cross-platform 紀律延伸、下次 spec sweep 順手修
+- **Cursor / Kiro 等 vendor 接入**：依 `core/ai-vendor-onboarding §3` 邀請制（v0.12.0 Follow-up 第二項剩餘）
+- **antigravity-cli.md path A → SIGNED 升級**：累積 ≥ 80% segment LIVE 校正後升 SIGNED
 
 ---
 

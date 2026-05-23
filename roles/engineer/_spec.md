@@ -109,11 +109,14 @@ Engineer 同樣會被 PM 抽驗（雙向抽驗）— 不是只有 PM 會犯錯�
 
 | AI | 檔案 |
 |---|---|
-| Claude Code | `claude-code.md` |
+| Claude Code | `claude-code.md` ✅ v0.1（v0.5）|
+| Codex Desktop | `codex.md` ✅ v0.1（v0.13.0 邀請制接入完成）|
 | Gemini CLI | `gemini-cli.md.placeholder`（待提交）|
 | Cursor | `cursor.md.placeholder`（待提交）|
 
-新 AI 加入時須提交對應 `<vendor>.md`，含：
+新 AI 加入時須提交對應 `<vendor>.md`（依 `core/ai-vendor-onboarding §3` 邀請制四步驟），含：
 - 該 AI 的工具能力清單（hook / shell / persistent memory）
 - 對 spec §3 各職責的執行細節
 - 已知的能力盲區與 fallback
+- vendor 預設行為層自防（依 `core/vendor-lifecycle.md` v0.12.0 加）
+- Sub-agent 跨界禁令（依 `core/role-separation §3.5`，若 vendor 有 sub-agent 能力）
