@@ -11,6 +11,42 @@
 
 ---
 
+## ✅ v0.13.0 已 ship + dogfood signal 候選登記（2026-05-23、commit `cae8d3e`）
+
+| 議題 | 落地檢項 |
+|---|---|
+| **v0.12.0 Follow-up 第一項「Codex 等 vendor 接入」首個 LIVE ship** | 依 `core/ai-vendor-onboarding §3` 邀請制四步驟走完：(1) charter 寫概念層（既有 `roles/engineer/_spec.md`）/ (2) Codex Desktop 寫 vendor 層 + adapter 模板（self-instantiation）/ (3) Claude Code 既有 vendor 校正 regression（7 結構整體性 + 6 抽驗點全綠、無 regression）/ (4) maintainer 三層結構簽收 + 文檔層 sync |
+| **新檔 `roles/engineer/codex.md` v0.1** | 7 段結構齊備、附 `codex features list` + 本機 `~/.codex` 結構實測為據；anti-`dogfood signal #41` 教科書級實證 — 拒絕宣稱 `.codex/commands/` 不存在的 native slash command、改用 Codex Skill schema、附本機反證；§5 vendor 預設行為層 7 row 自防（multi-agent / plugins / hooks / approval rules / ambient suggestions / resume / silent fallback、對齊 `core/vendor-lifecycle.md`）|
+| **新檔 `templates/vendor-adapters/codex.skill.tpl` v1.0** | Codex Skill `~/.codex/skills/<role>-init/SKILL.md` target；對齊 `templates/vendor-adapters/README.md §3` 五條 adapter 紀律全綠 |
+| **Engineer 角色 vendor coverage 從 1 → 2** | Claude Code + Codex Desktop（charter 第一個非 Claude Code Engineer vendor）|
+| **設計學意義** | (a) v0.12.0 Canonical Init Spec + Vendor Adapter pattern 首次新 vendor 接入 LIVE 驗證、Codex 一輪即過 step 4 簽收 / (b) `core/vendor-lifecycle §3` vendor 識別紀律首次跨 vendor 邀請場景 LIVE 工作 / (c) **path A / path B 之外的「path C 邀請制 step 2 default 路徑」第一個明確 ship**（charter 寫概念層在前、vendor 應邀寫 vendor 層、無 from-source vendor template）|
+
+### 🟡 新 dogfood signal #62 候選登記（global skill version drift、累積 1 次）
+
+**觸發**：v0.13.0 Codex `roles/engineer/codex.md §4` + adapter 設計揭露 — Codex Skill 目錄 `~/.codex/skills/engineer-init/SKILL.md` 是 **user-global**（vs Claude Code `.claude/commands/<name>.md` per-project / vs Gemini CLI `.gemini/commands/<name>.toml` per-project）。採用方若同時跑多個不同 charter 版本的專案、會共用同一份 skill → 版本漂移風險（charter v0.12.0 專案跟 v0.13.0 專案共用同一個 `engineer-init` skill、skill 內容對齊哪個版本不明）。
+
+**Signal family 對照**（弱保證項升結構強制家族新延伸）：
+
+| Family signal | 同源關係 |
+|---|---|
+| **#58**（v0.10.x、CryptoBot Claude vendor skill mapping.yaml 抽象化未 propagate）| **直系延伸** — 都是 vendor user-global skill 抽象層紀律問題；#58 是「Claude skill 路徑沒對齊 mapping.yaml 抽象」、#62 是「Codex skill 是 user-global 無 per-project 隔離」、family 為「**vendor skill abstraction 紀律對齊不完整**」 |
+| #3（v0.9.x、user 全域 skill 路徑硬編碼 `management/`）| 同源 — 都是 user-global 工具沒對齊 charter 多專案抽象 |
+
+**候選修法方向**（累積 ≥ 2 次 LIVE 同類觀察後）：
+- (a) `roles/engineer/codex.md §5` 加段「global skill version drift 自防」+ adapter Step 5+ 加 ⚠️ 提示
+- (b) Codex Skill body 啟動時主動讀採用方 `profile.yaml.charter_version` 對比自身對齊版本、不一致 → reminder（類比 v0.10.1 charter version 主動通知 step 0.5）
+- (c) charter 提供 `tools/vendor/commons/install-user-skills.sh`（vendor 中立、跟 `install-git-hooks.sh` 同 pattern、一鍵安裝對齊所有 vendor user-global skill、採用方升 charter 版本時 user-skill 自動 propagate）— 對齊 dogfood signal #58 修法 (c) 同源
+
+**累積**：1 次（2026-05-23 v0.13.0 Codex 接入設計揭露）。**判斷**：屬 #58 family 新延伸、累積 ≥ 2 次 LIVE 同類觀察（如 Cursor / Kiro 接入時同 pattern）後 PATCH。對齊 v0.7.3 北極星「不讓 user 記」延伸 — 「**不讓 user 需要記憶哪個 vendor 的 skill 是 user-global / 哪個是 per-project**」。
+
+### 🟡 Codex adapter Step 3 cross-platform sweep（follow-up、#48 family 延伸）
+
+**觸發**：`templates/vendor-adapters/codex.skill.tpl` Step 3 命令例混 Windows PowerShell（`Get-Content` / `Get-ChildItem`）、其他平台需轉譯。Codex 在註解明示「其他平台依 shell 等價轉換」、但 placeholder 範例本身 vendor-lock 到 Windows。
+
+**判斷**：minor、不阻擋 v0.13.0 ship。下次 spec sweep 順手修。**對齊 dogfood signal #48 cross-platform 紀律的延伸**。
+
+---
+
 ## ✅ v0.10.0 已 ship signals（2026-05-05）
 
 | Signal | 議題 | 落地檢項 |

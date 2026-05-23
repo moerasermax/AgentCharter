@@ -65,7 +65,7 @@ charter maintainer 接班完成，待下達議題。
 
 `maintainer-discipline.md §3` 規定三層執行機制（工具層 / 流程層 / commit 層）。本指令是「**接班便利化**」的延伸 — 不在 §3 列出的三層內，而是對應 §1 條文「DRAFT 須是檔案」紀律的反向（**接班讀檔**對應**累積寫檔**）。
 
-當前狀態（v0.9.0）：
+當前狀態（v0.13.0）：
 - 寫檔：自然執行（每次重要工作更新 `.claude_temp/` + commit）
 - 讀檔：本指令落實
 - 抽驗執行載體：`roles/auditor/_spec.md`（v0.6.0 概念層誕生）— 跑 spec sync check 走 fresh-context sub-agent 達成「他抽」屬性
@@ -108,4 +108,15 @@ charter maintainer 接班完成，待下達議題。
   8. **dogfood signal 第十七循環收編**：#11 mutability 三層分類 → ④ / #26 init token cost ROI → ⑤ / #27 spec-driven 循環依賴 reality check → ② / #28 progressive adoption → ⑤ / #30 LLM 砍 fork 內容 → ② / #31 simulated slash command → ② 真實 stdout 加固 / #32 LLM 不查 templates → ① init step 0 / #33 failure-mode 自報失效 → ② commit hook 邀請制 / #34 個體學習迴圈紀律缺失（**user 明示「框架必備」**、不走累積門檻直接條款化）→ ①
   9. **multi-perspective 第十四循環四方金礦完整落地**：結構師雙軸正交矩陣（① + ② 兩格） + 理念守護者「LLM 不可矯正」方向性誤讀指認（① 雙寫紀律對齊「集體記憶才重要」+「但個體記憶仍要寫 + 強制讀」）+ 工程師採用方層 vs 維護者層分離（③ adoption-lifecycle / uninstall-spec 採用方層、② commit hook 候選 vendor 層）+ 採用方 essential preset 真槓桿（⑤ 落地）
   10. **採用方文檔層 sync**：ADOPTION v1.11 / TUTORIAL v1.11 / QUICKSTART v1.1（首次有變更歷史段）/ README §核心通用條款 + §設計哲學第 6 條「個體學習迴圈 — 對 AI 角度的對稱補完」 / 第 6 個 walkthrough `examples/upgrades/v0.8.2-to-v0.9.0.md`（v0.x 階段 walkthrough 系列收齊 6 個升版場景）
-- **v0.9.x PATCH 後續議程**：v0.8.3 延後 / 併入 v0.9.x（雙軸矩陣 framing 第二段 21 條條款 §X 細節 inline marker + 第三段 lint binary 派生「依賴 LLM 紀律的條款清單」+ SSS S3 propagate 到 post-upgrade-verify-spec / init-spec 既有 error codes 全加四欄結構）+ BOOTSTRAP.md 入口檔 / prompt 簡化 / BREAKING-LITE checklist + commit hook vendor 邀請制 ship（claude-code / gemini-cli / cursor 各自實作）+ vendor schema 規範擴充（cursor.md / 其他 vendor 邀請制接入）
+- **v0.9.1〜v0.9.10 PATCH 系列**（2026-05-01〜2026-05-04）：doctor Gap 偵測 + Doctor 角色概念層 / `/checkpoints` 後置介紹 + 自動版本偵測 + handler 移 vendor/commons + 交班詢問 + reflection frontmatter 修正 + signal #38 修補 + BOOTSTRAP.md 入口檔（dogfood signal #21 修補）+ init-template vendor spec 誤讀防呆（signal #41 Kiro fallback）
+- **v0.10.0「commit hook vendor 中立架構」MINOR release**（2026-05-05 ship、雙軸軸 1「結構強制」首次大規模落地）：`tools/commit-hook-spec.md` 新檔（H1-H6 校驗點 + spec-as-data 四欄結構）+ reference 實作 `charter-commit-checks.sh v1.0` + 安裝器 `install-git-hooks.sh v1.0`（git 原生 hook + agent-commons 共用 script、vendor 中立 — Claude/Gemini/Kiro/Cursor/人類 commit 全攔）+ `core/cross-ai-handoff §3.3` 「致 XXX」directive header 條款化。**6 條同源 signal 一次收編**：#33/#35/#42/#43/#44/#45
+- **v0.10.1〜v0.10.6 PATCH 系列**（2026-05-06〜2026-05-21）：v0.10.1 charter version 主動通知 step 0.5（signal #47）/ v0.10.2 commit hook H7 schema-driven 強制必啟集合 BREAKING-LITE（signal #46/#31/#52 + REQ-001-F6）/ v0.10.3 純 spec sweep + maintainer-only lint binary（雙軸 framing 第三段、規範自動化「不讓 maintainer 記」）/ v0.10.4 vendor 介紹 charter 工具紀律 charter common 化（signal #53/#54）/ v0.10.5 Gemini CLI 預設 `generalist` 自動分包 PM init 必提醒（signal #55）/ v0.10.6 Claude PM v1.0 接入 + Gemini PM v1.8 best-of-breed 收斂（signal #59、path B dogfood 收編 pattern 第一次完整 LIVE 實證）
+- **v0.11.0「Gemini CLI 棄用觸發 Antigravity vendor 接入」MINOR release**（2026-05-22 ship、A1 公理時運實證 + vendor 中立架構反向實證）：`roles/pm/antigravity-cli.md` v1.1（path A AI-DRAFTED-FROM-GEMINI-V1.8 + 同日 LIVE 第二輪校正、Skills 子目錄 `~/.gemini/skills/<name>/SKILL.md`）+ `roles/pm/gemini-cli.md` v1.9 標 LEGACY_AUTO_IMPORTED + walkthrough + UPGRADE.md 顯著警告段。**dogfood signal #60 LIVE 條款化候選**
+- **v0.12.0「3 in 1 BREAKING-MEDIUM」MINOR release**（2026-05-22 ship、架構級概念 13 → 15、條款數 25 → 27）：(1) `core/vendor-lifecycle.md`（第 14 個架構級概念、收編 #5/#41/#55/#58/#59/#60 family）+ (2) `core/init-spec-schema.md`（第 15 個架構級概念、SSS S2.5 Canonical Init Spec + Vendor Adapter pattern、signal #61 條款化、解 dbSDK PM AI 報告三 vendor pm-init 差異 604/11842/1645 bytes）+ `roles/{pm,engineer}/init-spec.md` + `templates/vendor-adapters/*.tpl`（3 個）+ (3) agents-commons rename（`agent-commons/` → `agents-commons/`、`migrate-to-agents-commons.sh`）
+- **v0.13.0「Engineer × Codex Desktop vendor 接入」MINOR release**（2026-05-23 ship、commit `cae8d3e`、v0.12.0 Follow-up 第一個 LIVE ship）：依 `core/ai-vendor-onboarding §3` 邀請制四步驟走完（Codex 一輪即過 step 4 簽收、無 regression）+ `roles/engineer/codex.md` v0.1（anti-`dogfood signal #41` 教科書級實證 — 拒絕宣稱 `.codex/commands/` 不存在的 native slash command、改用 Codex Skill schema）+ `templates/vendor-adapters/codex.skill.tpl` v1.0（第 4 個 adapter）。**Engineer 角色 vendor coverage 從 1 → 2**（Claude Code + Codex Desktop）。**dogfood signal #62 候選登記**（global skill version drift、#58 family 延伸）
+
+**當前 4 preset enabled**：essential 5/27 / minimal 14/27 / standard 24/27 / strict 24/27（standard/strict 含 maintainer-only 1 條預設關 = 23 條採用方有效）
+**Vendor coverage**：Engineer × {Claude Code v0.1, Codex Desktop v0.1} / PM × {Antigravity v1.1, Gemini v1.9 LEGACY, Claude v1.0} / Auditor / Validator / Doctor 概念層既有、vendor 層待邀請制
+**採用案例**：YC_AIAgentCrew（v0.8.0+）/ 公司 dbSDK（v0.10.1+）/ CryptoBot（v0.10.1 反向接入、A3 公理對源頭反向迴圈閉環）
+
+- **v0.13.x / v0.14.0 後續議程**：dogfood signal #62 候選累積 ≥ 2 次後評估 / Codex adapter Step 3 cross-platform sweep（#48 family）/ Cursor / Kiro vendor 接入（v0.12.0 Follow-up 第二項剩餘）/ antigravity-cli.md path A → SIGNED / SSS S1 設計深化（前置條件齊備）/ LICENSE + v1.0 公開化準備
