@@ -67,6 +67,10 @@ charter 既有條款體系隱含**雙軸正交分類**（dogfood-driven hardenin
 | [`core/violation-reflection`](./core/violation-reflection.md) 補交反省 | AI 違規後 AI 自驅補交 | **不升級** — 此條款的價值就在「集體記憶」、不為「矯正」（charter 設計方向） |
 | [`core/handoff-chain`](./core/handoff-chain.md) 接班方七步驟自驅 | 接班 AI 無外部攔截 | 升級：[`cross-ai-handoff`](./core/cross-ai-handoff.md) 強化抽驗繼承 + [`working-stack-discipline`](./core/working-stack-discipline.md) DRAFT 必為檔案 |
 | [`core/evidence-first`](./core/evidence-first.md) 隱性 bug 嚴禁盲猜 | AI 自律不去猜 | 強化抽驗時要求顯化推斷依據（升級到多 actor）|
+| [`core/work-budget`](./core/work-budget.md)（opt-in）| 計數、達限回報與停止無效嘗試主要靠單 actor 自律 | 工作包明列額度，人工核准追加；環境壓縮不等同工作量強制 |
+| [`core/execution-routing`](./core/execution-routing.md)（opt-in）| 路由、effort、provider 核准與輸出判讀主要靠自律 | 精簡證據包與高風險 claim 互檢 |
+| [`core/subagent-gating`](./core/subagent-gating.md)（opt-in）| 並行數、禁止遞迴與核准來源仍靠自律 | guard 可部分結構強制工具放行，僅正則黑名單、非安全邊界 |
+| [`core/human-gates`](./core/human-gates.md)（opt-in）| 完整人工確認清單與範圍核對仍靠自律 | guard 部分攔已列高風險形式，未命中不代表已核准 |
 
 → **設計方向**：弱保證項應持續升級到「多 actor 互檢」或「結構強制」 — charter 11 個 dogfood-driven hardening 循環就是此演化路徑的物理載體（如 v0.7.0 Phase 5b 把 init 階段「自抽自驗」從單 actor 升維到多 actor、v0.8.0 axiom 紀律從「自律」升「結構強制」三層雙重防禦）。
 
@@ -217,6 +221,10 @@ Charter (this repo)         ← 跨 AI、跨專案、跨角色的最大公約數
 | `domain-axiom-slot.md` | 領域公理槽位的位階 / 撰寫紀律 / 違反處置（與 core 衝突時領域公理優先）|
 | `versioning-migration.md` | SemVer 對 charter 的具體含義 + 升級遷移流程 + 多 AI 版本一致性 |
 | `evidence-first.md` | 隱性 Bug 嚴禁盲猜；參數嚴禁假設值 |
+| `work-budget.md` | **v0.14.0 opt-in**：工作預算、連續失敗停止與上下文控制分層；數值由 profile 設定 |
+| `subagent-gating.md` | **v0.14.0 opt-in**：子代理零預設、人工核准、並行上限與禁止遞迴 |
+| `human-gates.md` | **v0.14.0 opt-in**：高風險動作人工確認、修改前備份與結構化合併 |
+| `execution-routing.md` | **v0.14.0 opt-in**：單一模型路由、明傳 effort 與精簡 claim 交叉驗證 |
 | `structural-anti-fabrication.md` | 事實宣告必含 stdout 區塊；不靠 AI 自我誠實，靠文檔結構強制 |
 | `violation-reflection.md` | 違規退稿後須補交反省；反省價值在「未來 AI / 集體記憶」而非矯正當前 AI |
 | `charter-config.md` | mapping.yaml + profile.yaml schema；可插拔啟用條款，不需重組目錄 |
