@@ -269,6 +269,33 @@ v0.4 暫不支援，需要時 PR 升級 schema。
 
 詳見 `tools/profiles/`。
 
+### 7.1 Governance Overlay（v0.14.0，opt-in）
+
+`tools/profiles/governance.overlay.yaml` 可結構化疊加在任一 preset 上，不取代 preset。新增 `work-budget`、`subagent-gating`、`human-gates`、`execution-routing` 四條：未載入 overlay 且未明確設 `enabled.<條款>: true` 時一律停用；不因 standard／strict 的「全啟用」描述自動啟用。
+
+先備份並列出目標，再依序合併「preset → governance overlay → 當前 vendor 的 `vendor_overrides.<vendor>` → 採用方局部覆寫」。mapping 遞迴合併，scalar／list 以後者替換，null 表示未指定、回到環境設定；不可移除 `_required.yaml` 的必啟值。未提供 vendor 覆寫時用共用參數；已核准工作包額度優先於 profile 預算預設。選較小 preset 時，新條款的依存為配置本身，其他既有條款交叉引用不自動改其啟用值。
+
+本版沒有自動 overlay 載入器：採用方須把合併後有效的 `enabled`、`parameters` 值寫入 `<common-memory-root>/_config/profile.yaml`，可選 `overlays: [governance]` 作來源註記；只寫來源註記不會啟用。vendor 區塊只表達語意，不自動修改 CLI 設定；compact／tool output 設定須由採用方核對實際執行環境。
+
+```yaml
+# profile.yaml 的啟用片段；完整參數由 overlay 合併
+charter_version: "0.14.0"
+preset: standard
+overlays: [governance]
+enabled:
+  work-budget: true
+  subagent-gating: true
+  human-gates: true
+  execution-routing: true
+parameters:
+  execution-routing:
+    ask_executor_per_task: false
+```
+
+`ask_executor_per_task` 只是可選偏好，不開時保留 PM 既有分派。開啟時人選執行者優先於 PM 的載體分派，不改角色權限。工作預算、上下文／工具輸出控制與帳號用量互不等同；數值與 vendor 範例見 overlay。guard 是另行核准部署的可選範例，overlay 不會安裝 hook。
+
+升版與驗證步驟見 [v0.13.0 → v0.14.0](../examples/upgrades/v0.13.0-to-v0.14.0.md)。
+
 ---
 
 ## 8. 與 core 既有條款的關係

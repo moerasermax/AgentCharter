@@ -38,6 +38,8 @@
 
 ## 3. 實作要點
 
+啟用 governance overlay 時，Evidence 輸出須區分「已觀察／合理推論／尚待確認」，高風險結論附 Confidence 與未決點；Evidence Block 目標上限與 vendor 差異見 [work-budget](./work-budget.md) 及其 profile。此上限是上下文／工具輸出控制，不是工作額度或帳號用量，不免除既有實證義務。
+
 ### 3.1 角色責任分配
 
 | 角色 | 對應實證義務 |

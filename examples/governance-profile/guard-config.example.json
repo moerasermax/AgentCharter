@@ -1,0 +1,22 @@
+{
+  "protectedPaths": [
+    ".codex/config.toml",
+    ".codex/AGENTS.md",
+    ".codex/hooks.json",
+    ".claude/settings.json",
+    ".claude/CLAUDE.md"
+  ],
+  "secretFilePattern": "\\.env(?:\\.[\\w.-]+)?|\\.?(?:credentials?|secrets?)(?:\\.[\\w.-]+)?",
+  "secretPathPattern": "(?i)(^|[\\\\/])\\.env(?:\\.[^\\\\/\"]*)?(?:$|[\\\\/\"])|[\\\\/]\\.?(credentials?|secrets?)(?:\\.[^\\\\/\"]*)?(?:$|[\\\\/\"])",
+  "authorization": {
+    "agentUntilVariable": "CHARTER_ALLOW_AGENTS_UNTIL",
+    "riskUntilVariable": "CHARTER_HIGH_RISK_BYPASS_UNTIL",
+    "reentryVariable": "CHARTER_GUARD_ACTIVE",
+    "maxWindowMinutes": 30
+  },
+  "subagentTools": [
+    "Agent",
+    "Task",
+    "spawn_agent"
+  ]
+}

@@ -1,0 +1,58 @@
+# AgentCharter Governance Overlay — 選擇性疊加，不是獨立 preset。
+# 合併規則與啟用方式見 core/charter-config.md §7.1。
+# 數值為範例，可由採用方與已核准工作包覆寫。
+version: "0.4.0"
+charter_version: "0.14.0"
+overlay: governance
+
+enabled:
+  work-budget: true
+  subagent-gating: true
+  human-gates: true
+  execution-routing: true
+
+parameters:
+  work-budget:
+    search_rounds: 8
+    tool_calls: 20
+    read_files: 15
+    edit_files: 5
+    test_fix_cycles: 2
+    consecutive_failure_limit: 2
+    on_limit: report_and_request_extension
+    approved_work_package_overrides_defaults: true
+    evidence_block_target_tokens: 2000
+    context_threshold_tokens: 96000
+    on_context_threshold: environment_compact
+    tool_output_limit_tokens: null       # 未指定，依環境；不代表無限
+  subagent-gating:
+    default_agents: 0
+    approved_edit_concurrency: 2
+    approved_readonly_concurrency: 8
+    allow_recursive_agents: false
+  execution-routing:
+    ask_executor_per_task: false
+    default_effort: medium
+    elevated_effort: high
+    elevated_only_for: [cross_module, architecture, high_risk, ambiguity, insufficient_medium_result]
+    explicit_human_request_efforts: [xhigh, max]
+    require_explicit_effort: true
+
+# 以當前 vendor 選一段，遞迴合併至 parameters；不能混用兩個 vendor。
+# 這些欄位是 profile 的語意值，不會自動修改 vendor CLI 設定。
+vendor_overrides:
+  claude:
+    parameters:
+      work-budget:
+        evidence_block_target_tokens: 2000
+        context_threshold_tokens: 96000  # 約略上下文門檻
+        on_context_threshold: stop_and_report
+        on_limit: stop_and_report       # 停止後仍可經人工追加核准續推
+  codex:
+    parameters:
+      work-budget:
+        evidence_block_target_tokens: 4000
+        context_threshold_tokens: 192000
+        on_context_threshold: environment_compact
+        tool_output_limit_tokens: 16000
+        on_limit: report_and_request_extension

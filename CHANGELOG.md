@@ -10,6 +10,29 @@
 
 ---
 
+## [0.14.0] — 2026-10-06
+
+> **MINOR release — 可選 Governance Profile**：增量加入工作預算、子代理閘門、人工確認與單一模型路由；不取代既有框架。未啟用 governance overlay 時行為不變。
+
+### Added
+
+- **四條 opt-in core 條款**：`work-budget`、`subagent-gating`、`human-gates`、`execution-routing`；條款定機制，數值集中於 profile。
+- **`tools/profiles/governance.overlay.yaml`**：可疊加任一 preset，提供共用預算與 claude／codex 上下文控制覆寫；`ask_executor_per_task` 預設 false。
+- **PreToolUse guard 規格與範例**：`tools/pretooluse-guard-spec.md` 公開職責、deny JSON、授權與已知限制；`examples/governance-profile/` 提供 `-ConfigPath` 參數化腳本與中性 JSON 設定。正則黑名單、非安全邊界，保留來源邏輯，不宣稱漏洞已修補。
+- **`examples/upgrades/v0.13.0-to-v0.14.0.md`**：只升版、可選合併 overlay 與另行部署 guard 的遷移指南。
+
+### Changed
+
+- **`core/charter-config.md`**：新增 overlay 合併與 opt-in 語意，區分工作預算、上下文／工具輸出控制與帳號用量；未提供自動載入器。
+- **`core/evidence-first.md`、`core/escalation-protocol.md`**：新增小段交叉引用，區分已觀察／合理推論／尚待確認；不改原條文主體或升級階梯。
+- **`README.md`**：核心清單與弱保證清單加入四條，公開自律與 guard 的部分結構強制邊界。
+
+### Compatibility
+
+- 四個既有 preset 與 `_required.yaml` 維持原值；新條款缺值視為停用，不新增強制必啟要求。人工選執行者為可選偏好，未啟用時保留 PM 分派流程。
+
+---
+
 ## [0.13.0] — 2026-05-23
 
 > **MINOR release — Engineer × Codex Desktop vendor 接入完成（邀請制四步驟走完）**：依 `core/ai-vendor-onboarding §3` 完整四步驟（charter 寫概念層 → 邀請 Codex 寫 vendor 層 → Claude Code 既有 vendor 校正 regression → maintainer 三層簽收）落地、Engineer 角色 vendor coverage 從 1（Claude Code）→ 2（+ Codex Desktop）。對應 v0.12.0 Follow-up 第二項「Cursor / Kiro / Codex 等 vendor 接入」第一個 LIVE ship。
